@@ -1,0 +1,32 @@
+\name{chmRegisterTypeSplitter}
+\alias{chmRegisterTypeSplitter}
+\title{Define and register a Javascript function for converting a lists of type values into single values.}
+\usage{
+  chmRegisterTypeSplitter(functionName, listtype, itemtype,
+    separator)
+}
+\arguments{
+  \item{functionName}{The name given to the Javascript
+  function.}
+
+  \item{listtype}{The name of the list type.}
+
+  \item{itemtype}{The name of the individual values.}
+
+  \item{separator}{The string that separates items within
+  the list.}
+}
+\description{
+  This function defines and registers a Javascript function
+  for converting a list of type values separated by the
+  specified separator into the single values, and registers
+  it as a type mapper.
+}
+\seealso{
+  chmGetFunction
+
+  chmListFunctions
+
+  chmRegisterTypeMapper
+}
+

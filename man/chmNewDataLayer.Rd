@@ -1,0 +1,41 @@
+\name{chmNewDataLayer}
+\alias{chmNewDataLayer}
+\title{Create a new Data Layer for a NGCHM.}
+\usage{
+  chmNewDataLayer(label, data, colors = NULL)
+}
+\arguments{
+  \item{label}{The name under which the data layer will be
+  displayed to the user.}
+
+  \item{data}{A matrix containing the data to display. Must
+  have rownames and colnames.}
+
+  \item{colors}{A color map specifying how the data should
+  be rendered.  If omitted or NULL, a default
+  green-black-red color map will be estimated from the
+  data.}
+}
+\value{
+  An object of class ngchmLayer
+}
+\description{
+  This function creates a new Data Layer suitable for
+  adding to a Next Generation Clustered Heat Map.
+}
+\examples{
+noise <- matrix (runif(1000) + runif(1000*1000), nrow=1000)
+rownames(noise) <- sprintf ("Row\%d", 1:nrow(noise))
+colnames(noise) <- sprintf ("Col\%d", 1:ncol(noise))
+noise.colors <- chmNewColorMap ("linear", "yellow", c(0,1,2),
+                                c("green", "black", "red"))
+layer <- chmNewDataLayer ("Noisy Data", noise, noise.colors)
+}
+\seealso{
+  ngchmLayer-class
+
+  chmNewColorMap
+
+  chmAddDataLayer
+}
+
