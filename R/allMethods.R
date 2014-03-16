@@ -750,6 +750,7 @@ setMethod ("chmMake",
 setMethod ("chmAddLayer",
     signature = c(chm="ngchm", layer="ngchmLayer"),
     definition = function (chm, layer) {
+	validateNewLayer (chm, layer);
 	chm@layers <- append (chm@layers, layer);
         chmAddColormap (chm, layer@colors)
 });
@@ -761,6 +762,7 @@ setMethod ("chmAddLayer",
     signature = c(chm="ngchm", layer="matrix"),
     definition = function (chm, layer) {
 	layer <- chmNewDataLayer (sprintf ("Layer %d", length(chm@layers)+1), layer);
+	validateNewLayer (chm, layer);
 	chm@layers <- append (chm@layers, layer);
         chmAddColormap (chm, layer@colors)
 });
@@ -1035,6 +1037,7 @@ setMethod ("chmAddAxisType",
 setMethod ("chmAddClassBar",
     signature = c(chm="ngchm", where="character", bar="ngchmBar"),
     definition = function (chm, where, bar) {
+	validateNewClassbar (chm, where, bar);
 	if (where == "row" || where == "both") {
 	    chm@rowClassbars <- append (chm@rowClassbars, bar);
 	    if (where == "both")

@@ -34,6 +34,15 @@ ngchmGetEnv <- function () {
 #' @seealso chmInstall
 
 chmNew <- function (name) {
+    if (typeof (name) != "character") {
+        stop (sprintf ("Parameter 'name' must have type 'character', not '%s'", typeof(name)));
+    }
+    if (length (name) != 1) {
+        stop (sprintf ("Parameter 'name' must have a single value, not %d", length(name)));
+    }
+    if (nchar (name) == 0) {
+        stop ("Parameter 'name' cannot be the empty string");
+    }
     chm <- new (Class="ngchm", name=name)
     chm <- chmAddCSS (chm, 'div.overlay { border: 2px solid yellow; }');
     chm
@@ -65,6 +74,27 @@ chmNew <- function (name) {
 #' @seealso chmAddDataLayer
 #' 
 chmNewDataLayer <- function (label, data, colors=NULL) {
+    if (typeof (label) != "character") {
+        stop (sprintf ("Parameter 'label' must have type 'character', not '%s'", typeof(label)));
+    }
+    if (length (label) != 1) {
+        stop (sprintf ("Parameter 'label' must have a single value, not %d", length(label)));
+    }
+    if (nchar (label) == 0) {
+        stop ("Parameter 'label' cannot be the empty string");
+    }
+    if (!is.numeric (data)) {
+        stop (sprintf ("Parameter 'data' for layer '%s' must be numeric", label));
+    }
+    if (length (dim(data)) != 2) {
+        stop (sprintf ("Parameter 'data' for layer '%s' must have exactly 2 dimensions, not %d", label, length(dim(data))));
+    }
+    if (length (rownames(data)) == 0) {
+        stop (sprintf ("Parameter 'data' for layer '%s' must have rownames set", label));
+    }
+    if (length (colnames(data)) == 0) {
+        stop (sprintf ("Parameter 'data' for layer '%s' must have colnames set", label));
+    }
     if (length(colors) == 0)
 	colors <- chmNewColorMap ("linear", "white", data, c("green", "black", "red"));
     new (Class="ngchmLayer", name=label, data=data, colors=colors)
@@ -91,6 +121,36 @@ chmNewDataLayer <- function (label, data, colors=NULL) {
 chmNewDataset <- function (name, description, data,
                            row.covariates = NULL,
 			   column.covariates = NULL) {
+    if (typeof (name) != "character") {
+        stop (sprintf ("Parameter 'name' must have type 'character', not '%s'", typeof(name)));
+    }
+    if (length (name) != 1) {
+        stop (sprintf ("Parameter 'name' must have a single value, not %d", length(name)));
+    }
+    if (nchar (name) == 0) {
+        stop ("Parameter 'name' cannot be the empty string");
+    }
+    if (typeof (description) != "character") {
+        stop (sprintf ("Parameter 'description' must have type 'character', not '%s'", typeof(description)));
+    }
+    if (length (description) != 1) {
+        stop (sprintf ("Parameter 'description' must have a single value, not %d", length(description)));
+    }
+    if (nchar (description) == 0) {
+        warning ("Parameter 'description' should not be the empty string");
+    }
+    if (!is.numeric (data)) {
+        stop (sprintf ("Parameter 'data' for dataset '%s' must be numeric", name));
+    }
+    if (length (dim(data)) != 2) {
+        stop (sprintf ("Parameter 'data' for dataset '%s' must have exactly 2 dimensions, not %d", name, length(dim(data))));
+    }
+    if (length (rownames(data)) == 0) {
+        stop (sprintf ("Parameter 'data' for dataset '%s' must have rownames set", name));
+    }
+    if (length (colnames(data)) == 0) {
+        stop (sprintf ("Parameter 'data' for dataset '%s' must have colnames set", name));
+    }
     new (Class="ngchmDataset", name=name, description=description, data=data,
          row.covariates = row.covariates,
 	 column.covariates=column.covariates);
@@ -113,6 +173,24 @@ chmNewDataset <- function (name, description, data,
 #' @seealso chmAddCovariate
 #' 
 chmNewCovariate <- function (label, fullname, label.series, series.properties) {
+    if (typeof (label) != "character") {
+        stop (sprintf ("Parameter 'label' must have type 'character', not '%s'", typeof(label)));
+    }
+    if (length (label) != 1) {
+        stop (sprintf ("Parameter 'label' must have a single value, not %d", length(label)));
+    }
+    if (nchar (label) == 0) {
+        stop ("Parameter 'label' cannot be the empty string");
+    }
+    if (typeof (fullname) != "character") {
+        stop (sprintf ("Parameter 'fullname' for covariate '%s' must have type 'character', not '%s'", label, typeof(fullname)));
+    }
+    if (length (fullname) != 1) {
+        stop (sprintf ("Parameter 'fullname' for covariate '%s' must have a single value, not %d", label, length(fullname)));
+    }
+    if (nchar (fullname) == 0) {
+        stop (sprintf ("Parameter 'fullname' for covariate '%s' cannot be the empty string", label));
+    }
     new (Class="ngchmCovariate", label=label, fullname=fullname,
 	 label.series = label.series,
 	 series.properties=series.properties);
@@ -146,10 +224,34 @@ chmNewCovariate <- function (label, fullname, label.series, series.properties) {
 #' @seealso chmAddClassBar
 #'
 chmNewClassBar <- function (label, type, data, colors=NULL, display="visible", thickness=as.integer(10), merge=NULL) {
-    if ((display == "visible") && (length(colors) == 0))
-        stop ("Visible classification bars require a color map");
+    if (typeof (label) != "character") {
+        stop (sprintf ("Parameter 'label' must have type 'character', not '%s'", typeof(label)));
+    }
+    if (length (label) != 1) {
+        stop (sprintf ("Parameter 'label' must have a single value, not %d", length(label)));
+    }
+    if (nchar (label) == 0) {
+        stop ("Parameter 'label' cannot be the empty string");
+    }
+    if (typeof (type) != "character") {
+        stop (sprintf ("Parameter 'type' for classbar '%s' must have type 'character', not '%s'", label, typeof(type)));
+    }
+    if (length (type) != 1) {
+        stop (sprintf ("Parameter 'type' for classbar '%s' must have a single value, not %d", label, length(type)));
+    }
+    if (!(type %in% c("discrete", "continuous"))) {
+        stop (sprintf ("Parameter 'type' for classbar '%s' must be either 'discrete' or 'continuous', not '%s'", label, type));
+    }
+    if (typeof (display) != "character") {
+        stop (sprintf ("Parameter 'display' for classbar '%s' must have type 'character', not '%s'", label, typeof(display)));
+    }
+    if (length (display) != 1) {
+        stop (sprintf ("Parameter 'display' for classbar '%s' must have a single value, not %d", label, length(display)));
+    }
     if (!(display %in% c("visible", "hidden")))
-        stop (sprintf ("Unknown classbar display value '%s'. Must be either 'visible' or 'hidden'", display));
+        stop (sprintf ("Parameter 'display' for classbar '%s' must be either 'visible' or 'hidden', not '%s'", label, display));
+    if ((display == "visible") && (length(colors) == 0))
+        stop (sprintf ("Classbar '%s' is visible so it requires a color map"), label);
     if ((length(merge) > 0) && !(merge %in% c("average", "peakColor", "specialColor", "mostCommon")))
         stop (sprintf ("Unknown classbar merge value '%s'. Must be 'average', 'peakColor', 'specialColor' or 'mostCommon'", merge));
     new (Class="ngchmBar", label=label, type=type, data=data, thickness=thickness, colors=colors, display=display, merge=merge)
@@ -184,10 +286,16 @@ chmNewClassBar <- function (label, type, data, colors=NULL, display="visible", t
 #' @seealso chmNewClassBar
 #'
 chmNewColorMap <- function (type, missing, values, colors) {
+    if (typeof (type) != "character") {
+        stop (sprintf ("Parameter 'type' must have type 'character', not '%s'", typeof(type)));
+    }
+    if (length (type) != 1) {
+        stop (sprintf ("Parameter 'type' must have a single value, not %d", length(type)));
+    }
     allowedTypes = c("linear", "quantile");
     mtype = pmatch (type, allowedTypes);
     if (is.na(mtype)) {
-        stop (sprintf ("chmNewColorMap: unknown color map type '%s'. Allowed types are %s.", type,
+        stop (sprintf ("Unknown color map type '%s'. Allowed types are %s.", type,
 	               paste ("'", allowedTypes, "'", sep="", collapse=", ")));
     }
     NC <- length(colors);
@@ -251,6 +359,39 @@ chmNewColorMap <- function (type, missing, values, colors) {
 #' @seealso chmRegisterFunction
 #'
 chmNewFunction <- function (name, description, implementation, extraParams=NULL, requires=NULL, global=FALSE) {
+    if (typeof (name) != "character") {
+        stop (sprintf ("Parameter 'name' must have type 'character', not '%s'", typeof(name)));
+    }
+    if (length (name) != 1) {
+        stop (sprintf ("Parameter 'name' must have a single value, not %d", length(name)));
+    }
+    # We declare "" to be a simple value reference
+    if (typeof (description) != "character") {
+        stop (sprintf ("Parameter 'description' for JS function '%s' must have type 'character', not '%s'", name, typeof(description)));
+    }
+    if (length (description) != 1) {
+        stop (sprintf ("Parameter 'description' for JS function '%s' must have a single value, not %d", name, length(description)));
+    }
+    if (nchar (description) == 0) {
+        warning (sprintf ("Parameter 'description' for JS function '%s' should not be the empty string", name));
+    }
+    if (typeof (implementation) != "character") {
+        stop (sprintf ("Parameter 'implementation' for JS function '%s' must have type 'character', not '%s'", name, typeof(implementation)));
+    }
+    if (length (implementation) != 1) {
+        stop (sprintf ("Parameter 'implementation' for JS function '%s' must have a single value, not %d", name, length(implementation)));
+    }
+    # We might have an empty implementation if we are making R aware of a Javascript builtin
+    if (length (extraParams) > 0) {
+	if (typeof (extraParams) != "character") {
+	    stop (sprintf ("Parameter 'extraParams' for JS function '%s' must have type 'character', not '%s'", name, typeof(extraParams)));
+	}
+    }
+    if (length (requires) > 0) {
+	if (typeof (requires) != "character") {
+	    stop (sprintf ("Parameter 'requires' for JS function '%s' must have type 'character', not '%s'", name, typeof(requires)));
+	}
+    }
     fn <- new (Class="ngchmJS", name=name, description=description, script=implementation, requires=requires, extraParams=extraParams, global=global);
     chmRegisterFunction (fn)
 }
@@ -276,6 +417,21 @@ chmNewFunction <- function (name, description, implementation, extraParams=NULL,
 #' @seealso chmAddProperty
 #'
 chmNewProperty <- function (label, value) {
+    if (typeof (label) != "character") {
+        stop (sprintf ("Parameter 'label' must have type 'character', not '%s'", typeof(label)));
+    }
+    if (length (label) != 1) {
+        stop (sprintf ("Parameter 'label' must have a single value, not %d", length(label)));
+    }
+    if (nchar (label) == 0) {
+        stop ("Parameter 'label' cannot be the empty string");
+    }
+    if (typeof (value) != "character") {
+        stop (sprintf ("Parameter 'value' for property '%s' must have type 'character', not '%s'", label, typeof(value)));
+    }
+    if (length (value) != 1) {
+        stop (sprintf ("Parameter 'value' for property '%s' must have a single value, not %d", label, length(value)));
+    }
     new (Class="ngchmProperty", label=label, value=value)
 }
 
@@ -341,6 +497,12 @@ chmServer <- function (serverName, username=NULL, keypath=NULL, serverPort=8080,
 #' @seealso ngchmFunction-class
 #'
 chmGetFunction <- function (name) {
+    if (typeof (name) != "character") {
+        stop (sprintf ("Parameter 'name' must have type 'character', not '%s'", typeof(name)));
+    }
+    if (length (name) != 1) {
+        stop (sprintf ("Parameter 'name' must have a single value, not %d", length(name)));
+    }
     if (is.list (ngchm.env$scripts)) {
         for (ii in 1:length(ngchm.env$scripts))
 	    if (ngchm.env$scripts[[ii]]@name == name)
@@ -369,6 +531,26 @@ chmGetFunction <- function (name) {
 #' @seealso chmRegisterTypeMapper
 #' @seealso chmNewFunction
 chmRegisterAxisFunction <- function (type, label, fn) {
+    if (typeof (label) != "character") {
+        stop (sprintf ("Parameter 'label' must have type 'character', not '%s'", typeof(label)));
+    }
+    if (length (label) != 1) {
+        stop (sprintf ("Parameter 'label' must have a single value, not %d", length(label)));
+    }
+    if (nchar (label) == 0) {
+        stop ("Parameter 'label' cannot be the empty string");
+    }
+    if (typeof (type) != "character") {
+        stop (sprintf ("Parameter 'type' for axis function '%s' must have type 'character', not '%s'", label, typeof(type)));
+    }
+    if (length (type) < 1) {
+        stop (sprintf ("Parameter 'type' for axis function '%s' must have at least one value", label));
+    }
+    for (ii in 1:length(type)) {
+	if (nchar (type[ii]) == 0) {
+	    stop (sprintf ("Parameter 'type[%d]' for axis function '%s' cannot be the empty string", ii, label));
+	}
+    }
     if (class(type) != "character")
         stop (sprintf ("chmRegisterAxisFunction: error registering axis function '%s'. Specified type is '%', not string.", label, class(type)));
     if (class(label) != "character")
@@ -467,6 +649,27 @@ getAllMatrixTypeFunctions <- function (chm, rowtypes, columntypes) {
 #' @seealso chmRegisterTypeMapper
 #' @seealso chmNewFunction
 chmRegisterMatrixFunction <- function (rowtype, columntype, label, fn) {
+    if (typeof (label) != "character") {
+        stop (sprintf ("Parameter 'label' must have type 'character', not '%s'", typeof(label)));
+    }
+    if (length (label) != 1) {
+        stop (sprintf ("Parameter 'label' must have a single value, not %d", length(label)));
+    }
+    if (nchar (label) == 0) {
+        stop ("Parameter 'label' cannot be the empty string");
+    }
+    if (typeof (rowtype) != "character") {
+        stop (sprintf ("Parameter 'rowtype' for matrix function '%s' must have type 'character', not '%s'", label, typeof(rowtype)));
+    }
+    if (length (rowtype) < 1) {
+        stop (sprintf ("Parameter 'rowtype' for matrix function '%s' must have at least one value", label));
+    }
+    if (typeof (columntype) != "character") {
+        stop (sprintf ("Parameter 'columntype' for matrix function '%s' must have type 'character', not '%s'", label, typeof(columntype)));
+    }
+    if (length (columntype) < 1) {
+        stop (sprintf ("Parameter 'columntype' for matrix function '%s' must have at least one value", label));
+    }
     if (class(fn) == "character")
         fn <- chmGetFunction (fn);
     newmf <- new ("ngchmMatrixFunction", rowtype=rowtype, columntype=columntype, label=label, func=fn);
@@ -502,10 +705,16 @@ chmRegisterMatrixFunction <- function (rowtype, columntype, label, fn) {
 #' @seealso chmRegisterMatrixFunction
 #' @seealso chmNewFunction
 chmRegisterTypeMapper <- function (fromtype, totype, fn) {
+    if (typeof (fromtype) != "character") {
+        stop (sprintf ("Parameter 'fromtype' must have type 'character', not '%s'", typeof(fromtype)));
+    }
+    if (typeof (totype) != "character") {
+        stop (sprintf ("Parameter 'totype' must have type 'character', not '%s'", typeof(totype)));
+    }
     if (length(fromtype) < 1)
-        stop ("chmRegisterTypeMapper: fromtype must be specified.");
+        stop ("chmRegisterTypeMapper: at least one fromtype must be specified.");
     if (length(totype) != 1)
-        stop ("chmRegisterTypeMapper: totype must be exactly a single string.");
+        stop (sprintf ("chmRegisterTypeMapper: totype must be exactly a single string, not %d.", length(totype)));
     for (ii in 1:length(fromtype))
 	if (nchar(totype) >= nchar(fromtype[ii]))
 	    stop (sprintf ("chmRegisterTypeMapper: totype ('%s') must be shorter than fromtype ('%s').", totype, fromtype[ii]));
@@ -542,19 +751,14 @@ chmRegisterTypeMapper <- function (fromtype, totype, fn) {
 #'
 #' @export
 #'
-#' @note
-#' The following functions are currently available by this library:
-#' \describe{
-#' \item{showGeneCardPage}{Opens the GeneCards page for the gene concerned in the 'genecards' window.}
-#' \item{showNCBIGenePage}{Opens the NCBI page for the gene concerned in the 'NCBI' window.}
-#' }
-#' Other libraries may provide additional predefined functions.
-#'
 #' @seealso chmAddMenuItem
 #' @seealso chmNewFunction
 #' @seealso ngchmFunction-class
 #'
 chmRegisterFunction <- function (fn) {
+    if (class(fn) != "ngchmJS") {
+        stop (sprintf ("Parameter 'fn' must have type 'ngchmJS', not '%s'", class(fn)));
+    }
     matches <- which (vapply (ngchm.env$scripts, function(ss) (ss@name == fn@name), TRUE));
     if (length (matches) > 0) {
 	ngchm.env$scripts[[matches]] <- fn;
@@ -577,6 +781,15 @@ chmRegisterFunction <- function (fn) {
 chmCreateServerProtocol <- function (protocolName,
                                      installMethod, uninstallMethod,
 	                             makePrivate, makePublic) {
+    if (typeof (protocolName) != "character") {
+        stop (sprintf ("Parameter 'protocolName' must have type 'character', not '%s'", typeof(protocolName)));
+    }
+    if (length (protocolName) != 1) {
+        stop (sprintf ("Parameter 'protocolName' must have a single value, not %d", length(protocolName)));
+    }
+    if (nchar (protocolName) == 0) {
+        stop ("Parameter 'protocolName' cannot be the empty string");
+    }
     dm <- new (Class="ngchmServerProtocol", protocolName=protocolName,
 	       installMethod=installMethod, uninstallMethod=uninstallMethod,
 	       makePrivate=makePrivate, makePublic=makePublic);
@@ -596,6 +809,15 @@ chmCreateServerProtocol <- function (protocolName,
 #' @param protocolName The name of the server protocol to lookup
 
 chmGetServerProtocol <- function (protocolName) {
+    if (typeof (protocolName) != "character") {
+        stop (sprintf ("Parameter 'protocolName' must have type 'character', not '%s'", typeof(protocolName)));
+    }
+    if (length (protocolName) != 1) {
+        stop (sprintf ("Parameter 'protocolName' must have a single value, not %d", length(protocolName)));
+    }
+    if (nchar (protocolName) == 0) {
+        stop ("Parameter 'protocolName' cannot be the empty string");
+    }
     matches <- which (vapply (ngchm.env$serverProtocols, function(ss) (ss@protocolName == protocolName), TRUE));
     if (length(matches) == 0) {
         stop (sprintf ("No server protocol found with name '%s'", protocolName));
@@ -618,6 +840,9 @@ chmGetServerProtocol <- function (protocolName) {
 #' @seealso grep
 #'
 chmListFunctions <- function (re=".*") {
+    if (typeof (re) != "character") {
+        stop (sprintf ("Parameter 're' must have type 'character', not '%s'", typeof(re)));
+    }
     for (ii in 1:length(ngchm.env$scripts)) {
 	fn <- ngchm.env$scripts[[ii]];
         if (length (grep (re, fn@name)) > 0) {
@@ -642,6 +867,24 @@ chmListFunctions <- function (re=".*") {
 #' @seealso chmListFunctions
 #'
 chmRegisterGetMetadataFunction <- function (functionName, metadataColumnName) {
+    if (typeof (functionName) != "character") {
+        stop (sprintf ("Parameter 'functionName' must have type 'character', not '%s'", typeof(functionName)));
+    }
+    if (length (functionName) != 1) {
+        stop (sprintf ("Parameter 'functionName' must have a single value, not %d", length(functionName)));
+    }
+    if (nchar (functionName) == 0) {
+        stop ("Parameter 'functionName' cannot be the empty string");
+    }
+    if (typeof (metadataColumnName) != "character") {
+        stop (sprintf ("Parameter 'metadataColumnName' must have type 'character', not '%s'", typeof(metadataColumnName)));
+    }
+    if (length (metadataColumnName) != 1) {
+        stop (sprintf ("Parameter 'metadataColumnName' must have a single value, not %d", length(metadataColumnName)));
+    }
+    if (nchar (metadataColumnName) == 0) {
+        stop ("Parameter 'metadataColumnName' cannot be the empty string");
+    }
     chmNewFunction (functionName,
         "This returns the label at the specified index as a list of values.  Can be used whenever the label itself is of the correct type.",
 	paste (sprintf ("function %s (axis, idx) {", functionName),
@@ -666,6 +909,24 @@ chmRegisterGetMetadataFunction <- function (functionName, metadataColumnName) {
 #' @seealso chmRegisterTypeMapper
 #'
 chmRegisterTypeSplitter <- function (functionName, listtype, itemtype, separator) {
+    if (typeof (functionName) != "character") {
+        stop (sprintf ("Parameter 'functionName' must have type 'character', not '%s'", typeof(functionName)));
+    }
+    if (length (functionName) != 1) {
+        stop (sprintf ("Parameter 'functionName' must have a single value, not %d", length(functionName)));
+    }
+    if (nchar (functionName) == 0) {
+        stop ("Parameter 'functionName' cannot be the empty string");
+    }
+    if (typeof (separator) != "character") {
+        stop (sprintf ("Parameter 'separator' for typesplitter '%s' must have type 'character', not '%s'", functionName, typeof(separator)));
+    }
+    if (length (separator) != 1) {
+        stop (sprintf ("Parameter 'separator' for typesplitter '%s' must have a single value, not %d", functionName, length(separator)));
+    }
+    if (nchar (separator) == 0) {
+        stop (sprintf ("Parameter 'separator' for typesplitter '%s' cannot be the empty string", functionName));
+    }
     fn <- chmNewFunction (functionName,
              sprintf ("Convert %s to %s by splitting on '%s'", listtype, itemtype, separator),
 
@@ -687,6 +948,12 @@ chmRegisterTypeSplitter <- function (functionName, listtype, itemtype, separator
 #'
 #' @seealso chmAddAxisType
 chmListTypes <- function (re=".*") {
+    if (typeof (re) != "character") {
+        stop (sprintf ("Parameter 're' must have type 'character', not '%s'", typeof(re)));
+    }
+    if (length (re) != 1) {
+        stop (sprintf ("Parameter 're' must have a single value, not %d", length(re)));
+    }
     at <- lapply (ngchm.env$axisFunctions, function(x)x@type);
     rt <- lapply (ngchm.env$matrixFunctions, function(x)x@rowtype);
     ct <- lapply (ngchm.env$matrixFunctions, function(x)x@columntype);
@@ -715,6 +982,24 @@ chmListTypes <- function (re=".*") {
 #' @seealso ngchmFunction-class
 #'
 chmRegisterToolboxFunction <- function (tbtype, menulabel, jsfn) {
+    if (typeof (menulabel) != "character") {
+        stop (sprintf ("Parameter 'menulabel' must have type 'character', not '%s'", typeof(menulabel)));
+    }
+    if (length (menulabel) != 1) {
+        stop (sprintf ("Parameter 'menulabel' must have a single value, not %d", length(menulabel)));
+    }
+    if (nchar (menulabel) == 0) {
+        stop ("Parameter 'menulabel' cannot be the empty string");
+    }
+    if (typeof (tbtype) != "character") {
+        stop (sprintf ("Parameter 'tbtype' of toolbox function '%s' must have type 'character', not '%s'", menulabel, typeof(tbtype)));
+    }
+    if (length (tbtype) != 1) {
+        stop (sprintf ("Parameter 'tbtype' of toolbox function '%s' must have a single value, not %d", menulabel, length(tbtype)));
+    }
+    if (nchar (tbtype) == 0) {
+        stop (sprintf ("Parameter 'tbtype' of toolbox function '%s' cannot be the empty string", menulabel));
+    }
     if (class(jsfn) != "ngchmJS") {
         stop (sprintf ("a toolbox function must be of class ngchmJS (see chmNewFunction) not '%s'",
 	               class(jsfn)));
@@ -737,4 +1022,108 @@ chmRegisterToolboxFunction <- function (tbtype, menulabel, jsfn) {
 	ngchm.env$toolbox <- rbind (ngchm.env$toolbox, list(type=tbtype, label=menulabel, fn=jsfn));
     }
     NULL
+}
+
+#' Check that the specified layer can be added to the specificed NGCHM.
+#'
+#' Stops with an error if the specified layer cannot be added to the specified NGCHM.
+#'
+#' @param chm The CHM to which the new layer is being added.
+#' @param layer The new layer is being added.
+#'
+#' @return NULL
+#'
+validateNewLayer <- function (chm, layer)
+{
+    if (length (chm@layers) > 0) {
+        # Check new layer is compatible with first layer.
+	layer1 <- chm@layers[[1]];
+	if (any (dim(layer1@data) != dim(layer@data))) {
+	    stop (sprintf ('Dimensions of new layer "%s" (%dx%d) for CHM "%s" differ from those of existing layers (%dx%d)',
+	                   layer@name, nrow(layer@data), ncol(layer@data), chm@name, nrow(layer1@data), ncol(layer1@data)));
+	}
+	nm <- rownames (layer@data);
+	nm1 <- rownames (layer1@data);
+	if (!setequal (nm, nm1)) {
+	    m <- sprintf ('Row names of new layer "%s" for CHM "%s" differ from those of existing layers',
+			   layer@name, chm@name);
+	    errs <- namesdifferror ('new layer', nm, 'existing layers', nm1);
+	    stop (paste (c (m, errs), collapse="\n"));
+	}
+	nm <- colnames (layer@data);
+	nm1 <- colnames (layer1@data);
+	if (!setequal (nm, nm1)) {
+	    m <- sprintf ('Column names of new layer "%s" for CHM "%s" differ from those of existing layers',
+			   layer@name, chm@name);
+	    errs <- namesdifferror ('new layer', nm, 'existing layers', nm1);
+	    stop (paste (c (m, errs), collapse="\n"));
+	}
+    } else {
+        # First layer.  Check names are compatible with class bars, if any.
+	layername <- sprintf ('new layer "%s"', layer@name);
+	if (length (chm@rowClassbars) > 0) {
+	    for (ii in 1:length(chm@rowClassbars)) {
+	        validateClassbar (chm, "Row", layername, rownames(layer@data), chm@rowClassbars[[ii]]);
+	    }
+	}
+	if (length (chm@colClassbars) > 0) {
+	    for (ii in 1:length(chm@colClassbars)) {
+	        validateClassbar (chm, "Column", layername, colnames(layer@data), chm@colClassbars[[ii]]);
+	    }
+	}
+    }
+}
+
+validateNewClassbar <- function (chm, where, bar)
+{
+    if (length (chm@layers) > 0) {
+	layer <- chm@layers[[1]];
+	layername <- sprintf ('layer "%s"', layer@name);
+	if (where %in% c("row", "both")) {
+	    validateClassbar (chm, "Row", layername, rownames(layer@data), bar);
+	}
+	if (where %in% c("column", "both")) {
+	    validateClassbar (chm, "Column", layername, colnames(layer@data), bar);
+	}
+    }
+}
+
+validateClassbar <- function (chm, where, layername, labels, bar)
+{
+    if (length (intersect (labels, names(bar@data))) == 0) {
+	m <- sprintf ('%s names of %s for CHM "%s" are completely different from those of covariate bar "%s"',
+		       where, layername, chm@name, bar@label);
+	errs <- namesdifferror (layername, labels, sprintf ('covariate bar "%s"', bar@label), names(bar@data));
+	stop (paste (c (m, errs), collapse="\n"));
+    }
+}
+
+namesdifferror <- function (desc1, names1, desc2, names2)
+{
+    msg <- c();
+    #msg <- c(msg,sprintf ("Names in %s: %s", desc1, shortnameslist (names1)));
+    #msg <- c(msg,sprintf ("Names in %s: %s", desc2, shortnameslist (names2)));
+    only1 <- setdiff (names1, names2);
+    if (length(only1) == 0) {
+	msg <- c(msg,sprintf ("No names in %s but not %s", desc1, desc2));
+    } else {
+	msg <- c(msg,sprintf ("%d name(s) in %s but not %s: %s", length(only1), desc1, desc2, shortnameslist (only1)));
+    }
+    only2 <- setdiff (names2, names1);
+    if (length(only2) == 0) {
+	msg <- c(msg,sprintf ("No names in %s but not %s", desc2, desc1));
+    } else {
+	msg <- c(msg,sprintf ("%d name(s) in %s but not %s: %s", length(only2), desc2, desc1, shortnameslist (only2)));
+    }
+    msg
+}
+
+shortnameslist <- function (names, maxnames=5)
+{
+    if (length(names) > maxnames) {
+	qnames <- c(sprintf ('"%s"', names[1:maxnames]),'...');
+    } else {
+	qnames <- sprintf ('"%s"', names);
+    }
+    paste (qnames, collapse=", ")
 }
