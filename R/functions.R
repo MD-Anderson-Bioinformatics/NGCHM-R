@@ -5,6 +5,8 @@ ngchm.env$scripts <- c()
 ngchm.env$axisFunctions <- NULL
 ngchm.env$matrixFunctions <- NULL
 ngchm.env$typeMappers <- NULL
+ngchm.env$serverProtocols <- NULL
+ngchm.env$toolbox <- NULL
 
 # Export for debug.
 #' @export ngchmGetEnv
@@ -32,7 +34,9 @@ ngchmGetEnv <- function () {
 #' @seealso chmInstall
 
 chmNew <- function (name) {
-    new (Class="ngchm", name=name)
+    chm <- new (Class="ngchm", name=name)
+    chm <- chmAddCSS (chm, 'div.overlay { border: 2px solid yellow; }');
+    chm
 }
 
 #' Create a new Data Layer for a NGCHM.
@@ -73,18 +77,45 @@ chmNewDataLayer <- function (label, data, colors=NULL) {
 #' @param name The filename prefix under which the dataset will be saved to the ngchm.
 #' @param description A description of the dataset.
 #' @param data A matrix containing the data in the dataset. Must have rownames and colnames.
-#' @param row.properties An optional list of mappings from row labels to property values.
-#' @param column.properties An optional list of mappings from column labels to property values.
+#' @param row.covariates An optional list of row covariates.
+#' @param column.covariates An optional list of column covariates.
 #'
 #' @return An object of class ngchmDataset
 #'
 #' @export
 #'
 #' @seealso ngchmDataset-class
+#' @seealso ngchmCovariate-class
 #' @seealso chmAddDataset
 #' 
-chmNewDataset <- function (name, description, data, row.properties = NULL, column.properties = NULL) {
-    new (Class="ngchmDataset", name=name, description=description, data=data, row.properties = row.properties, column.properties=column.properties);
+chmNewDataset <- function (name, description, data,
+                           row.covariates = NULL,
+			   column.covariates = NULL) {
+    new (Class="ngchmDataset", name=name, description=description, data=data,
+         row.covariates = row.covariates,
+	 column.covariates=column.covariates);
+}
+
+#' Create a new Covariate for adding to an NGCHM auxilary dataset.
+#'
+#' This function creates a new Covariate suitable for attaching to an NGCHM auxilary dataset.
+#'
+#' @param label The short label used to identify the covariate within its dataset.
+#' @param fullname The full (human readable) name of the covariate.
+#' @param label.series The series to which each label in the dataset belongs.
+#' @param column.series.properties A list of mappings from series names to property values.
+#'
+#' @return An object of class ngchmCovariate.
+#'
+#' @export
+#'
+#' @seealso ngchmCovariate-class
+#' @seealso chmAddCovariate
+#' 
+chmNewCovariate <- function (label, fullname, label.series, series.properties) {
+    new (Class="ngchmCovariate", label=label, fullname=fullname,
+	 label.series = label.series,
+	 series.properties=series.properties);
 }
 
 #' Create a new Classification Bar for a NGCHM
@@ -198,8 +229,11 @@ chmNewColorMap <- function (type, missing, values, colors) {
 #'
 #' @param name The name of the Javascript function
 #' @param description A short description of the Javascript function
-#' @param implementation A string containing the javascript code required to define the function.
-#' @param global A logical: TRUE if should be defined globally, not within a customization section.
+#' @param implementation A string containing the javascript code required to define the function. When called the function
+#'        is passed a list of selected values (e.g. labels).  Additional parameters can be declared before the values
+#'        parameter and must be resolved through currying (binding) before the function is used in menus.
+#' @param extraParams An optional list of extra parameters. (Default NULL.)
+#' @param global A logical: TRUE if should be defined globally, not within a customization section. (Default FALSE.)
 #'
 #' @return An object of class ngchmJS
 #'
@@ -208,13 +242,17 @@ chmNewColorMap <- function (type, missing, values, colors) {
 #' @examples
 #' alertFn <- chmNewFunction ("showAlert", "Display the parameter in an alert box",
 #'                            "function showAlert(label) { alert(label); }", TRUE)
+#' dbLookup <- chmNewFunction ("dbLookup", "Lookup the parameter in a database",
+#'                            "function showAlert(database, label) { alert(database[label]); }", c("database"))
 #'
 #' @seealso ngchmJS-class
 #' @seealso chmAddMenuItem
+#' @seealso chmBindFunction
 #' @seealso chmRegisterFunction
 #'
-chmNewFunction <- function (name, description, implementation, global) {
-    new (Class="ngchmJS", name=name, description=description, script=implementation, global=global)
+chmNewFunction <- function (name, description, implementation, extraParams=NULL, requires=NULL, global=FALSE) {
+    fn <- new (Class="ngchmJS", name=name, description=description, script=implementation, requires=requires, extraParams=extraParams, global=global);
+    chmRegisterFunction (fn)
 }
 
 
@@ -384,11 +422,12 @@ getAllAxisFunctions <- function (chm, where) {
 }
 
 # axistypes is a list of character vectors (since an axis type can have > 1 type)
-getAllAxisTypeFunctions <- function (chm, axistypes) {
-    matches <- vapply (ngchm.env$axisFunctions,
+getAllAxisTypeFunctions <- function (chmSpecificFns, axistypes) {
+    fnList <- append (chmSpecificFns, ngchm.env$axisFunctions);
+    matches <- vapply (fnList,
                        function(af)any(vapply (axistypes, function(at)any(at==af@type), TRUE)),
 		       TRUE);
-    return (ngchm.env$axisFunctions[matches]);
+    return (fnList[matches]);
 }
 
 getAllMatrixTypeFunctions <- function (chm, rowtypes, columntypes) {
@@ -481,7 +520,7 @@ chmRegisterTypeMapper <- function (fromtype, totype, fn) {
 	    common <- intersect(ftype, fromtype);
 	    if (length(common) == length(ftype)) {
 	        # All fromtypes are replaced: remove mapping.
-		ngchm.env$typeMappers <- ngchm.env$typeMappers[[-idx]];
+		ngchm.env$typeMappers <- ngchm.env$typeMappers[-idx];
 	    } else {
 		ngchm.env$typeMappers[[idx]]@fromtype <- setdiff (ftype, common);
 	    }
@@ -522,7 +561,47 @@ chmRegisterFunction <- function (fn) {
     } else {
 	ngchm.env$scripts <- append (ngchm.env$scripts, fn);
     }
-    NULL
+    fn
+}
+
+#' Create and register an NGCHM server protocol implementation.
+#'
+#' This function creates and registers a protocol implementation for manipulating
+#' an NGCHM server.
+#'
+#' @param protocolName The name of this protocol implementation.
+#' @param installMethod 
+#'
+#' @export
+
+chmCreateServerProtocol <- function (protocolName,
+                                     installMethod, uninstallMethod,
+	                             makePrivate, makePublic) {
+    dm <- new (Class="ngchmServerProtocol", protocolName=protocolName,
+	       installMethod=installMethod, uninstallMethod=uninstallMethod,
+	       makePrivate=makePrivate, makePublic=makePublic);
+    matches <- which (vapply (ngchm.env$serverProtocols, function(ss) (ss@protocolName == protocolName), TRUE));
+    if (length (matches) > 0) {
+	ngchm.env$serverProtocols[[matches]] <- dm;
+    } else {
+	ngchm.env$serverProtocols <- append (ngchm.env$serverProtocols, dm);
+    }
+    dm
+}
+
+#' Lookup a Server Protocol
+#'
+#' @export
+#'
+#' @param protocolName The name of the server protocol to lookup
+
+chmGetServerProtocol <- function (protocolName) {
+    matches <- which (vapply (ngchm.env$serverProtocols, function(ss) (ss@protocolName == protocolName), TRUE));
+    if (length(matches) == 0) {
+        stop (sprintf ("No server protocol found with name '%s'", protocolName));
+    } else {
+	return (ngchm.env$serverProtocols[[matches]]);
+    }
 }
 
 #' List the predefined Javascript functions available for use in NGCHM menus.
@@ -563,11 +642,11 @@ chmListFunctions <- function (re=".*") {
 #' @seealso chmListFunctions
 #'
 chmRegisterGetMetadataFunction <- function (functionName, metadataColumnName) {
-    chmRegisterFunction (chmNewFunction (functionName,
+    chmNewFunction (functionName,
         "This returns the label at the specified index as a list of values.  Can be used whenever the label itself is of the correct type.",
 	paste (sprintf ("function %s (axis, idx) {", functionName),
 	       sprintf ("    return [axis.labels.getMetaData (idx).%s];", metadataColumnName),
-	       "};", sep="\n"), FALSE));
+	       "};", sep="\n"));
 }
 
 #' Define and register a Javascript function for converting a lists of type values into single values.
@@ -592,8 +671,7 @@ chmRegisterTypeSplitter <- function (functionName, listtype, itemtype, separator
 
 	     paste (sprintf ("function %s (names) {", functionName),
 		    sprintf ("    return names.map(function(nm){return nm.split('%s');}).reduce(function(a,b){return a.concat(b);});", separator),
-		    "}", sep="\n"),
-	     FALSE);
+		    "}", sep="\n"));
     chmRegisterTypeMapper (listtype, itemtype, fn);
 }
 
@@ -617,4 +695,46 @@ chmListTypes <- function (re=".*") {
     allt <- allt[!duplicated(allt)];
     mm <- vapply (allt, function(x)length(grep(re,x)) > 0, TRUE)
     return (allt[mm]);
+}
+
+#' Register a Javascript function for use in the NGCHM toolbox.
+#'
+#' This function registers a Javascript function that can included in
+#' the toolbox of an NGCHM.  This function is
+#' intended for use by NGCHM system developers.
+#'
+#' @param tbtype The toolbox type.
+#' @param menulabel The base menu label for the toolbox operation.
+#' @param jsfn The Javascript function that implements the toolbox operation.
+#'
+#' @return NULL
+#'
+#' @export
+#'
+#' @seealso chmNewFunction
+#' @seealso ngchmFunction-class
+#'
+chmRegisterToolboxFunction <- function (tbtype, menulabel, jsfn) {
+    if (class(jsfn) != "ngchmJS") {
+        stop (sprintf ("a toolbox function must be of class ngchmJS (see chmNewFunction) not '%s'",
+	               class(jsfn)));
+    }
+    if (length(jsfn@extraParams) != 1) {
+        stop (sprintf ("a toolbox function requires exactly 1 extra parameter (called 'dataset'), not %d",
+	               length(jsfn@extraParams)));
+    }
+    if (jsfn@extraParams != "dataset") {
+        stop (sprintf ("a toolbox function requires exactly 1 extra parameter called 'dataset', not '%s'",
+	               jsfn@extraParams));
+    }
+    matches <- NULL;
+    if (length(ngchm.env$toolbox) > 0) {
+        matches <- which (apply (ngchm.env$toolbox, 1, function(tbf) (tbf$label == menulabel)&&(tbf$type==tbtype)));
+    }
+    if (length (matches) > 0) {
+	ngchm.env$toolbox[[matches,"fn"]] <- jsfn;
+    } else {
+	ngchm.env$toolbox <- rbind (ngchm.env$toolbox, list(type=tbtype, label=menulabel, fn=jsfn));
+    }
+    NULL
 }

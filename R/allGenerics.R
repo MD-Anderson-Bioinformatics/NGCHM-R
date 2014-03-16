@@ -119,6 +119,25 @@ setGeneric ("chmAddLayer", function(chm,layer) standardGeneric("chmAddLayer"));
 #' @seealso ngchmDataset-class
 setGeneric ("chmAddDataset", function(chm,dataset) standardGeneric("chmAddDataset"));
 
+#' Add a covariate to an auxiliary dataset.
+#'
+#' Add a covariate to an auxiliary dataset and return the extended dataset.
+#' Do not confuse this function with the one for adding a classification bar to an NGCHM. For
+#' that, please refer to the function chmAddClassBar.
+#'
+#' @param dataset The dataset to add the covariate to.
+#' @param where The dataset axis to add the covariate to. Must be one of "row", "column", or "both".
+#' @param cov The covariate to add to the dataset.
+#'
+#' @return The extended dataset.
+#'
+#' @exportMethod chmAddCovariate
+#' @rdname chmAddCovariate-method
+#'
+#' @seealso chmNewCovariate
+#' @seealso ngchmCovariate-class
+setGeneric ("chmAddCovariate", function(dataset,where,covariate) standardGeneric("chmAddCovariate"));
+
 #' Add tags to a NGCHM.
 #'
 #' Add one or more tags to a Next Generation Clustered Heat Map (NGCHM) and return the extended CHM.
@@ -201,14 +220,14 @@ setGeneric ("chmAddOverview", function(chm, format, width, height) standardGener
 #' Add a file template to the NGCHM.
 #'
 #' @param chm The chm to add the file template to.
-#' @param source.path A string giving the path to the template.
+#' @param source.path A string giving the path to the template, or a function that returns the template content as a string.
 #' @param dest.path A string giving the relative path where to store the template in the generated CHM.
-#' @param substitutions A list (may be empty) and substitutions to make in the template.
+#' @param substitutions A list (may be empty) of substitutions to make in the template.
 #'
 #' @return The extended chm.
 #'
-#' @exportMethod chmAddRelated
-#' @rdname chmAddRelated-method
+#' @exportMethod chmAddTemplate
+#' @rdname chmAddTemplate-method
 setGeneric ("chmAddTemplate", function(chm, source.path, dest.path, substitutions) standardGeneric("chmAddTemplate"));
 
 #' Add custom CSS to a NGCHM.
@@ -287,6 +306,29 @@ setGeneric ("chmAddMenuItem", function(chm,where,label,func) standardGeneric("ch
 #' @seealso chmRegisterTypeMapper
 #' @seealso ngchmAxisType-class
 setGeneric ("chmAddAxisType", function (chm, where, type, func) standardGeneric("chmAddAxisType"));
+
+#' Add a CHM-specific axis type function to a NGCHM.
+#'
+#' Adds a CHM-specific axis type function to a Next Generation Clustered Heat Map (NGCHM) and
+#' returns the extended CHM.  Multiple axis type functions may be added to either axis.
+#' When the NGCHM is made, any specific Axis functions matching the specified axis type will be
+#' automatically added to the appropriate axis menu.
+#'
+#' @param chm The chm to add the axis type to.
+#' @param where The axis to add the axis type to. Must be either "row", "column", or "both".
+#' @param type The type expected by the specified function.
+#' @param label The label to use if and when the function is added to the menu.
+#' @param func A javascript function that accepts a list of values of that type.
+#'             If a string is provided, the function is obtained by calling chmGetFunction.
+#'
+#' @return The extended chm.
+#'
+#' @exportMethod chmAddSpecificAxisTypeFunction
+#' @rdname chmAddSpecificAxisTypeFunction-method
+#'
+#' @seealso chmListTypes
+#' @seealso ngchmAxisType-class
+setGeneric ("chmAddSpecificAxisTypeFunction", function (chm, where, type, label, func) standardGeneric("chmAddSpecificAxisTypeFunction"));
 
 #' Add a classification bar to a NGCHM.
 #'
@@ -451,4 +493,46 @@ setGeneric ("chmMakePrivate", function(server,chm) standardGeneric("chmMakePriva
 #' @seealso chmUninstall
 #' @seealso chmMakePrivate
 setGeneric ("chmMakePublic", function(server,chm) standardGeneric("chmMakePublic"));
+
+#' Bind values to an existing JS function.
+#'
+#' Create a new JS function by binding values to extra parameters of an existing JS function.
+#'
+#' @exportMethod chmBindFunction
+#' @rdname chmBindFunction-method
+#'
+#' @param name The name to give the new JS function.
+#' @param fn An existing JS function with at least one extra parameter.
+#' @param bindings A list containing at least one parameter binding.  Each list element
+#'        binds one parameter, starting from the first unbound parameter, and the name
+#'        of each list element must match the name of the corresponding parameter.
+#'
+#' @seealso chmNewFunction
+setGeneric ("chmBindFunction", function(name,fn,bindings) standardGeneric("chmBindFunction"));
+
+#' Add standard toolbox to an axis
+#'
+#' Add a standard toolbox to an axis
+#'
+#' @exportMethod chmAddToolbox
+#' @rdname chmAddToolbox-method
+#'
+#' @param CHM CHM to which the toolbox will be added
+#' @param axis the axis to which the toolbix will be added
+#' @param axistype the type of the axis
+#' @param datasetname the name of the dataset to use
+#' @param idstr string to append to toolbox menu labels (default '')
+setGeneric ("chmAddToolbox", function(CHM,axis,axistype,datasetname,idstr) standardGeneric("chmAddToolbox"));
+
+#' Add standard toolbox to an element
+#'
+#' Add a standard toolbox to an element
+#'
+#' @exportMethod chmAddToolbox2
+#' @rdname chmAddToolbox2-method
+#'
+#' @param CHM CHM to which the toolbox will be added
+#' @param datasetname the name of the dataset to use
+#' @param idstr string to append to toolbox menu labels (default '')
+setGeneric ("chmAddToolbox2", function(CHM,datasetname,idstr) standardGeneric("chmAddToolbox2"));
 

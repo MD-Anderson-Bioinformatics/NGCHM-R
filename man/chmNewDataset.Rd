@@ -3,7 +3,7 @@
 \title{Create a new Dataset for a NGCHM.}
 \usage{
   chmNewDataset(name, description, data,
-    row.properties = NULL, column.properties = NULL)
+    row.covariates = NULL, column.covariates = NULL)
 }
 \arguments{
   \item{name}{The filename prefix under which the dataset
@@ -14,11 +14,11 @@
   \item{data}{A matrix containing the data in the dataset.
   Must have rownames and colnames.}
 
-  \item{row.properties}{An optional list of mappings from
-  row labels to property values.}
+  \item{row.covariates}{An optional list of row
+  covariates.}
 
-  \item{column.properties}{An optional list of mappings
-  from column labels to property values.}
+  \item{column.covariates}{An optional list of column
+  covariates.}
 }
 \value{
   An object of class ngchmDataset
@@ -29,6 +29,8 @@
 }
 \seealso{
   ngchmDataset-class
+
+  ngchmCovariate-class
 
   chmAddDataset
 }

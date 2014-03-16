@@ -49,24 +49,8 @@ getServerDest <- function (server) {
 setMethod ("chmInstall",
     signature = c(server="ngchmServer", chm="ngchm"),
     definition = function (server, chm) {
-    if (length(server@deployServer) == 0) {
-        stop ("NGCHMs cannot be automatically installed on this server. Please obtain installation instructions from the server administrator.");
-    }
-    # Install the compiled CHM in outDir/chmName to username@deployServerName:deployDir/chmName
-    # Special care is needed to get the permissions correct.
-    if (server@deployServer == system("/bin/hostname -f", intern=TRUE)) {
-	systemCheck (sprintf ("/bin/mkdir %s/%s", shQuote(chmDeployDir(server)), shQuote(chmName(chm))));
-	systemCheck (sprintf ("/bin/chmod g+s %s/%s", shQuote(chmDeployDir(server)), shQuote(chmName(chm))));
-	systemCheck (sprintf ("/bin/cp -r %s/%s/* %s/%s/", shQuote(chm@outDir), shQuote(chmName(chm)), shQuote (chmDeployDir(server)), shQuote(chmName(chm))));
-	systemCheck (sprintf ("/bin/chmod -R go+rwx %s/%s", shQuote(chmDeployDir(server)), shQuote(chmName(chm))));
-    } else {
-	dest <- getServerDest (server);
-	systemCheck (sprintf ("ssh %s /bin/mkdir %s/%s", dest, shQuote(chmDeployDir(server)), shQuote(chmName(chm))));
-	systemCheck (sprintf ("ssh %s /bin/chmod g+s %s/%s", dest, shQuote(chmDeployDir(server)), shQuote(chmName(chm))));
-	systemCheck (sprintf ("scp -r %s/%s/* %s:%s/%s/", shQuote(chm@outDir), shQuote(chmName(chm)), dest, shQuote (chmDeployDir(server)), shQuote(chmName(chm))));
-	systemCheck (sprintf ("ssh %s /bin/chmod -R go+rwx %s/%s", dest, shQuote(chmDeployDir(server)), shQuote(chmName(chm))));
-    }
-});
+	server@serverProtocol@installMethod (server, chm);
+    });
 
 #' @rdname chmUninstall-method
 #' @aliases chmUninstall,ngchmServer,ngchm-method
@@ -81,27 +65,8 @@ setMethod ("chmUninstall",
 setMethod ("chmUninstall",
     signature = c(server="ngchmServer", chm="character"),
     definition = function (server, chm) {
-    # Uninstall the installed CHM, if any, at server@serverName:server@deployDir/chm
-    # We create the delete.txt special file, wait for the server to do its thing, then remove any leftover trash.
-    if (server@deployServer == system("/bin/hostname -f", intern=TRUE)) {
-	system (sprintf ("/bin/find %s/%s -type d -exec /bin/chmod g+s '{}' ';'", shQuote(chmDeployDir(server)), shQuote(chm)));
-	system (sprintf ("/bin/sh -c \"'(cd %s; touch %s/delete.txt; while [ -O %s/delete.txt ] ; do sleep 1; done; rm -rf %s)'\"",
-			 shQuote (chmDeployDir(server)),
-			 shQuote (chm),
-			 shQuote (chm),
-			 shQuote (chm),
-			 shQuote (chm)));
-    } else {
-	system (sprintf ("ssh %s /bin/find %s/%s -type d -exec /bin/chmod g+s '{}' '\\;'", getServerDest (server), shQuote(chmDeployDir(server)), shQuote(chm)));
-	system (sprintf ("ssh %s /bin/sh -c \"'(cd %s; touch %s/delete.txt; while [ -O %s/delete.txt ] ; do sleep 1; done; rm -rf %s)'\"",
-			 getServerDest (server),
-			 shQuote (chmDeployDir(server)),
-			 shQuote (chm),
-			 shQuote (chm),
-			 shQuote (chm),
-			 shQuote (chm)));
-    }
-});
+	server@serverProtocol@uninstallMethod (server, chm);
+    });
 
 #' @rdname chmMakePrivate-method
 #' @aliases chmMakePrivate,ngchmServer,ngchm-method
@@ -116,17 +81,8 @@ setMethod ("chmMakePrivate",
 setMethod ("chmMakePrivate",
     signature = c(server="ngchmServer", chm="character"),
     definition = function (server, chm) {
-    if (server@deployServer == system("/bin/hostname -f", intern=TRUE)) {
-	system (sprintf ("/bin/sh -c \"'(cd %s; touch %s/hidden.txt)'\"",
-			 shQuote (chmDeployDir(server)),
-			 shQuote (chm)));
-    } else {
-	system (sprintf ("ssh %s /bin/sh -c \"'(cd %s; touch %s/hidden.txt)'\"",
-			 getServerDest (server),
-			 shQuote (chmDeployDir(server)),
-			 shQuote (chm)));
-    }
-});
+	server@serverProtocol@makePrivate (server, chm);
+    });
 
 #' @rdname chmMakePublic-method
 #' @aliases chmMakePublic,ngchmServer,ngchm-method
@@ -141,17 +97,8 @@ setMethod ("chmMakePublic",
 setMethod ("chmMakePublic",
     signature = c(server="ngchmServer", chm="character"),
     definition = function (server, chm) {
-    if (server@deployServer == system("/bin/hostname -f", intern=TRUE)) {
-	system (sprintf ("/bin/sh -c \"'(cd %s; /bin/rm %s/hidden.txt)'\"",
-			 shQuote (chmDeployDir(server)),
-			 shQuote (chm)));
-    } else {
-	system (sprintf ("ssh %s /bin/sh -c \"'(cd %s; /bin/rm %s/hidden.txt)'\"",
-			 getServerDest (server),
-			 shQuote (chmDeployDir(server)),
-			 shQuote (chm)));
-    }
-});
+	server@serverProtocol@makePublic (server, chm);
+    });
 
 # ##############################################################################################
 #
@@ -219,15 +166,34 @@ writeChmPost <- function (chm) {
 }
 
 startcust <- paste ("(function(chm){",
+	       "chm.chmv = '/chmv/';",
                "function _chm_e(sr,ax,fn){function c2(a,b){return a.concat(b);};",
                "return sr.map(function(r){var v=[];for(var ii=r.start;ii<=r.end;ii++)v.push(ii);",
 	       "return v.map(function(i){return fn(ax,i);}).reduce(c2);}).reduce(c2);}\n", sep="\n");
 
+# Returns list of all functions in requires and jsfuns.  Required functions come
+# before the function(s) needing them.
+requiredFunctions <- function (requires, jsfuns) {
+    if (length(jsfuns) > 0) {
+        for (ff in 1:length(jsfuns)) {
+	    fn <- jsfuns[[ff]];
+	    if (all(vapply (requires, function(rqfn)rqfn@name!=fn@name, TRUE))) {
+		# This fn is not already included
+		# First include any of this functions requires.
+		rqs <- lapply (fn@requires, function(rq) chmGetFunction(rq));
+		requires <- append (requiredFunctions (requires, rqs), fn);
+	    }
+	}
+    }
+    requires
+}
+
 writeCustomJS <- function (chm) {
+    rqJSfuns <- requiredFunctions (list(), chm@javascript);
     chan <- file (paste (chm@inpDir, "custom.js", sep="/"), "w");
-    if (is.list(chm@javascript)) writeJS (chm@javascript, chan, TRUE);
+    if (length(rqJSfuns) > 0) writeJS (rqJSfuns, chan, TRUE);
     cat (startcust, file=chan);
-    if (is.list(chm@javascript)) writeJS (chm@javascript, chan, FALSE);
+    if (length(rqJSfuns) > 0) writeJS (rqJSfuns, chan, FALSE);
     cat ("chm.addCustomization(function(){\n", file=chan);
     writeMenu (chm@rowMenu, "row.labels", chan);
     writeMenu (chm@rowMenu, "row.dendrogram", chan);
@@ -241,8 +207,9 @@ writeCustomJS <- function (chm) {
 
 writeJS <- function (js, chan, writeGlobals) {
     for (ii in 1:length(js)) {
-	if (js[[ii]]@global == writeGlobals)
+	if (js[[ii]]@global == writeGlobals) {
 	    cat (sprintf ("%s\n", js[[ii]]@script), file=chan);
+	}
     }
 }
 
@@ -304,36 +271,104 @@ writeClassBar <- function (cbar, inpDir, type, index, chan) {
     close (chan2);
 }
 
+
 writeDataset <- function (chm, dataset, dir) {
+    library (tsvio);
     chm@extrafiles <- c(chm@extrafiles, sprintf ("%s.tsv", dataset@name));
     chm@extrafiles <- c(chm@extrafiles, sprintf ("%s-index.tsv", dataset@name));
 
     write.table (dataset@data, file.path (dir, sprintf ("%s.tsv", dataset@name)), sep="\t", quote=FALSE);
-    systemCheck (sprintf ("/home/bmbroom/my.software/tsvio/tsv_genindex %s %s",
-                 shQuote (file.path (dir, sprintf ("%s.tsv", dataset@name))),
-                 shQuote (file.path (dir, sprintf ("%s-index.tsv", dataset@name)))));
-    if (length(dataset@row.properties) > 0) {
-        write.table(dataset@row.properties,
-	            file.path (dir, sprintf ("%s-row-properties.tsv", dataset@name)),
+    tsvGenIndex (file.path (dir, sprintf ("%s.tsv", dataset@name)),
+                 file.path (dir, sprintf ("%s-index.tsv", dataset@name)));
+
+    all.covariates = unique (append (dataset@row.covariates, dataset@column.covariates));
+    if (length(all.covariates) > 0) {
+	chm@extrafiles <- c(chm@extrafiles, sprintf ("%s-covariates.tsv", dataset@name));
+	cov.table <- list(Covariate=vapply(all.covariates, function(cov)cov@label, ""),
+	                  Fullname=vapply(all.covariates, function(cov)cov@fullname, ""));
+	write.table(cov.table,
+		    file.path (dir, sprintf ("%s-covariates.tsv", dataset@name)),
 		    sep="\t", quote=FALSE, row.names=FALSE);
-	chm@extrafiles <- c(chm@extrafiles, sprintf ("%s-row-properties.tsv", dataset@name));
     }
-    if (length(dataset@column.properties) > 0) {
-        write.table(dataset@column.properties,
-	            file.path (dir, sprintf ("%s-column-properties.tsv", dataset@name)),
-		    sep="\t", quote=FALSE, row.names=FALSE);
-	chm@extrafiles <- c(chm@extrafiles, sprintf ("%s-column-properties.tsv", dataset@name));
+
+    if (length(dataset@row.covariates) > 0) {
+	first.rowser <- TRUE;
+	first.serprop <- TRUE;
+	for (ii in 1:length(dataset@row.covariates)) {
+	    cov <- dataset@row.covariates[[ii]];
+	    rowser <- list (Sample=names(cov@label.series), Series=cov@label.series, Covariate=rep(cov@label,length(cov@label.series)));
+	    if (first.rowser) {
+	        first.rowser <- FALSE;
+		chm@extrafiles <- c(chm@extrafiles, sprintf ("%s-row-series.tsv", dataset@name));
+		fd.rowser <- file (file.path (dir, sprintf ("%s-row-series.tsv", dataset@name)), "w");
+		write.table(rowser, file=fd.rowser, sep="\t", quote=FALSE, row.names=FALSE, col.names=TRUE);
+	    } else {
+		write.table(rowser, file=fd.rowser, sep="\t", quote=FALSE, row.names=FALSE, col.names=FALSE);
+	    }
+	    if (length(cov@series.properties) > 0) {
+		serprop <- append (list(Covariate=rep(cov@label,length(cov@series.properties[[1]]))), cov@series.properties);
+		if (first.serprop) {
+		    first.serprop <- FALSE;
+		    chm@extrafiles <- c(chm@extrafiles, sprintf ("%s-rseries-properties.tsv", dataset@name));
+		    fd.serprop <- file (file.path (dir, sprintf ("%s-rseries-properties.tsv", dataset@name)), "w");
+		    write.table(serprop, file=fd.serprop, sep="\t", quote=FALSE, row.names=FALSE, col.names=TRUE);
+		} else {
+		    write.table(serprop, file=fd.serprop, sep="\t", quote=FALSE, row.names=FALSE, col.names=FALSE);
+		}
+	    }
+	}
+	if (!first.rowser) close (fd.rowser);
+	if (!first.serprop) close (fd.serprop);
     }
+
+    if (length(dataset@column.covariates) > 0) {
+	first.colser <- TRUE;
+	first.serprop <- TRUE;
+	for (ii in 1:length(dataset@column.covariates)) {
+	    cov <- dataset@column.covariates[[ii]];
+	    colser <- list (Sample=names(cov@label.series), Series=cov@label.series, Covariate=rep(cov@label,length(cov@label.series)));
+	    if (first.colser) {
+	        first.colser <- FALSE;
+		chm@extrafiles <- c(chm@extrafiles, sprintf ("%s-sample-series.tsv", dataset@name));
+		fd.colser <- file (file.path (dir, sprintf ("%s-sample-series.tsv", dataset@name)), "w");
+		write.table(colser, file=fd.colser, sep="\t", quote=FALSE, row.names=FALSE, col.names=TRUE);
+	    } else {
+		write.table(colser, file=fd.colser, sep="\t", quote=FALSE, row.names=FALSE, col.names=FALSE);
+	    }
+	    if (length(cov@series.properties) > 0) {
+		serprop <- append (list(Covariate=rep(cov@label,length(cov@series.properties[[1]]))), cov@series.properties);
+		if (first.serprop) {
+		    first.serprop <- FALSE;
+		    chm@extrafiles <- c(chm@extrafiles, sprintf ("%s-series-properties.tsv", dataset@name));
+		    fd.serprop <- file (file.path (dir, sprintf ("%s-series-properties.tsv", dataset@name)), "w");
+		    write.table(serprop, file=fd.serprop, sep="\t", quote=FALSE, row.names=FALSE, col.names=TRUE);
+		} else {
+		    write.table(serprop, file=fd.serprop, sep="\t", quote=FALSE, row.names=FALSE, col.names=FALSE);
+		}
+	    }
+	}
+	if (!first.colser) close (fd.colser);
+	if (!first.serprop) close (fd.serprop);
+    }
+
     chm
 }
 
 writeTemplate <- function (template, outDir) {
-    if (length(template@substitutions) == 0) {
-        systemCheck (sprintf ("/bin/cp %s %s",
-	                       shQuote (template@source.path),
-			       shQuote (file.path (outDir, template@dest.path))));
+    if ((class(template@source.path)=="character") && (length(template@substitutions) == 0)) {
+	if (!file.copy (template@source.path, file.path (outDir, template@dest.path))) {
+	    stop (sprintf ("Unable to copy template file '%s' to '%s'", template@source.path,
+	                   file.path (outDir, template@dest.path)));
+	}
+        #systemCheck (sprintf ("/bin/cp %s %s",
+	#                       shQuote (template@source.path),
+	#		       shQuote (file.path (outDir, template@dest.path))));
     } else {
-        data <- readLines (template@source.path);
+	if (class(template@source.path)=="character") {
+	    data <- readLines (template@source.path);
+	} else {
+	    data <- template@source.path ();
+	}
 	for (ss in template@substitutions)
 	    data <- gsub (ss[1], ss[2], data);
 	writeLines (data, con=file.path (outDir, template@dest.path));
@@ -440,7 +475,7 @@ writeChm <- function (chm) {
     # Add row menu items for types we know about.
     rowtypes <- getAllAxisTypes (chm, "row");
     rowTypeFnsReqd <- rep(FALSE,length(rowtypes));
-    rowfns <- getAllAxisTypeFunctions (chm, rowtypes$types);
+    rowfns <- getAllAxisTypeFunctions (chm@rowTypeFunctions, rowtypes$types);
     if (length(rowfns) > 0)
         for (ii in 1:length(rowfns)) {
 	    fn <- rowfns[[ii]];
@@ -453,7 +488,7 @@ writeChm <- function (chm) {
     # Add column menu items for types we know about.
     coltypes <- getAllAxisTypes (chm, "column");
     colTypeFnsReqd <- rep(FALSE,length(coltypes));
-    colfns <- getAllAxisTypeFunctions (chm, coltypes$types);
+    colfns <- getAllAxisTypeFunctions (chm@colTypeFunctions, coltypes$types);
     if (length(colfns) > 0)
         for (ii in 1:length(colfns)) {
 	    fn <- colfns[[ii]];
@@ -481,16 +516,29 @@ writeChm <- function (chm) {
     cat ("chmMake: matfns contains ", length(matfns), " entries\n", file=stderr());
     fns <- append (matfns, unique (append (rowfns, colfns)));
     if (length(fns) > 0)
-         for (ii in 1:length(fns))
-	     chm <- chmAddMenuItem (chm, "nowhere", "unused", fns[[ii]]@func);
+         for (ii in 1:length(fns)) {
+	     if (length(fns[[ii]]) == 0) {
+		cat ("chmMake: axis/mat fn entry is NULL\n", file=stderr());
+	     } else {
+		 chm <- chmAddMenuItem (chm, "nowhere", "unused", fns[[ii]]@func);
+	     }
+	 }
 
     fns <- unique (append (rowtypes$builders[rowTypeFnsReqd], coltypes$builders[colTypeFnsReqd]));
     if (length(fns) > 0)
          for (ii in 1:length(fns))
-	     chm <- chmAddMenuItem (chm, "nowhere", "unused", fns[[ii]]@func);
+	     if (length(fns[[ii]]) == 0) {
+		cat ("chmMake: builders fn entry is NULL\n", file=stderr());
+	     } else {
+		 chm <- chmAddMenuItem (chm, "nowhere", "unused", fns[[ii]]@func);
+	     }
 
-    system (sprintf ("/bin/rm -rf %s", chm@inpDir));
-    systemCheck (sprintf ("/bin/mkdir %s", chm@inpDir));
+    unlink (chm@inpDir, recursive=TRUE);
+    if (!dir.create (chm@inpDir, recursive=TRUE)) {
+        stop (sprintf ("Unable to create directory '%s' in which to save CHM specification", chm@inpDir));
+    }
+    #system (sprintf ("/bin/rm -rf %s", chm@inpDir));
+    #systemCheck (sprintf ("/bin/mkdir %s", chm@inpDir));
 
     props = file (chm@propFile, "w");
     cat (sprintf ("# This NGCHM property description was produced using the R NGCHM library version %s at %s\n",
@@ -623,21 +671,29 @@ URLparts <- function(x) {
     parts
 }
 
+datestamp <- function () {
+    format(Sys.time(), "%a %b %d %X %Y")
+}
+
+progressFeedback <- function(progress, what)
+{
+    cat (sprintf ("%s\t%s\t:R:\t%g\t%s\n", datestamp(), "PROGRESS", progress, what), file=stderr());
+}
+
 #' @rdname chmMake-method
 #' @aliases chmMake,ngchmServer,ngchm-method
 #'
 setMethod ("chmMake",
     signature = c(server="ngchmServer", chm="ngchm"),
-    definition = function (server, chm, deleteOld=TRUE, useJAR=NULL) {
+    definition = function (server, chm, deleteOld=TRUE, useJAR=NULL, javaTraceLevel="PROGRESS") {
+    progressFeedback (50, "writing NGCHM specification");
     writeChm (chm);
-    if (deleteOld && (length(server@deployServer) > 0)) {
-	cat ("chmMake: uninstalling existing NGCHM (if any)\n", file=stderr());
-        chmUninstall (server, chm);
-	cat ("chmMake: existing NGCHM (if any) has been removed\n", file=stderr());
-    }
-    system (sprintf ("/bin/mkdir -p %s", shQuote (chm@outDir)));
-    system (sprintf ("/bin/rm -rf %s/%s", shQuote (chm@outDir), shQuote(chm@name)));
+    dir.create (chm@outDir, recursive=TRUE, showWarnings=FALSE);
+    unlink (file.path (chm@outDir, chm@name), recursive=TRUE);
+    #system (sprintf ("/bin/mkdir -p %s", shQuote (chm@outDir)));
+    #system (sprintf ("/bin/rm -rf %s/%s", shQuote (chm@outDir), shQuote(chm@name)));
     if (length(useJAR) == 0) {
+	progressFeedback (60, "obtaining heatmap builder from server");
 	if (length(grep("^scp://", server@jarFile)) > 0) {
 	    parts <- URLparts (server@jarFile);
 	    if (parts[3] == "") {
@@ -657,17 +713,26 @@ setMethod ("chmMake",
 	useJAR = "heatmappipeline.jar";
     }
     cat ("chmMake: initiating Java process\n", file=stderr());
-    systemCheck (sprintf ("java -Djava.awt.headless=true -jar %s %s %s %s",
+    progressFeedback (65, "rendering NGCHM");
+    javaTraceOpts <- ""
+    if ((length(javaTraceLevel) > 0) && (length(server@traceLevel)>0)) {
+	javaTraceOpts <- sprintf ("-l %s -p", shQuote(javaTraceLevel));
+    }
+    systemCheck (sprintf ("java -Djava.awt.headless=true -jar %s %s %s %s %s",
 		  shQuote (useJAR),
+		  javaTraceOpts,
 		  shQuote (chm@inpDir),
 		  shQuote (chm@propFile),
 		  shQuote (chm@outDir)));
     cat ("chmMake: Java process completed\n", file=stderr());
     writeChmPost (chm);
-    systemCheck (sprintf ("/bin/tar czf %s.ngchm.gz -C %s %s",
-                          shQuote (chm@name),
-			  shQuote (chm@outDir),
-			  shQuote (chm@name)));
+    progressFeedback (85, "creating compressed NGCHM file");
+    if (Sys.info()[['sysname']] != "Windows")  {
+       systemCheck (sprintf ("tar czf %s.ngchm.gz -C %s %s",
+                             shQuote (chm@name),
+			     shQuote (chm@outDir),
+			     shQuote (chm@name)));
+    }
 });
 
 #' @rdname chmMake-method
@@ -728,6 +793,23 @@ setMethod ("chmAddDataset",
 	}
 	chm@datasets <- append (chm@datasets, dataset);
         chm
+});
+
+#' @rdname chmAddCovariate-method
+#' @aliases chmAddCovariate,ngchmDataset,character,ngchmCovariate-method
+setMethod ("chmAddCovariate",
+    signature = c(dataset="ngchmDataset", where="character", covariate="ngchmCovariate"),
+    definition = function (dataset, where, covariate) {
+	if (!(where %in% c("row", "column", "both"))) {
+	    stop (sprintf ("chmAddCovariate: unknown where '%s'. Should be row, column, or both.", where));
+	}
+	if (where %in% c("row", "both")) {
+	    dataset@row.covariates <- append (dataset@row.covariates, covariate);
+	}
+	if (where %in% c("column", "both")) {
+	    dataset@column.covariates <- append (dataset@column.covariates, covariate);
+	}
+        dataset
 });
 
 #' @rdname chmAddColormap-method
@@ -809,22 +891,11 @@ setMethod ("chmAddOverview",
         chm
     });
 
-#' Add a file template to the NGCHM.
-#'
-#' @param chm The chm to add the file template to.
-#' @param source.path A string giving the path to the template.
-#' @param dest.path A string giving the relative path where to store the template in the generated CHM.
-#' @param substitutions A list (may be empty) and substitutions to make in the template.
-#'
-#' @return The extended chm.
-#'
-#' @exportMethod chmAddTemplate
-#'
 #' @rdname chmAddTemplate-method
-#' @aliases chmAddTemplate,ngchm,character,character,optList-method
+#' @aliases chmAddTemplate,ngchm,charOrFunction,character,optList-method
 #'
 setMethod ("chmAddTemplate",
-    signature = c(chm="ngchm", source.path="character", dest.path="character", substitutions="optList"),
+    signature = c(chm="ngchm", source.path="charOrFunction", dest.path="character", substitutions="optList"),
     definition = function (chm, source.path, dest.path, substitutions) {
 	template <- new (Class="ngchmTemplate", source.path=source.path, dest.path=dest.path, substitutions=substitutions);
 	chm@extrafiles <- c (chm@extrafiles, dest.path);
@@ -842,12 +913,54 @@ setMethod ("chmAddProperty",
         chm
 });
 
+#' @rdname chmAddSpecificAxisTypeFunction-method
+#' @aliases chmAddSpecificAxisTypeFunction,ngchm,character,character,character,ngchmJS-method
+#'
+setMethod ("chmAddSpecificAxisTypeFunction",
+    signature = c(chm="ngchm", where="character", type="character", label="character", func="ngchmJS"),
+    definition = function (chm, where, type, label, func) {
+	af <- new ("ngchmAxisFunction", type=type, label=label, func=func);
+	if ((length(where) != 1) || (! where %in% c("row", "column", "both"))) {
+	    stop (sprintf ("chmAddSpecificAxisTypeFunction: unknown where '%s'. Should be row, column, or both.", where));
+	}
+	if ((where == "row") || (where == "both")) {
+	    matches <- which (vapply (chm@rowTypeFunctions, function(af) (af@label == label) && (af@type == type), TRUE));
+	    if (length (matches) > 0) {
+		chm@rowTypeFunctions[[matches]] <- af;
+	    } else {
+		chm@rowTypeFunctions <- append (chm@rowTypeFunctions, af);
+	    }
+	}
+	if ((where == "column") || (where == "both")) {
+	    matches <- which (vapply (chm@colTypeFunctions, function(af) (af@label == label) && (af@type == type), TRUE));
+	    if (length (matches) > 0) {
+		chm@colTypeFunctions[[matches]] <- af;
+	    } else {
+		chm@colTypeFunctions <- append (chm@colTypeFunctions, af);
+	    }
+	}
+	chm
+    }
+);
+
+#' @rdname chmAddSpecificAxisTypeFunction-method
+#' @aliases chmAddSpecificAxisTypeFunction,ngchm,character,character,character,character-method
+#'
+setMethod ("chmAddSpecificAxisTypeFunction",
+    signature = c(chm="ngchm", where="character", type="character", label="character", func="character"),
+    definition = function (chm, where, type, label, func) {
+	chmAddSpecificAxisTypeFunction (chm, where, type, label, chmGetFunction (func));
+    }
+);
+
 #' @rdname chmAddMenuItem-method
 #' @aliases chmAddMenuItem,ngchm,character,character,ngchmJS-method
 #'
 setMethod ("chmAddMenuItem",
     signature = c(chm="ngchm", where="character", label="character", func="ngchmJS"),
     definition = function (chm, where, label, func) {
+	if (length(func@extraParams) > 0)
+	    stop (sprintf ("Error adding menu item: function '%s' has unbound extra parameters", func@name));
 	entry <- new (Class="ngchmMenuItem", label=label, description=func@description, fun=func@name);
 	if (where == "row" || where == "both") {
 	    chm@rowMenu <- append (chm@rowMenu, entry);
@@ -934,6 +1047,50 @@ setMethod ("chmAddClassBar",
 	chm
 });
 
+#' @rdname chmBindFunction-method
+#' @aliases chmBindFunction,character,ngchmJS,list-method
+setMethod ("chmBindFunction",
+    signature = c(name="character", fn="ngchmJS", bindings="list"),
+    definition = function (name, fn, bindings) {
+	if (is.null (fn@extraParams) || (length(bindings) > length(fn@extraParams))) {
+	    extra <- c();
+	    if (!is.null (fn@extraParams)) extra <- fn@extraParams;
+	    stop (sprintf ("chmBindFunction: %s more bindings (%d) than optional parameters (%d)", fn@name, length(bindings), length(extra)));
+	}
+	for (ii in 1:length(bindings)) {
+	    if (names(bindings)[ii] != fn@extraParams[ii])
+	        stop ("binding name does not match corresponding parameter");
+	}
+	newdesc <- sprintf ("function %s bound to %d values", fn@name, length(bindings));
+	params <- vapply(bindings, function(x) {
+	    if (length(x) != 1) stop ("each parameter binding requires exact one value");
+	    if (typeof(x)=="integer") { sprintf ("%d", x); }
+	    else if (typeof(x)=="double") { sprintf ("%.10g",x); }
+	    else if (typeof(x)=="logical") { c("false","true")[x+1];}
+	    else if (typeof(x)=="character") { sprintf ("'%s'", x); }
+	    else { stop ("unknown type of parameter binding"); }
+	}, "");
+	params <- paste (params, collapse=",");
+	if (length(bindings) == length(fn@extraParams)) {
+	    newextra <- NULL;
+	} else {
+	    newextra <- fn@extraParams[(1+length(bindings)):length(fn@extraParams)];
+	}
+	impl <- sprintf ("var %s = %s.bind (undefined, %s);", name, fn@name, params);
+	chmNewFunction (name, newdesc, impl, extraParams=newextra, requires=c(fn@name), global=fn@global)
+});
+
+#' @rdname chmBindFunction-method
+#' @aliases chmBindFunction,character,character,list-method
+setMethod ("chmBindFunction",
+    signature = c(name="character", fn="character", bindings="list"),
+    definition = function (name, fn, bindings) {
+	fndef <- chmGetFunction (fn);
+	if (length(fndef) == 0)
+	    stop (sprintf ("Unable to create binding '%s': function '%s' does not exist", name, fn));
+        chmBindFunction (name, fndef, bindings)
+});
+
 ## @rdname chmRowOrder-method
 #' @aliases chmRowOrder<-,ngchm,optDendrogram-method
 setReplaceMethod ("chmRowOrder",
@@ -976,4 +1133,49 @@ setReplaceMethod ("chmColMeta",
     definition = function (chm, value) {
 	chm@colMeta <- value
         chm
+});
+
+
+#' @rdname chmAddToolbox-method
+#' @aliases chmAddToolbox,ngchm,character,character,character,character-method
+setMethod ("chmAddToolbox",
+    signature = c(CHM="ngchm", axis="character", axistype="character", datasetname="character", idstr="character"),
+    definition = function (CHM, axis, axistype, datasetname, idstr) {
+	matches <- NULL;
+	if (length(ngchm.env$toolbox)>0) {
+            matches <- which (apply (ngchm.env$toolbox, 1, function(tbf) (tbf$type=="GS")));
+	}
+	GStoolbox <- ngchm.env$toolbox[matches,];
+	for (ii in 1:nrow(GStoolbox)) {
+	    fnname <- sprintf ("%s%s", GStoolbox[ii,]$fn@name, datasetname);
+	    fndef <- chmGetFunction (fnname);
+	    if (length(fndef) == 0) {
+	        chmBindFunction (fnname, GStoolbox[ii,]$fn@name, list(dataset=datasetname));
+	    }
+	    fnlabel = sprintf ("%s%s", GStoolbox[ii,]$label, idstr);
+	    CHM <- chmAddSpecificAxisTypeFunction (CHM, axis, axistype, fnlabel, fnname);
+	}
+	CHM
+});
+
+#' @rdname chmAddToolbox2-method
+#' @aliases chmAddToolbox2,ngchm,character,character-method
+setMethod ("chmAddToolbox2",
+    signature = c(CHM="ngchm", datasetname="character", idstr="character"),
+    definition = function (CHM, datasetname, idstr) {
+	matches <- NULL;
+	if (length(ngchm.env$toolbox)>0) {
+            matches <- which (apply (ngchm.env$toolbox, 1, function(tbf) (tbf$type=="GG")));
+	}
+	GGtoolbox <- ngchm.env$toolbox[matches,];
+	for (ii in 1:nrow(GGtoolbox)) {
+	    fnname <- sprintf ("%s%s", GGtoolbox[ii,]$fn@name, datasetname);
+	    fndef <- chmGetFunction (fnname);
+	    if (length(fndef) == 0) {
+	        chmBindFunction (fnname, GGtoolbox[ii,]$fn@name, list(dataset=datasetname));
+	    }
+	    fnlabel = sprintf ("%s%s", GGtoolbox[ii,]$label, idstr);
+	    CHM <- chmAddMenuItem (CHM, "element", fnlabel, chmGetFunction(fnname));
+	}
+	CHM
 });

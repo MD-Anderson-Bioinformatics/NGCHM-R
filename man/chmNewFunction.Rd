@@ -2,7 +2,8 @@
 \alias{chmNewFunction}
 \title{Create a new Javascript function for adding to a NGCHM menu.}
 \usage{
-  chmNewFunction(name, description, implementation, global)
+  chmNewFunction(name, description, implementation,
+    extraParams = NULL, requires = NULL, global = FALSE)
 }
 \arguments{
   \item{name}{The name of the Javascript function}
@@ -11,10 +12,18 @@
   function}
 
   \item{implementation}{A string containing the javascript
-  code required to define the function.}
+  code required to define the function. When called the
+  function is passed a list of selected values (e.g.
+  labels).  Additional parameters can be declared before
+  the values parameter and must be resolved through
+  currying (binding) before the function is used in menus.}
+
+  \item{extraParams}{An optional list of extra parameters.
+  (Default NULL.)}
 
   \item{global}{A logical: TRUE if should be defined
-  globally, not within a customization section.}
+  globally, not within a customization section. (Default
+  FALSE.)}
 }
 \value{
   An object of class ngchmJS
@@ -26,11 +35,15 @@
 \examples{
 alertFn <- chmNewFunction ("showAlert", "Display the parameter in an alert box",
                            "function showAlert(label) { alert(label); }", TRUE)
+dbLookup <- chmNewFunction ("dbLookup", "Lookup the parameter in a database",
+                           "function showAlert(database, label) { alert(database[label]); }", c("database"))
 }
 \seealso{
   ngchmJS-class
 
   chmAddMenuItem
+
+  chmBindFunction
 
   chmRegisterFunction
 }

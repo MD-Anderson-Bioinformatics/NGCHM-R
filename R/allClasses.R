@@ -20,6 +20,10 @@ setClassUnion ("optCharacter");
 setIs ("character", "optCharacter");
 setIs ("NULL", "optCharacter");
 
+setClassUnion ("charOrFunction");
+setIs ("character", "charOrFunction");
+setIs ("function", "charOrFunction");
+
 setClassUnion ("optList");
 setIs ("list", "optList");
 setIs ("NULL", "optList");
@@ -48,8 +52,25 @@ setClass ("ngchmDataset",
           representation (name="character",
 			  description="character",
 	                  data="matrix",
-	                  row.properties="optList",
-	                  column.properties="optList"));
+			  row.covariates="optList",
+	                  column.covariates="optList"));
+
+#' Class representing a Covariate attached to a Dataset
+#'
+#' @exportClass ngchmCovariate
+#' @name ngchmCovariate-class
+#' @rdname ngchmCovariate-class
+#'
+#' @keywords classes
+setClass ("ngchmCovariate",
+          representation (label="character",
+			  fullname="character",
+			  label.series = "character",
+	                  series.properties="optList"),
+	  prototype = prototype(label=character(0),
+	                        fullname=character(0),
+				label.series=NULL,
+				series.properties=NULL));
 
 #' Class representing a Template attached to a NGCHM
 #'
@@ -59,7 +80,7 @@ setClass ("ngchmDataset",
 #'
 #' @keywords classes
 setClass ("ngchmTemplate",
-          representation (source.path="character",
+          representation (source.path="charOrFunction",
 			  dest.path="character",
 	                  substitutions="optList"));
 
@@ -142,7 +163,8 @@ setClass ("ngchmMenuItem",
 #'
 #' @keywords classes
 setClass ("ngchmJS",
-          representation (name="character", description="character", script="character", global="logical"));
+          representation (name="character", description="character", script="character", requires="optCharacter",
+	                  extraParams="optCharacter", global="logical"));
 
 #' Class representing a type attached to an axis in a Next Generation Clustered Heat Map (NGCHM).
 #'
@@ -250,6 +272,9 @@ setClass ("ngchm",
 			  datasets="optList",
 			  tags="optCharacter",
 			  elementMenu="optList",
+			  rowTypeFunctions="optList",   # Type functions specific to this CHM.
+			  colTypeFunctions="optList",
+			  elementTypeFunctions="optList",
 			  axisTypes="optList",
 			  css="optList",
 			  extrafiles="optCharacter",
@@ -281,6 +306,9 @@ setClass ("ngchm",
 				datasets=NULL,
 				tags=c(),
 				css=c(),
+			        rowTypeFunctions=NULL,
+			        colTypeFunctions=NULL,
+			        elementTypeFunctions=NULL,
 				extrafiles=c(),
 				properties=c(),
 				overviews=NULL,
@@ -290,6 +318,18 @@ setClass ("ngchm",
 				width=as.integer(500),
 				height=as.integer(500)));
 
+#' Class representing a deployment method for a Next Generation Clustered Heat Map (NGCHM) server.
+#'
+#' @exportClass ngchmServerProtocol
+#' @name ngchmServerProtocol-class
+#' @rdname ngchmServerProtocol-class
+#'
+#' @keywords classes
+setClass ("ngchmServerProtocol",
+          representation (protocolName="character",
+	                  installMethod="function", uninstallMethod="function",
+	                  makePrivate="function", makePublic="function"));
+
 #' Class representing a Next Generation Clustered Heat Map (NGCHM) server.
 #'
 #' @exportClass ngchmServer
@@ -298,5 +338,6 @@ setClass ("ngchm",
 #'
 #' @keywords classes
 setClass ("ngchmServer",
-          representation (deployServer="optCharacter", deployDir="optCharacter", urlBase="character",
+          representation (name="character", deployServer="optCharacter", deployDir="optCharacter", urlBase="character",
+			  serverProtocol="ngchmServerProtocol", traceLevel="optCharacter",
 	                  username="optCharacter", keypath="optCharacter", jarFile="character"));
