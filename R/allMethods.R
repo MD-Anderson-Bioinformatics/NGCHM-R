@@ -473,6 +473,7 @@ writeChm <- function (chm) {
         stop ("Internal error detected: the NGCHM has no color maps.  Please report.");
 
     # Add row menu items for types we know about.
+    genSpecFeedback (10, "adding row menu items");
     rowtypes <- getAllAxisTypes (chm, "row");
     rowTypeFnsReqd <- rep(FALSE,length(rowtypes));
     rowfns <- getAllAxisTypeFunctions (chm@rowTypeFunctions, rowtypes$types);
@@ -486,6 +487,7 @@ writeChm <- function (chm) {
 	}
 
     # Add column menu items for types we know about.
+    genSpecFeedback (20, "adding column menu items");
     coltypes <- getAllAxisTypes (chm, "column");
     colTypeFnsReqd <- rep(FALSE,length(coltypes));
     colfns <- getAllAxisTypeFunctions (chm@colTypeFunctions, coltypes$types);
@@ -499,6 +501,7 @@ writeChm <- function (chm) {
 	}
 
     # Add matrix element menu items for types we know about.
+    genSpecFeedback (30, "adding matrix menu items");
     matfns <- getAllMatrixTypeFunctions (chm, rowtypes$types, coltypes$types);
     if (length(matfns) > 0)
         for (ii in 1:length(matfns)) {
@@ -513,6 +516,7 @@ writeChm <- function (chm) {
 	}
 
     # Add functions for getting type values from selections.
+    genSpecFeedback (40, "adding type selector functions");
     cat ("chmMake: matfns contains ", length(matfns), " entries\n", file=stderr());
     fns <- append (matfns, unique (append (rowfns, colfns)));
     if (length(fns) > 0)
@@ -533,6 +537,7 @@ writeChm <- function (chm) {
 		 chm <- chmAddMenuItem (chm, "nowhere", "unused", fns[[ii]]@func);
 	     }
 
+    genSpecFeedback (50, "creating specification directory");
     unlink (chm@inpDir, recursive=TRUE);
     if (!dir.create (chm@inpDir, recursive=TRUE)) {
         stop (sprintf ("Unable to create directory '%s' in which to save CHM specification", chm@inpDir));
@@ -540,6 +545,7 @@ writeChm <- function (chm) {
     #system (sprintf ("/bin/rm -rf %s", chm@inpDir));
     #systemCheck (sprintf ("/bin/mkdir %s", chm@inpDir));
 
+    genSpecFeedback (60, "writing specification");
     props = file (chm@propFile, "w");
     cat (sprintf ("# This NGCHM property description was produced using the R NGCHM library version %s at %s\n",
                   packageDescription("NGCHM")$Version, date()), file=props);
@@ -548,8 +554,10 @@ writeChm <- function (chm) {
     cat (sprintf ("chm.main.image.width=%d\n", chm@width), file=props);
     if (length (chm@tags) > 0)
         cat (sprintf ("tags=%s\n", paste(chm@tags,sep=",",collapse=",")), file=props);
+    genSpecFeedback (65, "writing color schemes");
     for (ii in 1:length(chm@colormaps))
 	writeColorMap ("main", chm@colormaps[[ii]], sprintf("colormap%d", ii), "", props);
+    genSpecFeedback (70, "writing data layers");
     for (ii in 1:length(chm@layers))
         writeDataLayer (chm, chm@layers[[ii]], chm@inpDir, ii, props);
     if (is.list(chm@properties)) writeProperties (chm@inpDir, chm@properties, props);
@@ -563,11 +571,13 @@ writeChm <- function (chm) {
 		cat (sprintf ("overview%d.height=%d\n", ii, ov@height));
 	}
     }
+    genSpecFeedback (80, "writing extra support files");
     chm <- writeChmExtraSupport (chm);
     if (length (chm@extrafiles) > 0)
         cat (sprintf ("additional.input=%s\n", paste(chm@extrafiles,sep="",collapse=",")), file=props);
     close (props);
 
+    genSpecFeedback (90, "writing covariate bar data");
     if (!is.null(chm@rowOrder))
         writeOrder (chm@inpDir, "row", chm@rowOrder);
     if (!is.null(chm@colOrder))
@@ -588,6 +598,8 @@ writeChm <- function (chm) {
 	    writeClassBar (chm@colClassbars[[ii]], chm@inpDir, "column", ii, chan);
 	close (chan);
     }
+
+    genSpecFeedback (95, "writing custom javascript functions");
     if (is.list(chm@css)) writeCSS (chm@css, chm@inpDir);
     writeCustomJS (chm);
 }
@@ -675,9 +687,19 @@ datestamp <- function () {
     format(Sys.time(), "%a %b %d %X %Y")
 }
 
-progressFeedback <- function(progress, what)
+progressFeedback <- function(progress, mode, what)
 {
-    cat (sprintf ("%s\t%s\t:R:\t%g\t%s\n", datestamp(), "PROGRESS", progress, what), file=stderr());
+    cat (sprintf ("%s\t%s\t:%s:\t%g\t%s\n", datestamp(), "PROGRESS", mode, progress, what), file=stderr());
+}
+
+genSpecFeedback <- function (progress, what)
+{
+    progressFeedback (progress, "Writing specification", what);
+}
+
+postBuildFeedback <- function (progress, what)
+{
+    progressFeedback (progress, "Post build", what);
 }
 
 #' @rdname chmMake-method
@@ -686,14 +708,16 @@ progressFeedback <- function(progress, what)
 setMethod ("chmMake",
     signature = c(server="ngchmServer", chm="ngchm"),
     definition = function (server, chm, deleteOld=TRUE, useJAR=NULL, javaTraceLevel="PROGRESS") {
-    progressFeedback (50, "writing NGCHM specification");
+    genSpecFeedback (0, "writing NGCHM specification");
     writeChm (chm);
+    genSpecFeedback (100, "rendering NGCHM");
+
     dir.create (chm@outDir, recursive=TRUE, showWarnings=FALSE);
     unlink (file.path (chm@outDir, chm@name), recursive=TRUE);
     #system (sprintf ("/bin/mkdir -p %s", shQuote (chm@outDir)));
     #system (sprintf ("/bin/rm -rf %s/%s", shQuote (chm@outDir), shQuote(chm@name)));
+    cat ("chmMake: getting builder JAR\n", file=stderr());
     if (length(useJAR) == 0) {
-	progressFeedback (60, "obtaining heatmap builder from server");
 	if (length(grep("^scp://", server@jarFile)) > 0) {
 	    parts <- URLparts (server@jarFile);
 	    if (parts[3] == "") {
@@ -713,7 +737,6 @@ setMethod ("chmMake",
 	useJAR = "heatmappipeline.jar";
     }
     cat ("chmMake: initiating Java process\n", file=stderr());
-    progressFeedback (65, "rendering NGCHM");
     javaTraceOpts <- ""
     if ((length(javaTraceLevel) > 0) && (length(server@traceLevel)>0)) {
 	javaTraceOpts <- sprintf ("-l %s -p", shQuote(javaTraceLevel));
@@ -725,14 +748,17 @@ setMethod ("chmMake",
 		  shQuote (chm@propFile),
 		  shQuote (chm@outDir)));
     cat ("chmMake: Java process completed\n", file=stderr());
+
+    postBuildFeedback (0, "writing post build files");
     writeChmPost (chm);
-    progressFeedback (85, "creating compressed NGCHM file");
     if (Sys.info()[['sysname']] != "Windows")  {
-       systemCheck (sprintf ("tar czf %s.ngchm.gz -C %s %s",
+        postBuildFeedback (50, "creating compressed NGCHM file");
+        systemCheck (sprintf ("tar czf %s.ngchm.gz -C %s %s",
                              shQuote (chm@name),
 			     shQuote (chm@outDir),
 			     shQuote (chm@name)));
     }
+    postBuildFeedback (100, "post build completed");
 });
 
 #' @rdname chmMake-method
