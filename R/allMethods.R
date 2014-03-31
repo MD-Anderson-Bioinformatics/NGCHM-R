@@ -707,7 +707,7 @@ postBuildFeedback <- function (progress, what)
 #'
 setMethod ("chmMake",
     signature = c(server="ngchmServer", chm="ngchm"),
-    definition = function (server, chm, deleteOld=TRUE, useJAR=NULL, javaTraceLevel="PROGRESS") {
+    definition = function (server, chm, deleteOld=TRUE, useJAR=NULL, buildArchive=TRUE, javaTraceLevel="PROGRESS") {
     genSpecFeedback (0, "writing NGCHM specification");
     writeChm (chm);
     genSpecFeedback (100, "rendering NGCHM");
@@ -751,12 +751,14 @@ setMethod ("chmMake",
 
     postBuildFeedback (0, "writing post build files");
     writeChmPost (chm);
-    if (Sys.info()[['sysname']] != "Windows")  {
-        postBuildFeedback (50, "creating compressed NGCHM file");
-        systemCheck (sprintf ("tar czf %s.ngchm.gz -C %s %s",
-                             shQuote (chm@name),
-			     shQuote (chm@outDir),
-			     shQuote (chm@name)));
+    if (buildArchive) {
+	if (Sys.info()[['sysname']] != "Windows")  {
+	    postBuildFeedback (50, "creating compressed NGCHM file");
+	    systemCheck (sprintf ("tar czf %s.ngchm.gz -C %s %s",
+				 shQuote (chm@name),
+				 shQuote (chm@outDir),
+				 shQuote (chm@name)));
+	}
     }
     postBuildFeedback (100, "post build completed");
 });
@@ -1170,19 +1172,19 @@ setReplaceMethod ("chmColMeta",
 setMethod ("chmAddToolbox",
     signature = c(CHM="ngchm", axis="character", axistype="character", datasetname="character", idstr="character"),
     definition = function (CHM, axis, axistype, datasetname, idstr) {
-	matches <- NULL;
-	if (length(ngchm.env$toolbox)>0) {
-            matches <- which (apply (ngchm.env$toolbox, 1, function(tbf) (tbf$type=="GS")));
-	}
-	GStoolbox <- ngchm.env$toolbox[matches,];
-	for (ii in 1:nrow(GStoolbox)) {
-	    fnname <- sprintf ("%s%s", GStoolbox[ii,]$fn@name, datasetname);
-	    fndef <- chmGetFunction (fnname);
-	    if (length(fndef) == 0) {
-	        chmBindFunction (fnname, GStoolbox[ii,]$fn@name, list(dataset=datasetname));
+	toolbox <- ngchm.env$toolbox;
+	if (length(toolbox)>0) {
+	    for (ii in 1:nrow(toolbox)) {
+		if (toolbox[ii,]$type == "GS") {
+		    fnname <- sprintf ("%s%s", toolbox[ii,]$fn@name, datasetname);
+		    fndef <- chmGetFunction (fnname);
+		    if (length(fndef) == 0) {
+			chmBindFunction (fnname, toolbox[ii,]$fn@name, list(dataset=datasetname));
+		    }
+		    fnlabel = sprintf ("%s%s", toolbox[ii,]$label, idstr);
+		    CHM <- chmAddSpecificAxisTypeFunction (CHM, axis, axistype, fnlabel, fnname);
+		}
 	    }
-	    fnlabel = sprintf ("%s%s", GStoolbox[ii,]$label, idstr);
-	    CHM <- chmAddSpecificAxisTypeFunction (CHM, axis, axistype, fnlabel, fnname);
 	}
 	CHM
 });
@@ -1192,19 +1194,19 @@ setMethod ("chmAddToolbox",
 setMethod ("chmAddToolbox2",
     signature = c(CHM="ngchm", datasetname="character", idstr="character"),
     definition = function (CHM, datasetname, idstr) {
-	matches <- NULL;
-	if (length(ngchm.env$toolbox)>0) {
-            matches <- which (apply (ngchm.env$toolbox, 1, function(tbf) (tbf$type=="GG")));
-	}
-	GGtoolbox <- ngchm.env$toolbox[matches,];
-	for (ii in 1:nrow(GGtoolbox)) {
-	    fnname <- sprintf ("%s%s", GGtoolbox[ii,]$fn@name, datasetname);
-	    fndef <- chmGetFunction (fnname);
-	    if (length(fndef) == 0) {
-	        chmBindFunction (fnname, GGtoolbox[ii,]$fn@name, list(dataset=datasetname));
+	toolbox <- ngchm.env$toolbox;
+	if (length(toolbox)>0) {
+	    for (ii in 1:nrow(toolbox)) {
+		if (toolbox[ii,]$type == "GG") {
+		    fnname <- sprintf ("%s%s", toolbox[ii,]$fn@name, datasetname);
+		    fndef <- chmGetFunction (fnname);
+		    if (length(fndef) == 0) {
+			chmBindFunction (fnname, toolbox[ii,]$fn@name, list(dataset=datasetname));
+		    }
+		    fnlabel = sprintf ("%s%s", toolbox[ii,]$label, idstr);
+		    CHM <- chmAddMenuItem (CHM, "element", fnlabel, chmGetFunction(fnname));
+		}
 	    }
-	    fnlabel = sprintf ("%s%s", GGtoolbox[ii,]$label, idstr);
-	    CHM <- chmAddMenuItem (CHM, "element", fnlabel, chmGetFunction(fnname));
 	}
 	CHM
 });
