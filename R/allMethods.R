@@ -707,7 +707,8 @@ postBuildFeedback <- function (progress, what)
 #'
 setMethod ("chmMake",
     signature = c(server="ngchmServer", chm="ngchm"),
-    definition = function (server, chm, deleteOld=TRUE, useJAR=NULL, buildArchive=TRUE, javaTraceLevel="PROGRESS") {
+    definition = function (server, chm, deleteOld=TRUE, useJAR=NULL,
+                           javaOptions = "-Xmx2G", buildArchive=TRUE, javaTraceLevel="PROGRESS") {
     genSpecFeedback (0, "writing NGCHM specification");
     writeChm (chm);
     genSpecFeedback (100, "rendering NGCHM");
@@ -741,7 +742,8 @@ setMethod ("chmMake",
     if ((length(javaTraceLevel) > 0) && (length(server@traceLevel)>0)) {
 	javaTraceOpts <- sprintf ("-l %s -p", shQuote(javaTraceLevel));
     }
-    systemCheck (sprintf ("java -Djava.awt.headless=true -jar %s %s %s %s %s",
+    systemCheck (sprintf ("java -Djava.awt.headless=true %s -jar %s %s %s %s %s",
+		  paste (vapply (javaOptions, shQuote, ""), collapse=" "),
 		  shQuote (useJAR),
 		  javaTraceOpts,
 		  shQuote (chm@inpDir),
