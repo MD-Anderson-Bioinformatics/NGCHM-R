@@ -782,6 +782,55 @@ postBuildFeedback <- function (progress, what)
     progressFeedback (progress, "Post build", what);
 }
 
+addToolBoxes <- function (chm)
+{
+    rowtypes <- getAllAxisTypes (chm, "row");
+    matches <- vapply (chm@datasets, function(ds)(length(ds@row.type) > 0) && (ds@row.type %in% rowtypes$types), TRUE);
+    cat (sprintf ("addToolBoxes: found %d matching row datasets:\n", sum(matches)), file=stderr());
+    if (sum(matches) > 0) {
+	if (sum(matches) == 1) {
+	    extra <- "";
+	} else {
+	    extra <- sprintf (" (%s)", vapply(chm@datasets[matches], function(ds)ds@name, ""));
+	}
+	for (ds in chm@datasets[matches]) {
+	    cat (sprintf ("dataset '%s' row.type '%s'\n", ds@name, ds@row.type), file=stderr());
+	    chm <- chmAddToolbox (chm, "row", ds@row.type, ds@name, extra[1]);
+	    extra <- tail (extra, -1);
+	}
+    }
+    coltypes <- getAllAxisTypes (chm, "column");
+    matches <- vapply (chm@datasets, function(ds)(length(ds@row.type) > 0) && (ds@row.type %in% coltypes$types), TRUE);
+    cat (sprintf ("addToolBoxes: found %d matching column datasets:\n", sum(matches)), file=stderr());
+    if (sum(matches) > 0) {
+	if (sum(matches) == 1) {
+	    extra <- "";
+	} else {
+	    extra <- sprintf (" (%s)", vapply(chm@datasets[matches], function(ds)ds@name, ""));
+	}
+	for (ds in chm@datasets[matches]) {
+	    cat (sprintf ("dataset '%s' row.type '%s'\n", ds@name, ds@row.type), file=stderr());
+	    chm <- chmAddToolbox (chm, "column", ds@row.type, ds@name, extra[1]);
+	    extra <- tail (extra, -1);
+	}
+    }
+    matches <- vapply (chm@datasets, function(ds)(length(ds@row.type) > 0) && (ds@row.type %in% coltypes$types) && (ds@row.type %in% rowtypes$types), TRUE);
+    cat (sprintf ("addToolBoxes: found %d matching both datasets:\n", sum(matches)), file=stderr());
+    if (sum(matches) > 0) {
+	if (sum(matches) == 1) {
+	    extra <- "";
+	} else {
+	    extra <- sprintf (" (%s)", vapply(chm@datasets[matches], function(ds)ds@name, ""));
+	}
+	for (ds in chm@datasets[matches]) {
+	    cat (sprintf ("dataset '%s' row.type '%s'\n", ds@name, ds@row.type), file=stderr());
+	    chm <- chmAddToolbox2 (chm, ds@row.type, ds@name, extra[1]);
+	    extra <- tail (extra, -1);
+	}
+    }
+    chm
+}
+
 #' @rdname chmMake-method
 #' @aliases chmMake,ngchmServer,ngchm-method
 #'
@@ -789,22 +838,29 @@ setMethod ("chmMake",
     signature = c(server="ngchmServer", chm="ngchm"),
     definition = function (server, chm, deleteOld=TRUE, useJAR=NULL,
                            javaOptions = "-Xmx2G", buildArchive=TRUE, javaTraceLevel="PROGRESS") {
-    genSpecFeedback (0, "writing NGCHM specification");
+    genSpecFeedback (0, "starting NGCHM make");
+    # Compute row and column orders if required.
     while ((length(chm@rowOrder) > 0) && (class(chm@rowOrder) == "function")) {
+	genSpecFeedback (1, "determining default row order");
         chm@rowOrder <- chm@rowOrder (chm);
     }
     while ((length(chm@colOrder) > 0) && (class(chm@colOrder) == "function")) {
+	genSpecFeedback (5, "determining default column order");
         chm@colOrder <- chm@colOrder (chm);
     }
+    if (length (chm@datasets) > 0) {
+	genSpecFeedback (8, "adding toolbox(es)");
+	chm <- addToolBoxes (chm);
+    }
+    genSpecFeedback (9, "writing NGCHM specification");
     writeChm (chm);
-    genSpecFeedback (100, "rendering NGCHM");
 
+    genSpecFeedback (96, "preparing output directory");
     dir.create (chm@outDir, recursive=TRUE, showWarnings=FALSE);
     unlink (file.path (chm@outDir, chm@name), recursive=TRUE);
-    #system (sprintf ("/bin/mkdir -p %s", shQuote (chm@outDir)));
-    #system (sprintf ("/bin/rm -rf %s/%s", shQuote (chm@outDir), shQuote(chm@name)));
-    cat ("chmMake: getting builder JAR\n", file=stderr());
+
     if (length(useJAR) == 0) {
+        genSpecFeedback (97, "retrieving NGCHM rendering software");
 	if (length(grep("^scp://", server@jarFile)) > 0) {
 	    parts <- URLparts (server@jarFile);
 	    if (parts[3] == "") {
@@ -823,11 +879,12 @@ setMethod ("chmMake",
 	}
 	useJAR = "heatmappipeline.jar";
     }
-    cat ("chmMake: initiating Java process\n", file=stderr());
+    #
     javaTraceOpts <- ""
     if ((length(javaTraceLevel) > 0) && (length(server@traceLevel)>0)) {
 	javaTraceOpts <- sprintf ("-l %s -p", shQuote(javaTraceLevel));
     }
+    genSpecFeedback (100, "rendering NGCHM");
     systemCheck (sprintf ("java -Djava.awt.headless=true %s -jar %s %s %s %s %s",
 		  paste (vapply (javaOptions, shQuote, ""), collapse=" "),
 		  shQuote (useJAR),
@@ -1296,10 +1353,10 @@ setMethod ("chmAddToolbox",
 });
 
 #' @rdname chmAddToolbox2-method
-#' @aliases chmAddToolbox2,ngchm,character,character-method
+#' @aliases chmAddToolbox2,ngchm,character,character,character-method
 setMethod ("chmAddToolbox2",
-    signature = c(CHM="ngchm", datasetname="character", idstr="character"),
-    definition = function (CHM, datasetname, idstr) {
+    signature = c(CHM="ngchm", axistype="character", datasetname="character", idstr="character"),
+    definition = function (CHM, axistype, datasetname, idstr) {
 	toolbox <- ngchm.env$toolbox;
 	if (length(toolbox)>0) {
 	    for (ii in 1:nrow(toolbox)) {

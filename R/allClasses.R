@@ -53,6 +53,8 @@ setClass ("ngchmDataset",
           representation (name="character",
 			  description="character",
 	                  data="matrix",
+			  row.type="optCharacter",
+			  column.type="optCharacter",
 			  row.covariates="optList",
 	                  column.covariates="optList"));
 

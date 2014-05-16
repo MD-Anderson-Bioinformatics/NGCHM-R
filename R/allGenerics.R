@@ -545,7 +545,8 @@ setGeneric ("chmAddToolbox", function(CHM,axis,axistype,datasetname,idstr) stand
 #' @rdname chmAddToolbox2-method
 #'
 #' @param CHM CHM to which the toolbox will be added
+#' @param axistype the type of both axes
 #' @param datasetname the name of the dataset to use
 #' @param idstr string to append to toolbox menu labels (default '')
-setGeneric ("chmAddToolbox2", function(CHM,datasetname,idstr) standardGeneric("chmAddToolbox2"));
+setGeneric ("chmAddToolbox2", function(CHM,axistype,datasetname,idstr) standardGeneric("chmAddToolbox2"));
 

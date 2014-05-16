@@ -227,6 +227,8 @@ chmNewDataLayer <- function (label, data, colors=NULL) {
 #' @seealso chmAddDataset
 #' 
 chmNewDataset <- function (name, description, data,
+                           row.type = NULL,
+                           column.type = NULL,
                            row.covariates = NULL,
 			   column.covariates = NULL) {
     if (typeof (name) != "character") {
@@ -260,6 +262,8 @@ chmNewDataset <- function (name, description, data,
         stop (sprintf ("Parameter 'data' for dataset '%s' must have colnames set", name));
     }
     new (Class="ngchmDataset", name=name, description=description, data=data,
+         row.type = row.type,
+         column.type = column.type,
          row.covariates = row.covariates,
 	 column.covariates=column.covariates);
 }
