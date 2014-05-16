@@ -80,6 +80,16 @@ setGeneric ("chmRowMeta<-", function(chm,value) standardGeneric("chmRowMeta<-"))
 #'
 setGeneric ("chmColMeta<-", function(chm,value) standardGeneric("chmColMeta<-"));
 
+#' Add a list of parts to a NGCHM.
+#'
+#' @param chm The chm to add the layer to.
+#'
+#' @return The extended chm.
+#'
+#' @exportMethod chmAdd
+#' @rdname chmAdd-method
+setGeneric ("chmAdd", function(chm, ...) standardGeneric("chmAdd"));
+
 #' Add a Layer to a NGCHM.
 #'
 #' Add a Layer to a Next Generation Clustered Heat Map (NGCHM) and return the extended CHM.  A CHM

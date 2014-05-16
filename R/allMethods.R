@@ -14,6 +14,14 @@ systemCheck <- function (command) {
 # Methods for class NGCHM.SERVER
 #
 
+chmServerCheck <- function (name) {
+    server <- chmServer (name);
+    if (length(server) == 0) {
+        stop (sprintf ("Unknown CHM server '%s'", name));
+    }
+    server
+}
+
 #' @rdname chmDeployServer-method
 #' @aliases chmDeployServer,ngchmServer-method
 #'
@@ -52,6 +60,22 @@ setMethod ("chmInstall",
 	server@serverProtocol@installMethod (server, chm);
     });
 
+#' @rdname chmInstall-method
+#' @aliases chmInstall,character,ngchm-method
+setMethod ("chmInstall",
+    signature = c(server="character", chm="ngchm"),
+    definition = function (server, chm) {
+	chmInstall (chmServerCheck (server), chm);
+    });
+
+#' @rdname chmUninstall-method
+#' @aliases chmUninstall,ngchmServer,character-method
+setMethod ("chmUninstall",
+    signature = c(server="ngchmServer", chm="character"),
+    definition = function (server, chm) {
+	server@serverProtocol@uninstallMethod (server, chm);
+    });
+
 #' @rdname chmUninstall-method
 #' @aliases chmUninstall,ngchmServer,ngchm-method
 setMethod ("chmUninstall",
@@ -61,11 +85,27 @@ setMethod ("chmUninstall",
 });
 
 #' @rdname chmUninstall-method
-#' @aliases chmUninstall,ngchmServer,character-method
+#' @aliases chmUninstall,character,ngchm-method
 setMethod ("chmUninstall",
+    signature = c(server="character", chm="ngchm"),
+    definition = function (server, chm) {
+        chmUninstall (chmServerCheck(server), chmName(chm));
+});
+
+#' @rdname chmUninstall-method
+#' @aliases chmUninstall,character,character-method
+setMethod ("chmUninstall",
+    signature = c(server="character", chm="character"),
+    definition = function (server, chm) {
+        chmUninstall (chmServerCheck(server), chm);
+    });
+
+#' @rdname chmMakePrivate-method
+#' @aliases chmMakePrivate,ngchmServer,character-method
+setMethod ("chmMakePrivate",
     signature = c(server="ngchmServer", chm="character"),
     definition = function (server, chm) {
-	server@serverProtocol@uninstallMethod (server, chm);
+	server@serverProtocol@makePrivate (server, chm);
     });
 
 #' @rdname chmMakePrivate-method
@@ -77,11 +117,27 @@ setMethod ("chmMakePrivate",
 });
 
 #' @rdname chmMakePrivate-method
-#' @aliases chmMakePrivate,ngchmServer,character-method
+#' @aliases chmMakePrivate,character,ngchm-method
 setMethod ("chmMakePrivate",
+    signature = c(server="character", chm="ngchm"),
+    definition = function (server, chm) {
+        chmMakePrivate (chmServerCheck(server), chmName(chm));
+});
+
+#' @rdname chmMakePrivate-method
+#' @aliases chmMakePrivate,character,character-method
+setMethod ("chmMakePrivate",
+    signature = c(server="character", chm="character"),
+    definition = function (server, chm) {
+        chmMakePrivate (chmServerCheck(server), chm);
+    });
+
+#' @rdname chmMakePublic-method
+#' @aliases chmMakePublic,ngchmServer,character-method
+setMethod ("chmMakePublic",
     signature = c(server="ngchmServer", chm="character"),
     definition = function (server, chm) {
-	server@serverProtocol@makePrivate (server, chm);
+	server@serverProtocol@makePublic (server, chm);
     });
 
 #' @rdname chmMakePublic-method
@@ -93,11 +149,19 @@ setMethod ("chmMakePublic",
 });
 
 #' @rdname chmMakePublic-method
-#' @aliases chmMakePublic,ngchmServer,character-method
+#' @aliases chmMakePublic,character,ngchm-method
 setMethod ("chmMakePublic",
-    signature = c(server="ngchmServer", chm="character"),
+    signature = c(server="character", chm="ngchm"),
     definition = function (server, chm) {
-	server@serverProtocol@makePublic (server, chm);
+        chmMakePublic (chmServerCheck(server), chmName(chm));
+});
+
+#' @rdname chmMakePublic-method
+#' @aliases chmMakePublic,character,character-method
+setMethod ("chmMakePublic",
+    signature = c(server="character", chm="character"),
+    definition = function (server, chm) {
+        chmMakePublic (chmServerCheck(server), chm);
     });
 
 # ##############################################################################################
@@ -672,7 +736,23 @@ setMethod ("chmGetURL",
 setMethod ("chmGetURL",
     signature = c(server="ngchmServer", chm="ngchm"),
     definition = function (server, chm) {
-        sprintf ("%s?name=%s", server@urlBase, chmName (chm))
+        chmGetURL (server, chmName (chm))
+});
+
+#' @rdname chmGetURL-method
+#' @aliases chmGetURL,ngchmServer,ngchm-method
+setMethod ("chmGetURL",
+    signature = c(server="character", chm="ngchm"),
+    definition = function (server, chm) {
+        chmGetURL (chmServerCheck(server), chmName (chm))
+});
+
+#' @rdname chmGetURL-method
+#' @aliases chmGetURL,ngchmServer,ngchm-method
+setMethod ("chmGetURL",
+    signature = c(server="character", chm="character"),
+    definition = function (server, chm) {
+        chmGetURL (chmServerCheck(server), chm)
 });
 
 URLparts <- function(x) {
@@ -710,6 +790,12 @@ setMethod ("chmMake",
     definition = function (server, chm, deleteOld=TRUE, useJAR=NULL,
                            javaOptions = "-Xmx2G", buildArchive=TRUE, javaTraceLevel="PROGRESS") {
     genSpecFeedback (0, "writing NGCHM specification");
+    while ((length(chm@rowOrder) > 0) && (class(chm@rowOrder) == "function")) {
+        chm@rowOrder <- chm@rowOrder (chm);
+    }
+    while ((length(chm@colOrder) > 0) && (class(chm@colOrder) == "function")) {
+        chm@colOrder <- chm@colOrder (chm);
+    }
     writeChm (chm);
     genSpecFeedback (100, "rendering NGCHM");
 
@@ -763,6 +849,24 @@ setMethod ("chmMake",
 	}
     }
     postBuildFeedback (100, "post build completed");
+});
+
+#' @rdname chmMake-method
+#' @aliases chmMake,character,ngchm-method
+#'
+setMethod ("chmMake",
+    signature = c(server="character", chm="ngchm"),
+    definition = function (server, chm, ...) {
+        chmMake (chmServerCheck(server), chm, ...)
+    });
+
+#' @rdname chmAdd-method
+#' @aliases chmAdd,ngchm-method
+#'
+setMethod ("chmAdd",
+    signature = c(chm="ngchm"),
+    definition = function (chm, ...) {
+	chmAddList (chm, list (...))
 });
 
 #' @rdname chmMake-method

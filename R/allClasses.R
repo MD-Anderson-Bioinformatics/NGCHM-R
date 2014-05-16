@@ -14,6 +14,7 @@ setIs ("character", "optDendrogram");
 setIs ("hclust", "optDendrogram");
 setIs ("file", "optDendrogram");
 setIs ("fileContent", "optDendrogram");
+setIs ("function", "optDendrogram");
 setIs ("NULL", "optDendrogram");
 
 setClassUnion ("optCharacter");

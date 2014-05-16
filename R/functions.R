@@ -7,6 +7,83 @@ ngchm.env$matrixFunctions <- NULL
 ngchm.env$typeMappers <- NULL
 ngchm.env$serverProtocols <- NULL
 ngchm.env$toolbox <- NULL
+ngchm.env$servers <- list();
+
+#' Register an ngchmServer.
+#'
+#' This function registers an ngchmServer that can be used when
+#' making and installing a Next Generation Clustered Heat Map.
+#'
+#' @param uuid A string that identifies the server namespace.
+#' @param server The ngchmServer to register.
+#'
+#' @export
+#'
+#' @seealso chmMake
+#' @seealso chmInstall
+#' @seealso chmUninstall
+#' @seealso chmUnregisterServer
+#' @seealso ngchmServer-class
+#'
+chmRegisterServer <- function (uuid, server) {
+    obj <- list (uuid=uuid, name=server@name, server=server);
+    matches <- which (vapply (ngchm.env$servers, function(srv) ((srv$uuid == uuid) && (srv$name == server@name)), TRUE));
+    if (length (matches) > 0) {
+	ngchm.env$servers[[matches]] <- obj;
+    } else {
+	ngchm.env$servers <- append (ngchm.env$servers, list(obj));
+    }
+}
+
+#' Unregister ngchmServer(s).
+#'
+#' This function unregisters one or more ngchmServer(s).
+#'
+#' @param uuid A string that identifies the server namespace.
+#' @param name The names(s) of the ngchmServer(s) to unregister.  If not specified, all ngchmServers in the
+#' namespace are unregistered.
+#'
+#' @export
+#'
+#' @seealso chmRegisterServer
+#' @seealso ngchmServer-class
+#'
+chmUnregisterServer <- function (uuid, name=NULL) {
+    if (length(name) == 0) {
+	matches <- vapply (ngchm.env$servers, function(srv) (srv$uuid == uuid), TRUE);
+    } else {
+        matches <- vapply (ngchm.env$servers, function(srv) ((srv$uuid == uuid) && (srv$name %in% name)), TRUE);
+    }
+    if (sum (matches) > 0) {
+	ngchm.env$servers <- ngchm.env$servers[!matches];
+    }
+}
+
+#' Get a registered ngchmServer object for use in making and installing NGCHMs
+#'
+#' This function returns a ngchmServer object that can be used when
+#' making and installing a Next Generation Clustered Heat Map.
+#'
+#' @param name The name of the ngchmServer desired.
+#'
+#' @return An object of class ngchmServer if found, NULL otherwise.  If multiple servers of the same
+#' name have been defined (in different namespaces), the most recently defined is returned.
+#'
+#' @export
+#'
+#' @seealso chmMake
+#' @seealso chmInstall
+#' @seealso chmUninstall
+#' @seealso ngchmServer-class
+#'
+chmServer <- function (name) {
+    matches <- which (vapply (ngchm.env$servers, function(srv) (srv$name == name), TRUE));
+    if (length (matches) > 0) {
+	return (ngchm.env$servers[[matches[length(matches)]]]$server);
+    } else {
+	return (NULL);
+    }
+}
 
 # Export for debug.
 #' @export ngchmGetEnv
@@ -17,6 +94,7 @@ ngchmGetEnv <- function () {
 #' Create a new NGCHM.
 #'
 #' This function creates a Next Generation Clustered Heat Map (NGCHM) object in memory.
+#' Additional parameters will be added to the new NGCHM (see chmAdd).
 #' The bare NGCHM needs at least one data layer added to it before it can be compiled.
 #'
 #' @param name The name under which the NGCHM will be saved to the NGCHM server.
@@ -30,10 +108,11 @@ ngchmGetEnv <- function () {
 #'
 #' @seealso ngchm-class
 #' @seealso ngchmServer-class
+#' @seealso chmAdd
 #' @seealso chmMake
 #' @seealso chmInstall
 
-chmNew <- function (name) {
+chmNew <- function (name, ...) {
     if (typeof (name) != "character") {
         stop (sprintf ("Parameter 'name' must have type 'character', not '%s'", typeof(name)));
     }
@@ -45,6 +124,35 @@ chmNew <- function (name) {
     }
     chm <- new (Class="ngchm", name=name)
     chm <- chmAddCSS (chm, 'div.overlay { border: 2px solid yellow; }');
+    chm@rowOrder <- defaultRowOrder;
+    chm@colOrder <- defaultColOrder;
+    chm <- chmAddList (chm, list(...));
+    chm
+}
+
+defaultColOrder <- function (chm) {
+    if (length (chm@layers) == 0) stop ("chm requires at least one layer");
+    as.dendrogram(hclust(as.dist(1-cor(chm@layers[[1]]@data)), method="ward"))
+}
+
+defaultRowOrder <- function (chm) {
+    if (length (chm@layers) == 0) stop ("chm requires at least one layer");
+    as.dendrogram(hclust(as.dist(1-cor(t(chm@layers[[1]]@data))), method="ward"))
+}
+
+# Function used by chmNew and chmAdd:
+chmAddList <- function (chm, args) {
+    cat (sprintf ("chmAdd: %d items to add\n", length(args)), file=stderr());
+    for (item in args) {
+	cc <- class (item);
+	if (cc == "ngchmLayer") { chm <- chmAddLayer (chm, item); }
+	else if ((cc == "matrix") && (mode(item) == "numeric")) { chm <- chmAddLayer (chm, item); }
+	else if (cc == "ngchmDataset") { chm <- chmAddDataset (chm, item); }
+	else if (cc == "ngchmColormap") { chm <- chmAddColormap (chm, item); }
+	else {
+	    cat (sprintf ("Unable to add item of class '%s' to chm\n", class(item)));
+	}
+    }
     chm
 }
 
@@ -250,8 +358,16 @@ chmNewClassBar <- function (label, type, data, colors=NULL, display="visible", t
     }
     if (!(display %in% c("visible", "hidden")))
         stop (sprintf ("Parameter 'display' for classbar '%s' must be either 'visible' or 'hidden', not '%s'", label, display));
-    if ((display == "visible") && (length(colors) == 0))
-        stop (sprintf ("Classbar '%s' is visible so it requires a color map"), label);
+    if ((display == "visible") && (length(colors) == 0)) {
+        if (type == "discrete") {
+	    qq <- sort (unique (data));
+	} else {
+	    qq <- quantile (data);
+	}
+	colors <- rainbow(length(qq),start=2/6,end=0);
+	colors <- vapply (colors, function(cc)substr(cc,1,7), "");
+	colors <- chmNewColorMap ("linear", "#fefefe", qq, colors);
+    }
     if ((length(merge) > 0) && !(merge %in% c("average", "peakColor", "specialColor", "mostCommon")))
         stop (sprintf ("Unknown classbar merge value '%s'. Must be 'average', 'peakColor', 'specialColor' or 'mostCommon'", merge));
     new (Class="ngchmBar", label=label, type=type, data=data, thickness=thickness, colors=colors, display=display, merge=merge)
@@ -453,14 +569,14 @@ chmNewProperty <- function (label, value) {
 #' @export
 #'
 #' @examples
-#' cloudServ <- chmServer ("dnsname.domain")
+#' cloudServ <- chmNewServer ("dnsname.domain")
 #'
 #' @seealso ngchmServer-class
 #' @seealso chmMake
 #' @seealso chmInstall
 #' @seealso chmUninstall
 #'
-chmServer <- function (serverName, username=NULL, keypath=NULL, serverPort=8080, deployServer=NULL, deployDir=NULL,
+chmNewServer <- function (serverName, username=NULL, keypath=NULL, serverPort=8080, deployServer=NULL, deployDir=NULL,
                        jarFile=NULL, urlBase=NULL)
 {
     if (is.null (deployServer)) deployServer = serverName;
