@@ -21,6 +21,10 @@ setClassUnion ("optCharacter");
 setIs ("character", "optCharacter");
 setIs ("NULL", "optCharacter");
 
+setClassUnion ("optNumeric");
+setIs ("numeric", "optNumeric");
+setIs ("NULL", "optNumeric");
+
 setClassUnion ("charOrFunction");
 setIs ("character", "charOrFunction");
 setIs ("function", "charOrFunction");
@@ -32,15 +36,21 @@ setIs ("NULL", "optList");
 setClassUnion ("numericOrCharacter");
 setIs ("numeric", "numericOrCharacter");
 setIs ("character", "numericOrCharacter");
+setIs ("logical", "numericOrCharacter");
 
-#' Class representing a data point in a Color Map on a Next Generation Clustered Heat Map (NGCHM).
+#' Class representing the properties of a data point in a Next Generation Clustered Heat Map (NGCHM).
 #'
-#' @name ngchmColorpt-class
-#' @rdname ngchmColorpt-class
+#' @name ngchmValueProp-class
+#' @rdname ngchmValueProp-class
 #'
 #' @keywords classes
-setClass ("ngchmColorpt",
-          representation (value="numericOrCharacter", color="character"));
+setClass ("ngchmValueProp",
+          representation (value="numericOrCharacter",
+	                  color="character",
+	                  name="optCharacter",
+	                  shape="optCharacter",
+	                  z="optNumeric"
+			  ));
 
 #' Class representing a Dataset attached to a NGCHM
 #'
@@ -67,6 +77,7 @@ setClass ("ngchmDataset",
 #' @keywords classes
 setClass ("ngchmCovariate",
           representation (label="character",
+			  type="character",
 			  fullname="character",
 			  label.series = "character",
 	                  series.properties="optList"),
@@ -121,12 +132,13 @@ setClass ("ngchmRelatedGroup",
 #' @keywords classes
 setClass ("ngchmColormap",
           representation (type="character",
-	                  missing="character",
+	                  missing="optCharacter",
 	                  points="optList"));
 
 setClassUnion ("optColormap");
 setIs ("ngchmColormap", "optColormap");
 setIs ("NULL", "optColormap");
+setIs ("ngchmColormap", "optList");
 
 #' Class representing a Layer on a Next Generation Clustered Heat Map (NGCHM).
 #'

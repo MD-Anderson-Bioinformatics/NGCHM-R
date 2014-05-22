@@ -80,14 +80,23 @@ setGeneric ("chmRowMeta<-", function(chm,value) standardGeneric("chmRowMeta<-"))
 #'
 setGeneric ("chmColMeta<-", function(chm,value) standardGeneric("chmColMeta<-"));
 
-#' Add a list of parts to a NGCHM.
+#' Add a list of objects to a NGCHM.
 #'
-#' @param chm The chm to add the layer to.
+#' Each additional parameter is added to the NGCHM according to its type.  Objects that
+#' require additional information (such as an axis) cannot be added using this function.
+#' Objects that can be added are layers (including numeric matrices), datasets, and colormaps.
+#'
+#' @param chm The chm to add the object(s) to.
+#' @param ... Zero or more objects to add to the NGCHM.
 #'
 #' @return The extended chm.
 #'
 #' @exportMethod chmAdd
 #' @rdname chmAdd-method
+#'
+#' @seealso "chmAddColormap"
+#' @seealso "chmAddDataset"
+#' @seealso "chmAddLayer"
 setGeneric ("chmAdd", function(chm, ...) standardGeneric("chmAdd"));
 
 #' Add a Layer to a NGCHM.
@@ -133,7 +142,7 @@ setGeneric ("chmAddDataset", function(chm,dataset) standardGeneric("chmAddDatase
 #'
 #' Add a covariate to an auxiliary dataset and return the extended dataset.
 #' Do not confuse this function with the one for adding a classification bar to an NGCHM. For
-#' that, please refer to the function chmAddClassBar.
+#' that, please refer to the function chmAddCovariateBar.
 #'
 #' @param dataset The dataset to add the covariate to.
 #' @param where The dataset axis to add the covariate to. Must be one of "row", "column", or "both".
@@ -342,6 +351,8 @@ setGeneric ("chmAddSpecificAxisTypeFunction", function (chm, where, type, label,
 
 #' Add a classification bar to a NGCHM.
 #'
+#' This function is deprecated and will be removed in a future version.  Please use
+#' chmAddCovariateBar instead.
 #' Add a classification bar to a Next Generation Clustered Heat Map (NGCHM) and
 #' return the extended CHM.
 #'
@@ -354,10 +365,34 @@ setGeneric ("chmAddSpecificAxisTypeFunction", function (chm, where, type, label,
 #' @exportMethod chmAddClassBar
 #' @rdname chmAddClassBar-method
 #'
+#' @seealso chmNewCovariateBar
+#' @seealso chmAddCovariateBar
 #' @seealso chmNewClassBar
 #' @seealso ngchmBar-class
 setGeneric ("chmAddClassBar", function(chm,where,bar) standardGeneric("chmAddClassBar"));
 
+#' Add a covariate bar to a NGCHM.
+#'
+#' Add a covariate bar to a Next Generation Clustered Heat Map (NGCHM) and
+#' return the extended CHM.  If passed a covariate, a covariate bar will be created
+#' (using any optional parameters supplied) and added.
+#'
+#' @param chm The chm to add the covariate bar to.
+#' @param where The chm axis(axes) to add the covariate bar to. Must be one of "row", "column", or "both".
+#' @param bar The covariate or covariate bar to add to the chm.
+#' @param display Whether the bar is displayed or not. Defaults to "visible".
+#' @param thickness Initial thickness of bar in pixels. Defaults to 10.
+#' @param merge Algorithm for merging multiple items into a single pixel. Default.
+#'
+#' @return The extended chm.
+#'
+#' @exportMethod chmAddCovariateBar
+#' @rdname chmAddCovariateBar-method
+#'
+#' @seealso chmNewCovariate
+#' @seealso chmNewCovariateBar
+#' @seealso ngchmCovariate-class
+setGeneric ("chmAddCovariateBar", function(chm,where,covar,...) standardGeneric("chmAddCovariateBar"));
 
 #' Get the name of a NGCHM server.
 #'

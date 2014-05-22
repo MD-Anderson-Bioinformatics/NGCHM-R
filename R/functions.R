@@ -98,6 +98,7 @@ ngchmGetEnv <- function () {
 #' The bare NGCHM needs at least one data layer added to it before it can be compiled.
 #'
 #' @param name The name under which the NGCHM will be saved to the NGCHM server.
+#' @param ... Zero or more initial objects to include in the NGCHM.
 #'
 #' @return An object of class ngchm
 #'
@@ -142,7 +143,7 @@ defaultRowOrder <- function (chm) {
 
 # Function used by chmNew and chmAdd:
 chmAddList <- function (chm, args) {
-    cat (sprintf ("chmAdd: %d items to add\n", length(args)), file=stderr());
+    #cat (sprintf ("chmAdd: %d items to add\n", length(args)), file=stderr());
     for (item in args) {
 	cc <- class (item);
 	if (cc == "ngchmLayer") { chm <- chmAddLayer (chm, item); }
@@ -173,8 +174,8 @@ chmAddList <- function (chm, args) {
 #' noise <- matrix (runif(1000) + runif(1000*1000), nrow=1000)
 #' rownames(noise) <- sprintf ("Row%d", 1:nrow(noise))
 #' colnames(noise) <- sprintf ("Col%d", 1:ncol(noise))
-#' noise.colors <- chmNewColorMap ("linear", "yellow", c(0,1,2),
-#'                                 c("green", "black", "red"))
+#' noise.colors <- chmNewColorMap (c(0,1,2),
+#'                                 c("green", "black", "red"), missing.color="yellow")
 #' layer <- chmNewDataLayer ("Noisy Data", noise, noise.colors)
 #'
 #' @seealso ngchmLayer-class
@@ -204,7 +205,7 @@ chmNewDataLayer <- function (label, data, colors=NULL) {
         stop (sprintf ("Parameter 'data' for layer '%s' must have colnames set", label));
     }
     if (length(colors) == 0)
-	colors <- chmNewColorMap ("linear", "white", data, c("green", "black", "red"));
+	colors <- chmNewColorMap (data, c("green", "black", "red"));
     new (Class="ngchmLayer", name=label, data=data, colors=colors)
 }
 
@@ -261,6 +262,24 @@ chmNewDataset <- function (name, description, data,
     if (length (colnames(data)) == 0) {
         stop (sprintf ("Parameter 'data' for dataset '%s' must have colnames set", name));
     }
+    if (length (row.covariates) > 0) {
+        if (class(row.covariates) == "ngchmCovariate") {
+	    row.covariates <- list (row.covariates);
+	} else if (class(row.covariates) == "list") {
+	    stopifnot (all (vapply (row.covariates, function(cov)class(cov)=="ngchmCovariate", TRUE)));
+	} else {
+	    stop (sprintf ("Parameter 'row.covariates' for dataset '%s' must be either a covariate or list of covariates, not a '%s'", name, class(row.covariates)));
+	}
+    }
+    if (length (column.covariates) > 0) {
+        if (class(column.covariates) == "ngchmCovariate") {
+	    column.covariates <- list (column.covariates);
+	} else if (class(column.covariates) == "list") {
+	    stopifnot (all (vapply (column.covariates, function(cov)class(cov)=="ngchmCovariate", TRUE)));
+	} else {
+	    stop (sprintf ("Parameter 'column.covariates' for dataset '%s' must be either a covariate or list of covariates, not a '%s'", name, class(column.covariates)));
+	}
+    }
     new (Class="ngchmDataset", name=name, description=description, data=data,
          row.type = row.type,
          column.type = column.type,
@@ -270,12 +289,13 @@ chmNewDataset <- function (name, description, data,
 
 #' Create a new Covariate for adding to an NGCHM auxilary dataset.
 #'
-#' This function creates a new Covariate suitable for attaching to an NGCHM auxilary dataset.
+#' This function creates a new Covariate suitable for a covariate bar or attaching to an NGCHM auxilary dataset.
 #'
-#' @param label The short label used to identify the covariate within its dataset.
 #' @param fullname The full (human readable) name of the covariate.
-#' @param label.series The series to which each label in the dataset belongs.
-#' @param column.series.properties A list of mappings from series names to property values.
+#' @param values A named vector of values (character, logical, or numeric).
+#' @param value.properties An ngchmColormap mapping values to properties.
+#' @param type The string "discrete" or the string "continuous".  (Defaults to continuous for numeric values, to discrete otherwise.)
+#' @param label The short R-compatible identifier used to identify the covariate (derived from fullname if not specified).
 #'
 #' @return An object of class ngchmCovariate.
 #'
@@ -283,33 +303,85 @@ chmNewDataset <- function (name, description, data,
 #'
 #' @seealso ngchmCovariate-class
 #' @seealso chmAddCovariate
+#' @seealso chmNewColorMap
 #' 
-chmNewCovariate <- function (label, fullname, label.series, series.properties) {
-    if (typeof (label) != "character") {
-        stop (sprintf ("Parameter 'label' must have type 'character', not '%s'", typeof(label)));
-    }
-    if (length (label) != 1) {
-        stop (sprintf ("Parameter 'label' must have a single value, not %d", length(label)));
-    }
-    if (nchar (label) == 0) {
-        stop ("Parameter 'label' cannot be the empty string");
-    }
+chmNewCovariate <- function (fullname, values, value.properties=NULL, type=NULL, covabbv=NULL)
+{
+    # Validate basic properties of 'fullname'.
     if (typeof (fullname) != "character") {
-        stop (sprintf ("Parameter 'fullname' for covariate '%s' must have type 'character', not '%s'", label, typeof(fullname)));
+        stop (sprintf ("Parameter 'fullname' must have type 'character', not '%s'", typeof(fullname)));
     }
     if (length (fullname) != 1) {
-        stop (sprintf ("Parameter 'fullname' for covariate '%s' must have a single value, not %d", label, length(fullname)));
+        stop (sprintf ("Parameter 'fullname' must have a single value, not %d", length(fullname)));
     }
     if (nchar (fullname) == 0) {
-        stop (sprintf ("Parameter 'fullname' for covariate '%s' cannot be the empty string", label));
+        stop (sprintf ("Parameter 'fullname' cannot be the empty string"));
     }
-    new (Class="ngchmCovariate", label=label, fullname=fullname,
-	 label.series = label.series,
-	 series.properties=series.properties);
+    # Validate basic properties of 'type'.
+    if (length(type) == 0) {
+        if (mode(values) == "numeric") {
+	    type <- "continuous";
+	} else {
+	    type <- "discrete";
+	}
+    } else {
+	if (typeof (type) != "character") {
+	    stop (sprintf ("Parameter 'type' for covariate '%s' must have type 'character', not '%s'", fullname, typeof(type)));
+	}
+	if (length (type) != 1) {
+	    stop (sprintf ("Parameter 'type' for covariate '%s' must have a single value, not %d", fullname, length(type)));
+	}
+	if (!(type %in% c("discrete", "continuous"))) {
+	    stop (sprintf ("Parameter 'type' for covariate '%s' must be either 'discrete' or 'continuous', not '%s'", fullname, type));
+	}
+    }
+
+    if ((length (value.properties) > 0) && (class(value.properties) != "ngchmColormap")) {
+	stop (sprintf ("value.properties for covariate '%s' must have class ngchmColormap, not '%s'", fullname, class(value.properties)));
+    }
+
+    if (type == "continuous") {
+        if (mode(values) != "numeric") {
+	    stop (sprintf ("Covariate '%s' has type continuous, so values must have mode numeric, not '%s'", fullname, mode(values)));
+	}
+	if (length (value.properties) == 0) {
+	    value.properties <- chmNewColorMap (as.matrix(values,ncol=1));
+	}
+    } else if (length (value.properties) == 0) {
+        if (mode(values) == "numeric") {
+	    value.properties <- chmNewColorMap (sort (unique (values)));
+	} else if (mode(values) == "logical") {
+	    value.properties <- chmNewColorMap (c (FALSE, TRUE));
+	} else {
+	    value.properties <- chmNewColorMap (sort (unique (values)));
+	}
+    }
+
+    # Validate type of 'values'
+    if (mode (values) %in% c("numeric","logical"))
+        mode(values) <- "character";
+
+    if (length (covabbv) == 0) {
+        covabbv <- make.names(fullname);
+    } else {
+	if (typeof (covabbv) != "character") {
+	    stop (sprintf ("Parameter 'covabbv' must have type 'character', not '%s'", typeof(covabbv)));
+	}
+	if (length (covabbv) != 1) {
+	    stop (sprintf ("Parameter 'covabbv' must have a single value, not %d", length(covabbv)));
+	}
+	if (nchar (covabbv) == 0) {
+	    stop ("Parameter 'covabbv' cannot be the empty string");
+	}
+    }
+    new (Class="ngchmCovariate", label=covabbv, fullname=fullname, type=type,
+	 label.series = values,
+	 series.properties=value.properties);
 }
 
 #' Create a new Classification Bar for a NGCHM
 #'
+#' This function is deprecated and will be removed in a future version.  Please use chmNewCovariateBar.
 #' This function creates a new Classification Bar suitable for adding to a Next Generation Clustered Heat Map.
 #'
 #' @param label The name by which the classification bar will be known.
@@ -326,13 +398,14 @@ chmNewCovariate <- function (label, fullname, label.series, series.properties) {
 #'
 #' @examples
 #' bar.data <- ifelse (rnorm(1000) < 0, "negative", "non-negative")
-#' bar.colors <- chmNewColorMap ("linear", "red",
-#'                               c("negative", "non-negative"),
-#'                               c("white", "black"))
+#' bar.colors <- chmNewColorMap (c("negative", "non-negative"),
+#'                               c("white", "black"), missing.color='red')
 #' bar <- chmNewClassBar ("Group", "discrete", bar.data, bar.colors)
 #'
 #' @seealso ngchmBar-class
 #' @seealso chmNewColorMap
+#' @seealso chmNewCovariateBar
+#' @seealso chmAddCovariateBar
 #' @seealso chmAddClassBar
 #'
 chmNewClassBar <- function (label, type, data, colors=NULL, display="visible", thickness=as.integer(10), merge=NULL) {
@@ -370,42 +443,75 @@ chmNewClassBar <- function (label, type, data, colors=NULL, display="visible", t
 	}
 	colors <- rainbow(length(qq),start=2/6,end=0);
 	colors <- vapply (colors, function(cc)substr(cc,1,7), "");
-	colors <- chmNewColorMap ("linear", "#fefefe", qq, colors);
+	colors <- chmNewColorMap (qq, colors);
     }
     if ((length(merge) > 0) && !(merge %in% c("average", "peakColor", "specialColor", "mostCommon")))
         stop (sprintf ("Unknown classbar merge value '%s'. Must be 'average', 'peakColor', 'specialColor' or 'mostCommon'", merge));
     new (Class="ngchmBar", label=label, type=type, data=data, thickness=thickness, colors=colors, display=display, merge=merge)
 }
 
+#' Create a new covariate Bar for a NGCHM
+#'
+#' This function creates a new covariate bar suitable for adding to a Next Generation Clustered Heat Map.
+#'
+#' @param covar The covariate to be displayed in the bar.
+#' @param display Whether the covariate bar will be "hidden" or "visible" (default).
+#' @param thickness The thickness of the covariate bar in pixels. (Default 10).
+#' @param merge Algorithm for merging covariates when necessary ("average", "peakColor", "specialColor", or "mostCommon").
+#'
+#' @return An object of class ngchmBar
+#'
+#' @export
+#'
+#' @seealso ngchmBar-class
+#' @seealso chmNewColorMap
+#' @seealso chmAddCovariateBar
+#'
+chmNewCovariateBar <- function (covar, display="visible", thickness=as.integer(10), merge=NULL)
+{
+    chmNewClassBar (covar@fullname, covar@type, covar@label.series, covar@series.properties,
+		    display=display, thickness=thickness, merge=merge)
+}
+
 #' Create a new Color Map for use in constructing a NGCHM
 #'
-#' This function creates a new Color Map suitable for use in constructing Data Layers and Classification Bars
-#' in Next Generation Clustered Heat Map.
+#' This function creates a new Color Map suitable for use in constructing Data Layers and Covariates
+#' in Next Generation Clustered Heat Maps.  Color maps can be used in both discrete and continuous
+#' contents.  In a discrete context, values specifies the properties of series.  In a continuous context,
+#' values specifies the break points.
+#'
 #' If values is a matrix, the function will estimate a suitable sequence of color break points.  For a quantile
 #' color map, the matrix data is ignored.  For a linear color map, it will use equispaced values between a low value and
 #' a high value. The low value is the median of the minima of each row in the matrix, and the high value is the median
 #' of the row maxima. If the low and high values have different signs, the values will be symmetric about zero.
 #'
-#' @param type The string "linear" or the string "quantile" (or unique abbreviation thereof).
+#' @param values A vector specifying the series / break points for which the following colors are defined, or a data matrix.
+#' @param colors Either a string vector specifying the color to use for each series / break point, or a single integer.
+#' @param names A string vector specifying 'human-readable' names for each series / break point.
+#' @param shapes A string vector specifying the shape to use for each series.
+#' @param zs A numeric vector specifying the z order to use for each series.
+#' @param type The string "linear" (default) or "quantile" (or unique abbreviation thereof).
 #' @param missing A string specifying the color to use for missing data.
-#' @param values A vector specifying the break points for which the following colors are defined, or a data matrix.
-#' @param colors A vector of strings specifying the color to use for each color break point.
+#' @param palette A function(n) that returns a vector of n colors.
 #'
 #' @return An object of class ngchmColormap
 #'
 #' @export
 #'
 #' @examples
-#' noise.colors <- chmNewColorMap ("linear", "yellow", c(0,1,2),
-#'                                 c("green", "black", "red"))
-#' bar.colors <- chmNewColorMap ("quantile", "white", c("small", "big"),
-#'                               c("#00FFFF", "#FF00FF"))
+#' noise.colors <- chmNewColorMap (c(0,1,2),
+#'                                 c("green", "black", "red"),
+#'                                 missing.color="yellow")
+#' bar.colors <- chmNewColorMap (c("small", "big"),
+#'                               c("#00FFFF", "#FF00FF"),
+#'                               type="quantile")
 #'
 #' @seealso ngchmColormap-class
 #' @seealso chmNewDataLayer
 #' @seealso chmNewClassBar
 #'
-chmNewColorMap <- function (type, missing, values, colors) {
+chmNewColorMap <- function (values, colors=NULL, names=NA, shapes=NA, zs=NA, type="linear", missing.color=NULL, palette=NULL) {
+    # Validate parameter 'type'
     if (typeof (type) != "character") {
         stop (sprintf ("Parameter 'type' must have type 'character', not '%s'", typeof(type)));
     }
@@ -418,36 +524,96 @@ chmNewColorMap <- function (type, missing, values, colors) {
         stop (sprintf ("Unknown color map type '%s'. Allowed types are %s.", type,
 	               paste ("'", allowedTypes, "'", sep="", collapse=", ")));
     }
-    NC <- length(colors);
-    if (NC < 2) {
-        stop (sprintf ("chmNewColorMap: colors vector contains %d color(s). It must contain at least two.", NC));
-    }
     type = allowedTypes[mtype];
+
+    # Determine number of colors and whether auto-picking.
+    NC <- length(colors);
+    if ((NC == 1) && (mode(colors)=="numeric") && (as.integer(colors)==colors)) {
+	if (colors < 2) {
+	    stop (sprintf ('"%d" colors requested. At least two are required.', colors));
+	}
+        NC <- colors;
+	colors <- NULL;
+    }
+
+    # Validate 'values'.  Auto-pick values if appropriate.
     if (class(values) == 'matrix') {
+	# User just supplied a data matrix.
+	if (NC == 0) NC <- 3;
         if (type == "quantile") {
-	    values = (1.0/(NC-1)) * (0:(NC-1));
+	    values <- (1.0/(NC-1)) * (0:(NC-1));
 	} else if (type == "linear") {
-	    minv = median (apply (values, 1, function(v) min (v, na.rm=TRUE)), na.rm=TRUE);
-	    maxv = median (apply (values, 1, function(v) max (v, na.rm=TRUE)), na.rm=TRUE);
-	    if ((minv < 0.0) && (maxv > 0.0)) {
-		maxv = max (maxv, -minv);
-		minv = -maxv;
+	    if ((nrow(values)==1) || (ncol(values)==1)) {
+	        minv <- min (values, na.rm=TRUE);
+	        maxv <- max (values, na.rm=TRUE);
+	    } else {
+		minv = median (apply (values, 1, function(v) min (v, na.rm=TRUE)), na.rm=TRUE);
+		maxv = median (apply (values, 1, function(v) max (v, na.rm=TRUE)), na.rm=TRUE);
 	    }
-	    values = minv + (maxv - minv) * (1.0/(NC-1)) * (0:(NC-1));
+	    if ((minv < 0.0) && (maxv > 0.0)) {
+		maxv <- max (maxv, -minv);
+		minv <- -maxv;
+	    }
+	    values <- minv + (maxv - minv) * (1.0/(NC-1)) * (0:(NC-1));
 	} else {
 	    stop (sprintf ("chmNewColorMap: unable to derive color map breaks from matrix for map type '%s'", type));
 	}
-    } else if (any (class(values) == c('character', 'numeric', 'integer', 'logical'))) {
+    } else if (class(values) %in% c('character', 'numeric', 'integer', 'logical')) {
+	# User supplied a vector of values.
+	if (anyDuplicated(values) != 0) {
+	    stop ("chmNewColorMap: values contains duplicates");
+	}
+	if (NC == 0) {
+	    NC <- length (values);
+	}
 	if (length(values) != NC)
 	    stop (sprintf ("chmNewColorMap: number of values (%d) does not equal number of color (%d). It should.", length(values), NC));
     } else {
+	# Don't know what the user provided.
         stop (sprintf ("chmNewColorMap: values vector has unknown class '%s'. It must be either a vector or a matrix.",
 	               class (values)));
     }
-    pts <- NULL;
-    for (ii in 1:length(values))
-        pts <- append (pts, new (Class="ngchmColorpt", value=values[ii], color=colors[ii]));
-    new (Class="ngchmColormap", type=type, missing=missing, points=pts)
+    stopifnot (length(values) == NC);
+
+    # Auto-pick colors if needed.
+    if (length(colors) == 0) {
+	if (length(palette) > 0) {
+	    colors <- palette(NC);
+	} else {
+	    colors <- rainbow(NC,start=2/6,end=0);
+	}
+	colors <- vapply (colors, function(cc)substr(cc,1,7), "");
+    }
+    stopifnot (length(colors) == NC);
+
+    # Validate other parameters.
+    if (!is.na(names) && length(names)!=NC)
+	stop (sprintf ("chmNewColorMap: number of names (%d) does not equal number of colors (%d). It should.", length(names), NC));
+    if (!is.na(shapes) && length(shapes)!=NC)
+	stop (sprintf ("chmNewColorMap: number of shapes (%d) does not equal number of colors (%d). It should.", length(shapes), NC));
+    if (!is.na(zs) && length(zs)!=NC)
+	stop (sprintf ("chmNewColorMap: number of zindices (%d) does not equal number of colors (%d). It should.", length(zs), NC));
+    col2rgb (missing.color);  # error check
+
+    # Construct ValueMap
+    pts <- chmAddValueProperty (NULL, value=values, color=colors, name=names, shape=shapes, z=zs);
+    new (Class="ngchmColormap", type=type, missing=missing.color, points=pts)
+}
+
+chmAddValueProperty <- function (vps, value, color, name=NA, shape=NA, z=NA) {
+    some.shapes <- c("circle", "square", "diamond", "triangle");
+    all.shapes <- c(some.shapes, "triangle-down", "line");
+    if (is.na (name)) name <- as.character(value);
+    if (is.na (shape)) shape <- some.shapes[1+(0:(length(value)-1)) %% length(some.shapes)];
+    if (is.na (z)) z <- rep(9,length(value));
+    if (!all(shape %in% all.shapes))
+        stop ("unknown shape ", shape);
+    if (any(z < 0))
+        stop ("z must be non-negative");
+    col2rgb (color);  # error check
+    for (ii in 1:length(value))
+	vps <- append (vps, new (Class="ngchmValueProp", value=value[ii], color=color[ii], name=name[ii], shape=shape[ii], z=z[ii]));
+    vps
 }
 
 #' Create a new Javascript function for adding to a NGCHM menu.

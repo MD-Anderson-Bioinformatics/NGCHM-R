@@ -170,6 +170,7 @@ setMethod ("chmMakePublic",
 #
 
 writeColorMap <- function (context, cmap, prefix, suffix, chan) {
+    stopifnot (length(cmap@missing) > 0);
     colorstr = c("[");
     thresstr = c("[");
     if (is.list(cmap@points)) {
@@ -282,7 +283,9 @@ sameColormap <- function (cmap1, cmap2) {
         stop ("Internal error detected: cmap1 or cmap2 is not a colormap.  Please report.")
     if (cmap1@type != cmap2@type)
         return (FALSE);
-    if (cmap1@missing != cmap2@missing)
+    if (length(cmap1@missing) != length(cmap2@missing))
+        return (FALSE);
+    if ((length(cmap1@missing) > 0) && (cmap1@missing != cmap2@missing))
         return (FALSE);
     if (length(cmap1@points) != length(cmap2@points))
         return (FALSE);
@@ -325,8 +328,11 @@ writeClassBar <- function (cbar, inpDir, type, index, chan) {
     cat (sprintf ("classification.thickness%d=%d\n", index, cbar@thickness), file=chan);
     if (length (cbar@merge) > 0)
 	cat (sprintf ("classification.mergingAlgorithm%d=%s\n", index, cbar@merge), file=chan);
-    if (length (cbar@colors) > 0)
+    if (length (cbar@colors) > 0) {
+	if (length (cbar@colors@missing) == 0)
+	    cbar@colors@missing <- "white";
 	writeColorMap ("class", cbar@colors, "classification", sprintf ("%d", index), chan);
+    }
 
     chan2 <- file (paste (inpDir, sprintf ("%sClassificationData%d.txt", type, index), sep="/"), "w")
     nm <- names(cbar@data)
@@ -335,6 +341,17 @@ writeClassBar <- function (cbar, inpDir, type, index, chan) {
     close (chan2);
 }
 
+addDefaultCovariate <- function (covariates, labels)
+{
+    if (!("None" %in% vapply (covariates, function(cov)cov@label, ""))) {
+	series <- rep ("default", length(labels));
+	names(series) <- labels;
+	cmap <- chmNewColorMap ("default", colors="black", names="Point");
+	cov <- chmNewCovariate ("Nothing", series, value.properties=cmap, type='discrete', covabbv='None');
+        covariates <- append (covariates, cov);
+    }
+    covariates
+}
 
 writeDataset <- function (chm, dataset, dir) {
     library (tsvio);
@@ -345,21 +362,30 @@ writeDataset <- function (chm, dataset, dir) {
     tsvGenIndex (file.path (dir, sprintf ("%s.tsv", dataset@name)),
                  file.path (dir, sprintf ("%s-index.tsv", dataset@name)));
 
-    all.covariates = unique (append (dataset@row.covariates, dataset@column.covariates));
-    if (length(all.covariates) > 0) {
+    row.covars <- addDefaultCovariate (dataset@row.covariates, rownames(dataset@data));
+    col.covars <- addDefaultCovariate (dataset@column.covariates, colnames(dataset@data));
+    if (TRUE) {
 	chm@extrafiles <- c(chm@extrafiles, sprintf ("%s-covariates.tsv", dataset@name));
-	cov.table <- list(Covariate=vapply(all.covariates, function(cov)cov@label, ""),
-	                  Fullname=vapply(all.covariates, function(cov)cov@fullname, ""));
+	cov.table <- list(Covariate=vapply(col.covars, function(cov)cov@label, ""),
+	                  Fullname=vapply(col.covars, function(cov)cov@fullname, ""));
 	write.table(cov.table,
 		    file.path (dir, sprintf ("%s-covariates.tsv", dataset@name)),
 		    sep="\t", quote=FALSE, row.names=FALSE);
     }
+    if (TRUE) {
+	chm@extrafiles <- c(chm@extrafiles, sprintf ("%s-rowcovariates.tsv", dataset@name));
+	cov.table <- list(Covariate=vapply(row.covars, function(cov)cov@label, ""),
+	                  Fullname=vapply(row.covars, function(cov)cov@fullname, ""));
+	write.table(cov.table,
+		    file.path (dir, sprintf ("%s-row-covariates.tsv", dataset@name)),
+		    sep="\t", quote=FALSE, row.names=FALSE);
+    }
 
-    if (length(dataset@row.covariates) > 0) {
+
+    if (TRUE) {
 	first.rowser <- TRUE;
 	first.serprop <- TRUE;
-	for (ii in 1:length(dataset@row.covariates)) {
-	    cov <- dataset@row.covariates[[ii]];
+	for (cov in row.covars) {
 	    rowser <- list (Sample=names(cov@label.series), Series=cov@label.series, Covariate=rep(cov@label,length(cov@label.series)));
 	    if (first.rowser) {
 	        first.rowser <- FALSE;
@@ -370,11 +396,11 @@ writeDataset <- function (chm, dataset, dir) {
 		write.table(rowser, file=fd.rowser, sep="\t", quote=FALSE, row.names=FALSE, col.names=FALSE);
 	    }
 	    if (length(cov@series.properties) > 0) {
-		serprop <- append (list(Covariate=rep(cov@label,length(cov@series.properties[[1]]))), cov@series.properties);
+		serprop <- getSeriesProps (cov@label, cov@series.properties);
 		if (first.serprop) {
 		    first.serprop <- FALSE;
-		    chm@extrafiles <- c(chm@extrafiles, sprintf ("%s-rseries-properties.tsv", dataset@name));
-		    fd.serprop <- file (file.path (dir, sprintf ("%s-rseries-properties.tsv", dataset@name)), "w");
+		    chm@extrafiles <- c(chm@extrafiles, sprintf ("%s-row-series-properties.tsv", dataset@name));
+		    fd.serprop <- file (file.path (dir, sprintf ("%s-row-series-properties.tsv", dataset@name)), "w");
 		    write.table(serprop, file=fd.serprop, sep="\t", quote=FALSE, row.names=FALSE, col.names=TRUE);
 		} else {
 		    write.table(serprop, file=fd.serprop, sep="\t", quote=FALSE, row.names=FALSE, col.names=FALSE);
@@ -385,11 +411,10 @@ writeDataset <- function (chm, dataset, dir) {
 	if (!first.serprop) close (fd.serprop);
     }
 
-    if (length(dataset@column.covariates) > 0) {
+    if (TRUE > 0) {
 	first.colser <- TRUE;
 	first.serprop <- TRUE;
-	for (ii in 1:length(dataset@column.covariates)) {
-	    cov <- dataset@column.covariates[[ii]];
+	for (cov in col.covars) {
 	    colser <- list (Sample=names(cov@label.series), Series=cov@label.series, Covariate=rep(cov@label,length(cov@label.series)));
 	    if (first.colser) {
 	        first.colser <- FALSE;
@@ -400,7 +425,7 @@ writeDataset <- function (chm, dataset, dir) {
 		write.table(colser, file=fd.colser, sep="\t", quote=FALSE, row.names=FALSE, col.names=FALSE);
 	    }
 	    if (length(cov@series.properties) > 0) {
-		serprop <- append (list(Covariate=rep(cov@label,length(cov@series.properties[[1]]))), cov@series.properties);
+		serprop <- getSeriesProps (cov@label, cov@series.properties);
 		if (first.serprop) {
 		    first.serprop <- FALSE;
 		    chm@extrafiles <- c(chm@extrafiles, sprintf ("%s-series-properties.tsv", dataset@name));
@@ -416,6 +441,38 @@ writeDataset <- function (chm, dataset, dir) {
     }
 
     chm
+}
+
+hasSeries <- function (props, value)
+{
+    value %in% vapply (props, function(p) as.character(p@value), "")
+}
+
+addDefaultCovariateProperties <- function (props, missing.color, default.missing.color)
+{
+    if (!hasSeries (props, "unspecified")) {
+	if (length (missing.color) == 0) missing.color <- default.missing.color;
+        props <- chmAddValueProperty (props, value="unspecified", name="Unspecified", color=missing.color, shape="triangle-down", z=1);
+    }
+    if (!hasSeries (props, "regression")) {
+        props <- chmAddValueProperty (props, value="regression", name="Regression", color="red", shape="line", z=1000);
+    }
+    props
+}
+
+getSeriesProps <- function (label, props)
+{
+    if (class (props) == "ngchmColormap") {
+        pts <- addDefaultCovariateProperties (props@points, props@missing, "black");
+	list (Covariate=vapply(pts,function(pt)label,""),
+	      Series=vapply(pts,function(pt)as.character(pt@value),""),
+	      Description=vapply(pts,function(pt)pt@name,""),
+	      Color=vapply(pts,function(pt)pt@color,""),
+	      Shape=vapply(pts,function(pt)pt@shape,""),
+	      zIndex=vapply(pts,function(pt)pt@z,1))
+    } else {
+	append (list(Covariate=rep(label, length(props[[1]]))), props)
+    }
 }
 
 writeTemplate <- function (template, outDir) {
@@ -619,8 +676,12 @@ writeChm <- function (chm) {
     if (length (chm@tags) > 0)
         cat (sprintf ("tags=%s\n", paste(chm@tags,sep=",",collapse=",")), file=props);
     genSpecFeedback (65, "writing color schemes");
-    for (ii in 1:length(chm@colormaps))
-	writeColorMap ("main", chm@colormaps[[ii]], sprintf("colormap%d", ii), "", props);
+    for (ii in 1:length(chm@colormaps)) {
+	cmap <- chm@colormaps[[ii]];
+	if (length (cmap@missing) == 0)
+	    cmap@missing <- "white";
+	writeColorMap ("main", cmap, sprintf("colormap%d", ii), "", props);
+    }
     genSpecFeedback (70, "writing data layers");
     for (ii in 1:length(chm@layers))
         writeDataLayer (chm, chm@layers[[ii]], chm@inpDir, ii, props);
@@ -1228,6 +1289,7 @@ setMethod ("chmAddAxisType",
 setMethod ("chmAddClassBar",
     signature = c(chm="ngchm", where="character", bar="ngchmBar"),
     definition = function (chm, where, bar) {
+	warning ('chmAddClassBar is deprecated and will be removed in a future version. Please use chmAddCovariateBar instead.');
 	validateNewClassbar (chm, where, bar);
 	if (where == "row" || where == "both") {
 	    chm@rowClassbars <- append (chm@rowClassbars, bar);
@@ -1240,6 +1302,58 @@ setMethod ("chmAddClassBar",
 	}
 	chm
 });
+
+#' @rdname chmAddCovariateBar-method
+#' @aliases chmAddCovariateBar,ngchm,character,ngchmCovariateBar-method
+#'
+setMethod ("chmAddCovariateBar",
+    signature = c(chm="ngchm", where="character", covar="ngchmBar"),
+    definition = function (chm, where, covar) {
+	bar <- covar;
+	validateNewClassbar (chm, where, bar);
+	if (where == "row" || where == "both") {
+	    chm@rowClassbars <- append (chm@rowClassbars, bar);
+	    if (where == "both")
+		chm@colClassbars <- append (chm@colClassbars, bar);
+	} else if (where == "column") {
+	    chm@colClassbars <- append (chm@colClassbars, bar);
+	} else {
+	    stop (sprintf ("chmAddCovariateBar: unknown where '%s'. Should be row, column, or both.", where));
+	}
+	chm
+});
+#' @rdname chmAddCovariateBar-method
+#' @aliases chmAddCovariateBar,ngchm,character,ngchmCovariate-method
+#'
+setMethod ("chmAddCovariateBar",
+    signature = c(chm="ngchm", where="character", covar="ngchmCovariate"),
+    definition = function (chm, where, covar,
+                           display="visible", thickness=as.integer(10), merge=NULL) {
+	bar = chmNewClassBar (covar@fullname, covar@type, covar@label.series, covar@series.properties,
+			      display=display, thickness=thickness, merge=merge);
+	chmAddCovariateBar (chm, where, bar)
+});
+#' @rdname chmAddCovariateBar-method
+#' @aliases chmAddCovariateBar,ngchm,character,list-method
+#'
+setMethod ("chmAddCovariateBar",
+    signature = c(chm="ngchm", where="character", covar="list"),
+    definition = function (chm, where, covar,
+                           display="visible", thickness=as.integer(10), merge=NULL) {
+	for (item in covar) {
+	    if (class(item) == "ngchmBar") {
+	        bar <- item;
+	    } else if (class(item) == "ngchmCovariate") {
+		bar <- chmNewClassBar (covar@fullname, covar@type, covar@label.series, covar@series.properties,
+				       display=display, thickness=thickness, merge=merge);
+	    } else {
+	        stop (sprintf ('adding unknown object of unknown class "%s"', class(item)));
+	    }
+	    chm <- chmAddCovariateBar (chm, where, bar)
+	}
+	chm
+});
+
 
 #' @rdname chmBindFunction-method
 #' @aliases chmBindFunction,character,ngchmJS,list-method
