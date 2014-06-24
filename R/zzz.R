@@ -209,6 +209,14 @@ NULL
 	       "    return [axis.labels.getLabel (idx)];",
 	       "};", sep="\n"));
 
+    chmRegisterType ("bio.gene.hugo", "The official HUGO symbol for a gene");
+    chmRegisterType ("bio.gene.entrezid", "The official EntrezID for a gene");
+    chmRegisterType ("bio.meth.infinium.probe", "An Infinium methylation probe identifier");
+    chmRegisterType ("bio.mirna", "An miRNA identifier");
+    chmRegisterType ("bio.pubmed", "Any term that can be used for searching Pubmed");
+    chmRegisterType ("bio.gene.hugo.bar.entrezid", "A bio.gene.hugo and a bio.gene.entrezid separated by a vertical bar");
+    chmRegisterType ("bio.meth.infinium.probe.bar.bio.gene.hugo", "A bio.meth.infinium.probe and a bio.gene.hugo separated by a vertical bar");
+
     chmNewFunction ("openGeneCardPage",
 	"Opens the GeneCards page for the first given HUGO gene name.",
 	paste ("function openGeneCardPage (names) {",
@@ -226,6 +234,7 @@ NULL
 	       "}", sep="\n"));
 
     chmRegisterAxisFunction ("bio.gene.hugo", "Search ClinicalTrials.gov for all", "searchClinicalTrials");
+
 
     chmNewFunction ("openNCBIGenePage",
 	"Opens the NCBI page for the (first) given HUGO gene name.",

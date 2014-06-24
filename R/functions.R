@@ -4,6 +4,7 @@ ngchm.env <- new.env()
 ngchm.env$scripts <- c()
 ngchm.env$axisFunctions <- NULL
 ngchm.env$matrixFunctions <- NULL
+ngchm.env$typeInfo <- NULL
 ngchm.env$typeMappers <- NULL
 ngchm.env$serverProtocols <- NULL
 ngchm.env$toolbox <- NULL
@@ -353,7 +354,16 @@ chmNewCovariate <- function (fullname, values, value.properties=NULL, type=NULL,
 	} else if (mode(values) == "logical") {
 	    value.properties <- chmNewColorMap (c (FALSE, TRUE));
 	} else {
-	    value.properties <- chmNewColorMap (sort (unique (values)));
+	    # We start with human-readable values
+	    # We convert these into machine-readable codes
+	    unames <- sort (unique (values));
+	    uvals <- make.names(unames);
+	    # The properties map uses codes, but maps to the original values.
+	    value.properties <- chmNewColorMap (uvals, names=unames);
+	    # Replace values with the corresponding codes.
+	    values <- values[!is.na(values)];
+	    idx <- vapply(values,function(vv)which(unames==vv),1);
+	    values[] <- uvals[idx];
 	}
     }
 
@@ -510,7 +520,7 @@ chmNewCovariateBar <- function (covar, display="visible", thickness=as.integer(1
 #' @seealso chmNewDataLayer
 #' @seealso chmNewClassBar
 #'
-chmNewColorMap <- function (values, colors=NULL, names=NA, shapes=NA, zs=NA, type="linear", missing.color=NULL, palette=NULL) {
+chmNewColorMap <- function (values, colors=NULL, names=NULL, shapes=NULL, zs=NULL, type="linear", missing.color=NULL, palette=NULL) {
     # Validate parameter 'type'
     if (typeof (type) != "character") {
         stop (sprintf ("Parameter 'type' must have type 'character', not '%s'", typeof(type)));
@@ -587,11 +597,11 @@ chmNewColorMap <- function (values, colors=NULL, names=NA, shapes=NA, zs=NA, typ
     stopifnot (length(colors) == NC);
 
     # Validate other parameters.
-    if (!is.na(names) && length(names)!=NC)
+    if (!is.null(names) && length(names)!=NC)
 	stop (sprintf ("chmNewColorMap: number of names (%d) does not equal number of colors (%d). It should.", length(names), NC));
-    if (!is.na(shapes) && length(shapes)!=NC)
+    if (!is.null(shapes) && length(shapes)!=NC)
 	stop (sprintf ("chmNewColorMap: number of shapes (%d) does not equal number of colors (%d). It should.", length(shapes), NC));
-    if (!is.na(zs) && length(zs)!=NC)
+    if (!is.null(zs) && length(zs)!=NC)
 	stop (sprintf ("chmNewColorMap: number of zindices (%d) does not equal number of colors (%d). It should.", length(zs), NC));
     col2rgb (missing.color);  # error check
 
@@ -600,12 +610,12 @@ chmNewColorMap <- function (values, colors=NULL, names=NA, shapes=NA, zs=NA, typ
     new (Class="ngchmColormap", type=type, missing=missing.color, points=pts)
 }
 
-chmAddValueProperty <- function (vps, value, color, name=NA, shape=NA, z=NA) {
+chmAddValueProperty <- function (vps, value, color, name=NULL, shape=NULL, z=NULL) {
     some.shapes <- c("circle", "square", "diamond", "triangle");
     all.shapes <- c(some.shapes, "triangle-down", "line");
-    if (is.na (name)) name <- as.character(value);
-    if (is.na (shape)) shape <- some.shapes[1+(0:(length(value)-1)) %% length(some.shapes)];
-    if (is.na (z)) z <- rep(9,length(value));
+    if (is.null (name)) name <- as.character(value);
+    if (is.null (shape)) shape <- some.shapes[1+(0:(length(value)-1)) %% length(some.shapes)];
+    if (is.null (z)) z <- rep(9,length(value));
     if (!all(shape %in% all.shapes))
         stop ("unknown shape ", shape);
     if (any(z < 0))
@@ -966,6 +976,126 @@ chmRegisterMatrixFunction <- function (rowtype, columntype, label, fn) {
 	ngchm.env$matrixFunctions <- append (ngchm.env$matrixFunctions, newmf);
     }
     NULL
+}
+
+#' Register a type name.
+#'
+#' This function registers a type name used for determining row and column
+#' linkouts.
+#' This function is intended to be used by NGCHM system developers to record
+#' basic information about the semantic interpretation of a type name.  Registration
+#' of a typename is (currently) not required in order to use it.
+#'
+#' @param typename The name of the type.
+#' @param description A description of the type.
+#'
+#' @return NULL
+#'
+#' @export
+#'
+#' @seealso chmListTypes
+#' @seealso chmGetTypeInfo
+#' @seealso chmRegisterTypeMapper
+chmRegisterType <- function (typename, description) {
+    if (typeof (typename) != "character") {
+        stop (sprintf ("Parameter 'typename' must have type 'character', not '%s'", typeof(typename)));
+    }
+    if (typeof (description) != "character") {
+        stop (sprintf ("Parameter 'description' must have type 'character', not '%s'", typeof(description)));
+    }
+    if (length(typename) < 1)
+        stop ("chmRegisterType: at least one typename must be specified.");
+    if (length(description) != 1)
+        stop (sprintf ("chmRegisterType: description must be exactly a single string, not %d.", length(description)));
+    for (ii in 1:length(typename)) {
+	tt <- data.frame (name=typename[ii], description=description, stringsAsFactors=FALSE);
+	if (typename[ii] %in% ngchm.env$typeInfo$name) {
+	    warning (sprintf ('Replacing definition of typename "%s"', typename[ii]));
+	    idx <- which (ngchm.env$typeInfo$name == typename[ii]);
+	    ngchm.env$typeInfo[idx,] <- tt;
+	} else {
+	    ngchm.env$typeInfo <- rbind (ngchm.env$typeInfo, tt);
+	}
+    }
+    NULL
+}
+
+#' Get information about a type name.
+#'
+#' This function gets any registered information about a type name used for determining row and column
+#' linkouts.
+#' Registration of a typename is (currently) not required in order to use it, so it's possible for
+#' valid type name not to have any registered information.
+#'
+#' @param typename The name of the type.
+#'
+#' @return A list containing basic information about the type.
+#'
+#' @export
+#'
+#' @seealso chmListTypes
+#' @seealso chmRegisterType
+chmGetTypeInfo <- function (typename) {
+    if (typeof (typename) != "character") {
+        stop (sprintf ("Parameter 'typename' must have type 'character', not '%s'", typeof(typename)));
+    }
+    if (length(typename) != 1) {
+        stop ("chmGetTypeInfo: exactly one typename must be specified.");
+    }
+    if (!(typename %in% ngchm.env$typeInfo$name)) {
+	typeinfo <- list (name=typename, description=NULL);
+    } else {
+	idx <- which (ngchm.env$typeInfo$name == typename);
+	typeinfo <- as.list (ngchm.env$typeInfo[idx,]);
+    }
+
+    # Find any axis functions that match
+    matches <- which (vapply (ngchm.env$axisFunctions, function(af) any(af@type == typename), TRUE));
+    if (length (matches) > 0) {
+	typeinfo$axisFunctions <- ngchm.env$axisFunctions[matches];
+    } else {
+	typeinfo$axisFunctions <- NULL;
+    }
+
+    # Find any matrix functions that match
+    matches <- which (vapply (ngchm.env$matrixFunctions, function(af) any(af@rowtype == typename) || any(af@columntype == typename), TRUE));
+    if (length (matches) > 0) {
+	typeinfo$matrixFunctions <- ngchm.env$matrixFunctions[matches];
+    } else {
+	typeinfo$matrixFunctions <- NULL;
+    }
+
+    # Find any type mappers that match
+    matches <- which (vapply (ngchm.env$typeMappers, function(af) any(af@fromtype == typename), TRUE));
+    if (length (matches) > 0) {
+	typeinfo$typeMappers <- ngchm.env$typeMappers[matches];
+    } else {
+	typeinfo$typeMappers <- NULL;
+    }
+
+    class(typeinfo) <- "ngchm.type.info";
+    typeinfo
+}
+
+#' Pretty print the result returned by chmGetTypeInfo.
+#'
+#' @export
+#'
+#' @seealso chmGetTypeInfo
+print.ngchm.type.info <- function (ti) {
+    cat (sprintf ("NGCHM type %s: %s\n", ti$name, ti$description));
+    if (length (ti$axisFunctions) > 0) {
+	fns <- paste (vapply (ti$axisFunctions, function(af)af@label, ""), collapse=", ");
+	cat (sprintf ("matches axis functions %s.\n", fns));
+    }
+    if (length (ti$matrixFunctions) > 0) {
+	fns <- paste (vapply (ti$matrixFunctions, function(af)af@label, ""), collapse=", ");
+	cat (sprintf ("matches matrix functions %s.\n", fns));
+    }
+    if (length (ti$typeMappers) > 0) {
+	types <- paste (vapply (ti$typeMappers, function(af)af@totype, ""), collapse=", ");
+	cat (sprintf ("maps to types %s.\n", types));
+    }
 }
 
 #' Register a predefined Javascript function for converting values from

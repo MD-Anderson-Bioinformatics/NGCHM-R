@@ -847,7 +847,7 @@ addToolBoxes <- function (chm)
 {
     rowtypes <- getAllAxisTypes (chm, "row");
     matches <- vapply (chm@datasets, function(ds)(length(ds@row.type) > 0) && (ds@row.type %in% rowtypes$types), TRUE);
-    cat (sprintf ("addToolBoxes: found %d matching row datasets:\n", sum(matches)), file=stderr());
+    cat (sprintf ("addToolBoxes: found %d R datasets matching row types:\n", sum(matches)), file=stderr());
     if (sum(matches) > 0) {
 	if (sum(matches) == 1) {
 	    extra <- "";
@@ -856,13 +856,13 @@ addToolBoxes <- function (chm)
 	}
 	for (ds in chm@datasets[matches]) {
 	    cat (sprintf ("dataset '%s' row.type '%s'\n", ds@name, ds@row.type), file=stderr());
-	    chm <- chmAddToolbox (chm, "row", ds@row.type, ds@name, extra[1]);
+	    chm <- chmAddToolboxR (chm, "row", ds@row.type, ds@name, extra[1]);
 	    extra <- tail (extra, -1);
 	}
     }
     coltypes <- getAllAxisTypes (chm, "column");
     matches <- vapply (chm@datasets, function(ds)(length(ds@row.type) > 0) && (ds@row.type %in% coltypes$types), TRUE);
-    cat (sprintf ("addToolBoxes: found %d matching column datasets:\n", sum(matches)), file=stderr());
+    cat (sprintf ("addToolBoxes: found %d R datasets matching column types:\n", sum(matches)), file=stderr());
     if (sum(matches) > 0) {
 	if (sum(matches) == 1) {
 	    extra <- "";
@@ -871,12 +871,12 @@ addToolBoxes <- function (chm)
 	}
 	for (ds in chm@datasets[matches]) {
 	    cat (sprintf ("dataset '%s' row.type '%s'\n", ds@name, ds@row.type), file=stderr());
-	    chm <- chmAddToolbox (chm, "column", ds@row.type, ds@name, extra[1]);
+	    chm <- chmAddToolboxR (chm, "column", ds@row.type, ds@name, extra[1]);
 	    extra <- tail (extra, -1);
 	}
     }
     matches <- vapply (chm@datasets, function(ds)(length(ds@row.type) > 0) && (ds@row.type %in% coltypes$types) && (ds@row.type %in% rowtypes$types), TRUE);
-    cat (sprintf ("addToolBoxes: found %d matching both datasets:\n", sum(matches)), file=stderr());
+    cat (sprintf ("addToolBoxes: found %d R2 datasets matching row and column types:\n", sum(matches)), file=stderr());
     if (sum(matches) > 0) {
 	if (sum(matches) == 1) {
 	    extra <- "";
@@ -885,7 +885,21 @@ addToolBoxes <- function (chm)
 	}
 	for (ds in chm@datasets[matches]) {
 	    cat (sprintf ("dataset '%s' row.type '%s'\n", ds@name, ds@row.type), file=stderr());
-	    chm <- chmAddToolbox2 (chm, ds@row.type, ds@name, extra[1]);
+	    chm <- chmAddToolboxR2 (chm, ds@row.type, ds@name, extra[1]);
+	    extra <- tail (extra, -1);
+	}
+    }
+    matches <- vapply (chm@datasets, function(ds)(length(ds@row.type) > 0) && (length(ds@column.type) > 0) && (ds@column.type %in% coltypes$types) && (ds@row.type %in% rowtypes$types), TRUE);
+    cat (sprintf ("addToolBoxes: found %d RC datasets matching row and column types:\n", sum(matches)), file=stderr());
+    if (sum(matches) > 0) {
+	if (sum(matches) == 1) {
+	    extra <- "";
+	} else {
+	    extra <- sprintf (" (%s)", vapply(chm@datasets[matches], function(ds)ds@name, ""));
+	}
+	for (ds in chm@datasets[matches]) {
+	    cat (sprintf ("dataset '%s' row.type '%s' col.type '%s'\n", ds@name, ds@row.type, ds@column.type), file=stderr());
+	    chm <- chmAddToolboxRC (chm, ds@row.type, ds@column.type, ds@name, extra[1]);
 	    extra <- tail (extra, -1);
 	}
     }
@@ -1443,17 +1457,21 @@ setReplaceMethod ("chmColMeta",
         chm
 });
 
+make.js.names <- function (sss) {
+    sss <- make.names (sss);
+    vapply (sss, function(ss)gsub('.','_',ss,fixed=TRUE), "")
+}
 
-#' @rdname chmAddToolbox-method
-#' @aliases chmAddToolbox,ngchm,character,character,character,character-method
-setMethod ("chmAddToolbox",
+#' @rdname chmAddToolboxR-method
+#' @aliases chmAddToolboxR,ngchm,character,character,character,character-method
+setMethod ("chmAddToolboxR",
     signature = c(CHM="ngchm", axis="character", axistype="character", datasetname="character", idstr="character"),
     definition = function (CHM, axis, axistype, datasetname, idstr) {
 	toolbox <- ngchm.env$toolbox;
 	if (length(toolbox)>0) {
 	    for (ii in 1:nrow(toolbox)) {
-		if (toolbox[ii,]$type == "GS") {
-		    fnname <- sprintf ("%s%s", toolbox[ii,]$fn@name, datasetname);
+		if (toolbox[ii,]$type == "R") {
+		    fnname <- sprintf ("%s%s", toolbox[ii,]$fn@name, make.js.names(datasetname));
 		    fndef <- chmGetFunction (fnname);
 		    if (length(fndef) == 0) {
 			chmBindFunction (fnname, toolbox[ii,]$fn@name, list(dataset=datasetname));
@@ -1466,16 +1484,38 @@ setMethod ("chmAddToolbox",
 	CHM
 });
 
-#' @rdname chmAddToolbox2-method
-#' @aliases chmAddToolbox2,ngchm,character,character,character-method
-setMethod ("chmAddToolbox2",
+#' @rdname chmAddToolboxR2-method
+#' @aliases chmAddToolboxR2,ngchm,character,character,character-method
+setMethod ("chmAddToolboxR2",
     signature = c(CHM="ngchm", axistype="character", datasetname="character", idstr="character"),
     definition = function (CHM, axistype, datasetname, idstr) {
 	toolbox <- ngchm.env$toolbox;
 	if (length(toolbox)>0) {
 	    for (ii in 1:nrow(toolbox)) {
-		if (toolbox[ii,]$type == "GG") {
-		    fnname <- sprintf ("%s%s", toolbox[ii,]$fn@name, datasetname);
+		if (toolbox[ii,]$type == "R2") {
+		    fnname <- sprintf ("%s%s", toolbox[ii,]$fn@name, make.js.names(datasetname));
+		    fndef <- chmGetFunction (fnname);
+		    if (length(fndef) == 0) {
+			chmBindFunction (fnname, toolbox[ii,]$fn@name, list(dataset=datasetname));
+		    }
+		    fnlabel = sprintf ("%s%s", toolbox[ii,]$label, idstr);
+		    CHM <- chmAddMenuItem (CHM, "element", fnlabel, chmGetFunction(fnname));
+		}
+	    }
+	}
+	CHM
+});
+
+#' @rdname chmAddToolboxRC-method
+#' @aliases chmAddToolboxRC,ngchm,character,character,character-method
+setMethod ("chmAddToolboxRC",
+    signature = c(CHM="ngchm", rowtype="character", coltype="character", datasetname="character", idstr="character"),
+    definition = function (CHM, rowtype, coltype, datasetname, idstr) {
+	toolbox <- ngchm.env$toolbox;
+	if (length(toolbox)>0) {
+	    for (ii in 1:nrow(toolbox)) {
+		if (toolbox[ii,]$type == "RC") {
+		    fnname <- sprintf ("%s%s", toolbox[ii,]$fn@name, make.js.names(datasetname));
 		    fndef <- chmGetFunction (fnname);
 		    if (length(fndef) == 0) {
 			chmBindFunction (fnname, toolbox[ii,]$fn@name, list(dataset=datasetname));

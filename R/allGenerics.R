@@ -562,26 +562,40 @@ setGeneric ("chmBindFunction", function(name,fn,bindings) standardGeneric("chmBi
 #'
 #' Add a standard toolbox to an axis
 #'
-#' @exportMethod chmAddToolbox
-#' @rdname chmAddToolbox-method
+#' @exportMethod chmAddToolboxR
+#' @rdname chmAddToolboxR-method
 #'
 #' @param CHM CHM to which the toolbox will be added
 #' @param axis the axis to which the toolbix will be added
 #' @param axistype the type of the axis
 #' @param datasetname the name of the dataset to use
 #' @param idstr string to append to toolbox menu labels (default '')
-setGeneric ("chmAddToolbox", function(CHM,axis,axistype,datasetname,idstr) standardGeneric("chmAddToolbox"));
+setGeneric ("chmAddToolboxR", function(CHM,axis,axistype,datasetname,idstr) standardGeneric("chmAddToolboxR"));
 
 #' Add standard toolbox to an element
 #'
 #' Add a standard toolbox to an element
 #'
-#' @exportMethod chmAddToolbox2
-#' @rdname chmAddToolbox2-method
+#' @exportMethod chmAddToolboxR2
+#' @rdname chmAddToolboxR2-method
 #'
 #' @param CHM CHM to which the toolbox will be added
 #' @param axistype the type of both axes
 #' @param datasetname the name of the dataset to use
 #' @param idstr string to append to toolbox menu labels (default '')
-setGeneric ("chmAddToolbox2", function(CHM,axistype,datasetname,idstr) standardGeneric("chmAddToolbox2"));
+setGeneric ("chmAddToolboxR2", function(CHM,axistype,datasetname,idstr) standardGeneric("chmAddToolboxR2"));
+
+#' Add standard toolbox to an element
+#'
+#' Add a standard toolbox to an element
+#'
+#' @exportMethod chmAddToolboxRC
+#' @rdname chmAddToolboxRC-method
+#'
+#' @param CHM CHM to which the toolbox will be added
+#' @param rowtype the type of the row axis
+#' @param coltype the type of the column axis
+#' @param datasetname the name of the dataset to use
+#' @param idstr string to append to toolbox menu labels (default '')
+setGeneric ("chmAddToolboxRC", function(CHM,rowtype,coltype,datasetname,idstr) standardGeneric("chmAddToolboxRC"));
 
