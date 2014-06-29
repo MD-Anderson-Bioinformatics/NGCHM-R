@@ -256,6 +256,18 @@ setClass ("ngchmOverview",
 			  width="integer",
 			  height="integer"));
 
+#' Class representing an addon dialog
+#'
+#' @exportClass ngchmDialog
+#' @name ngchmDialog-class
+#' @rdname ngchmDialog-class
+#'
+#' @keywords classes
+setClass ("ngchmDialog",
+          representation (id="character",
+			  title="character",
+			  fn="ngchmJS"));
+
 #' Class representing a Next Generation Clustered Heat Map (NGCHM) under construction.
 #'
 #' @exportClass ngchm
@@ -285,6 +297,7 @@ setClass ("ngchm",
 			  rowMenu="optList",
 			  colMenu="optList",
 			  datasets="optList",
+			  dialogs="optList",
 			  tags="optCharacter",
 			  elementMenu="optList",
 			  rowTypeFunctions="optList",   # Type functions specific to this CHM.
@@ -293,6 +306,7 @@ setClass ("ngchm",
 			  axisTypes="optList",
 			  css="optList",
 			  extrafiles="optCharacter",
+			  extrascripts="optCharacter",
 			  properties="optList",
 			  overviews="optList",
 			  javascript="optList",
@@ -319,12 +333,14 @@ setClass ("ngchm",
 				colMeta=NULL,
 				axisTypes=NULL,
 				datasets=NULL,
+				dialogs=NULL,
 				tags=c(),
 				css=c(),
 			        rowTypeFunctions=NULL,
 			        colTypeFunctions=NULL,
 			        elementTypeFunctions=NULL,
 				extrafiles=c(),
+				extrascripts=c(),
 				properties=c(),
 				overviews=NULL,
 				relatedLinks=NULL,

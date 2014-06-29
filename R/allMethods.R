@@ -232,9 +232,19 @@ writeChmPost <- function (chm) {
 
 startcust <- paste ("(function(chm){",
 	       "chm.chmv = '/chmv/';",
+	       "function _chm_ad(id,tit,fn){var td=fn($('<div></div>').attr('title',tit).attr('id',id));",
+	       " $('body').append(td); $('#'+id).dialog({position:[0,200],autoOpen:false});",
+	       " chm.menubar.addDialogsMenuItem(id,tit,function(tlmc,mi){td.dialog();});",
+	       "}",
+	       "function _chm_as(src){var s=document.createElement('script');",
+	       " s.setAttribute('type','text/javascript'); s.setAttribute('src',src);",
+	       " $('head').append(s);",
+	       "}",
                "function _chm_e(sr,ax,fn){function c2(a,b){return a.concat(b);};",
-               "return sr.map(function(r){var v=[];for(var ii=r.start;ii<=r.end;ii++)v.push(ii);",
-	       "return v.map(function(i){return fn(ax,i);}).reduce(c2);}).reduce(c2);}\n", sep="\n");
+               " return sr.map(function(r){var v=[];for(var ii=r.start;ii<=r.end;ii++)v.push(ii);",
+	       " return v.map(function(i){return fn(ax,i);}).reduce(c2);}).reduce(c2);",
+	       "}",
+	       "", sep="\n");
 
 # Returns list of all functions in requires and jsfuns.  Required functions come
 # before the function(s) needing them.
@@ -253,6 +263,12 @@ requiredFunctions <- function (requires, jsfuns) {
     requires
 }
 
+writeDialogs <- function (dialogs, chan) {
+    for (dialog in dialogs) {
+        cat (sprintf ("    _chm_ad('%s', '%s', %s);\n", dialog@id, dialog@title, dialog@fn@name), file=chan);
+    }
+}
+
 writeCustomJS <- function (chm) {
     rqJSfuns <- requiredFunctions (list(), chm@javascript);
     chan <- file (paste (chm@inpDir, "custom.js", sep="/"), "w");
@@ -265,6 +281,7 @@ writeCustomJS <- function (chm) {
     writeMenu (chm@colMenu, "column.labels", chan);
     writeMenu (chm@colMenu, "column.dendrogram", chan);
     writeMenu (chm@elementMenu, "matrix", chan);
+    writeDialogs (chm@dialogs, chan);
     cat ("});\n", file=chan);
     cat ("})(MDACC_GLOBAL_NAMESPACE.namespace('tcga').chm);\n", file=chan);
     close (chan);
@@ -1063,6 +1080,21 @@ setMethod ("chmAddDataset",
         chm
 });
 
+#' @rdname chmAddDialog-method
+#' @aliases chmAddDialog,ngchm,ngchmDialog-method
+setMethod ("chmAddDialog",
+    signature = c(chm="ngchm", dialog="ngchmDialog"),
+    definition = function (chm, dialog) {
+	if (dialog@id %in% vapply(chm@dialogs, function(d)d@id, "")) {
+	    stop (sprintf ("A dialog with id '%s' already exists", dialog@id));
+	}
+	if (dialog@title %in% vapply(chm@dialogs, function(d)d@title, "")) {
+	    stop (sprintf ("A dialog with title '%s' already exists", dialog@title));
+	}
+	chm@dialogs <- append (chm@dialogs, dialog);
+	addFunDefine (chm, dialog@fn)
+});
+
 #' @rdname chmAddCovariate-method
 #' @aliases chmAddCovariate,ngchmDataset,character,ngchmCovariate-method
 setMethod ("chmAddCovariate",
@@ -1221,6 +1253,21 @@ setMethod ("chmAddSpecificAxisTypeFunction",
     }
 );
 
+addFunDefine <- function (chm, func) {
+    dup <- 0;
+    if (is.list(chm@javascript)) {
+	for (ii in 1:length(chm@javascript))
+	    if (chm@javascript[[ii]]@name == func@name) {
+		dup <- ii;
+		if (chm@javascript[[ii]]@script != func@script)
+		    stop (sprintf ("Duplicate definition of function '%s' differs from first definition", func@name));
+	    }
+    }
+    if (dup == 0)
+	chm@javascript = append (chm@javascript, func);
+    chm
+}
+
 #' @rdname chmAddMenuItem-method
 #' @aliases chmAddMenuItem,ngchm,character,character,ngchmJS-method
 #'
@@ -1241,18 +1288,7 @@ setMethod ("chmAddMenuItem",
 	} else if (where != "nowhere") {
 	    stop (sprintf ("chmAddMenuItem: unknown where '%s'. Should be row, column, both, or element (or nowhere).", where));
 	}
-	dup <- 0;
-	if (is.list(chm@javascript)) {
-	    for (ii in 1:length(chm@javascript))
-	        if (chm@javascript[[ii]]@name == func@name) {
-		    dup <- ii;
-		    if (chm@javascript[[ii]]@script != func@script)
-		        stop (sprintf ("chmAddMenuItem: duplicate definition of function '%s' differs from first definition", func@name));
-		}
-	}
-	if (dup == 0)
-	    chm@javascript = append (chm@javascript, func);
-	chm
+	addFunDefine (chm, func)
 });
 
 #' @rdname chmAddMenuItem-method

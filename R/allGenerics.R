@@ -138,6 +138,22 @@ setGeneric ("chmAddLayer", function(chm,layer) standardGeneric("chmAddLayer"));
 #' @seealso ngchmDataset-class
 setGeneric ("chmAddDataset", function(chm,dataset) standardGeneric("chmAddDataset"));
 
+#' Add an extra dialog to a NGCHM.
+#'
+#' Add an extra dialog to a Next Generation Clustered Heat Map (NGCHM) and return the extended CHM.
+#'
+#' @param chm The chm to add the dialog to.
+#' @param dialog The dialog to add to the chm.
+#'
+#' @return The extended chm.
+#'
+#' @exportMethod chmAddDialog
+#' @rdname chmAddDialog-method
+#'
+#' @seealso chmNewDialog
+#' @seealso ngchmDialog-class
+setGeneric ("chmAddDialog", function(chm,dialog) standardGeneric("chmAddDialog"));
+
 #' Add a covariate to an auxiliary dataset.
 #'
 #' Add a covariate to an auxiliary dataset and return the extended dataset.

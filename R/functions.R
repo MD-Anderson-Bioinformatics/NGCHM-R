@@ -151,6 +151,7 @@ chmAddList <- function (chm, args) {
 	else if ((cc == "matrix") && (mode(item) == "numeric")) { chm <- chmAddLayer (chm, item); }
 	else if (cc == "ngchmDataset") { chm <- chmAddDataset (chm, item); }
 	else if (cc == "ngchmColormap") { chm <- chmAddColormap (chm, item); }
+	else if (cc == "ngchmDialog") { chm <- chmAddDialog (chm, item); }
 	else {
 	    cat (sprintf ("Unable to add item of class '%s' to chm\n", class(item)));
 	}
@@ -1542,4 +1543,27 @@ shortnameslist <- function (names, maxnames=5)
 	qnames <- sprintf ('"%s"', names);
     }
     paste (qnames, collapse=", ")
+}
+
+#' Create a new Dialog for a NGCHM.
+#'
+#' This function creates a new Dialog suitable for adding to a Next Generation Clustered Heat Map.
+#'
+#' @param id The html id for the dialog.
+#' @param title The dialog title / menu entry name.
+#' @param fn The javascript function for customizing the dialog's contents.
+#'
+#' @return An object of class ngchmDialog
+#'
+#' @export
+#'
+#' @seealso chmAdd
+#' @seealso chmAddDialog
+#' 
+chmNewDialog <- function (id, title, fn) {
+    if (class(fn) == "character") {
+        fn <- chmGetFunction (fn);
+    }
+    dialog <- new (Class="ngchmDialog", id=id, title=title, fn=fn);
+    dialog
 }
