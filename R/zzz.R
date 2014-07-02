@@ -272,6 +272,17 @@ NULL
 	       "              'ideogram');",
 	       "};", sep="\n"));
     chmRegisterAxisFunction ("bio.gene.hugo", "View Ideogram", "viewGenesetIdeogramG");
+    chmNewFunction ("viewGenesetIdeogramG2",
+	"For matrix types 'bio.gene.hugo', this function shows the genomic locations of the selected genes.",
+	paste ("function viewGenesetIdeogramG2 (g1, g2) {",
+	       "  g1 = g1.filter(function(el,i,a){return i==a.indexOf(el);});",
+	       "  g2 = g2.filter(function(el,i,a){return i==a.indexOf(el);});",
+	       "  g1 = g1.map(function(g){return encodeURIComponent(g);});",
+	       "  g2 = g2.map(function(g){return encodeURIComponent(g);});",
+	       "  window.open('http://bioinformatics.mdanderson.org/ideogramviewer/Ideogram.html?genelist1=' + g1.join(',') + '&genelist2=' + g2.join(','),",
+	       "              'ideogram');",
+	       "};", sep="\n"));
+    chmRegisterMatrixFunction ("bio.gene.hugo", "bio.gene.hugo", "View Ideogram", "viewGenesetIdeogramG2")
 
     chmNewFunction ("viewGenesetIdeogramM",
 	"For axis type 'bio.mirna', this function shows the genomic locations of the selected mirnas.",
@@ -282,6 +293,29 @@ NULL
 	       "              'ideogram');",
 	       "};", sep="\n"));
     chmRegisterAxisFunction ("bio.mirna", "View Ideogram", "viewGenesetIdeogramM");
+    chmNewFunction ("viewGenesetIdeogramM2",
+	"For matrix types 'bio.mirna', this function shows the genomic locations of the selected mirnas.",
+	paste ("function viewGenesetIdeogramM2 (mirs1, mirs2) {",
+	       "  mirs1 = mirs1.sort().filter(function(el,i,a){return i==a.indexOf(el);});",
+	       "  mirs2 = mirs2.sort().filter(function(el,i,a){return i==a.indexOf(el);});",
+	       "  mirs1 = mirs1.map(function(g){return encodeURIComponent(g);});",
+	       "  mirs2 = mirs2.map(function(g){return encodeURIComponent(g);});",
+	       "  window.open('http://bioinformatics.mdanderson.org/ideogramviewer/Ideogram.html?mirlist1=' + mirs1.join(',') + '&mirlist2=' + mirs2.join(','),",
+	       "              'ideogram');",
+	       "};", sep="\n"));
+    chmRegisterMatrixFunction ("bio.mirna", "bio.mirna", "View Ideogram", "viewGenesetIdeogramM2");
+
+    chmNewFunction ("viewGenesetIdeogramGM",
+	"For matrix with axis types 'bio.hugo.gene' and 'bio.mirna', this function shows the genomic locations of the selected genes and mirnas.",
+	paste ("function viewGenesetIdeogramGM (genes1, mirs1) {",
+	       "  genes1 = genes1.sort().filter(function(el,i,a){return i==a.indexOf(el);});",
+	       "  mirs1 = mirs1.sort().filter(function(el,i,a){return i==a.indexOf(el);});",
+	       "  genes1 = genes1.map(function(g){return encodeURIComponent(g);});",
+	       "  mirs1 = mirs1.map(function(g){return encodeURIComponent(g);});",
+	       "  window.open('http://bioinformatics.mdanderson.org/ideogramviewer/Ideogram.html?genelist1=' + genes1.join(',') + '&mirlist1=' + mirs1.join(','),",
+	       "              'ideogram');",
+	       "};", sep="\n"));
+    chmRegisterMatrixFunction ("bio.gene.hugo", "bio.mirna", "View Ideogram", "viewGenesetIdeogramGM");
 
     chmNewFunction ("searchGoogleScholar",
 	"For axis type 'bio.pubmed', this function searches Google Scholar for documents containing the selected terms.",
