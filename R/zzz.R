@@ -216,6 +216,8 @@ NULL
     chmRegisterType ("bio.pubmed", "Any term that can be used for searching Pubmed");
     chmRegisterType ("bio.gene.hugo.bar.entrezid", "A bio.gene.hugo and a bio.gene.entrezid separated by a vertical bar");
     chmRegisterType ("bio.meth.infinium.probe.bar.bio.gene.hugo", "A bio.meth.infinium.probe and a bio.gene.hugo separated by a vertical bar");
+    chmRegisterType ("bio.mdacc.pathwayid", "An MD Anderson pathway identifier");
+    chmRegisterType ("bio.go.id", "A Gene Ontology (GO) identifier");
 
     chmNewFunction ("openGeneCardPage",
 	"Opens the GeneCards page for the first given HUGO gene name.",
@@ -346,6 +348,46 @@ NULL
 	       "              'pubmed');",
 	       "};", sep="\n"));
     chmRegisterAxisFunction ("bio.pubmed", "Search Pubmed for any", "searchPubmedAny");
+
+    chmNewFunction ("openMDACCPathwayID",
+	"Opens the MD Anderson pathways browser page for the pathway concerned.",
+	paste("function openMDACCPathwayID (names) {",
+	      "    var gname = names[0];",
+	      "    window.open('http://bcbgf01-stage:28081/PathwaysBrowser/pathway/latest/mdaPathwayId/' + gname, 'pathways');",
+	      "};", sep="\n"));
+    chmRegisterAxisFunction ("bio.mdacc.pathwayid", "View Pathway", "openMDACCPathwayID")
+
+    chmNewFunction ("openAmigo",
+	"Opens the Amigo GO browser page for the goid concerned.",
+	paste("function openAmigo (names) {",
+	      "    var goid = names[0];",
+	      "    window.open('http://amigo.geneontology.org/cgi-bin/amigo/term_details?term=' + goid, 'genoontology');",
+	      "};", sep="\n"));
+    chmRegisterAxisFunction ("bio.go.id", "View Amigo", "openAmigo")
+
+    chmNewFunction ("openOLSVis",
+	"Opens the OLSVis GO browser page for the goid concerned.",
+	paste("function openOLSVis (names) {",
+	      "    var goid = names[0];",
+	      "    window.open('http://ols.wordvis.com/q=' + goid, 'genoontology');",
+	      "};", sep="\n"));
+    chmRegisterAxisFunction ("bio.go.id", "View OLSVis", "openOLSVis")
+
+    chmNewFunction ("openQuickGO",
+	"Opens the QuickGO browser page for the goid concerned.",
+	paste("function openQuickGO (names) {",
+	      "    var goid = names[0];",
+	      "    window.open('http://www.ebi.ac.uk/QuickGO/GTerm?id=' + goid, 'genoontology');",
+	      "};", sep="\n"));
+    chmRegisterAxisFunction ("bio.go.id", "View QuickGO", "openQuickGO")
+
+    chmNewFunction ("openPathwaysBrowserGO",
+	"Opens the PathwaysBrowser GO page for the goid concerned.",
+	paste("function openPathwaysBrowserGO (names) {",
+	      "    var goid = names[0];",
+	      "    window.open('http://bioinformatics.mdanderson.org/PathwaysBrowser/goTerm/latest/goId/' + goid, 'genoontology');",
+	      "};", sep="\n"));
+    chmRegisterAxisFunction ("bio.go.id", "View PathwaysBrowser", "openPathwaysBrowserGO")
 
     chmNewFunction ("getBarField0",
 	"Splits each input string at vertical bar, and returns the first field.",
