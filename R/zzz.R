@@ -13,9 +13,27 @@
 #' @aliases NGCHM-functions
 NULL
 
-.onLoad <- function (libname, pkgname) {
-    .initNGCHM ()
+ngchm.env <- new.env();
 
+.initNGCHM <- function () {
+    # Populate library environment.
+    ngchm.env$uuid <- paste(sample (c(letters,0:9,toupper(letters)), 50, replace=TRUE),collapse="");
+    ngchm.env$scripts <- c();
+    ngchm.env$axisFunctions <- NULL;
+    ngchm.env$matrixFunctions <- NULL;
+    ngchm.env$typeInfo <- NULL;
+    ngchm.env$typeMappers <- NULL;
+    ngchm.env$serverProtocols <- NULL;
+    ngchm.env$toolbox <- NULL;
+    ngchm.env$servers <- list();
+    ngchm.env$parseFns <- new.env();
+    ngchm.env$jarCache <- new.env();
+    ngchm.env$nextId <- 0;
+}
+
+# Define the built-in server protocol "manual".
+#
+defineManualProtocol <- function () {
     chmCreateServerProtocol ("manual",
 			     installMethod = function (server, chm) {
 				stop ("NGCHMs cannot be automatically installed on this server. Please obtain installation instructions from the server administrator.");
@@ -29,383 +47,353 @@ NULL
 			     makePublic = function (server, chm) {
 				stop ("NGCHMs cannot be automatically be made public on this server. Please obtain instructions from the server administrator.");
 			     });
+}
 
-     removeCHMfromServer <- function (server, chmname) {
-	# Uninstall the installed CHM, if any, at server@serverName:server@deployDir/chmname
-	# We create the delete.txt special file, wait for the server to do its thing, then remove any leftover trash.
-	if (server@deployServer == system("/bin/hostname -f", intern=TRUE)) {
-	    system (sprintf ("/bin/find %s/%s -type d -exec /bin/chmod g+s '{}' ';'", shQuote(chmDeployDir(server)), shQuote(chmname)));
-	    system (sprintf ("/bin/sh -c \"'(cd %s; touch %s/delete.txt; while [ -O %s/delete.txt ] ; do sleep 1; done; sleep 2; /bin/rm -rf %s; while [ -d %s ] ; do sleep 1; done)'\"",
-			     shQuote (chmDeployDir(server)),
-			     shQuote (chmname),
-			     shQuote (chmname),
-			     shQuote (chmname),
-			     shQuote (chmname),
-			     shQuote (chmname)));
-	} else {
-	    system (sprintf ("ssh %s /bin/find %s/%s -type d -exec /bin/chmod g+s '{}' '\\;'", getServerDest (server), shQuote(chmDeployDir(server)), shQuote(chmname)));
-	    system (sprintf ("ssh %s /bin/sh -c \"'(cd %s; touch %s/delete.txt; while [ -O %s/delete.txt ] ; do sleep 1; done; sleep 2; /bin/rm -rf %s; while [ -d %s ] ; do sleep 1; done)'\"",
-			     getServerDest (server),
-			     shQuote (chmDeployDir(server)),
-			     shQuote (chmname),
-			     shQuote (chmname),
-			     shQuote (chmname),
-			     shQuote (chmname),
-			     shQuote (chmname)));
+# Get the list of configuration directories.
+#
+getConfigDirs <- function () {
+
+    configpath <- Sys.getenv ("NGCHMCONFIGPATH");
+    if (nzchar(configpath) == 0) {
+	configpath <- paste ("/etc/ngchm", "/usr/local/ngchm", "/opt/ngchm",
+			     file.path (Sys.getenv("HOME"), ".ngchm"),
+			     sep=":");
+    }
+
+    ngchm.env$configdirs <- strsplit (configpath, ':')[[1]];
+}
+
+# Remove leading and trailing spaces from s.
+#
+spstrip <- function (s) {
+    sub ("^ *", "", sub (" *$", "", s))
+}
+
+# Simple Javascript parser for extracting JSDoc components.
+# Returns a list of JSDoc components.
+# Each JSDoc Component is a list of two fields:
+#     tags: a list of JSDoc tag fields
+#     src: a string containing Javascript source code.
+parseJSDoc <- function (filename, lines) {
+    alldocs <- list();
+
+    sources <- c();
+    jstags <- list();
+    incomment <- FALSE;
+    inJSDoc <- FALSE;
+    for (line in lines) {
+	if (!inJSDoc) sources <- append (sources, line);
+	line <- sub ("^  *", "", line);
+	while (nchar(line) > 0) {
+	    if (incomment) {
+	        if (substr(line,1,2) == "*/") {
+		    line <- substring (line, 3);
+		    incomment <- FALSE;
+		    inJSDoc <- FALSE;
+		}
+		else if (inJSDoc && (substr(line,1,1)=="@")) {
+		    line <- substring(line,2);
+		    fields <- strsplit (line,' ')[[1]];
+		    jstags <- append (jstags, list(fields));
+		    line <- "";
+		}
+		else {
+		    line <- sub ("^[*@]*", "", substring(line,2));
+		}
+	    }
+	    else if (substr(line,1,2) == "/*") {
+	        line <- substring (line, 3);
+		incomment <- TRUE;
+		inJSDoc <- FALSE;
+		if ((nchar(line) > 0) && (substr(line,1,1) == '*')) {
+		    if ((nchar(line) == 1) || (substr(line,2,1) != '*')) {
+		        inJSDoc <- TRUE;
+			src <- paste(sources[-length(sources)], collapse='\n');
+			if (length(jstags)>0)
+			    alldocs <- append (alldocs, list(list(tags=jstags,src=src)));
+			jstags <- list();
+			sources <- c();
+		    }
+		}
+	    }
+	    else if (substr(line,1,2) == "//") {
+	        line <- "";
+	    }
+	    else if (substr(line,1,1) == "'") {
+	        tmp <- sub ("^'[^']*'", "", line);
+		if (line == tmp) stop (sprintf ("In Javascript file %s, unterminated string: %s", filename, line));
+		line <- tmp;
+	    }
+	    else if (substr(line,1,1) == '"') {
+	        tmp <- sub ('^"[^"]*"', "", line);
+		if (line == tmp) stop (sprintf ("In Javascript file %s, unterminated string %s", filename, line));
+		line <- tmp;
+	    }
+	    else {
+	        line <- sub ("^[^'\"/]*", "", substring(line,2));
+	    }
+	    line <- sub ("^  *", "", line);
 	}
-     };
+    }
+    if (incomment) {
+        stop (sprintf ("Encountered EOF while parsing comment in Javascript file '%s'", filename));
+    }
+    if (length(jstags)>0) {
+	src <- paste(sources, collapse='\n');
+	alldocs <- append (alldocs, list(list(tags=jstags,src=src)));
+    }
+    return (alldocs);
+}
 
-    copyCHMtoServer <- function (server, chm) {
-	# Copy the compiled CHM in outDir/chmName to username@deployServerName:deployDir/chmName
-	# Special care is needed to get the permissions correct.
-	removeCHMfromServer (server, chm@name);
-	if (server@deployServer == system("/bin/hostname -f", intern=TRUE)) {
-	    systemCheck (sprintf ("/bin/mkdir %s/%s", shQuote(chmDeployDir(server)), shQuote(chmName(chm))));
-	    systemCheck (sprintf ("/bin/chmod g+s %s/%s", shQuote(chmDeployDir(server)), shQuote(chmName(chm))));
-	    systemCheck (sprintf ("/bin/cp -r %s/%s/* %s/%s/", shQuote(chm@outDir), shQuote(chmName(chm)), shQuote (chmDeployDir(server)), shQuote(chmName(chm))));
-	    systemCheck (sprintf ("/bin/chmod -R go+rwx %s/%s", shQuote(chmDeployDir(server)), shQuote(chmName(chm))));
-	} else {
-	    dest <- getServerDest (server);
-	    systemCheck (sprintf ("ssh %s /bin/mkdir %s/%s", dest, shQuote(chmDeployDir(server)), shQuote(chmName(chm))));
-	    systemCheck (sprintf ("ssh %s /bin/chmod g+s %s/%s", dest, shQuote(chmDeployDir(server)), shQuote(chmName(chm))));
-	    systemCheck (sprintf ("scp -r %s/%s/* %s:%s/%s/", shQuote(chm@outDir), shQuote(chmName(chm)), dest, shQuote (chmDeployDir(server)), shQuote(chmName(chm))));
-	    systemCheck (sprintf ("ssh %s /bin/chmod -R go+rwx %s/%s", dest, shQuote(chmDeployDir(server)), shQuote(chmName(chm))));
+jsTagExists <- function (jsdoc, tag) {
+    any(vapply(jsdoc,function(x)x[1]==tag,TRUE))
+}
+
+jsGetTag <- function (jsdoc, tag) {
+    idx <- which(vapply(jsdoc,function(x)x[1]==tag,TRUE));
+    if (length(idx)==0) stop (sprintf ("Required tag '%s' not found in Javascript JSDoc", tag));
+    jsdoc[[idx[length(idx)]]]
+}
+
+# Load a Javascript file.
+#
+loadJavascript <- function(filename) {
+    # Load configuration from text file.
+    lines <- NULL;
+    try (suppressWarnings(lines <- readLines (filename)), silent=TRUE);
+    if (length(lines) > 0) {
+        jsdocs <- parseJSDoc (filename, lines);
+	for (jsdoc in jsdocs) {
+	    jsTags <- jsdoc$tags;
+	    if (jsTagExists (jsTags, 'axisfunction')) {
+		name <- jsGetTag(jsTags,'name')[2];
+		desc <- paste(jsGetTag(jsTags,'description')[-1],collapse=' ');
+		atype <- jsGetTag(jsTags,'axisfunction')[2];
+		menue <- paste(jsGetTag(jsTags,'menuentry')[-1],collapse=' ');
+		fn <- chmNewFunction (name, desc, jsdoc$src);
+		chmRegisterAxisFunction (atype, menue, fn);
+	    }
+	    else if (jsTagExists (jsTags, 'matrixfunction')) {
+		name <- jsGetTag(jsTags,'name')[2];
+		desc <- paste(jsGetTag(jsTags,'description')[-1],collapse=' ');
+		rtype <- jsGetTag(jsTags,'matrixfunction')[2];
+		ctype <- jsGetTag(jsTags,'matrixfunction')[3];
+		menue <- paste(jsGetTag(jsTags,'menuentry')[-1],collapse=' ');
+		fn <- chmNewFunction (name, desc, jsdoc$src);
+		chmRegisterMatrixFunction (rtype, ctype, menue, fn);
+	    }
+	    else if (jsTagExists (jsTags, 'toolboxfunction')) {
+		name <- jsGetTag(jsTags,'name')[2];
+		desc <- paste(jsGetTag(jsTags,'description')[-1],collapse=' ');
+		tooltype <- jsGetTag(jsTags,'toolboxfunction')[2];
+		menue <- paste(jsGetTag(jsTags,'menuentry')[-1],collapse=' ');
+		extras <- jsGetTag(jsTags,'extraparams')[-1];
+		fn <- chmNewFunction (name, desc, jsdoc$src, extraParams=extras);
+		chmRegisterToolboxFunction (tooltype, menue, fn);
+	    }
+	    else {
+		stop (sprintf ("Unknown type of Javascript function in file '%s'", filename));
+	    }
 	}
-    };
+    }
+}
 
+# Define a specified type mapper.
+defineMapper <- function (filename, fields) {
+    if (!"srctype" %in% names(fields)) {
+        stop (sprintf ("srctype not specified in typemap in file '%s'", filename));
+    }
+    if (!"dsttype" %in% names(fields)) {
+        stop (sprintf ("dsttype not specified in typemap in file '%s'", filename));
+    }
+    srctype <- fields$srctype;
+    dsttype <- fields$dsttype;
+    if ("field" %in% names(fields)) {
+        if ("fieldsep" %in% names(fields)) {
+	    fieldsep <- fields$fieldsep;
+	}
+	else {
+	    fieldsep <- ",";
+	}
+	chmRegisterTypeMapper (strsplit(srctype,",")[[1]], dsttype,
+	    chmFieldAccessFunction (fieldsep, as.integer(fields$field)));
+    }
+    else if ("stringop" %in% names(fields)) {
+	if (fields$stringop == "substring(0)") {
+	    fn <- "";
+	}
+	else {
+	    fn <- chmStringopFunction (fields$stringop)
+	}
+	chmRegisterTypeMapper (strsplit(srctype,",")[[1]], dsttype, fn);
+    }
+    else {
+        stop (sprintf ("No known converter for %s --> %s specified in typemap in file '%s'", srctype, dsttype, filename));
+    }
+}
 
-    chmCreateServerProtocol ("copy",
-			     installMethod = copyCHMtoServer,
-			     uninstallMethod = removeCHMfromServer,
-			     makePrivate = function (server, chmname) {
-				if (server@deployServer == system("/bin/hostname -f", intern=TRUE)) {
-				    system (sprintf ("/bin/sh -c \"'(cd %s; touch %s/hidden.txt)'\"",
-						     shQuote (chmDeployDir(server)),
-						     shQuote (chmname)));
-				} else {
-				    system (sprintf ("ssh %s /bin/sh -c \"'(cd %s; touch %s/hidden.txt)'\"",
-						     getServerDest (server),
-						     shQuote (chmDeployDir(server)),
-						     shQuote (chmname)));
-				}
-			     },
-			     makePublic = function (server, chmname) {
-				if (server@deployServer == system("/bin/hostname -f", intern=TRUE)) {
-				    system (sprintf ("/bin/sh -c \"'(cd %s; /bin/rm %s/hidden.txt)'\"",
-						     shQuote (chmDeployDir(server)),
-						     shQuote (chmname)));
-				} else {
-				    system (sprintf ("ssh %s /bin/sh -c \"'(cd %s; /bin/rm %s/hidden.txt)'\"",
-						     getServerDest (server),
-						     shQuote (chmDeployDir(server)),
-						     shQuote (chmname)));
-				}
-			     });
+# Load a text configuration file.
+#
+loadTextConfig <- function(filename) {
+    # Load configuration from text file.
+    lines <- NULL;
+    try (suppressWarnings(lines <- readLines (filename)), silent=TRUE);
+    thismap <- list();
+    section <- "";
+    fieldsep <- "=";
+    for (line in lines) {
+	if (grepl ("^ *#", line) || grepl("^ *$", line)) {
+	    # Comment.
+	}
+	else if (grepl ("^\\[", line)) {
+	    # Section definition.
+	    if (section == "typemap") {
+	        defineMapper (filename, thismap);
+		thismap <- list();
+	    }
+	    sectionline <- line;
+	    section <- sub ("^\\[(.*)].*$", "\\1", tolower(line));
+	    section <- gsub ("  *", " ", spstrip (section));
+	}
+	else if (section == "typedefs") {
+	    # name fieldsep definition
+	    parts <- sub (" *#.*$", "", line);
+	    parts <- strsplit (parts, fieldsep)[[1]];
+	    if (length(parts) != 2) stop (sprintf ('Malformed type definition "%s" in %s: should be name%sdescription', paste(parts,sep=fieldsep), filename, fieldsep));
+	    chmRegisterType (spstrip(parts[1]), spstrip(parts[2]));
+	}
+	else if (section == "servers") {
+	    # name fieldsep directory
+	    parts <- sub (" *#.*$", "", line);
+	    parts <- strsplit (parts, fieldsep)[[1]];
+	    if (length(parts) != 2) stop (sprintf ('Malformed server definition "%s" in %s: should be name%sdirectory', paste(parts,sep=fieldsep), filename, fieldsep));
+	    chmCreateServer (spstrip(parts[1]), spstrip(parts[2]));
+	}
+	else if (section == "typemap") {
+	    # name fieldsep definition
+	    parts <- sub (" *#.*$", "", line);
+	    parts <- strsplit (parts, fieldsep)[[1]];
+	    if (length(parts) != 2) stop (sprintf ('Malformed typemap line "%s" in %s: should be field%svalue', paste(parts,sep=fieldsep), filename, fieldsep));
+	    thismap[[spstrip(parts[1])]] <- spstrip(parts[2]);
+	}
+	else if (section == "") {
+	    stop ("section must be set before definitions");
+	}
+	else {
+	    stop (sprintf ("Unknown section definition '%s' in file '%s'", section, filename));
+	}
+    }
+    if (section == "typemap") {
+	defineMapper (filename, thismap);
+	thismap <- list();
+    }
+}
 
-    chmCreateServerProtocol ("mds",
-			     installMethod = function (server, chm) {
-				# Install the NGCHM using the MDS system.
-				#
-				# MDS instructions from Tod (email 09/25/2013):
-				# - Copy (cp) the directory you want moved into the working directory into the "STAGE" directory.
-				# - Once the copying is done, move (mv) the directory into the "ADD-DIR" directory.
-				# - Create (touch) an "add.mds" file in the directory you just moved.
-				# - When the MDS cron job runs, the directory will be moved to the working directory.
-				# - If there is already an existing directory with the same name in the working directory, the old directory will be deleted.
+#' Get Javascript function name for accessing a specific string field in each element of string vector.
+#' 
+#' This function returns the name of a Javascript function thats accepts a string vector
+#' as its parameter, and for each string in the vector splits the string into fields separated by
+#' fieldsep, and accesses field idx (zero origin).  The function returns a vector of these fields.
+#'
+#' The name of the function returned for a specific fieldsep and idx will be
+#' constant within an R session, but may differ between R sessions (or if this
+#' library is unloaded and reloaded).
+#'
+#' @param fieldsep The string that separates fields in the strings of the input vector.
+#' @param idx The index (zero origin) of the field the function should extract.
+#'
+#' @export
+#'
+#' @seealso chmGetFunction
+#' @seealso chmStringopFunction
+#'
+chmFieldAccessFunction <- function (fieldsep, idx) {
+    key <- sprintf ("fa%s%d", fieldsep, idx);
+    if (!exists (key, ngchm.env$parseFns)) {
+        fnname <- sprintf ("chmFA%x", ngchm.env$nextId);
+	ngchm.env$nextId = ngchm.env$nextId + 1;
+	if (length(grep("'", fieldsep, fixed=TRUE))>0) {
+	   stop (sprintf ('fieldsep "%s" cannot contain any single quotes', fieldsep));
+	}
+	fieldsep = sprintf ('%s', fieldsep);
+	fn <- chmNewFunction (fnname,
+		sprintf ("Splits each input string at %s, and returns field %d.", fieldsep, idx),
+		paste (sprintf ("function %s (ns) {", fnname),
+		       sprintf ("    return ns.map(function(s){return s.split('%s')[%d];});", fieldsep, idx),
+		       "}", sep="\n"));
+	ngchm.env$parseFns[[key]] <- fn;
+    }
+    ngchm.env$parseFns[[key]]@name
+}
 
-				# tar lives in different places on different systems - so no absolute path
-				tarballName <- sprintf ("%s.ngchm.gz", chm@name);
-				thisHost <- system("/bin/hostname -f", intern=TRUE);
-				ddir <- chmDeployDir (server);
-				if (server@deployServer == thisHost) {
-				    systemCheck (sprintf ("tar xfC %s %s/STAGE", shQuote(tarballName), shQuote(ddir)));
-				    systemCheck (sprintf ("/bin/touch %s/STAGE/%s/add.mds", shQuote(ddir), shQuote(chm@name)));
-				    systemCheck (sprintf ("/bin/mv %s/STAGE/%s %s/ADD-DIR/", shQuote(ddir), shQuote(chm@name), shQuote(ddir)));
-				} else {
-				    dest <- getServerDest (server);
-				    systemCheck (sprintf ("scp %s %s:%s/STAGE/", shQuote(tarballName), dest, shQuote (chmDeployDir(server))));
-				    systemCheck (sprintf ("ssh %s tar xfC %s/STAGE/%s %s/STAGE", dest, shQuote(ddir), shQuote(tarballName), shQuote(ddir)));
-				    systemCheck (sprintf ("ssh %s /bin/rm %s/STAGE/%s", dest, shQuote(ddir), shQuote(tarballName)));
-				    systemCheck (sprintf ("ssh %s /bin/touch %s/STAGE/%s/add.mds", dest, shQuote(ddir), shQuote(chm@name)));
-				    systemCheck (sprintf ("ssh %s /bin/mv %s/STAGE/%s %s/ADD-DIR/", dest, shQuote(ddir), shQuote(chm@name), shQuote(ddir)));
-				}
-			     },
-			     uninstallMethod = function (server, chmname) {
-				# Uninstall the NGCHM using the MDS system.
-				#
-				# MDS instructions from Tod (email 09/25/2013):
-				# - Create a directory with the name of the one you want to delete from the working directory in the "STAGE" directory.
-				# - Once the creation is done, move (mv) the directory into the "REMOVE-DIR" directory.
-				# - Create (touch) a "remove.mds" file in the directory you just moved.
-				# - When the MDS cron job runs, the directory with the corresponding name will be deleted.
-				# - Afterward, the directory in the "REMOVE-DIR" directory will be deleted.
+#' Get Javascript function name for performing a specific string operation on each element of a string vector.
+#' 
+#' This function returns the name of a Javascript function thats accepts a string vector
+#' as its parameter, and for each string in the vector performs the operation stringop on the string.
+#' Stringop must be valid Javascript code that can be appended to a string value.
+#' The function returns a vector of the resulting strings.
+#'
+#' The name of the function returned for a specific stringop will be
+#' constant within an R session, but may differ between R sessions (or if this
+#' library is unloaded and reloaded).
+#'
+#' @param stringop
+#'
+#' @export
+#'
+#' @seealso chmGetFunction
+#' @seealso chmFieldAccessFunction
+#'
+chmStringopFunction <- function (stringop) {
+    key <- sprintf ("sop%s", stringop);
+    if (!exists (key, ngchm.env$parseFns)) {
+        fnname <- sprintf ("chmSO%x", ngchm.env$nextId);
+	ngchm.env$nextId <- ngchm.env$nextId + 1;
+	fn <- chmNewFunction (fnname,
+		sprintf ("Transforms each input string by applying stringop '%s'.", stringop),
+		paste (sprintf ("function %s (ns) {", fnname),
+		       sprintf ("    return ns.map(function(s){return s.%s;});", stringop),
+		       "}", sep="\n"));
+	ngchm.env$parseFns[[key]] <- fn;
+    }
+    ngchm.env$parseFns[[key]]@name
+}
 
-				thisHost <- system("/bin/hostname -f", intern=TRUE);
-				ddir <- chmDeployDir (server);
-				if (server@deployServer == thisHost) {
-				    systemCheck (sprintf ("/bin/mkdir %s/STAGE/%s", shQuote(ddir), shQuote(chmname)));
-				    systemCheck (sprintf ("/bin/touch %s/STAGE/%s/remove.mds", shQuote(ddir), shQuote(chmname)));
-				    systemCheck (sprintf ("/bin/mv %s/STAGE/%s %s/REMOVE-DIR/", shQuote(ddir), shQuote(chmname), shQuote(ddir)));
-				} else {
-				    dest <- getServerDest (server);
-				    systemCheck (sprintf ("ssh %s /bin/mkdir %s/STAGE/%s", dest, shQuote(ddir), shQuote(chmname)));
-				    systemCheck (sprintf ("ssh %s /bin/touch %s/STAGE/%s/remove.mds", dest, shQuote(ddir), shQuote(chmname)));
-				    systemCheck (sprintf ("ssh %s /bin/mv %s/STAGE/%s %s/REMOVE-DIR/", dest, shQuote(ddir), shQuote(chmname), shQuote(ddir)));
-				}
-			     },
-			     makePrivate = function (server, chmname) {
-				# Make an NGCHM private (add hidden.txt file) using the MDS system.
-				#
-				# MDS instructions from Tod (email 09/25/2013):
-				# - Create a directory with the files you want added to the working directory in the "STAGE" directory.
-				# - Once the copying is done, move (mv) the directory into the "ADD-FILE" directory.
-				# - Create (touch) a "add.mds" file in the directory you just moved.
-				# - When the MDS cron job runs, the files will be moved to the corresponding directory in the working directory.
-				# - Afterward, the directory in the "ADD-FILE" directory will be deleted.
-				thisHost <- system("/bin/hostname -f", intern=TRUE);
-				ddir <- chmDeployDir (server);
-				if (server@deployServer == thisHost) {
-				    systemCheck (sprintf ("/bin/mkdir %s/STAGE/%s", shQuote(ddir), shQuote(chmname)));
-				    systemCheck (sprintf ("/bin/touch %s/STAGE/%s/hidden.txt", shQuote(ddir), shQuote(chmname)));
-				    systemCheck (sprintf ("/bin/touch %s/STAGE/%s/add.mds", shQuote(ddir), shQuote(chmname)));
-				    systemCheck (sprintf ("/bin/mv %s/STAGE/%s %s/ADD-FILE/", shQuote(ddir), shQuote(chmname), shQuote(ddir)));
-				} else {
-				    dest <- getServerDest (server);
-				    systemCheck (sprintf ("ssh %s /bin/mkdir %s/STAGE/%s", dest, shQuote(ddir), shQuote(chmname)));
-				    systemCheck (sprintf ("ssh %s /bin/touch %s/STAGE/%s/hidden.txt", dest, shQuote(ddir), shQuote(chmname)));
-				    systemCheck (sprintf ("ssh %s /bin/touch %s/STAGE/%s/add.mds", dest, shQuote(ddir), shQuote(chmname)));
-				    systemCheck (sprintf ("ssh %s /bin/mv %s/STAGE/%s %s/ADD-FILE/", dest, shQuote(ddir), shQuote(chmname), shQuote(ddir)));
-				}
-			     },
-			     makePublic = function (server, chmname) {
-				# Make an NGCHM public (remove hidden.txt file) using the MDS system.
-				#
-				# MDS instructions from Tod (email 09/25/2013):
-				# - Create a directory with the files you want removed from the working directory in the "STAGE" directory.
-				# - Files can be zero length and created by touch, only the name matters.
-				# - Once the creation is done, move (mv) the directory into the "REMOVE-FILE" directory.
-				# - Create (touch) a "remove.mds" file in the directory you just moved.
-				# - When the MDS cron job runs, the files in the directory with the corresponding names will be deleted.
-				# - Afterward, the directory in the "REMOVE-FILE" directory will be deleted.
-				thisHost <- system("/bin/hostname -f", intern=TRUE);
-				ddir <- chmDeployDir (server);
-				if (server@deployServer == thisHost) {
-				    systemCheck (sprintf ("/bin/mkdir %s/STAGE/%s", shQuote(ddir), shQuote(chmname)));
-				    systemCheck (sprintf ("/bin/touch %s/STAGE/%s/hidden.txt", shQuote(ddir), shQuote(chmname)));
-				    systemCheck (sprintf ("/bin/touch %s/STAGE/%s/remove.mds", shQuote(ddir), shQuote(chmname)));
-				    systemCheck (sprintf ("/bin/mv %s/STAGE/%s %s/REMOVE-FILE/", shQuote(ddir), shQuote(chmname), shQuote(ddir)));
-				} else {
-				    dest <- getServerDest (server);
-				    systemCheck (sprintf ("ssh %s /bin/mkdir %s/STAGE/%s", dest, shQuote(ddir), shQuote(chmname)));
-				    systemCheck (sprintf ("ssh %s /bin/touch %s/STAGE/%s/hidden.txt", dest, shQuote(ddir), shQuote(chmname)));
-				    systemCheck (sprintf ("ssh %s /bin/touch %s/STAGE/%s/remove.mds", dest, shQuote(ddir), shQuote(chmname)));
-				    systemCheck (sprintf ("ssh %s /bin/mv %s/STAGE/%s %s/REMOVE-FILE/", dest, shQuote(ddir), shQuote(chmname), shQuote(ddir)));
-				}
-			     });
+.onLoad <- function (libname, pkgname) {
+    .initNGCHM ();
+}
 
+.onAttach <- function (libname, pkgname) {
+    defineManualProtocol ();
+    getConfigDirs ();
+
+    chmNewFunction ("", "Simple reference", "");
     chmNewFunction ("getLabelValue",
         "This returns the label at the specified index as a list of values.  Can be used whenever the label itself is of the correct type.",
 	paste ("function getLabelValue (axis, idx) {",
 	       "    return [axis.labels.getLabel (idx)];",
 	       "};", sep="\n"));
 
-    chmRegisterType ("bio.gene.hugo", "The official HUGO symbol for a gene");
-    chmRegisterType ("bio.gene.entrezid", "The official EntrezID for a gene");
-    chmRegisterType ("bio.meth.infinium.probe", "An Infinium methylation probe identifier");
-    chmRegisterType ("bio.mirna", "An miRNA identifier");
-    chmRegisterType ("bio.pubmed", "Any term that can be used for searching Pubmed");
-    chmRegisterType ("bio.gene.hugo.bar.entrezid", "A bio.gene.hugo and a bio.gene.entrezid separated by a vertical bar");
-    chmRegisterType ("bio.meth.infinium.probe.bar.bio.gene.hugo", "A bio.meth.infinium.probe and a bio.gene.hugo separated by a vertical bar");
-    chmRegisterType ("bio.mdacc.pathwayid", "An MD Anderson pathway identifier");
-    chmRegisterType ("bio.go.id", "A Gene Ontology (GO) identifier");
+    # Load module definitions.
+    for (cfgdir in ngchm.env$configdirs) {
+	srcfiles <- NULL;
+        try (srcfiles <- dir (file.path (cfgdir, "conf.d"), full.names=TRUE), silent=TRUE);
+	if (length (srcfiles) > 0) {
+	    for (src in sort(srcfiles)) {
+		if (grepl ("\\.[rR]$", src)) {
+	            tryCatch (source (src), error=function(e) stop (sprintf ("while processing R source file '%s'\n", src), e));
+		}
+		else if (grepl ("\\.txt$", src)) {
+	            tryCatch (loadTextConfig (src), error=function(e) stop (sprintf ("while processing text configuration file '%s'\n", src), e));
+		}
+		else if (grepl ("\\.js$", src)) {
+	            tryCatch (loadJavascript (src), error=function(e) stop (sprintf ("while processing Javascript file '%s'\n", src), e));
+		}
+		else {
+		    warning (sprintf ("Unknown kind of module file '%s', ignored.", src));
+		}
+	    }
+	}
+    }
 
-    chmNewFunction ("openGeneCardPage",
-	"Opens the GeneCards page for the first given HUGO gene name.",
-	paste ("function openGeneCardPage (names) {",
-	       "    var gname = names[0];",
-	       "    window.open('http://www.genecards.org/cgi-bin/carddisp.pl?gene=' + gname + '&search=' + gname, 'genecards');",
-	       "}", sep="\n"));
-
-    chmRegisterAxisFunction ("bio.gene.hugo", "View Genecard", "openGeneCardPage");
-
-    chmNewFunction ("searchClinicalTrials",
-	"Searches ClinicalTrials.gov for the given HUGO gene names.",
-	paste ("function searchClinicalTrials (names) {",
-	       "    var gname = names.join('+AND+');",
-	       "    window.open('http://clinicaltrials.gov/ct2/results?term=' + gname + '&Search=' + 'Search', 'clinicaltrials');",
-	       "}", sep="\n"));
-
-    chmRegisterAxisFunction ("bio.gene.hugo", "Search ClinicalTrials.gov for all", "searchClinicalTrials");
-
-
-    chmNewFunction ("openNCBIGenePage",
-	"Opens the NCBI page for the (first) given HUGO gene name.",
-	paste ("function openNCBIGenePage (names) {",
-	       "    var gname = names[0];",
-	       "    window.open('http://www.ncbi.nlm.nih.gov/gene?term=(homo%20sapiens%5BOrganism%5D)%20AND%20' + gname + '%5BGene%20Name%5D', 'NCBI');",
-	       "}", sep="\n"));
-
-    chmRegisterAxisFunction ("bio.gene.hugo", "View NCBI Gene", "openNCBIGenePage");
-
-    chmNewFunction ("openNCBIEntrezIDPage",
-	"Opens the NCBI page for the (first) given gene Entrez ID",
-	paste ("function openNCBIEntrezIDPage (eids) {",
-	       "    var gid = eids[0];",
-	       "    window.open('http://www.ncbi.nlm.nih.gov/gene/' + gid, 'NCBI');",
-	       "}", sep="\n"));
-
-    chmRegisterAxisFunction ("bio.gene.entrezid", "View NCBI Entrez ID", "openNCBIEntrezIDPage");
-
-    chmNewFunction ("viewMiRBasePage",
-	"Opens the miRBase page for the (first) given miRNA ID",
-	paste ("function viewMiRBasePage (eids) {",
-	       "    var gid = eids[0];",
-	       "    window.open('http://www.mirbase.org/cgi-bin/query.pl?terms=' + gid, 'miRBase');",
-	       "}", sep="\n"));
-
-    chmRegisterAxisFunction ("bio.mirna", "View miRBase page", "viewMiRBasePage");
-
-    chmNewFunction ("viewGenesetIdeogramG",
-	"For axis type 'bio.gene.hugo', this function shows the genomic locations of the selected genes.",
-	paste ("function viewGenesetIdeogramG (genes) {",
-	       "  genes = genes.sort().filter(function(el,i,a){return i==a.indexOf(el);});",
-	       "  var labels = genes.map(function(g){return encodeURIComponent(g);});",
-	       "  window.open('http://bioinformatics.mdanderson.org/ideogramviewer/Ideogram.html?genelist1=' + labels.join(','),",
-	       "              'ideogram');",
-	       "};", sep="\n"));
-    chmRegisterAxisFunction ("bio.gene.hugo", "View Ideogram", "viewGenesetIdeogramG");
-    chmNewFunction ("viewGenesetIdeogramG2",
-	"For matrix types 'bio.gene.hugo', this function shows the genomic locations of the selected genes.",
-	paste ("function viewGenesetIdeogramG2 (g1, g2) {",
-	       "  g1 = g1.filter(function(el,i,a){return i==a.indexOf(el);});",
-	       "  g2 = g2.filter(function(el,i,a){return i==a.indexOf(el);});",
-	       "  g1 = g1.map(function(g){return encodeURIComponent(g);});",
-	       "  g2 = g2.map(function(g){return encodeURIComponent(g);});",
-	       "  window.open('http://bioinformatics.mdanderson.org/ideogramviewer/Ideogram.html?genelist1=' + g1.join(',') + '&genelist2=' + g2.join(','),",
-	       "              'ideogram');",
-	       "};", sep="\n"));
-    chmRegisterMatrixFunction ("bio.gene.hugo", "bio.gene.hugo", "View Ideogram", "viewGenesetIdeogramG2")
-
-    chmNewFunction ("viewGenesetIdeogramM",
-	"For axis type 'bio.mirna', this function shows the genomic locations of the selected mirnas.",
-	paste ("function viewGenesetIdeogramM (mirs) {",
-	       "  mirs = mirs.sort().filter(function(el,i,a){return i==a.indexOf(el);});",
-	       "  var labels = mirs.map(function(g){return encodeURIComponent(g);});",
-	       "  window.open('http://bioinformatics.mdanderson.org/ideogramviewer/Ideogram.html?mirlist1=' + labels.join(','),",
-	       "              'ideogram');",
-	       "};", sep="\n"));
-    chmRegisterAxisFunction ("bio.mirna", "View Ideogram", "viewGenesetIdeogramM");
-    chmNewFunction ("viewGenesetIdeogramM2",
-	"For matrix types 'bio.mirna', this function shows the genomic locations of the selected mirnas.",
-	paste ("function viewGenesetIdeogramM2 (mirs1, mirs2) {",
-	       "  mirs1 = mirs1.sort().filter(function(el,i,a){return i==a.indexOf(el);});",
-	       "  mirs2 = mirs2.sort().filter(function(el,i,a){return i==a.indexOf(el);});",
-	       "  mirs1 = mirs1.map(function(g){return encodeURIComponent(g);});",
-	       "  mirs2 = mirs2.map(function(g){return encodeURIComponent(g);});",
-	       "  window.open('http://bioinformatics.mdanderson.org/ideogramviewer/Ideogram.html?mirlist1=' + mirs1.join(',') + '&mirlist2=' + mirs2.join(','),",
-	       "              'ideogram');",
-	       "};", sep="\n"));
-    chmRegisterMatrixFunction ("bio.mirna", "bio.mirna", "View Ideogram", "viewGenesetIdeogramM2");
-
-    chmNewFunction ("viewGenesetIdeogramGM",
-	"For matrix with axis types 'bio.hugo.gene' and 'bio.mirna', this function shows the genomic locations of the selected genes and mirnas.",
-	paste ("function viewGenesetIdeogramGM (genes1, mirs1) {",
-	       "  genes1 = genes1.sort().filter(function(el,i,a){return i==a.indexOf(el);});",
-	       "  mirs1 = mirs1.sort().filter(function(el,i,a){return i==a.indexOf(el);});",
-	       "  genes1 = genes1.map(function(g){return encodeURIComponent(g);});",
-	       "  mirs1 = mirs1.map(function(g){return encodeURIComponent(g);});",
-	       "  window.open('http://bioinformatics.mdanderson.org/ideogramviewer/Ideogram.html?genelist1=' + genes1.join(',') + '&mirlist1=' + mirs1.join(','),",
-	       "              'ideogram');",
-	       "};", sep="\n"));
-    chmRegisterMatrixFunction ("bio.gene.hugo", "bio.mirna", "View Ideogram", "viewGenesetIdeogramGM");
-
-    chmNewFunction ("searchGoogleScholar",
-	"For axis type 'bio.pubmed', this function searches Google Scholar for documents containing the selected terms.",
-	paste ("function searchGoogleScholar (terms) {",
-	       "  terms = terms.sort().filter(function(el,i,a){return i==a.indexOf(el);});",
-	       "  var labels = terms.map(function(g){return encodeURIComponent(g);});",
-	       "  window.open('http://scholar.google.com/scholar?q=' + labels.join('+OR+'),",
-	       "              'pubmed');",
-	       "};", sep="\n"));
-    chmRegisterAxisFunction (c("bio.gene.hugo","bio.pubmed","bio.mirna"), "Search in Google Scholar", "searchGoogleScholar");
-
-    chmNewFunction ("searchPubmedAll",
-	"For axis type 'bio.pubmed', this function searches Pubmed for documents containing all the selected terms.",
-	paste ("function searchPubmedAll (terms) {",
-	       "  terms = terms.sort().filter(function(el,i,a){return i==a.indexOf(el);});",
-	       "  var labels = terms.map(function(g){return encodeURIComponent(g);});",
-	       "  window.open('http://www.ncbi.nlm.nih.gov/pubmed/?term=' + labels.join('+AND+'),",
-	       "              'pubmed');",
-	       "};", sep="\n"));
-    chmRegisterAxisFunction ("bio.pubmed", "Search Pubmed for all", "searchPubmedAll");
-
-    chmNewFunction ("searchPubmedAny",
-	"For axis type 'bio.pubmed', this function searches Pubmed for documents containing any of the selected terms.",
-	paste ("function searchPubmedAny (terms) {",
-	       "  terms = terms.sort().filter(function(el,i,a){return i==a.indexOf(el);});",
-	       "  var labels = terms.map(function(g){return encodeURIComponent(g);});",
-	       "  window.open('http://www.ncbi.nlm.nih.gov/pubmed/?term=' + labels.join('+OR+'),",
-	       "              'pubmed');",
-	       "};", sep="\n"));
-    chmRegisterAxisFunction ("bio.pubmed", "Search Pubmed for any", "searchPubmedAny");
-
-    chmNewFunction ("openMDACCPathwayID",
-	"Opens the MD Anderson pathways browser page for the pathway concerned.",
-	paste("function openMDACCPathwayID (names) {",
-	      "    var gname = names[0];",
-	      "    window.open('http://bcbgf01-stage:28081/PathwaysBrowser/pathway/latest/mdaPathwayId/' + gname, 'pathways');",
-	      "};", sep="\n"));
-    chmRegisterAxisFunction ("bio.mdacc.pathwayid", "View Pathway", "openMDACCPathwayID")
-
-    chmNewFunction ("openAmigo",
-	"Opens the Amigo GO browser page for the goid concerned.",
-	paste("function openAmigo (names) {",
-	      "    var goid = names[0];",
-	      "    window.open('http://amigo.geneontology.org/cgi-bin/amigo/term_details?term=' + goid, 'genoontology');",
-	      "};", sep="\n"));
-    chmRegisterAxisFunction ("bio.go.id", "View Amigo", "openAmigo")
-
-    chmNewFunction ("openOLSVis",
-	"Opens the OLSVis GO browser page for the goid concerned.",
-	paste("function openOLSVis (names) {",
-	      "    var goid = names[0];",
-	      "    window.open('http://ols.wordvis.com/q=' + goid, 'genoontology');",
-	      "};", sep="\n"));
-    chmRegisterAxisFunction ("bio.go.id", "View OLSVis", "openOLSVis")
-
-    chmNewFunction ("openQuickGO",
-	"Opens the QuickGO browser page for the goid concerned.",
-	paste("function openQuickGO (names) {",
-	      "    var goid = names[0];",
-	      "    window.open('http://www.ebi.ac.uk/QuickGO/GTerm?id=' + goid, 'genoontology');",
-	      "};", sep="\n"));
-    chmRegisterAxisFunction ("bio.go.id", "View QuickGO", "openQuickGO")
-
-    chmNewFunction ("openPathwaysBrowserGO",
-	"Opens the PathwaysBrowser GO page for the goid concerned.",
-	paste("function openPathwaysBrowserGO (names) {",
-	      "    var goid = names[0];",
-	      "    window.open('http://bioinformatics.mdanderson.org/PathwaysBrowser/goTerm/latest/goId/' + goid, 'genoontology');",
-	      "};", sep="\n"));
-    chmRegisterAxisFunction ("bio.go.id", "View PathwaysBrowser", "openPathwaysBrowserGO")
-
-    chmNewFunction ("getBarField0",
-	"Splits each input string at vertical bar, and returns the first field.",
-	paste ("function getBarField0 (names) {",
-	       "    return names.map(function(nm){return nm.split('|')[0];});",
-	       "}", sep="\n"));
-    chmNewFunction ("getBarField1",
-	"Splits each input string at vertical bar, and returns the second field.",
-	paste ("function getBarField1 (names) {",
-	       "    return names.map(function(nm){return nm.split('|')[1];});",
-	       "}", sep="\n"));
-
-    chmNewFunction ("", "Simple reference", "");
-    chmRegisterTypeMapper ("bio.gene.hugo.bar.entrezid", "bio.gene.hugo", "getBarField0");
-    chmRegisterTypeMapper ("bio.gene.hugo.bar.entrezid", "bio.gene.entrezid", "getBarField1");
-
-    chmRegisterTypeMapper ("bio.meth.infinium.probe.bar.bio.gene.hugo", "bio.meth.infinium.probe", "getBarField0");
-    chmRegisterTypeMapper ("bio.meth.infinium.probe.bar.bio.gene.hugo", "bio.gene.hugo", "getBarField1");
-
-    chmRegisterTypeMapper ("bio.gene.hugo", "bio.pubmed", "");
 }

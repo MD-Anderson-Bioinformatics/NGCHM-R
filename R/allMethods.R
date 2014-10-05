@@ -1,14 +1,3 @@
-
-systemCheck <- function (command) {
-    # Execute the specified command and halt execution with an error
-    # message if it fails.
-    status <- system (command)
-    if (status != 0) {
-        stop ('Error encountered executing system command: ', command)
-    }
-    status
-}
-
 # ##############################################################################################
 #
 # Methods for class NGCHM.SERVER
@@ -953,23 +942,7 @@ setMethod ("chmMake",
 
     if (length(useJAR) == 0) {
         genSpecFeedback (97, "retrieving NGCHM rendering software");
-	if (length(grep("^scp://", server@jarFile)) > 0) {
-	    parts <- URLparts (server@jarFile);
-	    if (parts[3] == "") {
-		systemCheck (sprintf ("scp %s:%s heatmappipeline.jar",
-			      shQuote (parts[2]), shQuote(parts[4])));
-	    } else {
-		systemCheck (sprintf ("scp -P %s %s:%s heatmappipeline.jar",
-			      shQuote(parts[3]), shQuote (parts[2]), shQuote(parts[4])));
-	    }
-	}
-	else if (length(grep("^http://", server@jarFile)) > 0) {
-	    systemCheck (sprintf ("wget -q -O heatmappipeline.jar %s",
-			  shQuote (server@jarFile)));
-	} else {
-	    stop (sprintf ("chmMake: unknown retrieval method for jarFile %s", chm@jarFile));
-	}
-	useJAR = "heatmappipeline.jar";
+	useJAR = getBuilderJar (server);
     }
     #
     javaTraceOpts <- ""

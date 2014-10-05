@@ -1,14 +1,12 @@
 
-ngchm.env <- new.env()
-
-ngchm.env$scripts <- c()
-ngchm.env$axisFunctions <- NULL
-ngchm.env$matrixFunctions <- NULL
-ngchm.env$typeInfo <- NULL
-ngchm.env$typeMappers <- NULL
-ngchm.env$serverProtocols <- NULL
-ngchm.env$toolbox <- NULL
-ngchm.env$servers <- list();
+systemCheck <- function (command, ...) {
+    # Execute the specified command and halt execution with an error
+    # message if it fails.
+    status <- system (command, ...)
+    if (status != 0) {
+        stop ('Error encountered executing system command: ', command)
+    }
+}
 
 #' Register an ngchmServer.
 #'
@@ -1566,4 +1564,195 @@ chmNewDialog <- function (id, title, fn) {
     }
     dialog <- new (Class="ngchmDialog", id=id, title=title, fn=fn);
     dialog
+}
+
+#' Return the names of the NGCHM servers defined to date in this session.
+#'
+#' @export
+
+chmListServers <- function () {
+    vapply (ngchm.env$servers, function (svr) svr$name, "")
+}
+
+getBuilderJar <- function (server) {
+    
+    if (!exists (server@jarFile, ngchm.env$jarCache)) {
+        # Load server@jarFile into jarCache
+	if (length(grep("^scp://", server@jarFile)) > 0) {
+	    tmpJarFile <- system2 ("mktemp", args=c("-p", tempdir(), "hmtXXXXXXXXX.jar"), stdout=TRUE);
+	    parts <- URLparts (server@jarFile);
+	    if (parts[3] == "") {
+		systemCheck (sprintf ("scp %s:%s %s",
+			      shQuote (parts[2]), shQuote(parts[4]), tmpJarFile));
+	    } else {
+		systemCheck (sprintf ("scp -P %s %s:%s %s",
+			      shQuote(parts[3]), shQuote (parts[2]), shQuote(parts[4]), tmpJarFile));
+	    }
+	    ngchm.env$jarCache[[server@jarFile]] <- tmpJarFile;
+	}
+	else if (length(grep("^http://", server@jarFile)) > 0) {
+	    tmpJarFile <- system2 ("mktemp", args=c("-p", tempdir(), "hmtXXXXXXXXX.jar"), stdout=TRUE);
+	    systemCheck (sprintf ("wget -q -O %s %s", tmpJarFile, shQuote (server@jarFile)));
+	    ngchm.env$jarCache[[server@jarFile]] <- tmpJarFile;
+	}
+	else if (length(grep("^https://", server@jarFile)) > 0) {
+	    tmpJarFile <- system2 ("mktemp", args=c("-p", tempdir(), "hmtXXXXXXXXX.jar"), stdout=TRUE);
+	    systemCheck (sprintf ("wget -q -O %s %s", tmpJarFile, shQuote (server@jarFile)));
+	    ngchm.env$jarCache[[server@jarFile]] <- tmpJarFile;
+	}
+	else if (length(grep("^file://", server@jarFile)) > 0) {
+	    ngchm.env$jarCache[[server@jarFile]] <- substring (server@jarFile, 8);
+	} else {
+	    stop (sprintf ("Unknown retrieval method for jarFile '%s' for NGCHM server '%s'", chm@jarFile, server@name));
+	}
+    }
+    ngchm.env$jarCache[[server@jarFile]]
+}
+
+#' Create an ngchmServer object for an MDS2 deployment server directory.
+#'
+#' Create an ngchmServer object called 'servername' for the MDS2 NGCHM deployment directory 'cfgDir' on
+#' server 'deployServer'.  If deployServer is NULL (default), 'cfgDir' is assummed to be on the local machine.
+#'
+#' @param servername The name of the new server object.
+#' @param cfgDir The absolute path of the MDS2 directory on the deployServer.
+#' @param cfgServer The server on which cfgDir is located.
+#'
+#' @export
+
+chmCreateServer <- function (servername,
+                             cfgDir = NULL,
+			     cfgServer = NULL,
+			     theJarFile = NULL,
+			     serverURL = NULL) {
+    cfg <- new.env();
+    cfg$traceLevel <- "PROGRESS";
+    cfg$serverProtocol <- "manual";
+    cfg$deployServer <- cfgServer;
+    cfg$deployDir <- NULL;
+    cfg$username <- NULL;
+    cfg$keypath <- NULL;
+    cfg$jarFile <- NULL;
+
+    # jarURL is last-ditch guess.
+    if (length(serverURL) == 0) {
+	if (length (cfgServer) == 0) {
+            serverURL <- "http://fix.me.in.the.config.file/chm";
+	    jarURL <- NULL;
+	} else {
+            serverURL <- paste ("http:", cfgServer, "/chm", sep="");
+	    jarURL <- paste (serverURL, "resources", "heatmappipeline.jar", sep="/");
+	}
+    } else if (substr (serverURL, 1, 2) == "//") {
+        serverURL <- paste ("http:", serverURL, sep="");
+	jarURL <- paste (serverURL, "resources", "heatmappipeline.jar", sep="/");
+    } else if (substr (serverURL, 1, 7) == "http://") {
+	jarURL <- paste (serverURL, "resources", "heatmappipeline.jar", sep="/");
+    } else if (substr (serverURL, 1, 8) == "https://") {
+	jarURL <- paste (serverURL, "resources", "heatmappipeline.jar", sep="/");
+    } else {
+	jarURL <- NULL;
+    }
+    cfg$urlBase <- paste (serverURL, "chm.html", sep="/");
+
+    if (length(cfgServer) == 0) {
+	if ((length(cfgDir) > 0) && file.exists (cfgDir)) {
+	    cfg$serverProtocol <- "mds2";
+	    cfg$deployDir <- cfgDir;
+	    if (length (theJarFile) == 0) {
+		jarFile <- file.path (cfgDir, ".mds", "heatmappipeline.jar");
+		if (file.exists (jarFile)) {
+		    cfg$jarFile <- paste ("file://", jarFile, sep="");
+		}
+	    }
+	    readConfigFile (cfg, file.path (cfgDir, "config.txt"), '=');
+	}
+    } else if (length (cfgDir) > 0) {
+	cfg$serverProtocol <- "mds2";
+	cfg$deployServer <- cfgServer;
+	cfg$deployDir <- cfgDir;
+	cfgFile <- system2 ("mktemp", args=c("-p", tempdir(), "cfgXXXXXXXXX.txt"), stdout=TRUE);
+	rcfg <- new.env();
+	if (system2 ("scp", args=c(sprintf ("%s:%s/%s", cfgServer, cfgDir, "config.txt"), cfgFile)) == 0) {
+	    readConfigFile (rcfg, cfgFile, '=');
+	}
+	if (length (theJarFile) == 0) {
+	    # No user specified jarFile, so let's see what the remote config says.
+	    if (length (rcfg$jarFile) == 0) {
+		# No jarFile specified in remote config, so peek to see if there's a remote jarFile in .mds subdirectory.
+		rcfg$jarFile <- paste (cfgDir, ".mds", "heatmappipeline.jar", sep="");
+		found <- system2 ("ssh", args=c(cfgServer, sprintf ("[ -r %s ]", rcfg$jarFile)));
+		if (found == 0) {
+		    # Shell command above succeeded.
+		    cfg$jarFile <- paste ("scp://", cfgServer, rcfg$jarFile, sep="");
+		}
+	    }
+	    else if (substr (rcfg$jarFile, 1, 7) == "file://") {
+		# Remote specified jarFile using file://, so convert to an scp://
+		rcfg$jarFile <- substr (rcfg$jarFile, 8, nchar (rcfg$jarFile));
+		if (substr (rcfg$jarFile, 1, 1) != '/') {
+		    rcfg$jarFile <- paste ('', cfgDir, rcfg$jarFile, sep="/");
+		}
+		found <- system2 ("ssh", args=c(cfgServer, sprintf ("[ -r %s ]", rcfg$jarFile)));
+		if (found == 0) {
+		    cfg$jarFile <- paste ("scp://", cfgServer, rcfg$jarFile, sep="");
+		}
+	    }
+	    else {
+		# We assume network based addresses will work equally well from the current machine.
+		cfg$jarFile <- rcfg$jarFile;
+	    }
+	}
+	if (length(rcfg$username) != 0) cfg$username <- rcfg$username;
+	if (length(rcfg$keypath) != 0) cfg$keypath <- rcfg$keypath;
+	if (length(rcfg$serverProtocol) != 0) cfg$serverProtocol <- rcfg$serverProtocol;
+	if (length(rcfg$deployServer) != 0) cfg$deployServer <- rcfg$deployServer;
+	if (length(rcfg$deployDir) != 0) cfg$deployDir <- rcfg$deployDir;
+	if (length(rcfg$urlBase) != 0) cfg$urlBase <- rcfg$urlBase;
+	if (length(rcfg$traceLevel) != 0) cfg$traceLevel <- rcfg$traceLevel;
+    }
+
+    if (length (theJarFile) > 0) {
+	# the user explicitly specified theJarFile.  Use it or fail.
+	if (file.exists (theJarFile)) {
+	    cfg$jarFile <- paste ("file://", theJarFile, sep="");
+	}
+	else {
+	    stop (sprintf ("Specified jarFile '%s' does not exist", theJarFile));
+	}
+    }
+    else if ((length(cfg$jarFile) == 0) && (length(jarURL) > 0)) {
+	# No info in config directory, but jarURL is a guess. Try it.
+	try (suppressWarnings({
+	    if (system2 ("wget", args=c("-q", "--spider", jarURL)) == 0) {
+		cfg$jarFile <- jarURL;
+	    }
+	}), silent=TRUE);
+    }
+
+    if (length (cfg$jarFile) == 0) {
+        stop ("Error creating NGCHM server: no heatmappipeline.jar was found");
+    }
+
+    chmRegisterServer("base", new(Class="ngchmServer", 
+			   name = servername,
+			   traceLevel = cfg$traceLevel,
+			   username = cfg$username,
+			   keypath = cfg$keypath,
+			   serverProtocol = chmGetServerProtocol (cfg$serverProtocol),
+			   deployServer = cfg$deployServer,
+			   deployDir = cfg$deployDir,
+			   jarFile = cfg$jarFile,
+			   urlBase = cfg$urlBase));
+}
+
+readConfigFile <- function (cfg, filename, sep=':') {
+    lines <- NULL;
+    try (suppressWarnings(lines <- readLines (filename)), silent=TRUE);
+    if (length (lines) > 0) {
+	for (line in strsplit (lines, sep)) {
+	    if (length(line) != 2) error (sprintf ('Malformed configuration line "%s" in %s: should be option%svalue', paste(line,sep=sep), filename, sep));
+	    cfg[[line[1]]] <- line[2];
+	}
+    }
 }
