@@ -1,4 +1,0 @@
-
-
-.initNGCHM <- function () {
-}

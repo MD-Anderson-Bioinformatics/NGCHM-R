@@ -52,6 +52,12 @@ setClass ("ngchmValueProp",
 	                  z="optNumeric"
 			  ));
 
+setMethod ('show',
+           signature = c('ngchmValueProp'),
+	   definition = function (object) {
+	       cat (sprintf ("ngchmValueProp(%d values)\n", length(object@value)));
+	   });
+
 #' Class representing a Dataset attached to a NGCHM
 #'
 #' @exportClass ngchmDataset
@@ -67,6 +73,17 @@ setClass ("ngchmDataset",
 			  column.type="optCharacter",
 			  row.covariates="optList",
 	                  column.covariates="optList"));
+
+setMethod ('show',
+           signature = c('ngchmDataset'),
+	   definition = function (object) {
+	       cat (sprintf ("ngchmDataset '%s': %d %s x %d %s\n", object@name,
+	                     ncol(object@data),
+			     if (length(object@column.type)==0) "unknown" else object@column.type,
+	                     nrow(object@data),
+			     if (length(object@row.type)==0) "unknown" else object@row.type
+			     ));
+	   });
 
 #' Class representing a Covariate attached to a Dataset
 #'
@@ -85,6 +102,12 @@ setClass ("ngchmCovariate",
 	                        fullname=character(0),
 				label.series=NULL,
 				series.properties=NULL));
+
+setMethod ('show',
+           signature = c('ngchmCovariate'),
+	   definition = function (object) {
+	       cat (sprintf ("ngchmCovariate '%s' of type '%s'\n", object@label, object@type));
+	   });
 
 #' Class representing a Template attached to a NGCHM
 #'
@@ -135,6 +158,12 @@ setClass ("ngchmColormap",
 	                  missing="optCharacter",
 	                  points="optList"));
 
+setMethod ('show',
+           signature = c('ngchmColormap'),
+	   definition = function (object) {
+	       cat (sprintf ("ngchmColormap of type '%s'\n", object@type));
+	   });
+
 setClassUnion ("optColormap");
 setIs ("ngchmColormap", "optColormap");
 setIs ("NULL", "optColormap");
@@ -150,6 +179,12 @@ setIs ("ngchmColormap", "optList");
 setClass ("ngchmLayer",
           representation (name="character", data="matrix", colors="ngchmColormap"));
 
+setMethod ('show',
+           signature = c('ngchmLayer'),
+	   definition = function (object) {
+	       cat (sprintf ("ngchmLayer '%s': %d x %d\n", object@name, ncol(object@data), nrow(object@data)));
+	   });
+
 #' Class representing a Generic Property for a Next Generation Clustered Heat Map (NGCHM).
 #'
 #' @exportClass ngchmProperty
@@ -160,6 +195,12 @@ setClass ("ngchmLayer",
 setClass ("ngchmProperty",
           representation (label="character", value="character"));
 
+setMethod ('show',
+           signature = c('ngchmProperty'),
+	   definition = function (object) {
+	       cat (sprintf ("ngchmProperty '%s': '%d'\n", object@label, object@value));
+	   });
+
 #' Class representing a Menu Item for a Next Generation Clustered Heat Map (NGCHM).
 #'
 #' @exportClass ngchmMenuItem
@@ -169,6 +210,12 @@ setClass ("ngchmProperty",
 #' @keywords classes
 setClass ("ngchmMenuItem",
           representation (label="character", description="character", fun="character"));
+
+setMethod ('show',
+           signature = c('ngchmMenuItem'),
+	   definition = function (object) {
+	       cat (sprintf ("ngchmMenuItem '%s': '%s'\n", object@label, object@description));
+	   });
 
 #' Class representing a custom Javascript function for a Next Generation Clustered Heat Map (NGCHM).
 #'
@@ -181,6 +228,12 @@ setClass ("ngchmJS",
           representation (name="character", description="character", script="character", requires="optCharacter",
 	                  extraParams="optCharacter", global="logical"));
 
+setMethod ('show',
+           signature = c('ngchmJS'),
+	   definition = function (object) {
+	       cat (sprintf ("ngchmJS '%s': '%s'\n", object@name, object@description));
+	   });
+
 #' Class representing a type attached to an axis in a Next Generation Clustered Heat Map (NGCHM).
 #'
 #' @name ngchmAxisType-class
@@ -189,6 +242,12 @@ setClass ("ngchmJS",
 #' @keywords classes
 setClass ("ngchmAxisType",
           representation (where="character", type="character", func="ngchmJS"));
+
+setMethod ('show',
+           signature = c('ngchmAxisType'),
+	   definition = function (object) {
+	       cat (sprintf ("ngchmAxisType %s=%s\n", object@where, object@type));
+	   });
 
 #' Class representing an axis function for Next Generation Clustered Heat Map (NGCHM).
 #'
@@ -199,6 +258,12 @@ setClass ("ngchmAxisType",
 setClass ("ngchmAxisFunction",
           representation (type="character", label="character", func="ngchmJS"));
 
+setMethod ('show',
+           signature = c('ngchmAxisFunction'),
+	   definition = function (object) {
+	       cat (sprintf ("ngchmAxisFunction %s -> %s\n", object@type, object@label));
+	   });
+
 #' Class representing a matrix function for Next Generation Clustered Heat Map (NGCHM).
 #'
 #' @name ngchmMatrixFunction-class
@@ -208,6 +273,12 @@ setClass ("ngchmAxisFunction",
 setClass ("ngchmMatrixFunction",
           representation (rowtype="character", columntype="character", label="character", func="ngchmJS"));
 
+setMethod ('show',
+           signature = c('ngchmMatrixFunction'),
+	   definition = function (object) {
+	       cat (sprintf ("ngchmMatrixFunction %s x %s -> %s\n", object@rowtype, object@coltype, object@label));
+	   });
+
 #' Class representing a type mapper function for Next Generation Clustered Heat Map (NGCHM).
 #'
 #' @name ngchmTypeMapper-class
@@ -216,6 +287,12 @@ setClass ("ngchmMatrixFunction",
 #' @keywords classes
 setClass ("ngchmTypeMapper",
           representation (fromtype="character", totype="character", func="ngchmJS"));
+
+setMethod ('show',
+           signature = c('ngchmTypeMapper'),
+	   definition = function (object) {
+	       cat (sprintf ("ngchmTypeMapper %s -> %s\n", object@fromtype, object@totype));
+	   });
 
 #' Class representing custom CSS for a Next Generation Clustered Heat Map (NGCHM).
 #'
@@ -227,7 +304,13 @@ setClass ("ngchmTypeMapper",
 setClass ("ngchmCSS",
           representation (css="character"));
 
-#' Class representing a Classfication Bar on a Next Generation Clustered Heat Map (NGCHM).
+setMethod ('show',
+           signature = c('ngchmCSS'),
+	   definition = function (object) {
+	       cat (sprintf ("ngchmCSS %s\n", object@css));
+	   });
+
+#' Class representing a Covariate Bar on a Next Generation Clustered Heat Map (NGCHM).
 #'
 #' @exportClass ngchmBar
 #' @name ngchmBar-class
@@ -244,6 +327,12 @@ setClass ("ngchmBar",
 			  axisTypes="optList",
 			  colors="optColormap"));
 
+setMethod ('show',
+           signature = c('ngchmBar'),
+	   definition = function (object) {
+	       cat (sprintf ("ngchmBar %s\n", object@label));
+	   });
+
 #' Class representing an overview of a Next Generation Clustered Heat Map (NGCHM).
 #'
 #' @exportClass ngchmOverview
@@ -256,6 +345,12 @@ setClass ("ngchmOverview",
 			  width="integer",
 			  height="integer"));
 
+setMethod ('show',
+           signature = c('ngchmOverview'),
+	   definition = function (object) {
+	       cat (sprintf ("ngchmOverview %s %d x %d\n", object@format, object@width, object@height));
+	   });
+
 #' Class representing an addon dialog
 #'
 #' @exportClass ngchmDialog
@@ -267,6 +362,12 @@ setClass ("ngchmDialog",
           representation (id="character",
 			  title="character",
 			  fn="ngchmJS"));
+
+setMethod ('show',
+           signature = c('ngchmDialog'),
+	   definition = function (object) {
+	       cat (sprintf ("ngchmDialog %s: %s\n", object@id, object@title));
+	   });
 
 #' Class representing a Next Generation Clustered Heat Map (NGCHM) under construction.
 #'
@@ -349,6 +450,12 @@ setClass ("ngchm",
 				width=as.integer(500),
 				height=as.integer(500)));
 
+setMethod ('show',
+           signature = c('ngchm'),
+	   definition = function (object) {
+	       cat (sprintf ("ngchm %s (%d layers)\n", object@name, length(object@layers)));
+	   });
+
 #' Class representing a deployment method for a Next Generation Clustered Heat Map (NGCHM) server.
 #'
 #' @exportClass ngchmServerProtocol
@@ -361,6 +468,12 @@ setClass ("ngchmServerProtocol",
 	                  installMethod="function", uninstallMethod="function",
 	                  makePrivate="function", makePublic="function"));
 
+setMethod ('show',
+           signature = c('ngchmServerProtocol'),
+	   definition = function (object) {
+	       cat (sprintf ("ngchmServerProtocol %s\n", object@protocolName));
+	   });
+
 #' Class representing a Next Generation Clustered Heat Map (NGCHM) server.
 #'
 #' @exportClass ngchmServer
@@ -372,3 +485,9 @@ setClass ("ngchmServer",
           representation (name="character", deployServer="optCharacter", deployDir="optCharacter", urlBase="character",
 			  serverProtocol="ngchmServerProtocol", traceLevel="optCharacter",
 	                  username="optCharacter", keypath="optCharacter", jarFile="character"));
+
+setMethod ('show',
+           signature = c('ngchmServer'),
+	   definition = function (object) {
+	       cat (sprintf ("ngchmServer %s\n", object@name));
+	   });
