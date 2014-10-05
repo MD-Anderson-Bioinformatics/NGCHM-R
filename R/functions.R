@@ -456,6 +456,12 @@ chmNewClassBar <- function (label, type, data, colors=NULL, display="visible", t
     }
     if ((length(merge) > 0) && !(merge %in% c("average", "peakColor", "specialColor", "mostCommon")))
         stop (sprintf ("Unknown classbar merge value '%s'. Must be 'average', 'peakColor', 'specialColor' or 'mostCommon'", merge));
+    if (length(names(data)) == 0)
+        stop (sprintf ("Parameter 'data' for classbar '%s' must have defined names that match those of the CHM axis to which it will be attached", label));
+    if (anyDuplicated(names(data)) != 0) {
+        dups <- unique(names(data)[which(duplicated(names(data)))]);
+	stop (sprintf ("Parameter 'data' for classbar '%s' has multiple entries for label(s) %s", label, paste (dups, collapse=', ')));
+    }
     new (Class="ngchmBar", label=label, type=type, data=data, thickness=thickness, colors=colors, display=display, merge=merge)
 }
 
