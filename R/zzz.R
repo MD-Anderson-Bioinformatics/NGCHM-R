@@ -155,6 +155,11 @@ jsGetTag <- function (jsdoc, tag) {
     jsdoc[[idx[length(idx)]]]
 }
 
+jsGetOptTag <- function (jsdoc, tag) {
+    idx <- which(vapply(jsdoc,function(x)x[1]==tag,TRUE));
+    if (length(idx)==0) NULL else jsdoc[[idx[length(idx)]]]
+}
+
 # Load a Javascript file.
 #
 loadJavascript <- function(filename) {
@@ -170,7 +175,8 @@ loadJavascript <- function(filename) {
 		desc <- paste(jsGetTag(jsTags,'description')[-1],collapse=' ');
 		atype <- jsGetTag(jsTags,'axisfunction')[2];
 		menue <- paste(jsGetTag(jsTags,'menuentry')[-1],collapse=' ');
-		fn <- chmNewFunction (name, desc, jsdoc$src);
+		extras <- jsGetOptTag (jsTags, 'extraparams')[-1];
+		fn <- chmNewFunction (name, desc, jsdoc$src, extraParams=extras);
 		chmRegisterAxisFunction (atype, menue, fn);
 	    }
 	    else if (jsTagExists (jsTags, 'matrixfunction')) {
@@ -179,7 +185,8 @@ loadJavascript <- function(filename) {
 		rtype <- jsGetTag(jsTags,'matrixfunction')[2];
 		ctype <- jsGetTag(jsTags,'matrixfunction')[3];
 		menue <- paste(jsGetTag(jsTags,'menuentry')[-1],collapse=' ');
-		fn <- chmNewFunction (name, desc, jsdoc$src);
+		extras <- jsGetOptTag (jsTags, 'extraparams')[-1];
+		fn <- chmNewFunction (name, desc, jsdoc$src, extraParams=extras);
 		chmRegisterMatrixFunction (rtype, ctype, menue, fn);
 	    }
 	    else if (jsTagExists (jsTags, 'toolboxfunction')) {

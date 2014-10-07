@@ -199,10 +199,27 @@ writeCSS <- function (css, inpDir) {
     close (chan);
 }
 
-writeProperties <- function (inpDir, props, chan) {
-    for (ii in 1:length(props)) {
-	if (props[[ii]]@label != "hidden") {
-	    cat (sprintf ("%s=%s\n", props[[ii]]@label, props[[ii]]@value), file=chan);
+hasSpecialProperties <- function (chm) {
+    any (vapply (chm@properties, function (p) substr(p@label,1,1)=='!', TRUE))
+}
+
+writeProperties <- function (inpDir, props, chan, writeSpecial=FALSE) {
+    if (writeSpecial) {
+	for (ii in 1:length(props)) {
+	    l <- props[[ii]]@label;
+	    if (substr(l,1,1) == '!') {
+		cat (sprintf ("%s=%s\n", substring(l,2), props[[ii]]@value), file=chan);
+	    }
+	}
+    }
+    else {
+	for (ii in 1:length(props)) {
+	    l <- props[[ii]]@label;
+	    if (substr(l,1,1) != '!') {
+		if (l != "hidden") {
+		    cat (sprintf ("%s=%s\n", l, props[[ii]]@value), file=chan);
+		}
+	    }
 	}
     }
 }
@@ -258,20 +275,20 @@ writeDialogs <- function (dialogs, chan) {
     }
 }
 
-writeCustomJS <- function (chm) {
+writeCustomJS <- function (chm, filename) {
     rqJSfuns <- requiredFunctions (list(), chm@javascript);
-    chan <- file (paste (chm@inpDir, "custom.js", sep="/"), "w");
+    chan <- file (filename, "w");
     if (length(rqJSfuns) > 0) writeJS (rqJSfuns, chan, TRUE);
     cat (startcust, file=chan);
     if (length(rqJSfuns) > 0) writeJS (rqJSfuns, chan, FALSE);
-    cat ("chm.addCustomization(function(){\n", file=chan);
+    #cat ("chm.addCustomization(function(){\n", file=chan);
     writeMenu (chm@rowMenu, "row.labels", chan);
     writeMenu (chm@rowMenu, "row.dendrogram", chan);
     writeMenu (chm@colMenu, "column.labels", chan);
     writeMenu (chm@colMenu, "column.dendrogram", chan);
     writeMenu (chm@elementMenu, "matrix", chan);
     writeDialogs (chm@dialogs, chan);
-    cat ("});\n", file=chan);
+    #cat ("});\n", file=chan);
     cat ("})(MDACC_GLOBAL_NAMESPACE.namespace('tcga').chm);\n", file=chan);
     close (chan);
 }
@@ -599,71 +616,7 @@ writeChm <- function (chm) {
     if (length (chm@colormaps) == 0)
         stop ("Internal error detected: the NGCHM has no color maps.  Please report.");
 
-    # Add row menu items for types we know about.
-    genSpecFeedback (10, "adding row menu items");
-    rowtypes <- getAllAxisTypes (chm, "row");
-    rowTypeFnsReqd <- rep(FALSE,length(rowtypes));
-    rowfns <- getAllAxisTypeFunctions (chm@rowTypeFunctions, rowtypes$types);
-    if (length(rowfns) > 0)
-        for (ii in 1:length(rowfns)) {
-	    fn <- rowfns[[ii]];
-	    rowTypeFnsReqd[getFnsRqrd(rowtypes,fn@type)] <- TRUE;
-	    entry <- new (Class="ngchmMenuItem", label=fn@label, description=fn@func@description,
-	        fun = sprintf ("function(s,a,e){%s(%s);}", fn@func@name, getValueExpr(rowtypes,fn@type,"axis")));
-	    chm@rowMenu <- append (chm@rowMenu, entry);
-	}
-
-    # Add column menu items for types we know about.
-    genSpecFeedback (20, "adding column menu items");
-    coltypes <- getAllAxisTypes (chm, "column");
-    colTypeFnsReqd <- rep(FALSE,length(coltypes));
-    colfns <- getAllAxisTypeFunctions (chm@colTypeFunctions, coltypes$types);
-    if (length(colfns) > 0)
-        for (ii in 1:length(colfns)) {
-	    fn <- colfns[[ii]];
-	    colTypeFnsReqd[getFnsRqrd(coltypes,fn@type)] <- TRUE;
-	    entry <- new (Class="ngchmMenuItem", label=fn@label, description=fn@func@description,
-	        fun = sprintf ("function(s,a,e){%s(%s);}", fn@func@name, getValueExpr(coltypes,fn@type,"axis")));
-	    chm@colMenu <- append (chm@colMenu, entry);
-	}
-
-    # Add matrix element menu items for types we know about.
-    genSpecFeedback (30, "adding matrix menu items");
-    matfns <- getAllMatrixTypeFunctions (chm, rowtypes$types, coltypes$types);
-    if (length(matfns) > 0)
-        for (ii in 1:length(matfns)) {
-	    fn <- matfns[[ii]];
-	    rowTypeFnsReqd[getFnsRqrd(rowtypes,fn@rowtype)] <- TRUE;
-	    colTypeFnsReqd[getFnsRqrd(coltypes,fn@columntype)] <- TRUE;
-	    entry <- new (Class="ngchmMenuItem", label=fn@label, description=fn@func@description,
-	        fun = sprintf ("function(rs,cs,e){%s(%s,%s);}", fn@func@name,
-		               getValueExpr(rowtypes,fn@rowtype,"row"), getValueExpr(coltypes,fn@columntype,"column")));
-	    chm@elementMenu <- append (chm@elementMenu, entry);
-	    cat ("chmMake: added elementMenu entry ", entry@label, "\n", file=stderr());
-	}
-
-    # Add functions for getting type values from selections.
-    genSpecFeedback (40, "adding type selector functions");
-    cat ("chmMake: matfns contains ", length(matfns), " entries\n", file=stderr());
-    fns <- append (matfns, unique (append (rowfns, colfns)));
-    if (length(fns) > 0)
-         for (ii in 1:length(fns)) {
-	     if (length(fns[[ii]]) == 0) {
-		cat ("chmMake: axis/mat fn entry is NULL\n", file=stderr());
-	     } else {
-		 chm <- chmAddMenuItem (chm, "nowhere", "unused", fns[[ii]]@func);
-	     }
-	 }
-
-    fns <- unique (append (rowtypes$builders[rowTypeFnsReqd], coltypes$builders[colTypeFnsReqd]));
-    if (length(fns) > 0)
-         for (ii in 1:length(fns))
-	     if (length(fns[[ii]]) == 0) {
-		cat ("chmMake: builders fn entry is NULL\n", file=stderr());
-	     } else {
-		 chm <- chmAddMenuItem (chm, "nowhere", "unused", fns[[ii]]@func);
-	     }
-
+    #chm <- chmAddAutoMenuItems (chm);
     genSpecFeedback (50, "creating specification directory");
     unlink (chm@inpDir, recursive=TRUE);
     if (!dir.create (chm@inpDir, recursive=TRUE)) {
@@ -691,7 +644,15 @@ writeChm <- function (chm) {
     genSpecFeedback (70, "writing data layers");
     for (ii in 1:length(chm@layers))
         writeDataLayer (chm, chm@layers[[ii]], chm@inpDir, ii, props);
-    if (is.list(chm@properties)) writeProperties (chm@inpDir, chm@properties, props);
+    if (is.list(chm@properties)) {
+        writeProperties (chm@inpDir, chm@properties, props);
+	if (hasSpecialProperties (chm)) {
+	    chm@extrafiles <- c (chm@extrafiles, "extra.properties");
+	    extraprops <- file (file.path (chm@inpDir, "extra.properties"), "w");
+            writeProperties (chm@inpDir, chm@properties, extraprops, TRUE);
+	    close (extraprops);
+	}
+    }
     if (is.list(chm@overviews)) {
 	for (ii in 1:length(chm@overviews)) {
 	    ov <- chm@overviews[[ii]];
@@ -718,21 +679,25 @@ writeChm <- function (chm) {
     if (!is.null(chm@colMeta))
         writeMeta (chm@inpDir, "column", chm@colMeta);
     if (is.list (chm@rowClassbars)) {
-	chan = file (paste (chm@inpDir, "rowClassification1.txt", sep="/"), "w");
+	chan <- file (paste (chm@inpDir, "rowClassification1.txt", sep="/"), "w");
 	for (ii in 1:length(chm@rowClassbars) )
 	    writeClassBar (chm@rowClassbars[[ii]], chm@inpDir, "row", ii, chan);
 	close (chan);
     }
     if (is.list(chm@colClassbars)) {
-	chan = file (paste (chm@inpDir, "columnClassification1.txt", sep="/"), "w");
+	chan <- file (paste (chm@inpDir, "columnClassification1.txt", sep="/"), "w");
 	for (ii in 1:length(chm@colClassbars))
 	    writeClassBar (chm@colClassbars[[ii]], chm@inpDir, "column", ii, chan);
 	close (chan);
     }
 
-    genSpecFeedback (95, "writing custom javascript functions");
+    genSpecFeedback (95, "writing custom CSS and Javascript");
     if (is.list(chm@css)) writeCSS (chm@css, chm@inpDir);
-    writeCustomJS (chm);
+    #writeCustomJS (chm, file.path (chm@inpDir, "custom.js"));
+    jsloader <- readLines(system.file("extdata", "custom.js", package="NGCHM"));
+    jsfile <- file (file.path (chm@inpDir, "custom.js"), "w");
+    writeLines (jsloader, jsfile);
+    close (jsfile);
 }
 
 #' @rdname chmName-method
@@ -745,24 +710,24 @@ setMethod ("chmName",
 writeOrder <- function (inpDir, type, ord) {
     # Write the order/dendrogram out as a column dendrogram to the inpDir
     if (class (ord) == "character") {
-	filename = sprintf ("%s/%s.txt", inpDir, type);
+	filename <- sprintf ("%s/%s.txt", inpDir, type);
         write.table (ord, filename, quote=FALSE, row.names=FALSE, col.names=FALSE)
     } else if ((class (ord) == "dendrogram") || (class (ord) == "hclust")) {
 	sink (paste (inpDir, sprintf ("dendro_%s.str", type), sep="/"))
 	if (class (ord) == "hclust")
-	    ord = as.dendrogram (ord);
+	    ord <- as.dendrogram (ord);
 	str (ord)
 	sink (NULL)
     } else if (class (ord) == "fileContent") {
-	filename = (paste (inpDir, sprintf ("dendro_%s.str", type), sep="/"));
-	ff = file (filename, "w");
+	filename <- (paste (inpDir, sprintf ("dendro_%s.str", type), sep="/"));
+	ff <- file (filename, "w");
 	writeLines (ord, ff);
 	close (ff);
     } else if (class (ord) == "file") {
 	stop ("Internal error detected: axis order type file should not be here. Please report.");
-	filename = (paste (inpDir, sprintf ("dendro_%s.str", type), sep="/"));
+	filename <- (paste (inpDir, sprintf ("dendro_%s.str", type), sep="/"));
 	content <- readLines (ord);
-	ff = file (filename, "w");
+	ff <- file (filename, "w");
 	writeLines (content, ff);
 	close (ff);
     } else if (class (ord) == "NULL") {
@@ -929,10 +894,6 @@ setMethod ("chmMake",
 	genSpecFeedback (5, "determining default column order");
         chm@colOrder <- chm@colOrder (chm);
     }
-    if (length (chm@datasets) > 0) {
-	genSpecFeedback (8, "adding toolbox(es)");
-	chm <- addToolBoxes (chm);
-    }
     genSpecFeedback (9, "writing NGCHM specification");
     writeChm (chm);
 
@@ -1050,6 +1011,10 @@ setMethod ("chmAddDataset",
 	    chm@extrafiles <- c(chm@extrafiles, "datasets.tsv");
 	}
 	chm@datasets <- append (chm@datasets, dataset);
+	if (length(dataset@row.type) > 0)
+	    chm <- chmAddProperty (chm, sprintf ("!datasettype:%s-row", make.names(dataset@name)), dataset@row.type);
+	if (length(dataset@column.type) > 0)
+	    chm <- chmAddProperty (chm, sprintf ("!datasettype:%s-column", make.names(dataset@name)), dataset@column.type);
         chm
 });
 
@@ -1282,7 +1247,7 @@ setMethod ("chmAddAxisType",
     definition = function (chm, where, type, func) {
 	at <- new (Class="ngchmAxisType", where=where, type=type, func=func);
 	chm@axisTypes <- append (chm@axisTypes, at);
-	chm
+	chmAddProperty (chm, paste('!axistype', where, sep='.'), type);
     }
 );
 

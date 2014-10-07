@@ -1762,3 +1762,133 @@ readConfigFile <- function (cfg, filename, sep=':') {
 	}
     }
 }
+
+getExtraParams <- function (props) {
+    # Collect extraparams.
+    pat <- "^!extraparam:";
+    idx <- which (vapply (props, function(x)regexpr(pat,x@label)!=-1, TRUE));
+    params <- new.env();
+    for (pp in props[idx]) {
+        match <- regexpr (pat, pp@label);
+	paramname <- substring (pp@label, attr(match,'match.length')+1);
+	params[[paramname]] <- pp@value;
+    }
+    cat ('Found extra params ', paste(ls(params),collapse=" "), "\n")
+    params
+}
+
+bindExtraParams <- function (funcs, params, props) {
+    hasep <- vapply (funcs, function(fn)length(fn@func@extraParams)>0, TRUE);
+    epfuncs <- funcs[which(hasep)];
+    funcs <- funcs[which(!hasep)];
+    for (fn in epfuncs) {
+        extra <- fn@func@extraParams;
+	cat ('Function ', fn@func@name, ' requires extra params ', paste(extra,collapse=" "), "\n");
+	if (all (vapply (extra, function(p) exists(p, params), TRUE))) {
+	    vals <- vapply (extra, function(p)params[[p]], "");
+	    names(vals) <- extra;
+	    tmpname <- paste(c('f',sample(c(letters,toupper(letters),as.character(0:9)),15,replace=TRUE)), collapse="");
+	    chmBindFunction (tmpname, fn@func@name, as.list(vals));
+	    if (class(fn) == "ngchmAxisFunction")
+		newfn <- new(class(fn), type=fn@type, label=fn@label, func=chmGetFunction(tmpname))
+	    else if (class(fn) == "ngchmMatrixFunction")
+		newfn <- new(class(fn), rowtype=fn@rowtype, coltype=fn@coltype, label=fn@label, func=chmGetFunction(tmpname))
+	    else
+	        stop (sprintf ("Unknown function class '%s'", class(fn)));
+	    funcs <- append (funcs, newfn);
+	}
+    }
+    funcs
+}
+
+chmAddAutoMenuItems <- function (chm) {
+    params <- getExtraParams (chm@properties);
+
+    # Add row menu items for types we know about.
+    genSpecFeedback (10, "adding row menu items");
+    rowtypes <- getAllAxisTypes (chm, "row");
+    rowTypeFnsReqd <- rep(FALSE,length(rowtypes));
+    rowfns <- getAllAxisTypeFunctions (chm@rowTypeFunctions, rowtypes$types);
+    rowfns <- bindExtraParams (rowfns, params, chm@properties);
+    if (length(rowfns) > 0)
+        for (ii in 1:length(rowfns)) {
+	    fn <- rowfns[[ii]];
+	    rowTypeFnsReqd[getFnsRqrd(rowtypes,fn@type)] <- TRUE;
+	    entry <- new (Class="ngchmMenuItem", label=fn@label, description=fn@func@description,
+	        fun = sprintf ("function(s,a,e){%s(%s);}", fn@func@name, getValueExpr(rowtypes,fn@type,"axis")));
+	    chm@rowMenu <- append (chm@rowMenu, entry);
+	}
+
+    # Add column menu items for types we know about.
+    genSpecFeedback (20, "adding column menu items");
+    coltypes <- getAllAxisTypes (chm, "column");
+    colTypeFnsReqd <- rep(FALSE,length(coltypes));
+    colfns <- getAllAxisTypeFunctions (chm@colTypeFunctions, coltypes$types);
+    colfns <- bindExtraParams (colfns, params, chm@properties);
+    if (length(colfns) > 0)
+        for (ii in 1:length(colfns)) {
+	    fn <- colfns[[ii]];
+	    colTypeFnsReqd[getFnsRqrd(coltypes,fn@type)] <- TRUE;
+	    entry <- new (Class="ngchmMenuItem", label=fn@label, description=fn@func@description,
+	        fun = sprintf ("function(s,a,e){%s(%s);}", fn@func@name, getValueExpr(coltypes,fn@type,"axis")));
+	    chm@colMenu <- append (chm@colMenu, entry);
+	}
+
+    # Add matrix element menu items for types we know about.
+    genSpecFeedback (30, "adding matrix menu items");
+    matfns <- getAllMatrixTypeFunctions (chm, rowtypes$types, coltypes$types);
+    matfns <- bindExtraParams (matfns, params, chm@properties);
+    if (length(matfns) > 0)
+        for (ii in 1:length(matfns)) {
+	    fn <- matfns[[ii]];
+	    rowTypeFnsReqd[getFnsRqrd(rowtypes,fn@rowtype)] <- TRUE;
+	    colTypeFnsReqd[getFnsRqrd(coltypes,fn@columntype)] <- TRUE;
+	    entry <- new (Class="ngchmMenuItem", label=fn@label, description=fn@func@description,
+	        fun = sprintf ("function(rs,cs,e){%s(%s,%s);}", fn@func@name,
+		               getValueExpr(rowtypes,fn@rowtype,"row"), getValueExpr(coltypes,fn@columntype,"column")));
+	    chm@elementMenu <- append (chm@elementMenu, entry);
+	    cat ("chmMake: added elementMenu entry ", entry@label, "\n", file=stderr());
+	}
+
+    # Add functions for getting type values from selections.
+    genSpecFeedback (40, "adding type selector functions");
+    cat ("chmMake: matfns contains ", length(matfns), " entries\n", file=stderr());
+    fns <- append (matfns, unique (append (rowfns, colfns)));
+    if (length(fns) > 0)
+         for (ii in 1:length(fns)) {
+	     if (length(fns[[ii]]) == 0) {
+		cat ("chmMake: axis/mat fn entry is NULL\n", file=stderr());
+	     } else {
+		 chm <- chmAddMenuItem (chm, "nowhere", "unused", fns[[ii]]@func);
+	     }
+	 }
+
+    fns <- unique (append (rowtypes$builders[rowTypeFnsReqd], coltypes$builders[colTypeFnsReqd]));
+    if (length(fns) > 0)
+         for (ii in 1:length(fns))
+	     if (length(fns[[ii]]) == 0) {
+		cat ("chmMake: builders fn entry is NULL\n", file=stderr());
+	     } else {
+		 chm <- chmAddMenuItem (chm, "nowhere", "unused", fns[[ii]]@func);
+	     }
+
+    chm
+}
+
+#' Output Javascript code required to customize an NGCHM.
+#'
+#' This function outputs the Javascript required to customize an NGCHM.
+#'
+#' @param chm An NGCHM
+#' @param filename The file to which the customization code will be written.
+#'
+#' @export
+#'
+chmWriteCustomJS <- function (chm, filename) {
+    if (length (chm@datasets) > 0) {
+	#genSpecFeedback (8, "adding toolbox(es)");
+	chm <- addToolBoxes (chm);
+    }
+    chm <- chmAddAutoMenuItems (chm);
+    writeCustomJS (chm, filename);
+}
