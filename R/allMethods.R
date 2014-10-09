@@ -1355,7 +1355,7 @@ setMethod ("chmBindFunction",
 	}
 	for (ii in 1:length(bindings)) {
 	    if (names(bindings)[ii] != fn@extraParams[ii])
-	        stop ("binding name does not match corresponding parameter");
+	        stop (sprintf ("binding name '%s' does not match corresponding parameter '%s'", names(bindings)[ii], fn@extraParams[ii]));
 	}
 	newdesc <- sprintf ("function %s bound to %d values", fn@name, length(bindings));
 	params <- vapply(bindings, function(x) {
