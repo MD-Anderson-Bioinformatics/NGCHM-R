@@ -236,15 +236,14 @@ setGeneric ("chmAddRelated", function(chm, group, link, description) standardGen
 
 #' Generate an overview image of the NGCHM when making it.
 #'
-#' Generate an overview image of the NGCHM when making it.  By default, the system generates two default overview
-#' images: a PDF image and a PNG image.  The first two overviews you add to the NGCHM will override the default settings
-#' for these overviews.  If only one of width or height is specified, the other is calculate based on the aspect ratio of
+#' Generate an overview image of the NGCHM when making it.  By default, the system generates no default overview
+#' images.  If only one of width or height is specified, the other is calculated based on the aspect ratio of
 #' the map.
 #'
 #' @param chm The chm to add the overview to.
-#' @param format The format of the overview (either 'pdf' or 'png').
+#' @param format The format of the overview ('pdf', 'png', or 'svg').
 #' @param width The width of the overview.
-#' @param height A height of the overview.
+#' @param height The height of the overview.
 #'
 #' @return The extended chm.
 #'

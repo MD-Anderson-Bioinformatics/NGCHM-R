@@ -97,7 +97,14 @@ ngchmGetEnv <- function () {
 #' The bare NGCHM needs at least one data layer added to it before it can be compiled.
 #'
 #' @param name The name under which the NGCHM will be saved to the NGCHM server.
-#' @param ... Zero or more initial objects to include in the NGCHM.
+#' @param ... Zero or more initial objects to include in the NGCHM (see chmAdd).
+#' @param rowOrder A vector, dendrogram, or function specifying the CHM row order.
+#' @param colOrder A vector, dendrogram, or function specifying the CHM column order.
+#' @param rowAxisType The type(s) of the row labels (default: None).
+#' @param colAxisType The type(s) of the column labels (default: None).
+#' @param rowCovariates Covariate(Bar)(s) to add to the rows (default: None).
+#' @param colCovariates Covariate(Bar)(s) to add to the columns (default: None).
+#' @param overview The format(s) of CHM overview(s) to create (default: None).
 #'
 #' @return An object of class ngchm
 #'
@@ -109,10 +116,16 @@ ngchmGetEnv <- function () {
 #' @seealso ngchm-class
 #' @seealso ngchmServer-class
 #' @seealso chmAdd
+#' @seealso chmAddAxisType
+#' @seealso chmAddCovariateBar
+#' @seealso chmAddOverview
 #' @seealso chmMake
 #' @seealso chmInstall
 
-chmNew <- function (name, ...) {
+chmNew <- function (name, ..., rowOrder=NA, colOrder=NA,
+                    rowAxisType=NULL, colAxisType=NULL,
+		    rowCovariates=NULL, colCovariates=NULL,
+		    overview=c()) {
     if (typeof (name) != "character") {
         stop (sprintf ("Parameter 'name' must have type 'character', not '%s'", typeof(name)));
     }
@@ -124,20 +137,37 @@ chmNew <- function (name, ...) {
     }
     chm <- new (Class="ngchm", name=name)
     chm <- chmAddCSS (chm, 'div.overlay { border: 2px solid yellow; }');
-    chm@rowOrder <- defaultRowOrder;
-    chm@colOrder <- defaultColOrder;
+    chm@rowOrder <- if (is.na(rowOrder)) defaultRowOrder else rowOrder;
+    chm@colOrder <- if (is.na(colOrder)) defaultColOrder else colOrder;
     chm <- chmAddList (chm, list(...));
+    if (!is.null(rowAxisType)) chm <- chmAddAxisType (chm, 'row', rowAxisType);
+    if (!is.null(colAxisType)) chm <- chmAddAxisType (chm, 'column', colAxisType);
+    if (!is.null(rowCovariates)) {
+        if (is.list (rowCovariates)) {
+	    for (cov in rowCovariates) chm <- chmAddCovariateBar (chm, 'row', cov);
+	} else {
+	    chm <- chmAddCovariateBar (chm, 'row', cov);
+	}
+    }
+    if (!is.null(colCovariates)) {
+        if (is.list (colCovariates)) {
+	    for (cov in colCovariates) chm <- chmAddCovariateBar (chm, 'column', cov);
+	} else {
+	    chm <- chmAddCovariateBar (chm, 'col', cov);
+	}
+    }
+    for (ov in overview) chm <- chmAddOverview (chm, ov, NULL, NULL);
     chm
 }
 
 defaultColOrder <- function (chm) {
     if (length (chm@layers) == 0) stop ("chm requires at least one layer");
-    as.dendrogram(hclust(as.dist(1-cor(chm@layers[[1]]@data)), method="ward"))
+    as.dendrogram(hclust(as.dist(1-cor(chm@layers[[1]]@data, use="pairwise")), method="ward"))
 }
 
 defaultRowOrder <- function (chm) {
     if (length (chm@layers) == 0) stop ("chm requires at least one layer");
-    as.dendrogram(hclust(as.dist(1-cor(t(chm@layers[[1]]@data))), method="ward"))
+    as.dendrogram(hclust(as.dist(1-cor(t(chm@layers[[1]]@data), use="pairwise")), method="ward"))
 }
 
 # Function used by chmNew and chmAdd:
@@ -1891,4 +1921,35 @@ chmWriteCustomJS <- function (chm, filename) {
     }
     chm <- chmAddAutoMenuItems (chm);
     writeCustomJS (chm, filename);
+}
+
+#' Get the file path to the specified overview file.
+#'
+#' This function returns the file path to the specified overview image of the CHM.  The CHM must be
+#' made before the file can be accessed.
+#' If idx is specified, format if given must equal that of the overview image, and the path to that overview image is returned.
+#' If idx is not specified, the file path to the first overview of the given format (default 'png') is returned.
+#'
+#' @param chm An NGCHM.
+#' @param format The format of overview image desired (defaults to 'png' if idx is not specified).
+#' @param idx The index of the overview image desired (defaults to first image of the specified format).
+#'
+#' @export
+chmGetOverview <- function (chm, format=NULL, idx=NULL) {
+    if (is.null(idx)) {
+	if (is.null (format)) format <- 'png';
+	idx <- which(vapply (chm@overviews, function(ov)ov@format, '')==format);
+	if (is.null(idx)) stop (sprintf ('CHM "%s" has no overview with format "%s"', chm@name, format));
+	idx <- idx[1];
+    } else {
+	if ((idx < 1) || (idx > length(chm@overviews)))
+	    stop (sprintf ('Invalid index (%d) for overview of CHM "%s"', idx, chm@name));
+        if (is.null (format)) {
+	    format <- chm@overviews[[idx]]@format;
+	}
+	else if (format != chm@overviews[[idx]]@format) {
+	    stop (sprintf ('Overview #%d of CHM "%s" does not have format "%s"', idx, chm@name, format));
+	}
+    }
+    file.path(chm@outDir, chm@name, 'overview', sprintf('overview%d.%s', idx, format))
 }

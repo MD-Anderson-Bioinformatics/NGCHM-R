@@ -25,6 +25,10 @@ setClassUnion ("optNumeric");
 setIs ("numeric", "optNumeric");
 setIs ("NULL", "optNumeric");
 
+setClassUnion ("optInteger");
+setIs ("integer", "optInteger");
+setIs ("NULL", "optInteger");
+
 setClassUnion ("charOrFunction");
 setIs ("character", "charOrFunction");
 setIs ("function", "charOrFunction");
@@ -342,13 +346,15 @@ setMethod ('show',
 #' @keywords classes
 setClass ("ngchmOverview",
           representation (format="character",
-			  width="integer",
-			  height="integer"));
+			  width="optInteger",
+			  height="optInteger"));
 
 setMethod ('show',
            signature = c('ngchmOverview'),
 	   definition = function (object) {
-	       cat (sprintf ("ngchmOverview %s %d x %d\n", object@format, object@width, object@height));
+	       cat (sprintf ("ngchmOverview %s %d x %d\n", object@format,
+	                     if (is.null(object@width)) 0 else object@width,
+			     if (is.null(object@height)) 0 else object@height));
 	   });
 
 #' Class representing an addon dialog

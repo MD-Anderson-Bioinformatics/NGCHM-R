@@ -648,11 +648,11 @@ writeChm <- function (chm) {
     if (is.list(chm@overviews)) {
 	for (ii in 1:length(chm@overviews)) {
 	    ov <- chm@overviews[[ii]];
-	    cat (sprintf ("overview%d.format=%s\n", ii, ov@format));
-	    if (length(ov@width) > 0)
-		cat (sprintf ("overview%d.width=%d\n", ii, ov@width));
-	    if (length(ov@height) > 0)
-		cat (sprintf ("overview%d.height=%d\n", ii, ov@height));
+	    cat (sprintf ("overview%d.format=%s\n", ii, ov@format), file=props);
+	    if (!is.null(ov@width))
+		cat (sprintf ("overview%d.width=%d\n", ii, ov@width), file=props);
+	    if (!is.null(ov@height))
+		cat (sprintf ("overview%d.height=%d\n", ii, ov@height), file=props);
 	}
     }
     genSpecFeedback (80, "writing extra support files");
@@ -1101,21 +1101,23 @@ setMethod ("chmAddRelated",
 #' @rdname chmAddOverview-method
 #' @aliases chmAddOverview,ngchm,character,numeric,numeric-method
 setMethod ("chmAddOverview",
-    signature = c(chm="ngchm", format="character", width="numeric", height="numeric"),
+    signature = c(chm="ngchm", format="character", width="optNumeric", height="optNumeric"),
     definition = function (chm, format, width, height) {
+	known.formats <- c("pdf", "png", "svg");
 	if (length(format) != 1)
 	    stop (sprintf ("chmAddOverview: format has length %d. Exactly one format string is required.", length(format)));
-	if ((format != "pdf") && (format != "png"))
-	    stop (sprintf ("chmAddOverview: unknown overview format '%s'.  Acceptable formats are 'pdf', 'png'", format));
+	if (!(format %in% known.formats))
+	    stop (sprintf ("chmAddOverview: unknown overview format '%s'.  Acceptable formats are %s", format,
+	                   paste (sprintf ("'%s'", known.formats), collapse=", ")));
 	if (length(width) > 1)
 	    stop (sprintf ("chmAddOverview: width has length %d. At most one width can be specified.", length(width)));
 	if (length(height) > 1)
 	    stop (sprintf ("chmAddOverview: height has length %d. At most one height can be specified.", length(height)));
-	if ((length(width) + length(height)) == 0)
-	    stop (sprintf ("chmAddOverview: at least width or height must be specified."));
-	if (length(width) == 1)
+	#if ((length(width) + length(height)) == 0)
+	#    stop (sprintf ("chmAddOverview: at least width or height must be specified."));
+	if (!is.null(width))
 	    width <- as.integer(width);
-	if (length(height) == 1)
+	if (!is.null(height))
 	    height <- as.integer(height);
 	ov <- new (Class="ngchmOverview", format=format, width=width, height=height);
         chm@overviews <- append (chm@overviews, ov);
