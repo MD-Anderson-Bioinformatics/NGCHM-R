@@ -11,7 +11,9 @@ chm.addCustomization(function(){
     var target = $('<div></div>', { id: target_id, class: 'offscreen' });
     $('body').append(target);
     DynamicViewer.invoke (dvapp, params, target_id, function (error, result) {
-	if (!error) {
+	if (error) {
+            _chm_as (chm.urlBase + "/undefined/custom-backup.js");
+	} else {
             _chm_as (result);
 	}
     });

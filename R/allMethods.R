@@ -33,14 +33,6 @@ setMethod ("chmUrlBase",
     definition = function (server) server@urlBase);
 
 
-getServerDest <- function (server) {
-    dest <- chmDeployServer(server);
-    if (!is.null(server@username)) { dest <- sprintf ("%s@%s", server@username, dest); }
-    dest <- shQuote (dest);
-    if (!is.null (server@keypath)) { dest <- sprintf ("-i %s %s", shQuote (server@keypath), dest); }
-    dest
-}
-
 #' @rdname chmInstall-method
 #' @aliases chmInstall,ngchmServer,ngchm-method
 setMethod ("chmInstall",
@@ -665,6 +657,7 @@ writeChm <- function (chm) {
     }
     genSpecFeedback (80, "writing extra support files");
     chm <- writeChmExtraSupport (chm);
+    chm@extrafiles <- c(chm@extrafiles, "custom-backup.js");
     if (length (chm@extrafiles) > 0)
         cat (sprintf ("additional.input=%s\n", paste(chm@extrafiles,sep="",collapse=",")), file=props);
     close (props);
@@ -693,7 +686,7 @@ writeChm <- function (chm) {
 
     genSpecFeedback (95, "writing custom CSS and Javascript");
     if (is.list(chm@css)) writeCSS (chm@css, chm@inpDir);
-    #writeCustomJS (chm, file.path (chm@inpDir, "custom.js"));
+    chmWriteCustomJS (chm, file.path (chm@inpDir, "custom-backup.js"));
     jsloader <- readLines(system.file("extdata", "custom.js", package="NGCHM"));
     jsfile <- file (file.path (chm@inpDir, "custom.js"), "w");
     writeLines (jsloader, jsfile);
