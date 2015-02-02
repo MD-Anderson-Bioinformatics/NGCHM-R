@@ -3,13 +3,24 @@
 #' NGCHM provides tools for defining the contents of a new NGCHM,
 #' and for compiling and installing it on a NGCHM server.
 #'
-#' Typical usage is to create a base NGCHM using chmNew; extend it with at
+#' Typical usage (see example) is to create a base NGCHM using chmNew; extend it with at
 #' least one ngchmLayer; typically extend it further with an additional
 #' ngchmLayer, row and column dendrograms, classification bars, and popup menu entries;
 #' compile and install it on an available ngchmServer.
 #'
+#' @section Initialization:
+#' When first loaded the NGCHM library reads configuration files in
+#' the directories specified by the NGCHMCONFIGPATH environment variable.  This is
+#' a colon (:) separated list of directory names.  If not set it defaults to
+#' /etc/ngchm:/usr/local/ngchm:/opt/ngchm:$HOME/.ngchm.
+#' See NGCHM-initialization for details.
+#'
+#' @seealso chmNew
+#' @seealso chmAdd
+#' @seealso chmMake
+#' @seealso chmInstall
+#' @seealso chmListServers
 #' @seealso ngchm-class
-#' @seealso ngchmServer-class
 #'
 #' @docType package
 #' @name NGCHM
