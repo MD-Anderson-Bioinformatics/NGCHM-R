@@ -137,8 +137,8 @@ chmNew <- function (name, ..., rowOrder=NA, colOrder=NA,
     }
     chm <- new (Class="ngchm", name=name)
     chm <- chmAddCSS (chm, 'div.overlay { border: 2px solid yellow; }');
-    chm@rowOrder <- if (is.na(rowOrder)) defaultRowOrder else rowOrder;
-    chm@colOrder <- if (is.na(colOrder)) defaultColOrder else colOrder;
+    chm@rowOrder <- if ((length(rowOrder)==1) && is.na(rowOrder)) defaultRowOrder else rowOrder;
+    chm@colOrder <- if ((length(colOrder)==1) && is.na(colOrder)) defaultColOrder else colOrder;
     chm <- chmAddList (chm, list(...));
     if (!is.null(rowAxisType)) chm <- chmAddAxisType (chm, 'row', rowAxisType);
     if (!is.null(colAxisType)) chm <- chmAddAxisType (chm, 'column', colAxisType);
