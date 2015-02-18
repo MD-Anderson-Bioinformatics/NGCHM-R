@@ -84,7 +84,10 @@ chmServer <- function (name) {
     }
 }
 
-# Export for debug.
+#' Get the ngchm environment (for debugging only).
+#'
+#' Get the library's internal ngchm environment to help debugging.
+#'
 #' @export ngchmGetEnv
 ngchmGetEnv <- function () {
     return (ngchm.env);
@@ -122,7 +125,7 @@ ngchmGetEnv <- function () {
 #' @seealso chmMake
 #' @seealso chmInstall
 
-chmNew <- function (name, ..., rowOrder=NA, colOrder=NA,
+chmNew <- function (name, ..., rowOrder=chmDefaultRowOrder, colOrder=chmDefaultColOrder,
                     rowAxisType=NULL, colAxisType=NULL,
 		    rowCovariates=NULL, colCovariates=NULL,
 		    overview=c()) {
@@ -137,8 +140,8 @@ chmNew <- function (name, ..., rowOrder=NA, colOrder=NA,
     }
     chm <- new (Class="ngchm", name=name)
     chm <- chmAddCSS (chm, 'div.overlay { border: 2px solid yellow; }');
-    chm@rowOrder <- if ((length(rowOrder)==1) && is.na(rowOrder)) defaultRowOrder else rowOrder;
-    chm@colOrder <- if ((length(colOrder)==1) && is.na(colOrder)) defaultColOrder else colOrder;
+    chm@rowOrder <- rowOrder;
+    chm@colOrder <- colOrder;
     chm <- chmAddList (chm, list(...));
     if (!is.null(rowAxisType)) chm <- chmAddAxisType (chm, 'row', rowAxisType);
     if (!is.null(colAxisType)) chm <- chmAddAxisType (chm, 'column', colAxisType);
@@ -160,12 +163,28 @@ chmNew <- function (name, ..., rowOrder=NA, colOrder=NA,
     chm
 }
 
-defaultColOrder <- function (chm) {
+#' Return default column order of an NGCHM
+#'
+#' @param chm An NGCHM containing at least one layer
+#'
+#' @return A ordering object (character vector or dendrogram) suitable for use as the
+#'         chm's column order.
+#'
+#' @export
+chmDefaultColOrder <- function (chm) {
     if (length (chm@layers) == 0) stop ("chm requires at least one layer");
     as.dendrogram(hclust(as.dist(1-cor(chm@layers[[1]]@data, use="pairwise")), method="ward"))
 }
 
-defaultRowOrder <- function (chm) {
+#' Return default row order of an NGCHM
+#'
+#' @param chm An NGCHM containing at least one layer
+#'
+#' @return A ordering object (character vector or dendrogram) suitable for use as the
+#'         chm's row order.
+#'
+#' @export
+chmDefaultRowOrder <- function (chm) {
     if (length (chm@layers) == 0) stop ("chm requires at least one layer");
     as.dendrogram(hclust(as.dist(1-cor(t(chm@layers[[1]]@data), use="pairwise")), method="ward"))
 }
@@ -248,6 +267,8 @@ chmNewDataLayer <- function (label, data, colors=NULL) {
 #' @param data A matrix containing the data in the dataset. Must have rownames and colnames.
 #' @param row.covariates An optional list of row covariates.
 #' @param column.covariates An optional list of column covariates.
+#' @param row.type The type, if any, of the dataset rows.
+#' @param column.type The type, if any, of the dataset columns.
 #'
 #' @return An object of class ngchmDataset
 #'
@@ -325,7 +346,7 @@ chmNewDataset <- function (name, description, data,
 #' @param values A named vector of values (character, logical, or numeric).
 #' @param value.properties An ngchmColormap mapping values to properties.
 #' @param type The string "discrete" or the string "continuous".  (Defaults to continuous for numeric values, to discrete otherwise.)
-#' @param label The short R-compatible identifier used to identify the covariate (derived from fullname if not specified).
+#' @param covabbv The short R-compatible identifier used to identify the covariate (derived from fullname if not specified).
 #'
 #' @return An object of class ngchmCovariate.
 #'
@@ -437,6 +458,7 @@ chmNewCovariate <- function (fullname, values, value.properties=NULL, type=NULL,
 #'
 #' @examples
 #' bar.data <- ifelse (rnorm(1000) < 0, "negative", "non-negative")
+#' names(bar.data) <- sprintf ("Sample%d", 1:length(bar.data))
 #' bar.colors <- chmNewColorMap (c("negative", "non-negative"),
 #'                               c("white", "black"), missing.color='red')
 #' bar <- chmNewClassBar ("Group", "discrete", bar.data, bar.colors)
@@ -536,7 +558,7 @@ chmNewCovariateBar <- function (covar, display="visible", thickness=as.integer(1
 #' @param shapes A string vector specifying the shape to use for each series.
 #' @param zs A numeric vector specifying the z order to use for each series.
 #' @param type The string "linear" (default) or "quantile" (or unique abbreviation thereof).
-#' @param missing A string specifying the color to use for missing data.
+#' @param missing.color A string specifying the color to use for missing data.
 #' @param palette A function(n) that returns a vector of n colors.
 #'
 #' @return An object of class ngchmColormap
@@ -672,6 +694,7 @@ chmAddValueProperty <- function (vps, value, color, name=NULL, shape=NULL, z=NUL
 #'        is passed a list of selected values (e.g. labels).  Additional parameters can be declared before the values
 #'        parameter and must be resolved through currying (binding) before the function is used in menus.
 #' @param extraParams An optional list of extra parameters. (Default NULL.)
+#' @param requires An optional vector of (custom) Javascript function names that this function requires.
 #' @param global A logical: TRUE if should be defined globally, not within a customization section. (Default FALSE.)
 #'
 #' @return An object of class ngchmJS
@@ -680,9 +703,10 @@ chmAddValueProperty <- function (vps, value, color, name=NULL, shape=NULL, z=NUL
 #'
 #' @examples
 #' alertFn <- chmNewFunction ("showAlert", "Display the parameter in an alert box",
-#'                            "function showAlert(label) { alert(label); }", TRUE)
+#'                            "function showAlert(label) { alert(label); }", global=TRUE)
 #' dbLookup <- chmNewFunction ("dbLookup", "Lookup the parameter in a database",
-#'                            "function showAlert(database, label) { alert(database[label]); }", c("database"))
+#'                             "function showAlert(database, label) { alert(database[label]); }",
+#'                             c("database"))
 #'
 #' @seealso ngchmJS-class
 #' @seealso chmAddMenuItem
@@ -1114,21 +1138,24 @@ chmGetTypeInfo <- function (typename) {
 
 #' Pretty print the result returned by chmGetTypeInfo.
 #'
+#' @param x Type information about an NGCHM type name as return by chmGetTypeInfo.
+#' @param ... Generic function accepts additional parameters
+#'
 #' @export
 #'
 #' @seealso chmGetTypeInfo
-print.ngchm.type.info <- function (ti) {
-    cat (sprintf ("NGCHM type %s: %s\n", ti$name, ti$description));
-    if (length (ti$axisFunctions) > 0) {
-	fns <- paste (vapply (ti$axisFunctions, function(af)af@label, ""), collapse=", ");
+print.ngchm.type.info <- function (x, ...) {
+    cat (sprintf ("NGCHM type %s: %s\n", x$name, x$description));
+    if (length (x$axisFunctions) > 0) {
+	fns <- paste (vapply (x$axisFunctions, function(af)af@label, ""), collapse=", ");
 	cat (sprintf ("matches axis functions %s.\n", fns));
     }
-    if (length (ti$matrixFunctions) > 0) {
-	fns <- paste (vapply (ti$matrixFunctions, function(af)af@label, ""), collapse=", ");
+    if (length (x$matrixFunctions) > 0) {
+	fns <- paste (vapply (x$matrixFunctions, function(af)af@label, ""), collapse=", ");
 	cat (sprintf ("matches matrix functions %s.\n", fns));
     }
-    if (length (ti$typeMappers) > 0) {
-	types <- paste (vapply (ti$typeMappers, function(af)af@totype, ""), collapse=", ");
+    if (length (x$typeMappers) > 0) {
+	types <- paste (vapply (x$typeMappers, function(af)af@totype, ""), collapse=", ");
 	cat (sprintf ("maps to types %s.\n", types));
     }
 }
@@ -1144,7 +1171,6 @@ print.ngchm.type.info <- function (ti) {
 #' @param fromtype The type of values the function expects as input.
 #' @param totype The type of values the function will produce.  The length of
 #'        totype must be shorter than fromtype.
-#' @param name The function's javascript name.
 #' @param fn The Javascript function to register.
 #'
 #' @return NULL
@@ -1225,7 +1251,10 @@ chmRegisterFunction <- function (fn) {
 #' an NGCHM server.
 #'
 #' @param protocolName The name of this protocol implementation.
-#' @param installMethod 
+#' @param installMethod A function(server,chm) for installing an NG-CHM.
+#' @param uninstallMethod A function(server,chmname) for uninstalling an NG-CHM.
+#' @param makePrivate A function(server,chmname) for hiding an NG-CHM.
+#' @param makePublic A function(server,chmname) for showing an NG-CHM.
 #'
 #' @export
 
@@ -1639,7 +1668,7 @@ getBuilderJar <- function (server) {
 	else if (length(grep("^file://", server@jarFile)) > 0) {
 	    ngchm.env$jarCache[[server@jarFile]] <- substring (server@jarFile, 8);
 	} else {
-	    stop (sprintf ("Unknown retrieval method for jarFile '%s' for NGCHM server '%s'", chm@jarFile, server@name));
+	    stop (sprintf ("Unknown retrieval method for jarFile '%s' for NGCHM server '%s'", server@jarFile, server@name));
 	}
     }
     ngchm.env$jarCache[[server@jarFile]]
@@ -1653,6 +1682,9 @@ getBuilderJar <- function (server) {
 #' @param servername The name of the new server object.
 #' @param cfgDir The absolute path of the MDS2 directory on the deployServer.
 #' @param cfgServer The server on which cfgDir is located.
+#' @param theJarFile Get heatmappipeline.jar from the specified file location, not the
+#'        location defined by the serverProtocol.
+#' @param serverURL Specifies the base URL to use when computing the URL for installed heat maps.
 #'
 #' @export
 
@@ -1787,7 +1819,7 @@ readConfigFile <- function (cfg, filename, sep=':') {
     try (suppressWarnings(lines <- readLines (filename)), silent=TRUE);
     if (length (lines) > 0) {
 	for (line in strsplit (lines, sep)) {
-	    if (length(line) != 2) error (sprintf ('Malformed configuration line "%s" in %s: should be option%svalue', paste(line,sep=sep), filename, sep));
+	    if (length(line) != 2) stop (sprintf ('Malformed configuration line "%s" in %s: should be option%svalue', paste(line,sep=sep), filename, sep));
 	    cfg[[line[1]]] <- line[2];
 	}
     }

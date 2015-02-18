@@ -7,7 +7,7 @@
 chmStringopFunction(stringop)
 }
 \arguments{
-\item{stringop}{}
+\item{stringop}{A javascript code fragment that can be applied to a string to yield another string.}
 }
 \description{
 This function returns the name of a Javascript function thats accepts a string vector

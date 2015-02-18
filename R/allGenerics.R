@@ -157,12 +157,12 @@ setGeneric ("chmAddDialog", function(chm,dialog) standardGeneric("chmAddDialog")
 #' Add a covariate to an auxiliary dataset.
 #'
 #' Add a covariate to an auxiliary dataset and return the extended dataset.
-#' Do not confuse this function with the one for adding a classification bar to an NGCHM. For
+#' Do not confuse this function with the one for adding a covariate bar to an NGCHM. For
 #' that, please refer to the function chmAddCovariateBar.
 #'
 #' @param dataset The dataset to add the covariate to.
 #' @param where The dataset axis to add the covariate to. Must be one of "row", "column", or "both".
-#' @param cov The covariate to add to the dataset.
+#' @param covariate The covariate to add to the dataset.
 #'
 #' @return The extended dataset.
 #'
@@ -394,7 +394,8 @@ setGeneric ("chmAddClassBar", function(chm,where,bar) standardGeneric("chmAddCla
 #'
 #' @param chm The chm to add the covariate bar to.
 #' @param where The chm axis(axes) to add the covariate bar to. Must be one of "row", "column", or "both".
-#' @param bar The covariate or covariate bar to add to the chm.
+#' @param covar The covariate or covariate bar to add to the chm.
+#' @param ... Additional parameters passed to chmNewCovariateBar if covar is a covariate.
 #' @param display Whether the bar is displayed or not. Defaults to "visible".
 #' @param thickness Initial thickness of bar in pixels. Defaults to 10.
 #' @param merge Algorithm for merging multiple items into a single pixel. Default.
@@ -463,6 +464,7 @@ setGeneric ("chmUrlBase", function(server) standardGeneric("chmUrlBase"));
 #'
 #' @param server The server for which to compile the NGCHM.
 #' @param chm The NGCHM to compile.
+#' @param ... Additional chmMake options
 #' @param deleteOld If TRUE, delete any old CHM of this name before beginning build. (Default is TRUE.)
 #' @param useJAR If defined, the location (filename) of the chmbuilder jar file. The package will not download
 #'        a current jar file from the server. It is the caller's responsibility to ensure the builder jar file

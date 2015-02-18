@@ -14,6 +14,10 @@ chmNewDataset(name, description, data, row.type = NULL, column.type = NULL,
 
 \item{data}{A matrix containing the data in the dataset. Must have rownames and colnames.}
 
+\item{row.type}{The type, if any, of the dataset rows.}
+
+\item{column.type}{The type, if any, of the dataset columns.}
+
 \item{row.covariates}{An optional list of row covariates.}
 
 \item{column.covariates}{An optional list of column covariates.}

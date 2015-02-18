@@ -344,7 +344,7 @@ chmFieldAccessFunction <- function (fieldsep, idx) {
 #' constant within an R session, but may differ between R sessions (or if this
 #' library is unloaded and reloaded).
 #'
-#' @param stringop
+#' @param stringop A javascript code fragment that can be applied to a string to yield another string.
 #'
 #' @export
 #'

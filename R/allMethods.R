@@ -368,14 +368,14 @@ addDefaultCovariate <- function (covariates, labels)
     covariates
 }
 
+#' @import tsvio
 writeDataset <- function (chm, dataset, dir) {
-    library (tsvio);
     chm@extrafiles <- c(chm@extrafiles, sprintf ("%s.tsv", dataset@name));
     chm@extrafiles <- c(chm@extrafiles, sprintf ("%s-index.tsv", dataset@name));
 
     write.table (dataset@data, file.path (dir, sprintf ("%s.tsv", dataset@name)), sep="\t", quote=FALSE);
-    tsvGenIndex (file.path (dir, sprintf ("%s.tsv", dataset@name)),
-                 file.path (dir, sprintf ("%s-index.tsv", dataset@name)));
+    tsvio::tsvGenIndex (file.path (dir, sprintf ("%s.tsv", dataset@name)),
+                        file.path (dir, sprintf ("%s-index.tsv", dataset@name)));
 
     row.covars <- addDefaultCovariate (dataset@row.covariates, rownames(dataset@data));
     col.covars <- addDefaultCovariate (dataset@column.covariates, colnames(dataset@data));
@@ -945,9 +945,9 @@ setMethod ("chmAdd",
 	chmAddList (chm, list (...))
 });
 
-#' @rdname chmMake-method
-#' @aliases chmMake,ngchmServer,ngchm,missing-method
-#'
+# @rdname chmMake-method
+# @aliases chmMake,ngchmServer,ngchm,missing-method
+#
 #setMethod ("chmMake",
 #    signature = c(server="ngchmServer", chm="ngchm", deleteOld="missing"),
 #    definition = function (server, chm, deleteOld) {
@@ -1382,7 +1382,7 @@ setMethod ("chmBindFunction",
         chmBindFunction (name, fndef, bindings)
 });
 
-## @rdname chmRowOrder-method
+#' @rdname chmRowOrder-method
 #' @aliases chmRowOrder<-,ngchm,optDendrogram-method
 setReplaceMethod ("chmRowOrder",
     signature = c(chm="ngchm", value="optDendrogram"),
@@ -1395,7 +1395,7 @@ setReplaceMethod ("chmRowOrder",
         chm
 });
 
-## @rdname chmColOrder-method
+#' @rdname chmColOrder-method
 #' @aliases chmColOrder<-,ngchm,optDendrogram-method
 setReplaceMethod ("chmColOrder",
     signature = c(chm="ngchm", value="optDendrogram"),
@@ -1408,7 +1408,7 @@ setReplaceMethod ("chmColOrder",
         chm
 });
 
-## @rdname chmRowMeta-method
+#' @rdname chmRowMeta-method
 #' @aliases chmRowMeta<-,ngchm,optList-method
 setReplaceMethod ("chmRowMeta",
     signature = c(chm="ngchm", value="optList"),
@@ -1417,7 +1417,7 @@ setReplaceMethod ("chmRowMeta",
         chm
 });
 
-## @rdname chmColMeta-method
+#' @rdname chmColMeta-method
 #' @aliases chmColMeta<-,ngchm,optList-method
 setReplaceMethod ("chmColMeta",
     signature = c(chm="ngchm", value="optList"),

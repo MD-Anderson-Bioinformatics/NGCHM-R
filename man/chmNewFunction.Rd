@@ -18,6 +18,8 @@ parameter and must be resolved through currying (binding) before the function is
 
 \item{extraParams}{An optional list of extra parameters. (Default NULL.)}
 
+\item{requires}{An optional vector of (custom) Javascript function names that this function requires.}
+
 \item{global}{A logical: TRUE if should be defined globally, not within a customization section. (Default FALSE.)}
 }
 \value{
@@ -29,9 +31,10 @@ a Next Generation Clustered Heat Map menu.
 }
 \examples{
 alertFn <- chmNewFunction ("showAlert", "Display the parameter in an alert box",
-                           "function showAlert(label) { alert(label); }", TRUE)
+                           "function showAlert(label) { alert(label); }", global=TRUE)
 dbLookup <- chmNewFunction ("dbLookup", "Lookup the parameter in a database",
-                           "function showAlert(database, label) { alert(database[label]); }", c("database"))
+                            "function showAlert(database, label) { alert(database[label]); }",
+                            c("database"))
 }
 \seealso{
 ngchmJS-class

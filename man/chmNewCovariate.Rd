@@ -16,7 +16,7 @@ chmNewCovariate(fullname, values, value.properties = NULL, type = NULL,
 
 \item{type}{The string "discrete" or the string "continuous".  (Defaults to continuous for numeric values, to discrete otherwise.)}
 
-\item{label}{The short R-compatible identifier used to identify the covariate (derived from fullname if not specified).}
+\item{covabbv}{The short R-compatible identifier used to identify the covariate (derived from fullname if not specified).}
 }
 \value{
 An object of class ngchmCovariate.

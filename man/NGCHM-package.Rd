@@ -24,9 +24,14 @@ a colon (:) separated list of directory names.  If not set it defaults to
 See NGCHM-initialization for details.
 }
 \examples{
+mat <- matrix(rnorm(100),nrow=10)
+rownames(mat) <- sprintf ("ABCA\%d", 1:10)
+colnames(mat) <- sprintf ("Sample\%d", 1:10)
 chm <- chmNew ('my-chm', mat, rowAxisType='bio.gene.hugo')
+\dontrun{
 chmMake ('my-server', chm)
 chmInstall ('my-server', chm)
+}
 }
 \seealso{
 chmNew

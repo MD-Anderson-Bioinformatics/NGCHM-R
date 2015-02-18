@@ -13,6 +13,11 @@ chmCreateServer(servername, cfgDir = NULL, cfgServer = NULL,
 \item{cfgDir}{The absolute path of the MDS2 directory on the deployServer.}
 
 \item{cfgServer}{The server on which cfgDir is located.}
+
+\item{theJarFile}{Get heatmappipeline.jar from the specified file location, not the
+location defined by the serverProtocol.}
+
+\item{serverURL}{Specifies the base URL to use when computing the URL for installed heat maps.}
 }
 \description{
 Create an ngchmServer object called 'servername' for the MDS2 NGCHM deployment directory 'cfgDir' on

@@ -16,14 +16,14 @@ chmAddCovariate(dataset, where, covariate)
 
 \item{where}{The dataset axis to add the covariate to. Must be one of "row", "column", or "both".}
 
-\item{cov}{The covariate to add to the dataset.}
+\item{covariate}{The covariate to add to the dataset.}
 }
 \value{
 The extended dataset.
 }
 \description{
 Add a covariate to an auxiliary dataset and return the extended dataset.
-Do not confuse this function with the one for adding a classification bar to an NGCHM. For
+Do not confuse this function with the one for adding a covariate bar to an NGCHM. For
 that, please refer to the function chmAddCovariateBar.
 }
 \seealso{

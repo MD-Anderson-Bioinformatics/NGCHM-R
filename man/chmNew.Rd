@@ -4,9 +4,9 @@
 \alias{chmNew}
 \title{Create a new NGCHM.}
 \usage{
-chmNew(name, ..., rowOrder = NA, colOrder = NA, rowAxisType = NULL,
-  colAxisType = NULL, rowCovariates = NULL, colCovariates = NULL,
-  overview = c())
+chmNew(name, ..., rowOrder = chmDefaultRowOrder,
+  colOrder = chmDefaultColOrder, rowAxisType = NULL, colAxisType = NULL,
+  rowCovariates = NULL, colCovariates = NULL, overview = c())
 }
 \arguments{
 \item{name}{The name under which the NGCHM will be saved to the NGCHM server.}

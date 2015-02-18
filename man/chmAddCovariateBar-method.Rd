@@ -24,13 +24,15 @@ chmAddCovariateBar(chm, where, covar, ...)
 
 \item{where}{The chm axis(axes) to add the covariate bar to. Must be one of "row", "column", or "both".}
 
+\item{covar}{The covariate or covariate bar to add to the chm.}
+
+\item{...}{Additional parameters passed to chmNewCovariateBar if covar is a covariate.}
+
 \item{display}{Whether the bar is displayed or not. Defaults to "visible".}
 
 \item{thickness}{Initial thickness of bar in pixels. Defaults to 10.}
 
 \item{merge}{Algorithm for merging multiple items into a single pixel. Default.}
-
-\item{bar}{The covariate or covariate bar to add to the chm.}
 }
 \value{
 The extended chm.

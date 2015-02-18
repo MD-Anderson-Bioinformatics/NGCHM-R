@@ -2,10 +2,8 @@
 % Please edit documentation in R/allGenerics.R, R/allMethods.R
 \docType{methods}
 \name{chmMake}
-\alias{chmAddLayer,ngchm,ngchmLayer-method}
 \alias{chmMake}
 \alias{chmMake,character,ngchm-method}
-\alias{chmMake,ngchmServer,ngchm,missing-method}
 \alias{chmMake,ngchmServer,ngchm-method}
 \title{Compile a NGCHM.}
 \usage{
@@ -16,13 +14,13 @@ chmMake(server, chm, ...)
   javaTraceLevel = "PROGRESS")
 
 \S4method{chmMake}{character,ngchm}(server, chm, ...)
-
-\S4method{chmAddLayer}{ngchm,ngchmLayer}(chm, layer)
 }
 \arguments{
 \item{server}{The server for which to compile the NGCHM.}
 
 \item{chm}{The NGCHM to compile.}
+
+\item{...}{Additional chmMake options}
 
 \item{deleteOld}{If TRUE, delete any old CHM of this name before beginning build. (Default is TRUE.)}
 

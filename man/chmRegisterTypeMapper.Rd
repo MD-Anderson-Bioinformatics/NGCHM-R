@@ -14,8 +14,6 @@ chmRegisterTypeMapper(fromtype, totype, fn)
 totype must be shorter than fromtype.}
 
 \item{fn}{The Javascript function to register.}
-
-\item{name}{The function's javascript name.}
 }
 \description{
 This function registers a Javascript function that will be automatically

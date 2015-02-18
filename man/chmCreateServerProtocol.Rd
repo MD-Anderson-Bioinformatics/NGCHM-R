@@ -10,7 +10,13 @@ chmCreateServerProtocol(protocolName, installMethod, uninstallMethod,
 \arguments{
 \item{protocolName}{The name of this protocol implementation.}
 
-\item{installMethod}{}
+\item{installMethod}{A function(server,chm) for installing an NG-CHM.}
+
+\item{uninstallMethod}{A function(server,chmname) for uninstalling an NG-CHM.}
+
+\item{makePrivate}{A function(server,chmname) for hiding an NG-CHM.}
+
+\item{makePublic}{A function(server,chmname) for showing an NG-CHM.}
 }
 \description{
 This function creates and registers a protocol implementation for manipulating

@@ -14,8 +14,10 @@ data(TCGA.GBM.EXPR)
 sample.type <- 'bio.tcga.barcode.sample.vial.portion.analyte.aliquot'
 chm <- chmNew ('my-gbm-chm', TCGA.GBM.EXPR, rowAxisType='bio.gene.hugo',
                 colAxisType=sample.type)
+\dontrun{
 chmMake ('my-server', chm)
 chmInstall ('my-server', chm)
+}
 }
 \keyword{data}
 

@@ -20,9 +20,9 @@ chmNewColorMap(values, colors = NULL, names = NULL, shapes = NULL,
 
 \item{type}{The string "linear" (default) or "quantile" (or unique abbreviation thereof).}
 
-\item{palette}{A function(n) that returns a vector of n colors.}
+\item{missing.color}{A string specifying the color to use for missing data.}
 
-\item{missing}{A string specifying the color to use for missing data.}
+\item{palette}{A function(n) that returns a vector of n colors.}
 }
 \value{
 An object of class ngchmColormap

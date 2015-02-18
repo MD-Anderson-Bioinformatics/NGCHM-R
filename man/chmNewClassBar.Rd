@@ -31,6 +31,7 @@ This function creates a new Classification Bar suitable for adding to a Next Gen
 }
 \examples{
 bar.data <- ifelse (rnorm(1000) < 0, "negative", "non-negative")
+names(bar.data) <- sprintf ("Sample\%d", 1:length(bar.data))
 bar.colors <- chmNewColorMap (c("negative", "non-negative"),
                               c("white", "black"), missing.color='red')
 bar <- chmNewClassBar ("Group", "discrete", bar.data, bar.colors)

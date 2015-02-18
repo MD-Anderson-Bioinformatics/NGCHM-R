@@ -4,7 +4,12 @@
 \alias{print.ngchm.type.info}
 \title{Pretty print the result returned by chmGetTypeInfo.}
 \usage{
-\method{print}{ngchm.type.info}(ti)
+\method{print}{ngchm.type.info}(x, ...)
+}
+\arguments{
+\item{x}{Type information about an NGCHM type name as return by chmGetTypeInfo.}
+
+\item{...}{Generic function accepts additional parameters}
 }
 \description{
 Pretty print the result returned by chmGetTypeInfo.

@@ -1,3 +1,4 @@
+#' @import methods
 setOldClass ("dendrogram");
 setOldClass ("hclust");
 setOldClass ("file");

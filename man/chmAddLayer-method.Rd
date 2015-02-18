@@ -4,9 +4,12 @@
 \name{chmAddLayer}
 \alias{chmAddLayer}
 \alias{chmAddLayer,ngchm,matrix-method}
+\alias{chmAddLayer,ngchm,ngchmLayer-method}
 \title{Add a Layer to a NGCHM.}
 \usage{
 chmAddLayer(chm, layer)
+
+\S4method{chmAddLayer}{ngchm,ngchmLayer}(chm, layer)
 
 \S4method{chmAddLayer}{ngchm,matrix}(chm, layer)
 }

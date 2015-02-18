@@ -5,8 +5,9 @@ Version: 0.9.3
 Date: 2015-02-02
 Author: Bradley Broom
 Maintainer: Bradley Broom <bmbroom@mdanderson.org>
-Depends:
-    methods
+Imports:
+    methods,
+    tsvio
 Description: Utitilies for creating Next Generation Clustered Heat Maps
 License: GPL-3
 Collate:
