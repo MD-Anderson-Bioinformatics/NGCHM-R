@@ -1,0 +1,9 @@
+# Replace deploy.server.dns.name with the DNS name of the host you passed to scl-make-deploy-dir.sh
+# Replace path.to.chmData with path to the chmData directory you created with scl-make-deploy-dir.sh
+# Replace chm.server.dns.name with the DNS name of the NG-CHM server
+# Replace 8088 with the port the NG-CHM server is listening to
+serverProtocol=scl
+deployServer=deploy.server.dns.name
+deployDir=/path.to.chmData
+urlBase=http://chm.server.dns.name:8088/Viewer/chm.html
+jarFile=http://chm.server.dns.name:8088/Viewer/resources/heatmappipeline.jar

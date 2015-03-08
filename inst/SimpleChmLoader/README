@@ -1,0 +1,42 @@
+Instructions for installing the Simple CHM Loader (SCL) system
+
+Decide on a host and directory to use for the SCL system:
+   - Users will ssh to the host:directory to request NG-CHMs be installed, uninstalled, etc.
+   - SCL will execute as 'chmuser' on a system with write access to the NG-CHM server's chmData directory.
+   - SCL will ssh to scluser@host:directory to obtain requests, data, etc. from users
+   - 'chmuser' and 'scluser' may be the same or different
+
+Establish a public/private key pair for use by 'chmuser' to login to the SCL host as 'scluser'.
+   - The SCL system uses many ssh/scp commands to obtain requests etc.
+
+Execute the scl-make-deploy-dir.sh script as 'chmuser' to create the SCL directory on host:
+   scl-make-deploy-dir.sh scluser@host:path
+   - A password will not be required if the public/private key pair has
+     been created and installed properly.
+   - Most subdirectories of the SCL directory need open permissions to
+     enable a multitude of users to create and remove directories etc.
+   - The path to the SCL directory itself can be restricted to allow only a
+     subset of users access to the system. (scl-make-deploy-dir.sh does
+     not restrict the path to the SCL directory.)
+   - It is not possible to prevent users with access to the system from
+     interfering with each other.
+   - Conventions can be used to make it unlikely for users to accidentally
+     interfere with each other.  For instance: all NG-CHM names should begin
+     with the user's initials.
+
+Execute the scl-driver.sh script as 'chmuser':
+   scl-driver.sh chmData scluser@host:path
+   - scl-driver.sh must execute as 'chmuser' on a system with write access to
+     the NG-CHM server's chmData directory
+   - scl-driver.sh will repeatedly wait for a command from the target system
+     and execute it
+
+Copy 01-server-protocol-scl.R to your NG-CHM conf.d directory
+   - This script defines the SCL chmServerProtocol
+
+For each NG-CHM to be accessed using SCL.
+   - Create a server configuration directory
+   - Copy example-config.txt to config.txt in that directory and edit as directed
+     in the file.
+   - Create an entry in the 'servers' section of your NG-CHM conf.d directory pointing
+     to the server configuration directory.
