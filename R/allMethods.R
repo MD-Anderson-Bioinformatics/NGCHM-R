@@ -669,7 +669,10 @@ writeChm <- function (chm) {
     #systemCheck (sprintf ("/bin/mkdir %s", chm@inpDir));
 
     genSpecFeedback (55, "saving user's CHM");
-    save (chm, file=file.path (chm@inpDir, "chm.Rdata"));
+    orig.chm <- chm;
+    chm@inpDir <- chm@outDir <- chm@saveDir <- "";
+    save (chm, file=file.path (orig.chm@inpDir, "chm.Rdata"));
+    chm <- orig.chm;
     chm@extrafiles <- c (chm@extrafiles, "chm.Rdata");
 
     genSpecFeedback (60, "writing specification");
