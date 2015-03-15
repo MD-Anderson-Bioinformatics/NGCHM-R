@@ -622,7 +622,7 @@ writeChm <- function (chm) {
     chm@extrafiles <- c (chm@extrafiles, "chm.Rdata");
 
     genSpecFeedback (60, "writing specification");
-    props = file (chm@propFile, "w");
+    props = file (file.path (chm@inpDir, chm@propFile), "w");
     cat (sprintf ("# This NGCHM property description was produced using the R NGCHM library version %s at %s\n",
                   packageDescription("NGCHM")$Version, date()), file=props);
     cat (sprintf ("data.set.name=%s\n", chm@name), file=props);
@@ -908,10 +908,11 @@ setMethod ("chmMake",
 	javaTraceOpts <- sprintf ("-l %s -p", shQuote(javaTraceLevel));
     }
     genSpecFeedback (100, "rendering NGCHM");
-    systemCheck (sprintf ("java -Djava.awt.headless=true %s -jar %s %s %s %s %s",
+    systemCheck (sprintf ("java -Djava.awt.headless=true %s -jar %s %s %s %s/%s %s",
 		  paste (vapply (javaOptions, shQuote, ""), collapse=" "),
 		  shQuote (useJAR),
 		  javaTraceOpts,
+		  shQuote (chm@inpDir),
 		  shQuote (chm@inpDir),
 		  shQuote (chm@propFile),
 		  shQuote (chm@outDir)));
