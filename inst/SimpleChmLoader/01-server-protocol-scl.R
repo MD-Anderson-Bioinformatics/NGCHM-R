@@ -16,7 +16,7 @@ chmCreateServerProtocol ("scl",
 	    systemCheck (sprintf ("ssh %s tar xfC %s/STAGE/%s %s/STAGE", dest, shQuote(ddir), shQuote(tarballName), shQuote(ddir)));
 	    systemCheck (sprintf ("ssh %s /bin/rm %s/STAGE/%s", dest, shQuote(ddir), shQuote(tarballName)));
 	    systemCheck (sprintf ("ssh %s /bin/mv %s/STAGE/%s %s/ADD/", dest, shQuote(ddir), shQuote(chm@name), shQuote(ddir)));
-	    systemCheck (sprintf ("ssh %s while [ -d %s/ADD/%s ] ; do sleep 1; done", dest, shQuote(ddir), shQuote(chm@name)));
+	    systemCheck (sprintf ("ssh %s while [ -d %s/ADD/%s ] ';' do sleep 1 ';' done", dest, shQuote(ddir), shQuote(chm@name)));
 	}
      },
      uninstallMethod = function (server, chmname) {
@@ -29,7 +29,7 @@ chmCreateServerProtocol ("scl",
 	} else {
 	    dest <- getServerDest (server);
 	    systemCheck (sprintf ("ssh %s /bin/mkdir %s/REMOVE/%s", dest, shQuote(ddir), shQuote(chmname)));
-	    systemCheck (sprintf ("ssh %s while [ -d '%s'/REMOVE/'%s' ] ; do sleep 1; done", dest, shQuote(ddir), shQuote(chmname)));
+	    systemCheck (sprintf ("ssh %s while [ -d '%s'/REMOVE/'%s' ] ';' do sleep 1 ';' done", dest, shQuote(ddir), shQuote(chmname)));
 	}
      },
      makePrivate = function (server, chmname) {
@@ -46,7 +46,7 @@ chmCreateServerProtocol ("scl",
 	    systemCheck (sprintf ("ssh %s /bin/mkdir %s/STAGE/%s", dest, shQuote(ddir), shQuote(chmname)));
 	    systemCheck (sprintf ("ssh %s /bin/touch %s/STAGE/%s/hidden.txt", dest, shQuote(ddir), shQuote(chmname)));
 	    systemCheck (sprintf ("ssh %s /bin/mv %s/STAGE/%s %s/ADD-FILE/", dest, shQuote(ddir), shQuote(chmname), shQuote(ddir)));
-	    systemCheck (sprintf ("ssh %s while [ -d %s/ADD-FILE/%s ] ; do sleep 1; done", dest, shQuote(ddir), shQuote(chm@name)));
+	    systemCheck (sprintf ("ssh %s while [ -d %s/ADD-FILE/%s ] ';' do sleep 1 ';' done", dest, shQuote(ddir), shQuote(chm@name)));
 	}
      },
      makePublic = function (server, chmname) {
@@ -63,7 +63,7 @@ chmCreateServerProtocol ("scl",
 	    systemCheck (sprintf ("ssh %s /bin/mkdir %s/STAGE/%s", dest, shQuote(ddir), shQuote(chmname)));
 	    systemCheck (sprintf ("ssh %s /bin/touch %s/STAGE/%s/hidden.txt", dest, shQuote(ddir), shQuote(chmname)));
 	    systemCheck (sprintf ("ssh %s /bin/mv %s/STAGE/%s %s/REMOVE-FILE/", dest, shQuote(ddir), shQuote(chmname), shQuote(ddir)));
-	    systemCheck (sprintf ("ssh %s while [ -d %s/REMOVE-FILE/%s ] ; do sleep 1; done", dest, shQuote(ddir), shQuote(chm@name)));
+	    systemCheck (sprintf ("ssh %s while [ -d %s/REMOVE-FILE/%s ] ';' do sleep 1 ';' done", dest, shQuote(ddir), shQuote(chm@name)));
 	}
      }
 );
