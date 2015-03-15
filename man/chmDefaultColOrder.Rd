@@ -10,7 +10,7 @@ chmDefaultColOrder(chm)
 \item{chm}{An NGCHM containing at least one layer}
 }
 \value{
-A ordering object (character vector or dendrogram) suitable for use as the
+An ordering object (character vector or dendrogram) suitable for use as the
         chm's column order.
 }
 \description{

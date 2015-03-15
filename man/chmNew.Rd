@@ -4,9 +4,11 @@
 \alias{chmNew}
 \title{Create a new NGCHM.}
 \usage{
-chmNew(name, ..., rowOrder = chmDefaultRowOrder,
-  colOrder = chmDefaultColOrder, rowAxisType = NULL, colAxisType = NULL,
-  rowCovariates = NULL, colCovariates = NULL, overview = c())
+chmNew(name, ..., rowOrder = chmDefaultRowOrder, rowDist = "correlation",
+  rowAgglom = "ward", colOrder = chmDefaultColOrder,
+  colDist = "correlation", colAgglom = "ward", rowAxisType = NULL,
+  colAxisType = NULL, rowCovariates = NULL, colCovariates = NULL,
+  overview = c())
 }
 \arguments{
 \item{name}{The name under which the NGCHM will be saved to the NGCHM server.}
@@ -15,7 +17,15 @@ chmNew(name, ..., rowOrder = chmDefaultRowOrder,
 
 \item{rowOrder}{A vector, dendrogram, or function specifying the CHM row order.}
 
+\item{rowDist}{Distance method to use by default RowOrder}
+
+\item{rowAgglom}{Agglomeration method to use by default RowOrder}
+
 \item{colOrder}{A vector, dendrogram, or function specifying the CHM column order.}
+
+\item{colDist}{Distance method to use by default ColOrder}
+
+\item{colAgglom}{Agglomeration method to use by default ColOrder}
 
 \item{rowAxisType}{The type(s) of the row labels (default: None).}
 

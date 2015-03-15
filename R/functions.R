@@ -102,7 +102,11 @@ ngchmGetEnv <- function () {
 #' @param name The name under which the NGCHM will be saved to the NGCHM server.
 #' @param ... Zero or more initial objects to include in the NGCHM (see chmAdd).
 #' @param rowOrder A vector, dendrogram, or function specifying the CHM row order.
+#' @param rowDist Distance method to use by default RowOrder
+#' @param rowAgglom Agglomeration method to use by default RowOrder
 #' @param colOrder A vector, dendrogram, or function specifying the CHM column order.
+#' @param colDist Distance method to use by default ColOrder
+#' @param colAgglom Agglomeration method to use by default ColOrder
 #' @param rowAxisType The type(s) of the row labels (default: None).
 #' @param colAxisType The type(s) of the column labels (default: None).
 #' @param rowCovariates Covariate(Bar)(s) to add to the rows (default: None).
@@ -125,7 +129,9 @@ ngchmGetEnv <- function () {
 #' @seealso chmMake
 #' @seealso chmInstall
 
-chmNew <- function (name, ..., rowOrder=chmDefaultRowOrder, colOrder=chmDefaultColOrder,
+chmNew <- function (name, ...,
+                    rowOrder=chmDefaultRowOrder, rowDist="correlation", rowAgglom="ward",
+		    colOrder=chmDefaultColOrder, colDist="correlation", colAgglom="ward",
                     rowAxisType=NULL, colAxisType=NULL,
 		    rowCovariates=NULL, colCovariates=NULL,
 		    overview=c()) {
@@ -140,8 +146,8 @@ chmNew <- function (name, ..., rowOrder=chmDefaultRowOrder, colOrder=chmDefaultC
     }
     chm <- new (Class="ngchm", name=name)
     chm <- chmAddCSS (chm, 'div.overlay { border: 2px solid yellow; }');
-    chm@rowOrder <- rowOrder;
-    chm@colOrder <- colOrder;
+    chm@rowOrder <- rowOrder; chm@rowDist <- rowDist; chm@rowAgglom <- rowAgglom;
+    chm@colOrder <- colOrder; chm@colDist <- colDist; chm@colAgglom <- colAgglom;
     chm <- chmAddList (chm, list(...));
     if (!is.null(rowAxisType)) chm <- chmAddAxisType (chm, 'row', rowAxisType);
     if (!is.null(colAxisType)) chm <- chmAddAxisType (chm, 'column', colAxisType);
@@ -167,26 +173,36 @@ chmNew <- function (name, ..., rowOrder=chmDefaultRowOrder, colOrder=chmDefaultC
 #'
 #' @param chm An NGCHM containing at least one layer
 #'
-#' @return A ordering object (character vector or dendrogram) suitable for use as the
+#' @return An ordering object (character vector or dendrogram) suitable for use as the
 #'         chm's column order.
 #'
 #' @export
 chmDefaultColOrder <- function (chm) {
     if (length (chm@layers) == 0) stop ("chm requires at least one layer");
-    as.dendrogram(hclust(as.dist(1-cor(chm@layers[[1]]@data, use="pairwise")), method="ward"))
+    if (chm@colDist == "correlation") {
+        dd <- as.dist(1-cor(chm@layers[[1]]@data, use="pairwise"));
+    } else {
+        dd <- dist (t(chm@layers[[1]]), method=chm@colDist);
+    }
+    as.dendrogram(hclust(dd, method=chm@colAgglom))
 }
 
 #' Return default row order of an NGCHM
 #'
 #' @param chm An NGCHM containing at least one layer
 #'
-#' @return A ordering object (character vector or dendrogram) suitable for use as the
+#' @return An ordering object (character vector or dendrogram) suitable for use as the
 #'         chm's row order.
 #'
 #' @export
 chmDefaultRowOrder <- function (chm) {
     if (length (chm@layers) == 0) stop ("chm requires at least one layer");
-    as.dendrogram(hclust(as.dist(1-cor(t(chm@layers[[1]]@data), use="pairwise")), method="ward"))
+    if (chm@rowDist == "correlation") {
+        dd <- as.dist(1-cor(t(chm@layers[[1]]@data), use="pairwise"))
+    } else {
+        dd <- dist (chm@layers[[1]], method=chm@rowDist);
+    }
+    as.dendrogram(hclust(dd, method=chm@rowAgglom))
 }
 
 # Function used by chmNew and chmAdd:
