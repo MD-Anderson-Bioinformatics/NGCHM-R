@@ -616,3 +616,14 @@ setGeneric ("chmAddToolboxR2", function(CHM,axistype,datasetname,idstr) standard
 #' @param idstr string to append to toolbox menu labels (default '')
 setGeneric ("chmAddToolboxRC", function(CHM,rowtype,coltype,datasetname,idstr) standardGeneric("chmAddToolboxRC"));
 
+#' Load CHM from NG-CHM server
+#'
+#' Load an R CHM object from an NG-CHM server.  The CHM concerned must have been built
+#' using this library, version 0.9.4 or later.
+#'
+#' @exportMethod chmLoadCHM
+#' @rdname chmLoadCHM-method
+#'
+#' @param serverOrURL Either the server or the CHM url from which to load the CHM object.
+#' @param name Name of the CHM to load if the first parameter is a server id
+setGeneric ("chmLoadCHM", function(serverOrURL,name) standardGeneric("chmLoadCHM"))

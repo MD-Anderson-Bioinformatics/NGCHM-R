@@ -145,10 +145,61 @@ setMethod ("chmMakePublic",
         chmMakePublic (chmServerCheck(server), chm);
     });
 
+
+#' @rdname chmLoadCHM-method
+#' @aliases chmLoadCHM,ngchmServer,character-method
+setMethod ("chmLoadCHM",
+    signature = c(serverOrURL="ngchmServer",name="character"),
+    definition = function (serverOrURL, name) {
+	loadChmFromURL (chmGetURL (serverOrURL, name))
+    });
+
+#' @rdname chmLoadCHM-method
+#' @aliases chmLoadCHM,character,character-method
+setMethod ("chmLoadCHM",
+    signature = c(serverOrURL="character",name="character"),
+    definition = function (serverOrURL, name) {
+	if (serverOrURL %in% chmListServers()) {
+	    loadChmFromURL (chmGetURL (serverOrURL, name))
+	} else {
+	    stop (sprintf ("Unknown server '%s'", serverOrURL));
+	}
+    });
+
+#' @rdname chmLoadCHM-method
+#' @aliases chmLoadCHM,character,missing-method
+setMethod ("chmLoadCHM",
+    signature = c(serverOrURL="character",name="missing"),
+    definition = function (serverOrURL, name) {
+        loadChmFromURL (serverOrURL)
+    });
+
 # ##############################################################################################
 #
 # Methods for class NGCHM
 #
+
+loadChmFromURL <- function (chmurl) {
+    params <- strsplit (chmurl, "?", fixed=TRUE)[[1]];
+    if (substring (params[1], nchar(params[1])-8) != "/chm.html") {
+        stop (sprintf ("url '%s' does not look like an NG-CHM url", chmurl));
+    } else {
+        baseurl <- substr (params[1], 1, nchar(params[1])-8);
+    }
+    params <- strsplit(params[2:length(params)],'=');
+    idx <- which (vapply (params, function(x)x[1]=="name", TRUE));
+    if (length (idx) != 1) {
+        stop (sprintf ("url '%s' does not look like an NG-CHM url", chmurl));
+    }
+    chmname <- params[[idx]][2];
+    ee <- new.env();
+    load(url(paste (baseurl, "data/", chmname, "/undefined/chm.Rdata", sep="")), ee);
+    chm <- ee$chm;
+    chm@inpDir <- tempfile ("ngchm.input");
+    chm@outDir <- tempfile ("ngchm.output");
+    chm@saveDir <- ".";
+    chm
+}
 
 writeColorMap <- function (context, cmap, prefix, suffix, chan) {
     stopifnot (length(cmap@missing) > 0);
