@@ -7,7 +7,8 @@ Author: Bradley Broom
 Maintainer: Bradley Broom <bmbroom@mdanderson.org>
 Imports:
     methods,
-    tsvio
+    tsvio,
+    digest
 Description: Utitilies for creating Next Generation Clustered Heat Maps
 License: GPL-3
 Collate:

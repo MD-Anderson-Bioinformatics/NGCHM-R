@@ -987,7 +987,7 @@ setMethod ("chmAddCSS",
     signature = c(chm="ngchm", css="character"),
     definition = function (chm, css) {
 	chm@css <- append (chm@css, new (Class="ngchmCSS", css=css));
-        chm
+        chmUU (chm)
 });
 
 #' @rdname chmAddTag-method
@@ -996,7 +996,7 @@ setMethod ("chmAddTag",
     signature = c(chm="ngchm", tag="character"),
     definition = function (chm, tag) {
 	chm@tags <- c (chm@tags, tag);
-        chm
+        chmUU (chm)
 });
 
 #' @rdname chmAddDataset-method
@@ -1012,7 +1012,7 @@ setMethod ("chmAddDataset",
 	    chm <- chmAddProperty (chm, sprintf ("!datasettype:%s-row", make.names(dataset@name)), dataset@row.type);
 	if (length(dataset@column.type) > 0)
 	    chm <- chmAddProperty (chm, sprintf ("!datasettype:%s-column", make.names(dataset@name)), dataset@column.type);
-        chm
+        chmUU (chm)
 });
 
 #' @rdname chmAddDialog-method
@@ -1027,7 +1027,7 @@ setMethod ("chmAddDialog",
 	    stop (sprintf ("A dialog with title '%s' already exists", dialog@title));
 	}
 	chm@dialogs <- append (chm@dialogs, dialog);
-	addFunDefine (chm, dialog@fn)
+	chmUU (addFunDefine (chm, dialog@fn))
 });
 
 #' @rdname chmAddCovariate-method
@@ -1063,7 +1063,7 @@ setMethod ("chmAddColormap",
 	}
 	if (!found)
 	    chm@colormaps <- append (chm@colormaps, colormap);
-        chm
+        chmUU (chm)
 });
 
 #' @rdname chmAddRelatedGroup-method
@@ -1075,7 +1075,7 @@ setMethod ("chmAddRelatedGroup",
 	if ((length(chm@relatedGroups) + length(chm@relatedLinks)) == 0)
 	    chm@extrafiles <- c(chm@extrafiles, "relatedlinks.js");
 	chm@relatedGroups <- append (chm@relatedGroups, related);
-        chm
+        chmUU (chm)
 });
 
 #' @rdname chmAddRelatedGroup-method
@@ -1087,7 +1087,7 @@ setMethod ("chmAddRelatedGroup",
 	if ((length(chm@relatedGroups) + length(chm@relatedLinks)) == 0)
 	    chm@extrafiles <- c(chm@extrafiles, "relatedlinks.js");
 	chm@relatedGroups <- append (chm@relatedGroups, related);
-        chm
+        chmUU (chm)
 });
 
 #' @rdname chmAddRelated-method
@@ -1099,7 +1099,7 @@ setMethod ("chmAddRelated",
 	if ((length(chm@relatedGroups)+length(chm@relatedLinks)) == 0)
 	    chm@extrafiles <- c(chm@extrafiles, "relatedlinks.js");
 	chm@relatedLinks <- append (chm@relatedLinks, related);
-        chm
+        chmUU (chm)
 });
 
 #' @rdname chmAddOverview-method
@@ -1125,7 +1125,7 @@ setMethod ("chmAddOverview",
 	    height <- as.integer(height);
 	ov <- new (Class="ngchmOverview", format=format, width=width, height=height);
         chm@overviews <- append (chm@overviews, ov);
-        chm
+        chmUU (chm)
     });
 
 #' @rdname chmAddTemplate-method
@@ -1137,7 +1137,7 @@ setMethod ("chmAddTemplate",
 	template <- new (Class="ngchmTemplate", source.path=source.path, dest.path=dest.path, substitutions=substitutions);
 	chm@extrafiles <- c (chm@extrafiles, dest.path);
 	chm@templates <- append (chm@templates, template);
-        chm
+        chmUU (chm)
 });
 
 #' @rdname chmAddProperty-method
@@ -1147,7 +1147,7 @@ setMethod ("chmAddProperty",
     signature = c(chm="ngchm", label="character", value="character"),
     definition = function (chm, label, value) {
 	chm@properties <- append (chm@properties, new (Class="ngchmProperty", label=label, value=value));
-        chm
+        chmUU (chm)
 });
 
 #' @rdname chmAddSpecificAxisTypeFunction-method
@@ -1176,7 +1176,7 @@ setMethod ("chmAddSpecificAxisTypeFunction",
 		chm@colTypeFunctions <- append (chm@colTypeFunctions, af);
 	    }
 	}
-	chm
+	chmUU (chm)
     }
 );
 
@@ -1186,7 +1186,7 @@ setMethod ("chmAddSpecificAxisTypeFunction",
 setMethod ("chmAddSpecificAxisTypeFunction",
     signature = c(chm="ngchm", where="character", type="character", label="character", func="character"),
     definition = function (chm, where, type, label, func) {
-	chmAddSpecificAxisTypeFunction (chm, where, type, label, chmGetFunction (func));
+	chmAddSpecificAxisTypeFunction (chm, where, type, label, chmGetFunction (func))
     }
 );
 
@@ -1225,7 +1225,7 @@ setMethod ("chmAddMenuItem",
 	} else if (where != "nowhere") {
 	    stop (sprintf ("chmAddMenuItem: unknown where '%s'. Should be row, column, both, or element (or nowhere).", where));
 	}
-	addFunDefine (chm, func)
+	chmUU (addFunDefine (chm, func))
 });
 
 #' @rdname chmAddMenuItem-method
@@ -1246,7 +1246,7 @@ setMethod ("chmAddAxisType",
     definition = function (chm, where, type, func) {
 	at <- new (Class="ngchmAxisType", where=where, type=type, func=func);
 	chm@axisTypes <- append (chm@axisTypes, at);
-	chmAddProperty (chm, paste('!axistype', where, sep='.'), type);
+	chmAddProperty (chm, paste('!axistype', where, sep='.'), type)
     }
 );
 
@@ -1287,7 +1287,7 @@ setMethod ("chmAddClassBar",
 	} else {
 	    stop (sprintf ("chmAddClassBar: unknown where '%s'. Should be row, column, or both.", where));
 	}
-	chm
+	chmUU (chm)
 });
 
 #' @rdname chmAddCovariateBar-method
@@ -1307,7 +1307,7 @@ setMethod ("chmAddCovariateBar",
 	} else {
 	    stop (sprintf ("chmAddCovariateBar: unknown where '%s'. Should be row, column, or both.", where));
 	}
-	chm
+	chmUU (chm)
 });
 #' @rdname chmAddCovariateBar-method
 #' @aliases chmAddCovariateBar,ngchm,character,ngchmCovariate-method
@@ -1396,7 +1396,7 @@ setReplaceMethod ("chmRowOrder",
 	    class(value) <- "fileContent";
 	}
 	chm@rowOrder <- value
-        chm
+        chmUU (chm)
 });
 
 #' @rdname chmColOrder-method
@@ -1409,7 +1409,7 @@ setReplaceMethod ("chmColOrder",
 	    class(value) <- "fileContent";
 	}
 	chm@colOrder <- value
-        chm
+        chmUU (chm)
 });
 
 #' @rdname chmRowMeta-method
@@ -1418,7 +1418,7 @@ setReplaceMethod ("chmRowMeta",
     signature = c(chm="ngchm", value="optList"),
     definition = function (chm, value) {
 	chm@rowMeta <- value
-        chm
+        chmUU (chm)
 });
 
 #' @rdname chmColMeta-method
@@ -1427,7 +1427,7 @@ setReplaceMethod ("chmColMeta",
     signature = c(chm="ngchm", value="optList"),
     definition = function (chm, value) {
 	chm@colMeta <- value
-        chm
+        chmUU (chm)
 });
 
 make.js.names <- function (sss) {

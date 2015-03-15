@@ -144,7 +144,8 @@ chmNew <- function (name, ...,
     if (nchar (name) == 0) {
         stop ("Parameter 'name' cannot be the empty string");
     }
-    chm <- new (Class="ngchm", name=name)
+    chm <- new (Class="ngchm", name=name);
+    chm@uuid <- getuuid (name);
     chm <- chmAddCSS (chm, 'div.overlay { border: 2px solid yellow; }');
     chm@rowOrder <- rowOrder; chm@rowDist <- rowDist; chm@rowAgglom <- rowAgglom;
     chm@colOrder <- colOrder; chm@colDist <- colDist; chm@colAgglom <- colAgglom;
@@ -1950,7 +1951,7 @@ chmAddAutoMenuItems <- function (chm) {
 		 chm <- chmAddMenuItem (chm, "nowhere", "unused", fns[[ii]]@func);
 	     }
 
-    chm
+    chmUU (chm)
 }
 
 #' Output Javascript code required to customize an NGCHM.
@@ -2000,4 +2001,14 @@ chmGetOverview <- function (chm, format=NULL, idx=NULL) {
 	}
     }
     file.path(chm@outDir, chm@name, 'overview', sprintf('overview%d.%s', idx, format))
+}
+
+#' @import digest
+getuuid <- function(prev="") {
+    digest::digest(paste(c(Sys.info(),Sys.time(),prev,collapse=""),recursive=TRUE),algo="sha256")
+}
+
+chmUU <- function (chm) {
+    chm@uuid <- getuuid(chm@uuid)
+    chm
 }
