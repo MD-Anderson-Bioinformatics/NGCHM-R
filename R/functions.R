@@ -2005,7 +2005,7 @@ chmGetOverview <- function (chm, format=NULL, idx=NULL) {
 
 #' @import digest
 getuuid <- function(prev="") {
-    digest::digest(paste(c(Sys.info(),Sys.time(),prev,collapse=""),recursive=TRUE),algo="sha256")
+    digest::digest(paste(c(Sys.info(),Sys.time(),rnorm(1),prev,collapse=""),recursive=TRUE),algo="sha256")
 }
 
 chmUU <- function (chm) {
