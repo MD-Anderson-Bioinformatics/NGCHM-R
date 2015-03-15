@@ -922,7 +922,8 @@ setMethod ("chmMake",
     if (buildArchive) {
 	if (Sys.info()[['sysname']] != "Windows")  {
 	    postBuildFeedback (50, "creating compressed NGCHM file");
-	    systemCheck (sprintf ("tar czf %s.ngchm.gz -C %s %s",
+	    systemCheck (sprintf ("tar czf %s/%s.ngchm.gz -C %s %s",
+				 shQuote (chm@saveDir),
 				 shQuote (chm@name),
 				 shQuote (chm@outDir),
 				 shQuote (chm@name)));
