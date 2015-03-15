@@ -617,6 +617,10 @@ writeChm <- function (chm) {
     #system (sprintf ("/bin/rm -rf %s", chm@inpDir));
     #systemCheck (sprintf ("/bin/mkdir %s", chm@inpDir));
 
+    genSpecFeedback (55, "saving user's CHM");
+    save (chm, file=file.path (chm@inpDir, "chm.Rdata"));
+    chm@extrafiles <- c (chm@extrafiles, "chm.Rdata");
+
     genSpecFeedback (60, "writing specification");
     props = file (chm@propFile, "w");
     cat (sprintf ("# This NGCHM property description was produced using the R NGCHM library version %s at %s\n",
