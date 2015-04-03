@@ -1741,16 +1741,23 @@ chmCreateServer <- function (servername,
     cfg$urlBase <- paste (serverURL, "chm.html", sep="/");
 
     if (length(cfgServer) == 0) {
-	if ((length(cfgDir) > 0) && file.exists (cfgDir)) {
-	    cfg$serverProtocol <- "mds2";
-	    cfg$deployDir <- cfgDir;
-	    if (length (theJarFile) == 0) {
-		jarFile <- file.path (cfgDir, ".mds", "heatmappipeline.jar");
-		if (file.exists (jarFile)) {
-		    cfg$jarFile <- paste ("file://", jarFile, sep="");
+	if (length(cfgDir) > 0) {
+            if ((substr(cfgDir,1,5)=='http:') || (substr(cfgDir,1,6)=='https:')) {
+		# cfgDir is really a URL.
+		readConfigFile (cfg, paste (cfgDir, "config.txt", sep="/"), '=');
+	    } else if (file.exists (cfgDir)) {
+		cfg$serverProtocol <- "mds2";
+		cfg$deployDir <- cfgDir;
+		if (length (theJarFile) == 0) {
+		    jarFile <- file.path (cfgDir, ".mds", "heatmappipeline.jar");
+		    if (file.exists (jarFile)) {
+			cfg$jarFile <- paste ("file://", jarFile, sep="");
+		    }
 		}
+		readConfigFile (cfg, file.path (cfgDir, "config.txt"), '=');
+	    } else {
+	        stop (sprintf ("unknown format for configuration directory '%s'", cfgDir));
 	    }
-	    readConfigFile (cfg, file.path (cfgDir, "config.txt"), '=');
 	}
     } else if (length (cfgDir) > 0) {
 	cfg$serverProtocol <- "mds2";
