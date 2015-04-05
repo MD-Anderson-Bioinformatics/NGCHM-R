@@ -13,7 +13,7 @@
 #' @aliases NGCHM-functions
 NULL
 
-ngchm.env <- new.env();
+ngchm.env <- new.env(parent=emptyenv());
 
 .initNGCHM <- function () {
     # Populate library environment.
@@ -26,10 +26,38 @@ ngchm.env <- new.env();
     ngchm.env$serverProtocols <- NULL;
     ngchm.env$toolbox <- NULL;
     ngchm.env$servers <- list();
-    ngchm.env$parseFns <- new.env();
-    ngchm.env$jarCache <- new.env();
+    ngchm.env$deployServerConfigs <- new.env(parent=emptyenv());
+    ngchm.env$parseFns <- new.env(parent=emptyenv());
+    ngchm.env$jarCache <- new.env(parent=emptyenv());
     ngchm.env$nextId <- 0;
 }
+
+#' Specify per-user configuration for a specific deploy Server.
+#'
+#' @param server The server for which the configuration is being set.  Must have deployServer set.
+#' @param config The configuration to set
+#'
+#' @export
+chmSetDeployServerConfig <- function (server, config) {
+    if (class(server)=="character") server <- chmServer (server);
+    assign (server@deployServer, config, ngchm.env$deployServerConfigs);
+    NULL
+}
+
+#' Get per-user configuration for a specific deploy Server.
+#'
+#' @param server The server for which the configuration is being set.  Must have deployServer set.
+#'
+#' @export
+chmGetDeployServerConfig <- function (server) {
+    if (class(server)=="character") server <- chmServer (server);
+    if (exists (server@deployServer, ngchm.env$deployServerConfigs)) {
+        get (server@deployServer, ngchm.env$deployServerConfigs)
+    } else {
+	NULL
+    }
+}
+
 
 # Define the built-in server protocol "manual".
 #
