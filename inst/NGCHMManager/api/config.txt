@@ -1,0 +1,5 @@
+serverProtocol=manager
+deployServer=https://MYHOST:443/ManagerAPI
+deployDir=myServer
+urlBase=http://MYHOST:8080/Viewer/chm.html
+jarFile=http://MYHOST:8080/Viewer/resources/heatmappipeline.jar
