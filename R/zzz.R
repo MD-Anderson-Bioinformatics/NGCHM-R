@@ -204,7 +204,8 @@ loadJavascript <- function(filename) {
 		atype <- jsGetTag(jsTags,'axisfunction')[2];
 		menue <- paste(jsGetTag(jsTags,'menuentry')[-1],collapse=' ');
 		extras <- jsGetOptTag (jsTags, 'extraparams')[-1];
-		fn <- chmNewFunction (name, desc, jsdoc$src, extraParams=extras);
+		requires <- jsGetOptTag (jsTags, 'requires')[-1];
+		fn <- chmNewFunction (name, desc, jsdoc$src, extraParams=extras, requires=requires);
 		chmRegisterAxisFunction (atype, menue, fn);
 	    }
 	    else if (jsTagExists (jsTags, 'matrixfunction')) {
@@ -214,7 +215,8 @@ loadJavascript <- function(filename) {
 		ctype <- jsGetTag(jsTags,'matrixfunction')[3];
 		menue <- paste(jsGetTag(jsTags,'menuentry')[-1],collapse=' ');
 		extras <- jsGetOptTag (jsTags, 'extraparams')[-1];
-		fn <- chmNewFunction (name, desc, jsdoc$src, extraParams=extras);
+		requires <- jsGetOptTag (jsTags, 'requires')[-1];
+		fn <- chmNewFunction (name, desc, jsdoc$src, extraParams=extras, requires=requires);
 		chmRegisterMatrixFunction (rtype, ctype, menue, fn);
 	    }
 	    else if (jsTagExists (jsTags, 'toolboxfunction')) {
@@ -223,8 +225,15 @@ loadJavascript <- function(filename) {
 		tooltype <- jsGetTag(jsTags,'toolboxfunction')[2];
 		menue <- paste(jsGetTag(jsTags,'menuentry')[-1],collapse=' ');
 		extras <- jsGetTag(jsTags,'extraparams')[-1];
-		fn <- chmNewFunction (name, desc, jsdoc$src, extraParams=extras);
+		requires <- jsGetOptTag (jsTags, 'requires')[-1];
+		fn <- chmNewFunction (name, desc, jsdoc$src, extraParams=extras, requires=requires);
 		chmRegisterToolboxFunction (tooltype, menue, fn);
+	    }
+	    else if (jsTagExists (jsTags, 'globalfunction')) {
+		name <- jsGetTag(jsTags,'name')[2];
+		desc <- paste(jsGetTag(jsTags,'description')[-1],collapse=' ');
+		requires <- jsGetOptTag (jsTags, 'requires')[-1];
+		fn <- chmNewFunction (name, desc, jsdoc$src, requires=requires, global=TRUE);
 	    }
 	    else {
 		stop (sprintf ("Unknown type of Javascript function in file '%s'", filename));
