@@ -801,8 +801,8 @@ chmNewProperty <- function (label, value) {
     if (typeof (value) != "character") {
         stop (sprintf ("Parameter 'value' for property '%s' must have type 'character', not '%s'", label, typeof(value)));
     }
-    if (length (value) != 1) {
-        stop (sprintf ("Parameter 'value' for property '%s' must have a single value, not %d", label, length(value)));
+    if (length (value) < 1) {
+        stop (sprintf ("Parameter 'value' for property '%s' must have at least one value", label));
     }
     new (Class="ngchmProperty", label=label, value=value)
 }

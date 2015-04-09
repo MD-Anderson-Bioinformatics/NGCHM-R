@@ -203,7 +203,7 @@ setClass ("ngchmProperty",
 setMethod ('show',
            signature = c('ngchmProperty'),
 	   definition = function (object) {
-	       cat (sprintf ("ngchmProperty '%s': '%s'\n", object@label, object@value));
+	       cat (sprintf ("ngchmProperty '%s': '%s'\n", object@label, paste(object@value,collapse='///')));
 	   });
 
 #' Class representing a Menu Item for a Next Generation Clustered Heat Map (NGCHM).

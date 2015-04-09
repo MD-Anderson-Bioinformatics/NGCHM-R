@@ -251,7 +251,7 @@ writeProperties <- function (inpDir, props, chan, writeSpecial=FALSE) {
 	for (ii in 1:length(props)) {
 	    l <- props[[ii]]@label;
 	    if (substr(l,1,1) == '!') {
-		cat (sprintf ("%s=%s\n", substring(l,2), props[[ii]]@value), file=chan);
+		cat (sprintf ("%s=%s", substring(l,2), props[[ii]]@value), sep="\n", file=chan);
 	    }
 	}
     }
@@ -259,8 +259,8 @@ writeProperties <- function (inpDir, props, chan, writeSpecial=FALSE) {
 	for (ii in 1:length(props)) {
 	    l <- props[[ii]]@label;
 	    if (substr(l,1,1) != '!') {
-		if (l != "hidden") {
-		    cat (sprintf ("%s=%s\n", l, props[[ii]]@value), file=chan);
+		if (l != "hidden" && l != "hidden.tags") {
+		    cat (sprintf ("%s=%s", l, props[[ii]]@value), sep="\n", file=chan);
 		}
 	    }
 	}
@@ -268,9 +268,15 @@ writeProperties <- function (inpDir, props, chan, writeSpecial=FALSE) {
 }
 
 writePropertiesPost <- function (outDir, props) {
+    hidden.tags <- NULL;
+    for (ii in 1:length(props)) {
+	if (props[[ii]]@label == "hidden.tags") {
+	    hidden.tags <- sprintf ("%s\n", props[[ii]]@value);
+	}
+    }
     for (ii in 1:length(props)) {
 	if ((props[[ii]]@label == "hidden") && (props[[ii]]@value == "TRUE")) {
-	    cat ("", file=file.path (outDir, "hidden.txt"));
+	    cat (hidden.tags, sep='', file=file.path (outDir, "hidden.txt"));
 	}
     }
 }
