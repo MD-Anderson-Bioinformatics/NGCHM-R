@@ -873,8 +873,18 @@ postBuildFeedback <- function (progress, what)
 
 addToolBoxes <- function (chm)
 {
+    type.matches <- function (dstype, chmtype) {
+	length (intersect (dstype, chmtype)) > 0
+    }
+    type.matches2 <- function (dstype, chmtype1, chmtype2) {
+	length (intersect (intersect (dstype, chmtype1), chmtype2)) > 0
+    }
+    t2s <- function (ty) {
+        paste (ty, collapse='/')
+    }
+
     rowtypes <- getAllAxisTypes (chm, "row");
-    matches <- vapply (chm@datasets, function(ds)(length(ds@row.type) > 0) && (ds@row.type %in% rowtypes$types), TRUE);
+    matches <- vapply (chm@datasets, function(ds) type.matches (ds@row.type, rowtypes$types), TRUE);
     cat (sprintf ("addToolBoxes: found %d R datasets matching row types:\n", sum(matches)), file=stderr());
     if (sum(matches) > 0) {
 	if (sum(matches) == 1) {
@@ -883,13 +893,13 @@ addToolBoxes <- function (chm)
 	    extra <- sprintf (" (%s)", vapply(chm@datasets[matches], function(ds)ds@name, ""));
 	}
 	for (ds in chm@datasets[matches]) {
-	    cat (sprintf ("dataset '%s' row.type '%s'\n", ds@name, ds@row.type), file=stderr());
+	    cat (sprintf ("dataset '%s' row.type '%s'\n", ds@name, t2s(ds@row.type)), file=stderr());
 	    chm <- chmAddToolboxR (chm, "row", ds@row.type, ds@name, extra[1]);
 	    extra <- tail (extra, -1);
 	}
     }
     coltypes <- getAllAxisTypes (chm, "column");
-    matches <- vapply (chm@datasets, function(ds)(length(ds@row.type) > 0) && (ds@row.type %in% coltypes$types), TRUE);
+    matches <- vapply (chm@datasets, function(ds) type.matches (ds@row.type, coltypes$types), TRUE);
     cat (sprintf ("addToolBoxes: found %d R datasets matching column types:\n", sum(matches)), file=stderr());
     if (sum(matches) > 0) {
 	if (sum(matches) == 1) {
@@ -898,12 +908,12 @@ addToolBoxes <- function (chm)
 	    extra <- sprintf (" (%s)", vapply(chm@datasets[matches], function(ds)ds@name, ""));
 	}
 	for (ds in chm@datasets[matches]) {
-	    cat (sprintf ("dataset '%s' row.type '%s'\n", ds@name, ds@row.type), file=stderr());
+	    cat (sprintf ("dataset '%s' row.type '%s'\n", ds@name, t2s(ds@row.type)), file=stderr());
 	    chm <- chmAddToolboxR (chm, "column", ds@row.type, ds@name, extra[1]);
 	    extra <- tail (extra, -1);
 	}
     }
-    matches <- vapply (chm@datasets, function(ds)(length(ds@row.type) > 0) && (ds@row.type %in% coltypes$types) && (ds@row.type %in% rowtypes$types), TRUE);
+    matches <- vapply (chm@datasets, function(ds) type.matches2 (ds@row.type, coltypes$types, rowtypes$types), TRUE);
     cat (sprintf ("addToolBoxes: found %d R2 datasets matching row and column types:\n", sum(matches)), file=stderr());
     if (sum(matches) > 0) {
 	if (sum(matches) == 1) {
@@ -912,12 +922,12 @@ addToolBoxes <- function (chm)
 	    extra <- sprintf (" (%s)", vapply(chm@datasets[matches], function(ds)ds@name, ""));
 	}
 	for (ds in chm@datasets[matches]) {
-	    cat (sprintf ("dataset '%s' row.type '%s'\n", ds@name, ds@row.type), file=stderr());
+	    cat (sprintf ("dataset '%s' row.type '%s'\n", ds@name, t2s(ds@row.type)), file=stderr());
 	    chm <- chmAddToolboxR2 (chm, ds@row.type, ds@name, extra[1]);
 	    extra <- tail (extra, -1);
 	}
     }
-    matches <- vapply (chm@datasets, function(ds)(length(ds@row.type) > 0) && (length(ds@column.type) > 0) && (ds@column.type %in% coltypes$types) && (ds@row.type %in% rowtypes$types), TRUE);
+    matches <- vapply (chm@datasets, function(ds) type.matches(ds@column.type, coltypes$types) && type.matches(ds@row.type, rowtypes$types), TRUE);
     cat (sprintf ("addToolBoxes: found %d RC datasets matching row and column types:\n", sum(matches)), file=stderr());
     if (sum(matches) > 0) {
 	if (sum(matches) == 1) {
@@ -926,7 +936,7 @@ addToolBoxes <- function (chm)
 	    extra <- sprintf (" (%s)", vapply(chm@datasets[matches], function(ds)ds@name, ""));
 	}
 	for (ds in chm@datasets[matches]) {
-	    cat (sprintf ("dataset '%s' row.type '%s' col.type '%s'\n", ds@name, ds@row.type, ds@column.type), file=stderr());
+	    cat (sprintf ("dataset '%s' row.type '%s' col.type '%s'\n", ds@name, t2s(ds@row.type), t2s(ds@column.type)), file=stderr());
 	    chm <- chmAddToolboxRC (chm, ds@row.type, ds@column.type, ds@name, extra[1]);
 	    extra <- tail (extra, -1);
 	}
