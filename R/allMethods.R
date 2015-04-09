@@ -286,7 +286,6 @@ writeChmPost <- function (chm) {
 }
 
 startcust <- paste ("(function(chm){",
-	       "chm.chmv = '/chmv/';",
 	       "function _chm_ad(id,tit,fn){var td=fn($('<div></div>').attr('title',tit).attr('id',id));",
 	       " $('body').append(td); $('#'+id).dialog({position:[0,200],autoOpen:false});",
 	       " chm.menubar.addDialogsMenuItem(id,tit,function(tlmc,mi){td.dialog();});",
