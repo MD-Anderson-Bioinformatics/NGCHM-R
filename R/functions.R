@@ -183,7 +183,7 @@ chmDefaultColOrder <- function (chm) {
     if (chm@colDist == "correlation") {
         dd <- as.dist(1-cor(chm@layers[[1]]@data, use="pairwise"));
     } else {
-        dd <- dist (t(chm@layers[[1]]), method=chm@colDist);
+        dd <- dist (t(chm@layers[[1]]@data), method=chm@colDist);
     }
     as.dendrogram(hclust(dd, method=chm@colAgglom))
 }
@@ -201,7 +201,7 @@ chmDefaultRowOrder <- function (chm) {
     if (chm@rowDist == "correlation") {
         dd <- as.dist(1-cor(t(chm@layers[[1]]@data), use="pairwise"))
     } else {
-        dd <- dist (chm@layers[[1]], method=chm@rowDist);
+        dd <- dist (chm@layers[[1]]@data, method=chm@rowDist);
     }
     as.dendrogram(hclust(dd, method=chm@rowAgglom))
 }
