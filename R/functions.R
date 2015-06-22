@@ -1656,8 +1656,45 @@ chmListServers <- function () {
     vapply (ngchm.env$servers, function (svr) svr$name, "")
 }
 
+#' Get a HTTR handle for the server's view/WS URL
+#' 
+#' This function returns a 'handle' suitable for use with the server's view/WS URL
+#'
+#' @param server An object of class ngchmServer
+#'
+#' @return An HTTR handle
+#'
+#' @import httr
+#' @import jsonlite
+#'
+#' @export
+#'
+ngchmGetHandleHTTR <- function (server) {
+    ws <- sub("/chm.html$", "", server@urlBase);
+    if (!exists (ws, ngchm.env$handledb)) {
+	assign (ws, httr::handle(ws), ngchm.env$handledb);
+    }
+    get (ws, ngchm.env$handledb)
+}
+
+getServerVersion <- function (server) {
+    ws <- sub("/chm.html$", "/gdacws/servermetadata", server@urlBase);
+    res <- httr::GET (ws, handle=ngchmGetHandleHTTR (server));
+    as.numeric(jsonlite::fromJSON(rawToChar(res$content))$Build_Number)
+}
+
 getBuilderJar <- function (server) {
-    
+    if (is.null (server@jarFile)) {
+        vvv <- sprintf ("version%d", getServerVersion (server));
+        if (!exists (vvv, ngchm.env$jarCache)) {
+	    ws <- sub("/chm.html$", "/resources/heatmappipeline.jar", server@urlBase);
+            res <- httr::GET (ws, handle=ngchmGetHandleHTTR (server));
+	    tmpJarFile <- system2 ("mktemp", args=c("-p", tempdir(), "hmtXXXXXXXXX.jar"), stdout=TRUE);
+	    writeBin (res$content, tmpJarFile);
+	    assign (vvv, tmpJarFile, ngchm.env$jarCache);
+	}
+        return (get (vvv, ngchm.env$jarCache))
+    }
     if (!exists (server@jarFile, ngchm.env$jarCache)) {
         # Load server@jarFile into jarCache
 	if (length(grep("^scp://", server@jarFile)) > 0) {

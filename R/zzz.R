@@ -29,6 +29,7 @@ ngchm.env <- new.env(parent=emptyenv());
     ngchm.env$deployServerConfigs <- new.env(parent=emptyenv());
     ngchm.env$parseFns <- new.env(parent=emptyenv());
     ngchm.env$jarCache <- new.env(parent=emptyenv());
+    ngchm.env$handledb <- new.env (hash=TRUE, parent=emptyenv());
     ngchm.env$nextId <- 0;
 }
 
