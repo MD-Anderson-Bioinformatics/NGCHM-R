@@ -817,7 +817,7 @@ chmNewProperty <- function (label, value) {
 #' @param serverPort The port on which the server is listening.
 #' @param deployServer The DNS name to use when deploying a NGCHM (defaults to serverName).
 #' @param deployDir The directory on the server in which to place a NGCHM when deploying (defaults to /chmData).
-#' @param jarFile The location of the heatmap build jar file to use when making a NGCHM (defaults to jar file on deployServer).
+#' @param jarFile The location of the heatmap build jar file to use when making a NGCHM (defaults to jar file on urlBase WS).
 #' @param urlBase The base URL used to access a deployed NGCHM (defaults to serverName:serverPort/chm/chm.html).
 #'
 #' @return An object of class ngchmServer
@@ -837,14 +837,13 @@ chmNewServer <- function (serverName, username=NULL, keypath=NULL, serverPort=80
 {
     if (is.null (deployServer)) deployServer = serverName;
     if (is.null (deployDir)) deployDir = "/chmData";
-    if (is.null (jarFile)) jarFile = paste ("http://", deployServer, ":", serverPort, "/chm/resources/heatmappipeline.jar", sep="");
     if (is.null (urlBase)) urlBase = paste ("http://", serverName, ":", serverPort, "/chm/chm.html", sep="");
     new (Class="ngchmServer", 
 	 deployServer = deployServer,
 	 deployDir = deployDir,
 	 username = username,
 	 keypath = keypath,
-	 jarFile = paste ("http://", deployServer, ":", serverPort, "/chm/resources/heatmappipeline.jar", sep=""),
+	 jarFile = jarFile,
 	 urlBase = paste ("http://", serverName, ":", serverPort, "/chm/chm.html", sep=""));
 }
 
