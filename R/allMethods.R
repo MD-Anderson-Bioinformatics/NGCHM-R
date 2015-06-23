@@ -18,13 +18,6 @@ setMethod ("chmDeployServer",
     signature = c(server="ngchmServer"),
     definition = function (server) server@deployServer);
 
-#' @rdname chmDeployDir-method
-#' @aliases chmDeployDir,ngchmServer-method
-#'
-setMethod ("chmDeployDir",
-    signature = c(server="ngchmServer"),
-    definition = function (server) server@deployDir);
-
 #' @rdname chmUrlBase-method
 #' @aliases chmUrlBase,ngchmServer-method
 #'

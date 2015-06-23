@@ -424,21 +424,6 @@ setGeneric ("chmAddCovariateBar", function(chm,where,covar,...) standardGeneric(
 #' @seealso ngchmServer-class
 setGeneric ("chmDeployServer", function(server) standardGeneric("chmDeployServer"));
 
-#' Get the deploy directory of a NGCHM server.
-#'
-#' Return the name of the directory on a Next Generation Clustered Heat Map (NGCHM) server into
-#' which a NGCHM must be copied for installation.
-#'
-#' @param server The server whose deploy directory is required.
-#'
-#' @return The path on the server to the deploy directory.
-#'
-#' @exportMethod chmDeployDir
-#' @rdname chmDeployDir-method
-#'
-#' @seealso ngchmServer-class
-setGeneric ("chmDeployDir", function(server) standardGeneric("chmDeployDir"));
-
 #' Get the base URL for a NGCHM installed on a NGCHM server.
 #'
 #' Return the base URL of a Next Generation Clustered Heat Map (NGCHM) that
