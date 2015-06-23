@@ -1683,6 +1683,13 @@ getServerVersion <- function (server) {
     as.numeric(jsonlite::fromJSON(rawToChar(res$content))$Build_Number)
 }
 
+testJava <- function (jarfile) {
+    res <- NULL;
+    suppressWarnings(try ({res <- system2("exec", c("java", "-jar", jarfile), stdout=TRUE, stderr=TRUE);}, silent=TRUE));
+    if (is.null(res)) stop ("Unable to execute Java");
+    if (length(res) == 0 || res[length(res)] != "WRONG_NUMBER_OF_PARAMETERS_ERROR") stop ("Bad Java version");
+}
+
 getBuilderJar <- function (server) {
     if (is.null (server@jarFile)) {
         vvv <- sprintf ("version%d", getServerVersion (server));
@@ -1691,6 +1698,7 @@ getBuilderJar <- function (server) {
             res <- httr::GET (ws, handle=ngchmGetHandleHTTR (server));
 	    tmpJarFile <- system2 ("mktemp", args=c("-p", tempdir(), "hmtXXXXXXXXX.jar"), stdout=TRUE);
 	    writeBin (res$content, tmpJarFile);
+	    testJava (tmpJarFile);
 	    assign (vvv, tmpJarFile, ngchm.env$jarCache);
 	}
         return (get (vvv, ngchm.env$jarCache))
@@ -1724,6 +1732,7 @@ getBuilderJar <- function (server) {
 	} else {
 	    stop (sprintf ("Unknown retrieval method for jarFile '%s' for NGCHM server '%s'", server@jarFile, server@name));
 	}
+	testJava (ngchm.env$jarCache[[server@jarFile]]);
     }
     ngchm.env$jarCache[[server@jarFile]]
 }
