@@ -23,7 +23,7 @@ setMethod ("chmDeployServer",
 #'
 setMethod ("chmUrlBase",
     signature = c(server="ngchmServer"),
-    definition = function (server) server@urlBase);
+    definition = function (server) sprintf ("%s/chm.html", server@serverURL));
 
 
 #' @rdname chmInstall-method
@@ -809,7 +809,7 @@ writeMeta <- function (inpDir, type, metadata) {
 setMethod ("chmGetURL",
     signature = c(server="ngchmServer", chm="character"),
     definition = function (server, chm) {
-        sprintf ("%s?name=%s", server@urlBase, chm)
+        sprintf ("%s/chm.html?name=%s", server@serverURL, chm)
 });
 
 #' @rdname chmGetURL-method

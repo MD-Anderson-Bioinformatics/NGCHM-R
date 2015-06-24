@@ -5,7 +5,7 @@
 \title{Create a new object representing a NGCHM server.}
 \usage{
 chmNewServer(serverName, serverPort = 8080, deployServer = NULL,
-  protoOpts = NULL, jarFile = NULL, urlBase = NULL)
+  protoOpts = NULL, jarFile = NULL, serverURL = NULL)
 }
 \arguments{
 \item{serverName}{The DNS name of the NGCHM server.}
@@ -16,9 +16,9 @@ chmNewServer(serverName, serverPort = 8080, deployServer = NULL,
 
 \item{protoOpts}{A list of protocol-specific parameters}
 
-\item{jarFile}{The location of the heatmap build jar file to use when making a NGCHM (defaults to jar file on urlBase WS).}
+\item{jarFile}{The location of the heatmap build jar file to use when making a NGCHM (defaults to jar file on serverURL WS).}
 
-\item{urlBase}{The base URL used to access a deployed NGCHM (defaults to serverName:serverPort/chm/chm.html).}
+\item{serverURL}{The base URL used to access a deployed NGCHM (defaults to serverName:serverPort/chm).}
 }
 \value{
 An object of class ngchmServer

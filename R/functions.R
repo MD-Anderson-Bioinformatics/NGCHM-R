@@ -815,8 +815,8 @@ chmNewProperty <- function (label, value) {
 #' @param serverPort The port on which the server is listening.
 #' @param deployServer The DNS name to use when deploying a NGCHM (defaults to serverName).
 #' @param protoOpts A list of protocol-specific parameters
-#' @param jarFile The location of the heatmap build jar file to use when making a NGCHM (defaults to jar file on urlBase WS).
-#' @param urlBase The base URL used to access a deployed NGCHM (defaults to serverName:serverPort/chm/chm.html).
+#' @param jarFile The location of the heatmap build jar file to use when making a NGCHM (defaults to jar file on serverURL WS).
+#' @param serverURL The URL used to access the NGCHM server (defaults to serverName:serverPort/chm).
 #'
 #' @return An object of class ngchmServer
 #'
@@ -831,15 +831,15 @@ chmNewProperty <- function (label, value) {
 #' @seealso chmUninstall
 #'
 chmNewServer <- function (serverName, serverPort=8080, deployServer=NULL, protoOpts=NULL,
-                       jarFile=NULL, urlBase=NULL)
+                       jarFile=NULL, serverURL=NULL)
 {
     if (is.null (deployServer)) deployServer = serverName;
-    if (is.null (urlBase)) urlBase = paste ("http://", serverName, ":", serverPort, "/chm/chm.html", sep="");
+    if (is.null (serverURL)) serverURL = paste ("http://", serverName, ":", serverPort, "/chm", sep="");
     new (Class="ngchmServer", 
 	 deployServer = deployServer,
 	 protoOpts = protoOpts,
 	 jarFile = jarFile,
-	 urlBase = urlBase);
+	 serverURL = serverURL);
 }
 
 #############################################################################################
@@ -1684,7 +1684,7 @@ chmListServers <- function () {
 #' @export
 #'
 ngchmGetHandleHTTR <- function (server) {
-    ws <- sub("/chm.html$", "", server@urlBase);
+    ws <- server@serverURL;
     if (!exists (ws, ngchm.env$handledb)) {
 	assign (ws, httr::handle(ws), ngchm.env$handledb);
     }
@@ -1692,7 +1692,7 @@ ngchmGetHandleHTTR <- function (server) {
 }
 
 getServerVersion <- function (server) {
-    ws <- sub("/chm.html$", "/gdacws/servermetadata", server@urlBase);
+    ws <- sprintf("%s/gdacws/servermetadata", server@serverURL);
     res <- httr::GET (ws, handle=ngchmGetHandleHTTR (server));
     as.numeric(jsonlite::fromJSON(rawToChar(res$content))$Build_Number)
 }
@@ -1708,7 +1708,7 @@ getBuilderJar <- function (server) {
     if (is.null (server@jarFile)) {
         vvv <- sprintf ("version%d", getServerVersion (server));
         if (!exists (vvv, ngchm.env$jarCache)) {
-	    ws <- sub("/chm.html$", "/resources/heatmappipeline.jar", server@urlBase);
+	    ws <- sprintf("%s/resources/heatmappipeline.jar", server@serverURL);
             res <- httr::GET (ws, handle=ngchmGetHandleHTTR (server));
 	    tmpJarFile <- system2 ("mktemp", args=c("-p", tempdir(), "hmtXXXXXXXXX.jar"), stdout=TRUE);
 	    writeBin (res$content, tmpJarFile);
@@ -1795,7 +1795,7 @@ chmCreateServer <- function (servername,
     } else {
 	jarURL <- NULL;
     }
-    cfg$urlBase <- paste (serverURL, "chm.html", sep="/");
+    cfg$serverURL <- serverURL;
 
     if (length(cfgServer) == 0) {
 	if (length(cfgDir) > 0) {
@@ -1871,7 +1871,7 @@ chmCreateServer <- function (servername,
         stop ("Error creating NGCHM server: no heatmappipeline.jar was found");
     }
 
-    classFields <- c('traceLevel', 'serverProtocol', 'deployServer', 'jarFile', 'urlBase')
+    classFields <- c('traceLevel', 'serverProtocol', 'deployServer', 'jarFile', 'serverURL')
 
     cfg <- as.list (cfg);
     stopifnot ('serverProtocol' %in% names(cfg));
@@ -1885,7 +1885,7 @@ chmCreateServer <- function (servername,
 			   serverProtocol = protocol,
 			   deployServer = cfg$deployServer,
 			   jarFile = cfg$jarFile,
-			   urlBase = cfg$urlBase,
+			   serverURL = cfg$serverURL,
 			   protoOpts = protoOpts));
 }
 
