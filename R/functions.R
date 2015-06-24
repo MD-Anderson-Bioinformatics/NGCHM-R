@@ -839,7 +839,7 @@ chmNewServer <- function (serverName, serverPort=8080, deployServer=NULL, protoO
 	 deployServer = deployServer,
 	 protoOpts = protoOpts,
 	 jarFile = jarFile,
-	 urlBase = paste ("http://", serverName, ":", serverPort, "/chm/chm.html", sep=""));
+	 urlBase = urlBase);
 }
 
 #############################################################################################
@@ -1262,6 +1262,7 @@ chmRegisterFunction <- function (fn) {
 #' an NGCHM server.
 #'
 #' @param protocolName The name of this protocol implementation.
+#' @param paramValidator A function(list) for validating a list of optional parameters specified for a new server.
 #' @param installMethod A function(server,chm) for installing an NG-CHM.
 #' @param uninstallMethod A function(server,chmname) for uninstalling an NG-CHM.
 #' @param makePrivate A function(server,chmname) for hiding an NG-CHM.
@@ -1270,6 +1271,7 @@ chmRegisterFunction <- function (fn) {
 #' @export
 
 chmCreateServerProtocol <- function (protocolName,
+				     paramValidator,
                                      installMethod, uninstallMethod,
 	                             makePrivate, makePublic) {
     if (typeof (protocolName) != "character") {
@@ -1282,6 +1284,7 @@ chmCreateServerProtocol <- function (protocolName,
         stop ("Parameter 'protocolName' cannot be the empty string");
     }
     dm <- new (Class="ngchmServerProtocol", protocolName=protocolName,
+	       paramValidator = paramValidator,
 	       installMethod=installMethod, uninstallMethod=uninstallMethod,
 	       makePrivate=makePrivate, makePublic=makePublic);
     matches <- which (vapply (ngchm.env$serverProtocols, function(ss) (ss@protocolName == protocolName), TRUE));
@@ -1771,7 +1774,6 @@ chmCreateServer <- function (servername,
     cfg$traceLevel <- "PROGRESS";
     cfg$serverProtocol <- "manual";
     cfg$deployServer <- cfgServer;
-    cfg$protoOpts <- NULL;
     cfg$jarFile <- NULL;
 
     # jarURL is last-ditch guess.
@@ -1801,14 +1803,6 @@ chmCreateServer <- function (servername,
 		# cfgDir is really a URL.
 		readConfigFile (cfg, paste (cfgDir, "config.txt", sep="/"), '=');
 	    } else if (file.exists (cfgDir)) {
-		cfg$serverProtocol <- "mds2";
-		cfg$deployDir <- cfgDir;
-		if (length (theJarFile) == 0) {
-		    jarFile <- file.path (cfgDir, ".mds", "heatmappipeline.jar");
-		    if (file.exists (jarFile)) {
-			cfg$jarFile <- paste ("file://", jarFile, sep="");
-		    }
-		}
 		readConfigFile (cfg, file.path (cfgDir, "config.txt"), '=');
 	    } else {
 	        stop (sprintf ("unknown format for configuration directory '%s'", cfgDir));
@@ -1883,6 +1877,7 @@ chmCreateServer <- function (servername,
     stopifnot ('serverProtocol' %in% names(cfg));
     protocol <- chmGetServerProtocol (cfg$serverProtocol);
     protoOpts <- cfg[setdiff(names(cfg),classFields)];
+    protocol@paramValidator (protoOpts);
 
     chmRegisterServer("base", new(Class="ngchmServer", 
 			   name = servername,
@@ -1892,6 +1887,22 @@ chmCreateServer <- function (servername,
 			   jarFile = cfg$jarFile,
 			   urlBase = cfg$urlBase,
 			   protoOpts = protoOpts));
+}
+
+#' Check that all required parameters are specified, and all specified parameters are either required or optional.
+#'
+#' @param params A list of named parameters.
+#' @param required A character vector of required parameter names
+#' @param optional A character vector of optional parameter names
+#'
+#' @export
+#'
+ngchmProtoParamCheck <- function (params, required, optional) {
+    nm <- names(params);
+    need <- setdiff (required, nm);
+    if (length(need) != 0) stop (sprintf ("Required protocol parameter(s) %s not specified", paste(need,collapse=',')));
+    unknown <- setdiff (nm, c(required,optional));
+    if (length(unknown) != 0) stop (sprintf ("Unknown protocol parameter(s) %s specified", paste(unknown,collapse=',')));
 }
 
 readConfigFile <- function (cfg, filename, sep=':') {

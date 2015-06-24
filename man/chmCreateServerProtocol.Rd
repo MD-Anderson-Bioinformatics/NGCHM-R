@@ -4,11 +4,13 @@
 \alias{chmCreateServerProtocol}
 \title{Create and register an NGCHM server protocol implementation.}
 \usage{
-chmCreateServerProtocol(protocolName, installMethod, uninstallMethod,
-  makePrivate, makePublic)
+chmCreateServerProtocol(protocolName, paramValidator, installMethod,
+  uninstallMethod, makePrivate, makePublic)
 }
 \arguments{
 \item{protocolName}{The name of this protocol implementation.}
+
+\item{paramValidator}{A function(list) for validating a list of optional parameters specified for a new server.}
 
 \item{installMethod}{A function(server,chm) for installing an NG-CHM.}
 

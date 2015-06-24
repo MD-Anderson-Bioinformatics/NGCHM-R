@@ -480,6 +480,7 @@ setMethod ('show',
 #' @keywords classes
 setClass ("ngchmServerProtocol",
           representation (protocolName="character",
+			  paramValidator="function",
 	                  installMethod="function", uninstallMethod="function",
 	                  makePrivate="function", makePublic="function"));
 
