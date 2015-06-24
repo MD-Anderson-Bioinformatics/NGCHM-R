@@ -1776,24 +1776,14 @@ chmCreateServer <- function (servername,
     cfg$deployServer <- cfgServer;
     cfg$jarFile <- NULL;
 
-    # jarURL is last-ditch guess.
     if (length(serverURL) == 0) {
 	if (length (cfgServer) == 0) {
             serverURL <- "http://fix.me.in.the.config.file/chm";
-	    jarURL <- NULL;
 	} else {
             serverURL <- paste ("http:", cfgServer, "/chm", sep="");
-	    jarURL <- paste (serverURL, "resources", "heatmappipeline.jar", sep="/");
 	}
     } else if (substr (serverURL, 1, 2) == "//") {
         serverURL <- paste ("http:", serverURL, sep="");
-	jarURL <- paste (serverURL, "resources", "heatmappipeline.jar", sep="/");
-    } else if (substr (serverURL, 1, 7) == "http://") {
-	jarURL <- paste (serverURL, "resources", "heatmappipeline.jar", sep="/");
-    } else if (substr (serverURL, 1, 8) == "https://") {
-	jarURL <- paste (serverURL, "resources", "heatmappipeline.jar", sep="/");
-    } else {
-	jarURL <- NULL;
     }
     cfg$serverURL <- serverURL;
 
@@ -1858,18 +1848,6 @@ chmCreateServer <- function (servername,
 	    stop (sprintf ("Specified jarFile '%s' does not exist", theJarFile));
 	}
     }
-    else if ((length(cfg$jarFile) == 0) && (length(jarURL) > 0)) {
-	# No info in config directory, but jarURL is a guess. Try it.
-	try (suppressWarnings({
-	    if (system2 ("wget", args=c("-q", "--spider", jarURL)) == 0) {
-		cfg$jarFile <- jarURL;
-	    }
-	}), silent=TRUE);
-    }
-
-    if (length (cfg$jarFile) == 0) {
-        stop ("Error creating NGCHM server: no heatmappipeline.jar was found");
-    }
 
     classFields <- c('traceLevel', 'serverProtocol', 'deployServer', 'jarFile', 'serverURL')
 
@@ -1881,11 +1859,11 @@ chmCreateServer <- function (servername,
 
     chmRegisterServer("base", new(Class="ngchmServer", 
 			   name = servername,
-			   traceLevel = cfg$traceLevel,
-			   serverProtocol = protocol,
-			   deployServer = cfg$deployServer,
-			   jarFile = cfg$jarFile,
 			   serverURL = cfg$serverURL,
+			   serverProtocol = protocol,
+			   traceLevel = cfg$traceLevel,
+			   jarFile = cfg$jarFile,
+			   deployServer = cfg$deployServer,
 			   protoOpts = protoOpts));
 }
 
