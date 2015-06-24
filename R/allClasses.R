@@ -497,9 +497,16 @@ setMethod ('show',
 #'
 #' @keywords classes
 setClass ("ngchmServer",
-          representation (name="character", deployServer="optCharacter", deployDir="optCharacter", urlBase="character",
-			  serverProtocol="ngchmServerProtocol", traceLevel="optCharacter",
-	                  username="optCharacter", keypath="optCharacter", jarFile="optCharacter"));
+          representation (name="character",
+                          urlBase="character",
+                          traceLevel="optCharacter",
+                          jarFile="optCharacter",
+			  serverProtocol="ngchmServerProtocol",
+                          deployServer="optCharacter",
+                          protoOpts="optList",			# Protocol-specific parameters
+	                  username="optCharacter",
+                          keypath="optCharacter"
+                          ));
 
 setMethod ('show',
            signature = c('ngchmServer'),

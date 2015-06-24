@@ -816,7 +816,7 @@ chmNewProperty <- function (label, value) {
 #' @param keypath The path to the key to use when deploying to the server (defaults to your normal ssh credentials).
 #' @param serverPort The port on which the server is listening.
 #' @param deployServer The DNS name to use when deploying a NGCHM (defaults to serverName).
-#' @param deployDir The directory on the server in which to place a NGCHM when deploying (defaults to /chmData).
+#' @param protoOpts A list of protocol-specific parameters
 #' @param jarFile The location of the heatmap build jar file to use when making a NGCHM (defaults to jar file on urlBase WS).
 #' @param urlBase The base URL used to access a deployed NGCHM (defaults to serverName:serverPort/chm/chm.html).
 #'
@@ -832,15 +832,14 @@ chmNewProperty <- function (label, value) {
 #' @seealso chmInstall
 #' @seealso chmUninstall
 #'
-chmNewServer <- function (serverName, username=NULL, keypath=NULL, serverPort=8080, deployServer=NULL, deployDir=NULL,
+chmNewServer <- function (serverName, username=NULL, keypath=NULL, serverPort=8080, deployServer=NULL, protoOpts=NULL,
                        jarFile=NULL, urlBase=NULL)
 {
     if (is.null (deployServer)) deployServer = serverName;
-    if (is.null (deployDir)) deployDir = "/chmData";
     if (is.null (urlBase)) urlBase = paste ("http://", serverName, ":", serverPort, "/chm/chm.html", sep="");
     new (Class="ngchmServer", 
 	 deployServer = deployServer,
-	 deployDir = deployDir,
+	 protoOpts = protoOpts,
 	 username = username,
 	 keypath = keypath,
 	 jarFile = jarFile,
@@ -1322,6 +1321,23 @@ chmGetServerProtocol <- function (protocolName) {
     }
 }
 
+#' Get a server protocol parameter
+#'
+#' @export
+#'
+#' @param server The NGCHM server
+#' @param option The name of the protocol parameter to get
+#' @param default The default value of the option (default NULL)
+
+ngchmGetProtoParam <- function (server, option, default=NULL) {
+    stopifnot ("ngchmServer" %in% class(server));
+    stopifnot ("character" %in% class(option));
+    stopifnot (length(option) == 1);
+    if (is.null (server@protoOpts)) return (default);
+    if (option %in% names(server@protoOpts)) return (server@protoOpts[[option]]);
+    return (default);
+}
+
 #' List the predefined Javascript functions available for use in NGCHM menus.
 #'
 #' This function lists the predefined Javascript functions available for use in NGCHM menus.
@@ -1759,7 +1775,7 @@ chmCreateServer <- function (servername,
     cfg$traceLevel <- "PROGRESS";
     cfg$serverProtocol <- "manual";
     cfg$deployServer <- cfgServer;
-    cfg$deployDir <- NULL;
+    cfg$protoOpts <- NULL;
     cfg$username <- NULL;
     cfg$keypath <- NULL;
     cfg$jarFile <- NULL;
@@ -1840,13 +1856,9 @@ chmCreateServer <- function (servername,
 		cfg$jarFile <- rcfg$jarFile;
 	    }
 	}
-	if (length(rcfg$username) != 0) cfg$username <- rcfg$username;
-	if (length(rcfg$keypath) != 0) cfg$keypath <- rcfg$keypath;
-	if (length(rcfg$serverProtocol) != 0) cfg$serverProtocol <- rcfg$serverProtocol;
-	if (length(rcfg$deployServer) != 0) cfg$deployServer <- rcfg$deployServer;
-	if (length(rcfg$deployDir) != 0) cfg$deployDir <- rcfg$deployDir;
-	if (length(rcfg$urlBase) != 0) cfg$urlBase <- rcfg$urlBase;
-	if (length(rcfg$traceLevel) != 0) cfg$traceLevel <- rcfg$traceLevel;
+        for (field in names(rcfg)) {
+	    cfg[[field]] <- rcfg[[field]];
+        }
     }
 
     if (length (theJarFile) > 0) {
@@ -1871,16 +1883,23 @@ chmCreateServer <- function (servername,
         stop ("Error creating NGCHM server: no heatmappipeline.jar was found");
     }
 
+    classFields <- c('traceLevel', 'username', 'keypath', 'serverProtocol', 'deployServer', 'jarFile', 'urlBase')
+
+    cfg <- as.list (cfg);
+    stopifnot ('serverProtocol' %in% names(cfg));
+    protocol <- chmGetServerProtocol (cfg$serverProtocol);
+    protoOpts <- cfg[setdiff(names(cfg),classFields)];
+
     chmRegisterServer("base", new(Class="ngchmServer", 
 			   name = servername,
 			   traceLevel = cfg$traceLevel,
 			   username = cfg$username,
 			   keypath = cfg$keypath,
-			   serverProtocol = chmGetServerProtocol (cfg$serverProtocol),
+			   serverProtocol = protocol,
 			   deployServer = cfg$deployServer,
-			   deployDir = cfg$deployDir,
 			   jarFile = cfg$jarFile,
-			   urlBase = cfg$urlBase));
+			   urlBase = cfg$urlBase,
+			   protoOpts = protoOpts));
 }
 
 readConfigFile <- function (cfg, filename, sep=':') {

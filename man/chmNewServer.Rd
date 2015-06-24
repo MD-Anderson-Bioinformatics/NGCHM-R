@@ -5,7 +5,7 @@
 \title{Create a new object representing a NGCHM server.}
 \usage{
 chmNewServer(serverName, username = NULL, keypath = NULL,
-  serverPort = 8080, deployServer = NULL, deployDir = NULL,
+  serverPort = 8080, deployServer = NULL, protoOpts = NULL,
   jarFile = NULL, urlBase = NULL)
 }
 \arguments{
@@ -19,9 +19,9 @@ chmNewServer(serverName, username = NULL, keypath = NULL,
 
 \item{deployServer}{The DNS name to use when deploying a NGCHM (defaults to serverName).}
 
-\item{deployDir}{The directory on the server in which to place a NGCHM when deploying (defaults to /chmData).}
+\item{protoOpts}{A list of protocol-specific parameters}
 
-\item{jarFile}{The location of the heatmap build jar file to use when making a NGCHM (defaults to jar file on deployServer).}
+\item{jarFile}{The location of the heatmap build jar file to use when making a NGCHM (defaults to jar file on urlBase WS).}
 
 \item{urlBase}{The base URL used to access a deployed NGCHM (defaults to serverName:serverPort/chm/chm.html).}
 }
