@@ -503,9 +503,7 @@ setClass ("ngchmServer",
                           jarFile="optCharacter",
 			  serverProtocol="ngchmServerProtocol",
                           deployServer="optCharacter",
-                          protoOpts="optList",			# Protocol-specific parameters
-	                  username="optCharacter",
-                          keypath="optCharacter"
+                          protoOpts="optList"			# Protocol-specific parameters
                           ));
 
 setMethod ('show',

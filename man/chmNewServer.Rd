@@ -4,16 +4,11 @@
 \alias{chmNewServer}
 \title{Create a new object representing a NGCHM server.}
 \usage{
-chmNewServer(serverName, username = NULL, keypath = NULL,
-  serverPort = 8080, deployServer = NULL, protoOpts = NULL,
-  jarFile = NULL, urlBase = NULL)
+chmNewServer(serverName, serverPort = 8080, deployServer = NULL,
+  protoOpts = NULL, jarFile = NULL, urlBase = NULL)
 }
 \arguments{
 \item{serverName}{The DNS name of the NGCHM server.}
-
-\item{username}{The login name to use when deploying to the server (defaults to the username ssh uses).}
-
-\item{keypath}{The path to the key to use when deploying to the server (defaults to your normal ssh credentials).}
 
 \item{serverPort}{The port on which the server is listening.}
 

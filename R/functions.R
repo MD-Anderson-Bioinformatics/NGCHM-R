@@ -812,8 +812,6 @@ chmNewProperty <- function (label, value) {
 #' This function creates a new object that represents a NGCHM server.
 #'
 #' @param serverName The DNS name of the NGCHM server.
-#' @param username The login name to use when deploying to the server (defaults to the username ssh uses).
-#' @param keypath The path to the key to use when deploying to the server (defaults to your normal ssh credentials).
 #' @param serverPort The port on which the server is listening.
 #' @param deployServer The DNS name to use when deploying a NGCHM (defaults to serverName).
 #' @param protoOpts A list of protocol-specific parameters
@@ -832,7 +830,7 @@ chmNewProperty <- function (label, value) {
 #' @seealso chmInstall
 #' @seealso chmUninstall
 #'
-chmNewServer <- function (serverName, username=NULL, keypath=NULL, serverPort=8080, deployServer=NULL, protoOpts=NULL,
+chmNewServer <- function (serverName, serverPort=8080, deployServer=NULL, protoOpts=NULL,
                        jarFile=NULL, urlBase=NULL)
 {
     if (is.null (deployServer)) deployServer = serverName;
@@ -840,8 +838,6 @@ chmNewServer <- function (serverName, username=NULL, keypath=NULL, serverPort=80
     new (Class="ngchmServer", 
 	 deployServer = deployServer,
 	 protoOpts = protoOpts,
-	 username = username,
-	 keypath = keypath,
 	 jarFile = jarFile,
 	 urlBase = paste ("http://", serverName, ":", serverPort, "/chm/chm.html", sep=""));
 }
@@ -1776,8 +1772,6 @@ chmCreateServer <- function (servername,
     cfg$serverProtocol <- "manual";
     cfg$deployServer <- cfgServer;
     cfg$protoOpts <- NULL;
-    cfg$username <- NULL;
-    cfg$keypath <- NULL;
     cfg$jarFile <- NULL;
 
     # jarURL is last-ditch guess.
@@ -1883,7 +1877,7 @@ chmCreateServer <- function (servername,
         stop ("Error creating NGCHM server: no heatmappipeline.jar was found");
     }
 
-    classFields <- c('traceLevel', 'username', 'keypath', 'serverProtocol', 'deployServer', 'jarFile', 'urlBase')
+    classFields <- c('traceLevel', 'serverProtocol', 'deployServer', 'jarFile', 'urlBase')
 
     cfg <- as.list (cfg);
     stopifnot ('serverProtocol' %in% names(cfg));
@@ -1893,8 +1887,6 @@ chmCreateServer <- function (servername,
     chmRegisterServer("base", new(Class="ngchmServer", 
 			   name = servername,
 			   traceLevel = cfg$traceLevel,
-			   username = cfg$username,
-			   keypath = cfg$keypath,
 			   serverProtocol = protocol,
 			   deployServer = cfg$deployServer,
 			   jarFile = cfg$jarFile,
