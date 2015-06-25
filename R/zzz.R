@@ -63,7 +63,7 @@ chmGetDeployServerConfig <- function (server) {
 # Define the built-in server protocol "manual".
 #
 defineManualProtocol <- function () {
-    chmCreateServerProtocol ("manual",
+    ngchmCreateServerProtocol ("manual",
 			     paramValidator = function (params) {
 				ngchmProtoParamCheck (params, required=NULL, optional=NULL);
 			     },

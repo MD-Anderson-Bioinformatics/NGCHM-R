@@ -18,7 +18,7 @@ chmNewServer(serverName, serverPort = 8080, deployServer = NULL,
 
 \item{jarFile}{The location of the heatmap build jar file to use when making a NGCHM (defaults to jar file on serverURL WS).}
 
-\item{serverURL}{The base URL used to access a deployed NGCHM (defaults to serverName:serverPort/chm).}
+\item{serverURL}{The URL used to access the NGCHM server (defaults to serverName:serverPort/chm).}
 }
 \value{
 An object of class ngchmServer

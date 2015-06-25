@@ -2,25 +2,50 @@
 % Please edit documentation in R/functions.R
 \name{chmCreateServer}
 \alias{chmCreateServer}
-\title{Create an ngchmServer object for an MDS2 deployment server directory.}
+\title{Create an ngchmServer object from a specification.}
 \usage{
-chmCreateServer(servername, cfgDir = NULL, cfgServer = NULL,
-  theJarFile = NULL, serverURL = NULL)
+chmCreateServer(serverName, serverSpec = NULL, serverOptions = NULL)
 }
 \arguments{
-\item{servername}{The name of the new server object.}
+\item{serverName}{The name of the new server object.}
 
-\item{cfgDir}{The absolute path of the MDS2 directory on the deployServer.}
+\item{serverSpec}{The specification for the server (defaults to servername).}
 
-\item{cfgServer}{The server on which cfgDir is located.}
-
-\item{theJarFile}{Get heatmappipeline.jar from the specified file location, not the
-location defined by the serverProtocol.}
-
-\item{serverURL}{Specifies the base URL to use when computing the URL for installed heat maps.}
+\item{serverOptions}{A named list of server options.}
+}
+\value{
+The created (and registered) ngchmServer object.
 }
 \description{
-Create an ngchmServer object called 'servername' for the MDS2 NGCHM deployment directory 'cfgDir' on
-server 'deployServer'.  If deployServer is NULL (default), 'cfgDir' is assummed to be on the local machine.
+Create an ngchmServer object called 'serverName' from the specification 'serverSpec' (see details).
+serverOptions override those in the specification files option by option.
+The new ngchmServer object is returned and registered so that it can be
+referenced by name, including retrieval using chmServer.
+}
+\details{
+serverSpec can be any of:
+\itemize{
+  \item{A configuration directory path. }{The specification will be read from a file 'config.txt' in that directory.}
+  \item{An NGCHM server URL (ending in '/chm' or '/Viewer' for instance). }{A minimal specification will be inferred.
+        Known methods for uploading NGCHMs to the server will be autoprobed unless specified manually.}
+  \item{A URL referencing a configuration file (must end in '/config.txt'). }{The specification will be read from the
+        specified URL.}
+}
+serverOptions can include both protocol-specific options and the following generic options:
+\itemize{
+ \item{'serverURL'. }{The URL for the NGCHM server.}
+ \item{'serverProtocol'. }{The protocol to be used for uploading etc. NGCHMs to the server.}
+ \item{'jarFile'. }{The jarFile used to build NGCHMs.}
+ \item{'traceLevel'. }{The amount of trace to output. Defaults to "PROGRESS".}
+}
+}
+\seealso{
+chmServer
+
+ngchmServer-class
+
+ngchmGetServerProtocol
+
+ngchmServerProtocol-class
 }
 

@@ -16,15 +16,16 @@ systemCheck <- function (command, ...) {
 #' @param uuid A string that identifies the server namespace.
 #' @param server The ngchmServer to register.
 #'
+#' @return the server that was registered
 #' @export
 #'
 #' @seealso chmMake
 #' @seealso chmInstall
 #' @seealso chmUninstall
-#' @seealso chmUnregisterServer
+#' @seealso ngchmUnregisterServer
 #' @seealso ngchmServer-class
 #'
-chmRegisterServer <- function (uuid, server) {
+ngchmRegisterServer <- function (uuid, server) {
     obj <- list (uuid=uuid, name=server@name, server=server);
     matches <- which (vapply (ngchm.env$servers, function(srv) ((srv$uuid == uuid) && (srv$name == server@name)), TRUE));
     if (length (matches) > 0) {
@@ -32,6 +33,7 @@ chmRegisterServer <- function (uuid, server) {
     } else {
 	ngchm.env$servers <- append (ngchm.env$servers, list(obj));
     }
+    server
 }
 
 #' Unregister ngchmServer(s).
@@ -44,10 +46,10 @@ chmRegisterServer <- function (uuid, server) {
 #'
 #' @export
 #'
-#' @seealso chmRegisterServer
+#' @seealso ngchmRegisterServer
 #' @seealso ngchmServer-class
 #'
-chmUnregisterServer <- function (uuid, name=NULL) {
+ngchmUnregisterServer <- function (uuid, name=NULL) {
     if (length(name) == 0) {
 	matches <- vapply (ngchm.env$servers, function(srv) (srv$uuid == uuid), TRUE);
     } else {
@@ -1270,10 +1272,10 @@ chmRegisterFunction <- function (fn) {
 #'
 #' @export
 
-chmCreateServerProtocol <- function (protocolName,
-				     paramValidator,
-                                     installMethod, uninstallMethod,
-	                             makePrivate, makePublic) {
+ngchmCreateServerProtocol <- function (protocolName,
+				       paramValidator,
+                                       installMethod, uninstallMethod,
+	                               makePrivate, makePublic) {
     if (typeof (protocolName) != "character") {
         stop (sprintf ("Parameter 'protocolName' must have type 'character', not '%s'", typeof(protocolName)));
     }
@@ -1296,13 +1298,23 @@ chmCreateServerProtocol <- function (protocolName,
     dm
 }
 
+#' List defined server protocols
+#'
+#' @export
+#'
+#' @return A character vector
+
+ngchmListServerProtocols <- function (protocolName) {
+    vapply (ngchm.env$serverProtocols, function(sp) sp@protocolName, '')
+}
+
 #' Lookup a Server Protocol
 #'
 #' @export
 #'
 #' @param protocolName The name of the server protocol to lookup
 
-chmGetServerProtocol <- function (protocolName) {
+ngchmGetServerProtocol <- function (protocolName) {
     if (typeof (protocolName) != "character") {
         stop (sprintf ("Parameter 'protocolName' must have type 'character', not '%s'", typeof(protocolName)));
     }
@@ -1312,7 +1324,7 @@ chmGetServerProtocol <- function (protocolName) {
     if (nchar (protocolName) == 0) {
         stop ("Parameter 'protocolName' cannot be the empty string");
     }
-    matches <- which (vapply (ngchm.env$serverProtocols, function(ss) (ss@protocolName == protocolName), TRUE));
+    matches <- which (vapply (ngchm.env$serverProtocols, function(sp) (sp@protocolName == protocolName), TRUE));
     if (length(matches) == 0) {
         stop (sprintf ("No server protocol found with name '%s'", protocolName));
     } else {
@@ -1684,7 +1696,7 @@ chmListServers <- function () {
 #' @export
 #'
 ngchmGetHandleHTTR <- function (server) {
-    ws <- server@serverURL;
+    ws <- if ("ngchmServer" %in% class(server)) server@serverURL else server;
     if (!exists (ws, ngchm.env$handledb)) {
 	assign (ws, httr::handle(ws), ngchm.env$handledb);
     }
@@ -1692,7 +1704,8 @@ ngchmGetHandleHTTR <- function (server) {
 }
 
 getServerVersion <- function (server) {
-    ws <- sprintf("%s/gdacws/servermetadata", server@serverURL);
+    url <- if ("ngchmServer" %in% class(server)) server@serverURL else server;
+    ws <- sprintf("%s/gdacws/servermetadata", url);
     res <- httr::GET (ws, handle=ngchmGetHandleHTTR (server));
     as.numeric(jsonlite::fromJSON(rawToChar(res$content))$Build_Number)
 }
@@ -1751,114 +1764,168 @@ getBuilderJar <- function (server) {
     ngchm.env$jarCache[[server@jarFile]]
 }
 
-#' Create an ngchmServer object for an MDS2 deployment server directory.
+#' Create an ngchmServer object from a specification.
 #'
-#' Create an ngchmServer object called 'servername' for the MDS2 NGCHM deployment directory 'cfgDir' on
-#' server 'deployServer'.  If deployServer is NULL (default), 'cfgDir' is assummed to be on the local machine.
+#' Create an ngchmServer object called 'serverName' from the specification 'serverSpec' (see details).
+#' serverOptions override those in the specification files option by option.
+#' The new ngchmServer object is returned and registered so that it can be
+#' referenced by name, including retrieval using chmServer.
 #'
-#' @param servername The name of the new server object.
-#' @param cfgDir The absolute path of the MDS2 directory on the deployServer.
-#' @param cfgServer The server on which cfgDir is located.
-#' @param theJarFile Get heatmappipeline.jar from the specified file location, not the
-#'        location defined by the serverProtocol.
-#' @param serverURL Specifies the base URL to use when computing the URL for installed heat maps.
+#' @param serverName The name of the new server object.
+#' @param serverSpec The specification for the server (defaults to servername).
+#' @param serverOptions A named list of server options.
 #'
+#' @return The created (and registered) ngchmServer object.
 #' @export
+#'
+#' @details serverSpec can be any of:
+#' \itemize{
+#'   \item{A configuration directory path. }{The specification will be read from a file 'config.txt' in that directory.}
+#'   \item{An NGCHM server URL (ending in '/chm' or '/Viewer' for instance). }{A minimal specification will be inferred.
+#'         Known methods for uploading NGCHMs to the server will be autoprobed unless specified manually.}
+#'   \item{A URL referencing a configuration file (must end in '/config.txt'). }{The specification will be read from the
+#'         specified URL.}
+#' }
+#' serverOptions can include both protocol-specific options and the following generic options:
+#' \itemize{
+#'  \item{'serverURL'. }{The URL for the NGCHM server.}
+#'  \item{'serverProtocol'. }{The protocol to be used for uploading etc. NGCHMs to the server.}
+#'  \item{'jarFile'. }{The jarFile used to build NGCHMs.}
+#'  \item{'traceLevel'. }{The amount of trace to output. Defaults to "PROGRESS".}
+#' }
+#'
+#' @seealso chmServer
+#' @seealso ngchmServer-class
+#' @seealso ngchmGetServerProtocol
+#' @seealso ngchmServerProtocol-class
 
-chmCreateServer <- function (servername,
-                             cfgDir = NULL,
-			     cfgServer = NULL,
-			     theJarFile = NULL,
-			     serverURL = NULL) {
+
+chmCreateServer <- function (serverName,
+			     serverSpec = NULL,
+			     serverOptions = NULL)
+{
+    defaultOptions <- list (traceLevel="PROGRESS", serverProtocol="manual", jarFile=NULL);
+    if (is.null(serverSpec)) serverSpec <- serverName;
+
     cfg <- new.env();
-    cfg$traceLevel <- "PROGRESS";
-    cfg$serverProtocol <- "manual";
-    cfg$deployServer <- cfgServer;
-    cfg$jarFile <- NULL;
 
-    if (length(serverURL) == 0) {
-	if (length (cfgServer) == 0) {
-            serverURL <- "http://fix.me.in.the.config.file/chm";
+    if (substr (serverSpec, 1, 2) == "//") {
+        serverSpec <- paste ("http:", serverSpec, sep="");
+    }
+
+    hasProto <- grepl ("^[^/]*:", serverSpec);
+    if (!hasProto) {
+	# No protocol, so try to interpret as a server configuration directory
+	if (file.exists (file.path (serverSpec, 'config.txt'))) {
+	    readConfigFile (cfg, file.path (serverSpec, "config.txt"), '=');
 	} else {
-            serverURL <- paste ("http:", cfgServer, "/chm", sep="");
+	    stop (sprintf ("'%s' is not a server configuration directory", serverSpec));
 	}
-    } else if (substr (serverURL, 1, 2) == "//") {
-        serverURL <- paste ("http:", serverURL, sep="");
-    }
-    cfg$serverURL <- serverURL;
-
-    if (length(cfgServer) == 0) {
-	if (length(cfgDir) > 0) {
-            if ((substr(cfgDir,1,5)=='http:') || (substr(cfgDir,1,6)=='https:')) {
-		# cfgDir is really a URL.
-		readConfigFile (cfg, paste (cfgDir, "config.txt", sep="/"), '=');
-	    } else if (file.exists (cfgDir)) {
-		readConfigFile (cfg, file.path (cfgDir, "config.txt"), '=');
+    } else {
+        proto <- sub (":.*", "", serverSpec);
+	if (!(proto %in% c('http', 'https', 'scp'))) {
+	    stop (sprintf ("Unknown protocol in serverSpec '%s'", serverSpec));
+	}
+	if (proto %in% c('http', 'https')) {
+	    if (substring(serverSpec,nchar(serverSpec)-10) == "/config.txt") {
+		readConfigFile (cfg, serverSpec, '=');
 	    } else {
-	        stop (sprintf ("unknown format for configuration directory '%s'", cfgDir));
-	    }
-	}
-    } else if (length (cfgDir) > 0) {
-	cfg$serverProtocol <- "mds2";
-	cfg$deployServer <- cfgServer;
-	cfg$deployDir <- cfgDir;
-	cfgFile <- system2 ("mktemp", args=c("-p", tempdir(), "cfgXXXXXXXXX.txt"), stdout=TRUE);
-	rcfg <- new.env();
-	if (system2 ("scp", args=c(sprintf ("%s:%s/%s", cfgServer, cfgDir, "config.txt"), cfgFile)) == 0) {
-	    readConfigFile (rcfg, cfgFile, '=');
-	}
-	if (length (theJarFile) == 0) {
-	    # No user specified jarFile, so let's see what the remote config says.
-	    if (length (rcfg$jarFile) == 0) {
-		# No jarFile specified in remote config, so peek to see if there's a remote jarFile in .mds subdirectory.
-		rcfg$jarFile <- paste (cfgDir, ".mds", "heatmappipeline.jar", sep="");
-		found <- system2 ("ssh", args=c(cfgServer, sprintf ("[ -r %s ]", rcfg$jarFile)));
-		if (found == 0) {
-		    # Shell command above succeeded.
-		    cfg$jarFile <- paste ("scp://", cfgServer, rcfg$jarFile, sep="");
+	        # Assume a URL that refers to an NGCHM server.
+		cfg$serverURL <- serverSpec;
+		# Probe to see if manager API available.
+		ws <- sprintf("%s/manager/rest/chmservers", serverSpec);
+		res <- httr::GET (ws, handle=ngchmGetHandleHTTR (serverSpec));
+		if (res$status_code >= 200 && res$status_code < 300) {
+		    content <- jsonlite::fromJSON(rawToChar(res$content));
+		    if (length(content) > 0) {
+		        cfg$serverProtocol <- 'manager';
+		        cfg$deployServer <- sprintf ("%s/manager/rest", serverSpec);
+			cfg$serviceName <- names(content)[1];
+		    }
 		}
 	    }
-	    else if (substr (rcfg$jarFile, 1, 7) == "file://") {
-		# Remote specified jarFile using file://, so convert to an scp://
-		rcfg$jarFile <- substr (rcfg$jarFile, 8, nchar (rcfg$jarFile));
-		if (substr (rcfg$jarFile, 1, 1) != '/') {
-		    rcfg$jarFile <- paste ('', cfgDir, rcfg$jarFile, sep="/");
-		}
-		found <- system2 ("ssh", args=c(cfgServer, sprintf ("[ -r %s ]", rcfg$jarFile)));
-		if (found == 0) {
-		    cfg$jarFile <- paste ("scp://", cfgServer, rcfg$jarFile, sep="");
-		}
-	    }
-	    else {
-		# We assume network based addresses will work equally well from the current machine.
-		cfg$jarFile <- rcfg$jarFile;
-	    }
 	}
-        for (field in names(rcfg)) {
-	    cfg[[field]] <- rcfg[[field]];
-        }
-    }
+	else if (proto == "scp") {
+	    defaultOptions$serverProtocol <- "mds2";
+	    spec <- sub ("^[^/]*:", "", serverSpec);
+	    if (substr (spec, 1, 2) != "//") stop (sprintf ("Malformed server spec '%s'", serverSpec));
+	    spec <- substring (spec, 3);
+	    cfgServer <- sub ("/.*", "", spec);
+	    cfgDir <- sub ("^[^/]*", "", spec);
+	    if (nchar (defaultOptions$deployServer) == 0) stop (sprintf ("Malformed server spec '%s'", serverSpec));
+	    if (nchar (defaultOptions$deployDir) == 0) stop (sprintf ("Malformed server spec '%s'", serverSpec));
+	    defaultOptions$deployServer <- cfgServer;
+	    defaultOptions$deployDir <- cfgDir;
 
-    if (length (theJarFile) > 0) {
-	# the user explicitly specified theJarFile.  Use it or fail.
-	if (file.exists (theJarFile)) {
-	    cfg$jarFile <- paste ("file://", theJarFile, sep="");
+	    cfgFile <- system2 ("mktemp", args=c("-p", tempdir(), "cfgXXXXXXXXX.txt"), stdout=TRUE);
+	    rcfg <- new.env();
+	    if (system2 ("scp", args=c(sprintf ("%s:%s/%s", cfgServer, cfgDir, "config.txt"), cfgFile)) == 0) {
+		readConfigFile (rcfg, cfgFile, '=');
+	    }
+	    rcfg <- as.list (rcfg);
+	    if (!("jarFile" %in% names(serverOptions))) {
+		# No user specified jarFile, so let's see what the remote config says.
+		if (length (rcfg$jarFile) == 0) {
+		    # No jarFile specified in remote config, so peek to see if there's a remote jarFile in .mds subdirectory.
+		    jarFile <- paste (cfgDir, ".mds", "heatmappipeline.jar", sep="");
+		    found <- system2 ("ssh", args=c(cfgServer, sprintf ("[ -r %s ]", jarFile)));
+		    if (found == 0) {
+			# Shell command above succeeded.
+			rcfg$jarFile <- paste ("scp://", cfgServer, jarFile, sep="");
+		    }
+		}
+		else if (substr (rcfg$jarFile, 1, 7) == "file://") {
+		    # Remote specified jarFile using file://, so convert to an scp://
+		    jarFile <- substr (rcfg$jarFile, 8, nchar (rcfg$jarFile));
+		    if (substr (jarFile, 1, 1) != '/') {
+			jarFile <- paste ('', cfgDir, jarFile, sep="/");
+		    }
+		    found <- system2 ("ssh", args=c(cfgServer, sprintf ("[ -r %s ]", jarFile)));
+		    if (found == 0) {
+			rcfg$jarFile <- paste ("scp://", cfgServer, jarFile, sep="");
+		    } else {
+			stop (sprintf ("Unable to access remote mds2 jarfile scp://%s%s", cfgServer, jarFile));
+		    }
+		}
+		else {
+		    # We assume network based addresses will work equally well from the current machine.
+		}
+	    }
+	    for (field in names(rcfg)) {
+		cfg[[field]] <- rcfg[[field]];
+	    }
+	}
+    }
+    fileOptions <- as.list (cfg);
+
+    if ("jarFile" %in% names(serverOptions)) {
+	# the user explicitly specified the jarFile to use.  Use it or fail.
+	if (file.exists (serverOptions$jarFile)) {
+	    serverOptions$jarFile <- paste ("file://", serverOptions$jarFile, sep="");
 	}
 	else {
-	    stop (sprintf ("Specified jarFile '%s' does not exist", theJarFile));
+	    stop (sprintf ("Specified jarFile '%s' does not exist", serverOptions$jarFile));
 	}
     }
 
     classFields <- c('traceLevel', 'serverProtocol', 'deployServer', 'jarFile', 'serverURL')
 
-    cfg <- as.list (cfg);
+    # defaultOptions, overridden by file options, overridden by explicit serverOptions.
+    cfg <- defaultOptions;
+    for (field in names(fileOptions)) {
+	cfg[[field]] <- fileOptions[[field]];
+    }
+    for (field in names(serverOptions)) {
+	cfg[[field]] <- serverOptions[[field]];
+    }
+
     stopifnot ('serverProtocol' %in% names(cfg));
-    protocol <- chmGetServerProtocol (cfg$serverProtocol);
+    protocol <- ngchmGetServerProtocol (cfg$serverProtocol);
     protoOpts <- cfg[setdiff(names(cfg),classFields)];
     protocol@paramValidator (protoOpts);
 
-    chmRegisterServer("base", new(Class="ngchmServer", 
-			   name = servername,
+    ngchmRegisterServer("base", new(Class="ngchmServer", 
+			   name = serverName,
 			   serverURL = cfg$serverURL,
 			   serverProtocol = protocol,
 			   traceLevel = cfg$traceLevel,
