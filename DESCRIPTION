@@ -8,7 +8,9 @@ Maintainer: Bradley Broom <bmbroom@mdanderson.org>
 Imports:
     methods,
     tsvio,
-    digest
+    digest,
+    httr,
+    jsonlite
 Description: Utitilies for creating Next Generation Clustered Heat Maps
 License: GPL-3
 Collate:

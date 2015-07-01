@@ -64,8 +64,9 @@ chmGetDeployServerConfig <- function (server) {
 #
 defineManualProtocol <- function () {
     ngchmCreateServerProtocol ("manual",
+			     requiredParams = NULL,
+			     optionalParams = NULL,
 			     paramValidator = function (params) {
-				ngchmProtoParamCheck (params, required=NULL, optional=NULL);
 			     },
 			     installMethod = function (server, chm) {
 				stop ("NGCHMs cannot be automatically installed on this server. Please obtain installation instructions from the server administrator.");

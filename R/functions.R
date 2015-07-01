@@ -1264,7 +1264,9 @@ chmRegisterFunction <- function (fn) {
 #' an NGCHM server.
 #'
 #' @param protocolName The name of this protocol implementation.
-#' @param paramValidator A function(list) for validating a list of optional parameters specified for a new server.
+#' @param requiredParams The protocol's required parameters, if any.
+#' @param optionalParams The protocol's optional parameters, if any.
+#' @param paramValidator A function(list) for validating the parameters specified for a new server.
 #' @param installMethod A function(server,chm) for installing an NG-CHM.
 #' @param uninstallMethod A function(server,chmname) for uninstalling an NG-CHM.
 #' @param makePrivate A function(server,chmname) for hiding an NG-CHM.
@@ -1273,6 +1275,7 @@ chmRegisterFunction <- function (fn) {
 #' @export
 
 ngchmCreateServerProtocol <- function (protocolName,
+				       requiredParams, optionalParams,
 				       paramValidator,
                                        installMethod, uninstallMethod,
 	                               makePrivate, makePublic) {
@@ -1285,7 +1288,15 @@ ngchmCreateServerProtocol <- function (protocolName,
     if (nchar (protocolName) == 0) {
         stop ("Parameter 'protocolName' cannot be the empty string");
     }
+    if (!is.null(requiredParams) && typeof (requiredParams) != "character") {
+        stop (sprintf ("Parameter 'requiredParams' must have type 'character', not '%s'", typeof(requiredParams)));
+    }
+    if (!is.null(optionalParams) && typeof (optionalParams) != "character") {
+        stop (sprintf ("Parameter 'optionalParams' must have type 'character', not '%s'", typeof(optionalParams)));
+    }
     dm <- new (Class="ngchmServerProtocol", protocolName=protocolName,
+	       requiredParams = requiredParams,
+	       optionalParams = optionalParams,
 	       paramValidator = paramValidator,
 	       installMethod=installMethod, uninstallMethod=uninstallMethod,
 	       makePrivate=makePrivate, makePublic=makePublic);
@@ -1922,6 +1933,7 @@ chmCreateServer <- function (serverName,
     stopifnot ('serverProtocol' %in% names(cfg));
     protocol <- ngchmGetServerProtocol (cfg$serverProtocol);
     protoOpts <- cfg[setdiff(names(cfg),classFields)];
+    ngchmProtoParamCheck (protoOpts, protocol@requiredParams, protocol@optionalParams);
     protocol@paramValidator (protoOpts);
 
     ngchmRegisterServer("base", new(Class="ngchmServer", 
