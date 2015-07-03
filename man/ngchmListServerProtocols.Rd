@@ -4,7 +4,7 @@
 \alias{ngchmListServerProtocols}
 \title{List defined server protocols}
 \usage{
-ngchmListServerProtocols(protocolName)
+ngchmListServerProtocols()
 }
 \value{
 A character vector

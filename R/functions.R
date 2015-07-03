@@ -1315,7 +1315,7 @@ ngchmCreateServerProtocol <- function (protocolName,
 #'
 #' @return A character vector
 
-ngchmListServerProtocols <- function (protocolName) {
+ngchmListServerProtocols <- function () {
     vapply (ngchm.env$serverProtocols, function(sp) sp@protocolName, '')
 }
 

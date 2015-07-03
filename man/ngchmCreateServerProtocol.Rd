@@ -4,13 +4,17 @@
 \alias{ngchmCreateServerProtocol}
 \title{Create and register an NGCHM server protocol implementation.}
 \usage{
-ngchmCreateServerProtocol(protocolName, paramValidator, installMethod,
-  uninstallMethod, makePrivate, makePublic)
+ngchmCreateServerProtocol(protocolName, requiredParams, optionalParams,
+  paramValidator, installMethod, uninstallMethod, makePrivate, makePublic)
 }
 \arguments{
 \item{protocolName}{The name of this protocol implementation.}
 
-\item{paramValidator}{A function(list) for validating a list of optional parameters specified for a new server.}
+\item{requiredParams}{The protocol's required parameters, if any.}
+
+\item{optionalParams}{The protocol's optional parameters, if any.}
+
+\item{paramValidator}{A function(list) for validating the parameters specified for a new server.}
 
 \item{installMethod}{A function(server,chm) for installing an NG-CHM.}
 
