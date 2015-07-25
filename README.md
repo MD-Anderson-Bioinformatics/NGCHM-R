@@ -2,9 +2,12 @@
 An R library for creating [Next-Generation Clustered Heat Maps (NG-CHM)](http://bioinformatics.mdanderson.org/main/NG-CHM:Overview
 )
 
-To install this package into R:
+A docker image containing RStudio with this library preinstalled is available.  Follow the [instructions for using rstudio](https://github.com/rocker-org/rocker/wiki/Using-the-RStudio-image), but substitute "bmbroom/rstudio-ngchm" for the name of the repository.
+
+To install this package into your own R system:
 ```
 > install.packages("devtools")
+> devtools::install_github("bmbroom/tsvio")
 > devtools::install_github("bmbroom/NGCHMR")
 ```
 
