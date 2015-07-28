@@ -51,10 +51,16 @@ SCP="scp -q"
 
 # Create a local temporary directory
 TMP=`mktemp -d -p /tmp/ scl.XXXXXXXX`
-trap "ssh -q -o $CP -O stop $HOST 2> /dev/null ; /bin/rm -rf $TMP" 0
+if [ "X$HOST" == Xlocalhost ] ; then
+    trap "/bin/rm -rf $TMP" 0
+else
+    trap "ssh -q -o $CP -O stop $HOST 2> /dev/null ; /bin/rm -rf $TMP" 0
+fi
 
 # Establish a master connection to host.
-ssh -f -N -o $CP -o $CM $HOST
+if [ "X$HOST" != Xlocalhost ] ; then
+    ssh -f -N -o $CP -o $CM $HOST
+fi
 
 function rmoldchm() {
     declare LOCALDIR="$1"
@@ -71,9 +77,15 @@ function rmoldchm() {
     fi
 }
 
+if [ "X$HOST" == Xlocalhost ] ; then
+    DOREMOTE=""
+else
+    DOREMOTE="ssh -T -q -o $CP $HOST"
+fi
+
 # Repeatedly get and act upon remote user request.
 while true ; do
-    ACTION=`ssh -T -q -o $CP $HOST $REMOTEDIR/.scl/scl-next-action.sh $REMOTEDIR`
+    ACTION=`$DOREMOTE $REMOTEDIR/.scl/scl-next-action.sh $REMOTEDIR`
     echo ACTION is "$ACTION"
     if [ "X$ACTION" == "X" ] ; then
         echo Unable to get next SCL action.
@@ -87,7 +99,11 @@ while true ; do
 	    LTMP=`mktemp -d -p "$LOCALDIR" .scl-add-XXXXXX`
 	    RMTMP=''
 	    echo Copying remote CHM "$CHM" to "$LTMP"
-	    $SCP -r -o $CP "$HOST":"$REMOTEDIR"/ADD/"$CHM" "$LTMP"
+	    if [ "X$HOST" == Xlocalhost ] ; then
+		cp "$REMOTEDIR"/ADD/"$CHM" "$LTMP"
+	    else
+		$SCP -r -o $CP "$HOST":"$REMOTEDIR"/ADD/"$CHM" "$LTMP"
+	    fi
 	    echo Copied CHM to "$LTMP"
 	    if [ -d "$LOCALDIR"/"$CHM" ] ; then
 		echo Deleting existing CHM "$CHM"
@@ -97,7 +113,7 @@ while true ; do
 	    echo Installing new NGCHM "$CHM"
 	    mv "$LTMP"/"$CHM" "$LOCALDIR"/"$CHM"
 	    # Remove remote CHM to signal the CHM has been installed.
-            ssh -T -q -o $CP $HOST /bin/rm -rf "$REMOTEDIR"/ADD/"$CHM"
+	    $DOREMOTE /bin/rm -rf "$REMOTEDIR"/ADD/"$CHM"
 	    # Clean up
 	    echo Cleaning up after installing "$CHM"
 	    rmdir "$LTMP"
@@ -107,7 +123,11 @@ while true ; do
 	    CHM="$2"
 	    LTMP=`mktemp -d -p "$LOCALDIR" .scl-add-XXXXXX`
 	    echo Copying remote files for CHM "$CHM" to "$LTMP"
-	    $SCP -r -o $CP "$HOST":"$REMOTEDIR"/ADD-FILE/"$CHM"/"*" "$LTMP"/
+	    if [ "X$HOST" == Xlocalhost ] ; then
+		cp "$REMOTEDIR"/ADD-FILE/"$CHM"/"*" "$LTMP"/
+	    else
+		$SCP -r -o $CP "$HOST":"$REMOTEDIR"/ADD-FILE/"$CHM"/"*" "$LTMP"/
+	    fi
 	    RMTMP=`mktemp -d -p "$LOCALDIR" .scl-del-XXXXXX`
 	    for file in "$LTMP"/* ; do
 		filename=`basename "$file"`
@@ -115,7 +135,7 @@ while true ; do
 	        mv "$file" "$LOCALDIR"/"$CHM"/
 	    done
 	    # Remove remote CHM directory to signal the CHM file(s) have been installed.
-            ssh -T -q -o $CP $HOST /bin/rm -rf "$REMOTEDIR"/ADD-FILE/"$CHM"
+            $DOREMOTE /bin/rm -rf "$REMOTEDIR"/ADD-FILE/"$CHM"
 	    rmdir "$LTMP"
 	    rmoldchm "$LOCALDIR" "$RMTMP"
 	    ;;
@@ -130,7 +150,7 @@ while true ; do
 		echo Cannot delete CHM "$CHM" since it does not exist.
 	    fi
 	    # Remove remote CHM to signal the CHM has been removed (or does not exist).
-            ssh -T -q -o $CP $HOST /bin/rm -rf "$REMOTEDIR"/REMOVE/"$CHM"
+            $DOREMOTE /bin/rm -rf "$REMOTEDIR"/REMOVE/"$CHM"
 	    echo Cleaning up after removing "$CHM"
 	    rmoldchm "$LOCALDIR" "$RMTMP"
 	    ;;
@@ -138,14 +158,18 @@ while true ; do
 	    CHM="$2"
 	    LTMP=`mktemp -d -p "$LOCALDIR" .scl-rmf-XXXXXX`
 	    echo Copying remote files for CHM "$CHM" to "$LTMP"
-	    $SCP -r -o $CP "$HOST":"$REMOTEDIR"/REMOVE-FILE/"$CHM"/"*" "$LTMP"/
+	    if [ "X$HOST" == Xlocalhost ] ; then
+		cp "$REMOTEDIR"/REMOVE-FILE/"$CHM"/"*" "$LTMP"/
+	    else
+		$SCP -r -o $CP "$HOST":"$REMOTEDIR"/REMOVE-FILE/"$CHM"/"*" "$LTMP"/
+	    fi
 	    RMTMP=`mktemp -d -p "$LOCALDIR" .scl-del-XXXXXX`
 	    for file in "$LTMP"/* ; do
 		filename=`basename "$file"`
 	        mv "$LOCALDIR"/"$CHM"/"$filename" "$RMTMP"
 	    done
 	    # Remove remote CHM directory to signal the CHM file(s) have been removed.
-            ssh -T -q -o $CP $HOST /bin/rm -rf "$REMOTEDIR"/REMOVE-FILE/"$CHM"
+            $DOREMOTE /bin/rm -rf "$REMOTEDIR"/REMOVE-FILE/"$CHM"
 	    rmoldchm "$LOCALDIR" "$LTMP"
 	    rmoldchm "$LOCALDIR" "$RMTMP"
 	    ;;
@@ -154,9 +178,13 @@ while true ; do
             TMPFILE="$REMOTEDIR/$2"
 	    (cd "$LOCALDIR" ; find . -maxdepth 1 -mindepth 1 -type d) | sed 's:^\./::' > $TMP/dlist
 	    #echo $SCP -o $CP "$TMP/dlist" "$HOST":"$TMPFILE"
-	    $SCP -o $CP "$TMP/dlist" "$HOST":"$TMPFILE"
+	    if [ "X$HOST" == Xlocalhost ] ; then
+		cp "$TMP/dlist" "$TMPFILE"
+	    else
+		$SCP -o $CP "$TMP/dlist" "$HOST":"$TMPFILE"
+	    fi
 	    #echo TMPFILE copied
-            ssh -T -q -o $CP $HOST $REMOTEDIR/.scl/scl-update-chm-list.sh "$REMOTEDIR" "$TMPFILE"
+            $DOREMOTE $REMOTEDIR/.scl/scl-update-chm-list.sh "$REMOTEDIR" "$TMPFILE"
 	    ;;
 	*) echo Unrecognized SCL response.  Please verify the SCL directory is compatible.
 	   exit 1
