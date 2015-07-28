@@ -60,28 +60,6 @@ chmGetDeployServerConfig <- function (server) {
 }
 
 
-# Define the built-in server protocol "manual".
-#
-defineManualProtocol <- function () {
-    ngchmCreateServerProtocol ("manual",
-			     requiredParams = NULL,
-			     optionalParams = NULL,
-			     paramValidator = function (params) {
-			     },
-			     installMethod = function (server, chm) {
-				stop ("NGCHMs cannot be automatically installed on this server. Please obtain installation instructions from the server administrator.");
-			     },
-			     uninstallMethod = function (server, chm) {
-				stop ("NGCHMs cannot be automatically uninstalled from this server. Please obtain instructions from the server administrator.");
-			     },
-			     makePrivate = function (server, chm) {
-				stop ("NGCHMs cannot be automatically be made private on this server. Please obtain instructions from the server administrator.");
-			     },
-			     makePublic = function (server, chm) {
-				stop ("NGCHMs cannot be automatically be made public on this server. Please obtain instructions from the server administrator.");
-			     });
-}
-
 # Get the list of configuration directories.
 #
 getConfigDirs <- function () {
@@ -464,7 +442,6 @@ chmStringopFunction <- function (stringop) {
 NULL
 
 .onAttach <- function (libname, pkgname) {
-    defineManualProtocol ();
     getConfigDirs ();
 
     chmNewFunction ("", "Simple reference", "");
