@@ -475,7 +475,7 @@ NULL
 	       "};", sep="\n"));
 
     # Load module definitions.
-    for (cfgdir in ngchm.env$configdirs) {
+    for (cfgdir in c (system.file ("base.config", package="NGCHM"), ngchm.env$configdirs)) {
 	srcfiles <- NULL;
         try (srcfiles <- dir (file.path (cfgdir, "conf.d"), full.names=TRUE), silent=TRUE);
 	if (length (srcfiles) > 0) {
