@@ -441,6 +441,30 @@ chmStringopFunction <- function (stringop) {
 #'}
 NULL
 
+loadConfigDir <- function (dirname) {
+    srcfiles <- NULL;
+    try (srcfiles <- dir (dirname, full.names=TRUE), silent=TRUE);
+    if (length (srcfiles) > 0) {
+	for (src in sort(srcfiles)) {
+	    if (grepl ("\\.[rR]$", src)) {
+		tryCatch (source (src), error=function(e) stop (sprintf ("while processing R source file '%s'\n", src), e));
+	    }
+	    else if (grepl ("\\.txt$", src)) {
+		tryCatch (loadTextConfig (src), error=function(e) stop (sprintf ("while processing text configuration file '%s'\n", src), e));
+	    }
+	    else if (grepl ("\\.js$", src)) {
+		tryCatch (loadJavascript (src), error=function(e) stop (sprintf ("while processing Javascript file '%s'\n", src), e));
+	    }
+	    else if (grepl ("\\.d$", src)) {
+		tryCatch (loadConfigDir (src), error=function(e) stop (sprintf ("while processing configuration directory '%s'\n", src), e));
+	    }
+	    else {
+		warning (sprintf ("Unknown kind of module file '%s', ignored.", src));
+	    }
+	}
+    }
+}
+
 .onAttach <- function (libname, pkgname) {
     getConfigDirs ();
 
@@ -453,24 +477,7 @@ NULL
 
     # Load module definitions.
     for (cfgdir in c (system.file ("base.config", package="NGCHM"), ngchm.env$configdirs)) {
-	srcfiles <- NULL;
-        try (srcfiles <- dir (file.path (cfgdir, "conf.d"), full.names=TRUE), silent=TRUE);
-	if (length (srcfiles) > 0) {
-	    for (src in sort(srcfiles)) {
-		if (grepl ("\\.[rR]$", src)) {
-	            tryCatch (source (src), error=function(e) stop (sprintf ("while processing R source file '%s'\n", src), e));
-		}
-		else if (grepl ("\\.txt$", src)) {
-	            tryCatch (loadTextConfig (src), error=function(e) stop (sprintf ("while processing text configuration file '%s'\n", src), e));
-		}
-		else if (grepl ("\\.js$", src)) {
-	            tryCatch (loadJavascript (src), error=function(e) stop (sprintf ("while processing Javascript file '%s'\n", src), e));
-		}
-		else {
-		    warning (sprintf ("Unknown kind of module file '%s', ignored.", src));
-		}
-	    }
-	}
+        loadConfigDir (file.path (cfgdir, "conf.d"));
     }
 
 }
