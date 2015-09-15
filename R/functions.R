@@ -146,7 +146,10 @@ chmNew <- function (name, ...,
     if (nchar (name) == 0) {
         stop ("Parameter 'name' cannot be the empty string");
     }
-    chm <- new (Class="ngchm", name=name);
+    chm <- new (Class="ngchm",
+                name=name,
+		inpDir=tempfile("ngchm.input"),
+		outDir=tempfile("ngchm.output"));
     chm@uuid <- getuuid (name);
     chm <- chmAddCSS (chm, 'div.overlay { border: 2px solid yellow; }');
     chm@rowOrder <- rowOrder; chm@rowDist <- rowDist; chm@rowAgglom <- rowAgglom;
