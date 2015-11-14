@@ -35,7 +35,9 @@ chmNew(name, ..., rowOrder = chmDefaultRowOrder, rowDist = "correlation",
 
 \item{colCovariates}{Covariate(Bar)(s) to add to the columns (default: None).}
 
-\item{overview}{The format(s) of CHM overview(s) to create (default: None).}
+\item{format}{The format of NGCHM to produce (default: 'original').}
+
+\item{overview}{The format(s) of overview image(s) to create (default: None).}
 }
 \value{
 An object of class ngchm

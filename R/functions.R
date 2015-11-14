@@ -113,7 +113,8 @@ ngchmGetEnv <- function () {
 #' @param colAxisType The type(s) of the column labels (default: None).
 #' @param rowCovariates Covariate(Bar)(s) to add to the rows (default: None).
 #' @param colCovariates Covariate(Bar)(s) to add to the columns (default: None).
-#' @param overview The format(s) of CHM overview(s) to create (default: None).
+#' @param format The format of NGCHM to produce (default: 'original').
+#' @param overview The format(s) of overview image(s) to create (default: None).
 #'
 #' @return An object of class ngchm
 #'
