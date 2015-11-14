@@ -31,6 +31,7 @@ setMethod ("chmUrlBase",
 setMethod ("chmInstall",
     signature = c(server="ngchmServer", chm="ngchm"),
     definition = function (server, chm) {
+        chm <- chmFixVersion (chm);
 	server@serverProtocol@installMethod (server, chm);
     });
 
@@ -187,7 +188,7 @@ loadChmFromURL <- function (chmurl) {
     chmname <- params[[idx]][2];
     ee <- new.env();
     load(url(paste (baseurl, "data/", chmname, "/undefined/chm.Rdata", sep="")), ee);
-    chm <- ee$chm;
+    chm <- chmFixVersion (ee$chm);
     chm@inpDir <- tempfile ("ngchm.input");
     chm@outDir <- tempfile ("ngchm.output");
     chm@saveDir <- ".";
@@ -944,6 +945,7 @@ setMethod ("chmMake",
     definition = function (server, chm, deleteOld=TRUE, useJAR=NULL,
                            javaOptions = "-Xmx2G", buildArchive=TRUE, javaTraceLevel="PROGRESS") {
     genSpecFeedback (0, "starting NGCHM make");
+    chm <- chmFixVersion (chm);
     # Compute row and column orders if required.
     while ((length(chm@rowOrder) > 0) && (class(chm@rowOrder) == "function")) {
 	genSpecFeedback (1, "determining default row order");
@@ -1010,6 +1012,7 @@ setMethod ("chmMake",
 setMethod ("chmAdd",
     signature = c(chm="ngchm"),
     definition = function (chm, ...) {
+        chm <- chmFixVersion (chm);
 	chmAddList (chm, list (...))
 });
 
@@ -1028,6 +1031,7 @@ setMethod ("chmAdd",
 setMethod ("chmAddLayer",
     signature = c(chm="ngchm", layer="ngchmLayer"),
     definition = function (chm, layer) {
+        chm <- chmFixVersion (chm);
 	validateNewLayer (chm, layer);
 	chm@layers <- append (chm@layers, layer);
         chmAddColormap (chm, layer@colors)
@@ -1039,6 +1043,7 @@ setMethod ("chmAddLayer",
 setMethod ("chmAddLayer",
     signature = c(chm="ngchm", layer="matrix"),
     definition = function (chm, layer) {
+        chm <- chmFixVersion (chm);
 	layer <- chmNewDataLayer (sprintf ("Layer %d", length(chm@layers)+1), layer);
 	validateNewLayer (chm, layer);
 	chm@layers <- append (chm@layers, layer);
@@ -1050,6 +1055,7 @@ setMethod ("chmAddLayer",
 setMethod ("chmAddCSS",
     signature = c(chm="ngchm", css="character"),
     definition = function (chm, css) {
+        chm <- chmFixVersion (chm);
 	chm@css <- append (chm@css, new (Class="ngchmCSS", css=css));
         chmUU (chm)
 });
@@ -1059,6 +1065,7 @@ setMethod ("chmAddCSS",
 setMethod ("chmAddTag",
     signature = c(chm="ngchm", tag="character"),
     definition = function (chm, tag) {
+        chm <- chmFixVersion (chm);
 	chm@tags <- c (chm@tags, tag);
         chmUU (chm)
 });
@@ -1068,6 +1075,7 @@ setMethod ("chmAddTag",
 setMethod ("chmAddDataset",
     signature = c(chm="ngchm", dataset="ngchmDataset"),
     definition = function (chm, dataset) {
+        chm <- chmFixVersion (chm);
 	if (length(chm@datasets) == 0) {
 	    chm@extrafiles <- c(chm@extrafiles, "datasets.tsv");
 	}
@@ -1084,6 +1092,7 @@ setMethod ("chmAddDataset",
 setMethod ("chmAddDialog",
     signature = c(chm="ngchm", dialog="ngchmDialog"),
     definition = function (chm, dialog) {
+        chm <- chmFixVersion (chm);
 	if (dialog@id %in% vapply(chm@dialogs, function(d)d@id, "")) {
 	    stop (sprintf ("A dialog with id '%s' already exists", dialog@id));
 	}
@@ -1116,6 +1125,7 @@ setMethod ("chmAddCovariate",
 setMethod ("chmAddColormap",
     signature = c(chm="ngchm", colormap="ngchmColormap"),
     definition = function (chm, colormap) {
+        chm <- chmFixVersion (chm);
 	found <- FALSE
 	if (length(chm@colormaps) > 0) {
 	    for (ii in 1:length(chm@colormaps)) {
@@ -1135,6 +1145,7 @@ setMethod ("chmAddColormap",
 setMethod ("chmAddRelatedGroup",
     signature = c(chm="ngchm", name="character", header="character", linktype="character", blurb="character"),
     definition = function (chm, name, header, linktype, blurb) {
+        chm <- chmFixVersion (chm);
 	related <- new (Class="ngchmRelatedGroup", name=name, header=header, linktype=linktype, blurb=blurb);
 	if ((length(chm@relatedGroups) + length(chm@relatedLinks)) == 0)
 	    chm@extrafiles <- c(chm@extrafiles, "relatedlinks.js");
@@ -1147,6 +1158,7 @@ setMethod ("chmAddRelatedGroup",
 setMethod ("chmAddRelatedGroup",
     signature = c(chm="ngchm", name="character", header="character", linktype="character", blurb="missing"),
     definition = function (chm, name, header, linktype) {
+        chm <- chmFixVersion (chm);
 	related <- new (Class="ngchmRelatedGroup", name=name, header=header, linktype=linktype, blurb=NULL);
 	if ((length(chm@relatedGroups) + length(chm@relatedLinks)) == 0)
 	    chm@extrafiles <- c(chm@extrafiles, "relatedlinks.js");
@@ -1159,6 +1171,7 @@ setMethod ("chmAddRelatedGroup",
 setMethod ("chmAddRelated",
     signature = c(chm="ngchm", group="character", link="character", description="character"),
     definition = function (chm, group, link, description) {
+        chm <- chmFixVersion (chm);
 	related <- new (Class="ngchmRelated", group=group, link=link, description=description);
 	if ((length(chm@relatedGroups)+length(chm@relatedLinks)) == 0)
 	    chm@extrafiles <- c(chm@extrafiles, "relatedlinks.js");
@@ -1171,6 +1184,7 @@ setMethod ("chmAddRelated",
 setMethod ("chmAddOverview",
     signature = c(chm="ngchm", format="character", width="optNumeric", height="optNumeric"),
     definition = function (chm, format, width, height) {
+        chm <- chmFixVersion (chm);
 	known.formats <- c("pdf", "png", "svg");
 	if (length(format) != 1)
 	    stop (sprintf ("chmAddOverview: format has length %d. Exactly one format string is required.", length(format)));
@@ -1198,6 +1212,7 @@ setMethod ("chmAddOverview",
 setMethod ("chmAddTemplate",
     signature = c(chm="ngchm", source.path="charOrFunction", dest.path="character", substitutions="optList"),
     definition = function (chm, source.path, dest.path, substitutions) {
+        chm <- chmFixVersion (chm);
 	template <- new (Class="ngchmTemplate", source.path=source.path, dest.path=dest.path, substitutions=substitutions);
 	chm@extrafiles <- c (chm@extrafiles, dest.path);
 	chm@templates <- append (chm@templates, template);
@@ -1210,6 +1225,7 @@ setMethod ("chmAddTemplate",
 setMethod ("chmAddProperty",
     signature = c(chm="ngchm", label="character", value="character"),
     definition = function (chm, label, value) {
+        chm <- chmFixVersion (chm);
 	chm@properties <- append (chm@properties, new (Class="ngchmProperty", label=label, value=value));
         chmUU (chm)
 });
@@ -1220,6 +1236,7 @@ setMethod ("chmAddProperty",
 setMethod ("chmAddSpecificAxisTypeFunction",
     signature = c(chm="ngchm", where="character", type="character", label="character", func="ngchmJS"),
     definition = function (chm, where, type, label, func) {
+        chm <- chmFixVersion (chm);
 	af <- new ("ngchmAxisFunction", type=type, label=label, func=func);
 	if ((length(where) != 1) || (! where %in% c("row", "column", "both"))) {
 	    stop (sprintf ("chmAddSpecificAxisTypeFunction: unknown where '%s'. Should be row, column, or both.", where));
@@ -1275,6 +1292,7 @@ addFunDefine <- function (chm, func) {
 setMethod ("chmAddMenuItem",
     signature = c(chm="ngchm", where="character", label="character", func="ngchmJS"),
     definition = function (chm, where, label, func) {
+        chm <- chmFixVersion (chm);
 	if (length(func@extraParams) > 0)
 	    stop (sprintf ("Error adding menu item: function '%s' has unbound extra parameters", func@name));
 	entry <- new (Class="ngchmMenuItem", label=label, description=func@description, fun=func@name);
@@ -1308,6 +1326,7 @@ setMethod ("chmAddMenuItem",
 setMethod ("chmAddAxisType",
     signature = c(chm="ngchm", where="character", type="character", func="ngchmJS"),
     definition = function (chm, where, type, func) {
+        chm <- chmFixVersion (chm);
 	at <- new (Class="ngchmAxisType", where=where, type=type, func=func);
 	chm@axisTypes <- append (chm@axisTypes, at);
 	chmAddProperty (chm, paste('!axistype', where, sep='.'), type)
@@ -1340,6 +1359,7 @@ setMethod ("chmAddAxisType",
 setMethod ("chmAddCovariateBar",
     signature = c(chm="ngchm", where="character", covar="ngchmBar"),
     definition = function (chm, where, covar) {
+        chm <- chmFixVersion (chm);
 	bar <- covar;
 	validateNewClassbar (chm, where, bar);
 	if (where == "row" || where == "both") {
@@ -1370,6 +1390,7 @@ setMethod ("chmAddCovariateBar",
     signature = c(chm="ngchm", where="character", covar="list"),
     definition = function (chm, where, covar,
                            display="visible", thickness=as.integer(10), merge=NULL) {
+        chm <- chmFixVersion (chm);
 	for (item in covar) {
 	    if (class(item) == "ngchmBar") {
 	        bar <- item;
@@ -1433,6 +1454,7 @@ setMethod ("chmBindFunction",
 setReplaceMethod ("chmRowOrder",
     signature = c(chm="ngchm", value="optDendrogram"),
     definition = function (chm, value) {
+        chm <- chmFixVersion (chm);
 	if (class(value) == "file") {
 	    value <- readLines (value);
 	    class(value) <- "fileContent";
@@ -1446,6 +1468,7 @@ setReplaceMethod ("chmRowOrder",
 setReplaceMethod ("chmColOrder",
     signature = c(chm="ngchm", value="optDendrogram"),
     definition = function (chm, value) {
+        chm <- chmFixVersion (chm);
 	if (class(value) == "file") {
 	    value <- readLines (value);
 	    class(value) <- "fileContent";
@@ -1459,6 +1482,7 @@ setReplaceMethod ("chmColOrder",
 setReplaceMethod ("chmRowMeta",
     signature = c(chm="ngchm", value="optList"),
     definition = function (chm, value) {
+        chm <- chmFixVersion (chm);
 	chm@rowMeta <- value
         chmUU (chm)
 });
@@ -1468,6 +1492,7 @@ setReplaceMethod ("chmRowMeta",
 setReplaceMethod ("chmColMeta",
     signature = c(chm="ngchm", value="optList"),
     definition = function (chm, value) {
+        chm <- chmFixVersion (chm);
 	chm@colMeta <- value
         chmUU (chm)
 });
@@ -1482,6 +1507,7 @@ make.js.names <- function (sss) {
 setMethod ("chmAddToolboxR",
     signature = c(CHM="ngchm", axis="character", axistype="character", datasetname="character", idstr="character"),
     definition = function (CHM, axis, axistype, datasetname, idstr) {
+        CHM <- chmFixVersion (CHM);
 	toolbox <- ngchm.env$toolbox;
 	if (length(toolbox)>0) {
 	    for (ii in 1:nrow(toolbox)) {
@@ -1504,6 +1530,7 @@ setMethod ("chmAddToolboxR",
 setMethod ("chmAddToolboxR2",
     signature = c(CHM="ngchm", axistype="character", datasetname="character", idstr="character"),
     definition = function (CHM, axistype, datasetname, idstr) {
+        CHM <- chmFixVersion (CHM);
 	toolbox <- ngchm.env$toolbox;
 	if (length(toolbox)>0) {
 	    for (ii in 1:nrow(toolbox)) {
@@ -1526,6 +1553,7 @@ setMethod ("chmAddToolboxR2",
 setMethod ("chmAddToolboxRC",
     signature = c(CHM="ngchm", rowtype="character", coltype="character", datasetname="character", idstr="character"),
     definition = function (CHM, rowtype, coltype, datasetname, idstr) {
+        CHM <- chmFixVersion (CHM);
 	toolbox <- ngchm.env$toolbox;
 	if (length(toolbox)>0) {
 	    for (ii in 1:nrow(toolbox)) {

@@ -184,6 +184,7 @@ chmNew <- function (name, ...,
 #'
 #' @export
 chmDefaultColOrder <- function (chm) {
+    chm <- chmFixVersion (chm);
     if (length (chm@layers) == 0) stop ("chm requires at least one layer");
     if (chm@colDist == "correlation") {
         dd <- as.dist(1-cor(chm@layers[[1]]@data, use="pairwise"));
@@ -202,6 +203,7 @@ chmDefaultColOrder <- function (chm) {
 #'
 #' @export
 chmDefaultRowOrder <- function (chm) {
+    chm <- chmFixVersion (chm);
     if (length (chm@layers) == 0) stop ("chm requires at least one layer");
     if (chm@rowDist == "correlation") {
         dd <- as.dist(1-cor(t(chm@layers[[1]]@data), use="pairwise"))
@@ -2095,6 +2097,7 @@ chmAddAutoMenuItems <- function (chm) {
 #' @export
 #'
 chmWriteCustomJS <- function (chm, filename) {
+    chm <- chmFixVersion (chm);
     if (length (chm@datasets) > 0) {
 	#genSpecFeedback (8, "adding toolbox(es)");
 	chm <- addToolBoxes (chm);
@@ -2116,6 +2119,7 @@ chmWriteCustomJS <- function (chm, filename) {
 #'
 #' @export
 chmGetOverview <- function (chm, format=NULL, idx=NULL) {
+    chm <- chmFixVersion (chm);
     if (is.null(idx)) {
 	if (is.null (format)) format <- 'png';
 	idx <- which(vapply (chm@overviews, function(ov)ov@format, '')==format);
@@ -2137,6 +2141,20 @@ chmGetOverview <- function (chm, format=NULL, idx=NULL) {
 #' @import digest
 getuuid <- function(prev="") {
     digest::digest(paste(c(Sys.info(),Sys.time(),rnorm(1),prev,collapse=""),recursive=TRUE),algo="sha256")
+}
+
+chmFixVersion <- function (chm) {
+    if (chm@version < 2) {
+        warning ("Upgrading chm ", chm@name, " from version ", chm@version, " to version 2");
+        v2 <- new ("ngchmVersion2");
+        for (name in slotNames("ngchmVersion1")) {
+	    if (!name %in% c("version")) {
+	        slot (v2, name) <- slot (chm, name);
+	    }
+        }
+	chm <- v2;
+    }
+    chm
 }
 
 chmUU <- function (chm) {
