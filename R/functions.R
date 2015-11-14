@@ -1599,34 +1599,34 @@ validateNewLayer <- function (chm, layer)
     } else {
         # First layer.  Check names are compatible with class bars, if any.
 	layername <- sprintf ('new layer "%s"', layer@name);
-	if (length (chm@rowClassbars) > 0) {
-	    for (ii in 1:length(chm@rowClassbars)) {
-	        validateClassbar (chm, "Row", layername, rownames(layer@data), chm@rowClassbars[[ii]]);
+	if (length (chm@rowCovariateBars) > 0) {
+	    for (ii in 1:length(chm@rowCovariateBars)) {
+	        validateCovariateBar (chm, "Row", layername, rownames(layer@data), chm@rowCovariateBars[[ii]]);
 	    }
 	}
-	if (length (chm@colClassbars) > 0) {
-	    for (ii in 1:length(chm@colClassbars)) {
-	        validateClassbar (chm, "Column", layername, colnames(layer@data), chm@colClassbars[[ii]]);
+	if (length (chm@colCovariateBars) > 0) {
+	    for (ii in 1:length(chm@colCovariateBars)) {
+	        validateCovariateBar (chm, "Column", layername, colnames(layer@data), chm@colCovariateBars[[ii]]);
 	    }
 	}
     }
 }
 
-validateNewClassbar <- function (chm, where, bar)
+validateNewCovariateBar <- function (chm, where, bar)
 {
     if (length (chm@layers) > 0) {
 	layer <- chm@layers[[1]];
 	layername <- sprintf ('layer "%s"', layer@name);
 	if (where %in% c("row", "both")) {
-	    validateClassbar (chm, "Row", layername, rownames(layer@data), bar);
+	    validateCovariateBar (chm, "Row", layername, rownames(layer@data), bar);
 	}
 	if (where %in% c("column", "both")) {
-	    validateClassbar (chm, "Column", layername, colnames(layer@data), bar);
+	    validateCovariateBar (chm, "Column", layername, colnames(layer@data), bar);
 	}
     }
 }
 
-validateClassbar <- function (chm, where, layername, labels, bar)
+validateCovariateBar <- function (chm, where, layername, labels, bar)
 {
     if (length (intersect (labels, names(bar@data))) == 0) {
 	m <- sprintf ('%s names of %s for CHM "%s" are completely different from those of covariate bar "%s"',
@@ -2150,10 +2150,12 @@ chmFixVersion <- function (chm) {
         warning ("Upgrading chm ", chm@name, " from version ", chm@version, " to version 2");
         v2 <- new ("ngchmVersion2");
         for (name in slotNames("ngchmVersion1")) {
-	    if (!name %in% c("version")) {
+	    if (!name %in% c("version", "rowClassbars", "colClassbars")) {
 	        slot (v2, name) <- slot (chm, name);
 	    }
         }
+	v2@rowCovariateBars <- chm@rowClassbars;
+	v2@colCovariateBars <- chm@colClassbars;
 	chm <- v2;
     }
     chm

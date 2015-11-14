@@ -728,16 +728,16 @@ writeChm <- function (chm) {
         writeMeta (chm@inpDir, "row", chm@rowMeta);
     if (!is.null(chm@colMeta))
         writeMeta (chm@inpDir, "column", chm@colMeta);
-    if (is.list (chm@rowClassbars)) {
+    if (is.list (chm@rowCovariateBars)) {
 	chan <- file (paste (chm@inpDir, "rowClassification1.txt", sep="/"), "w");
-	for (ii in 1:length(chm@rowClassbars) )
-	    writeCovariateBar (chm@rowClassbars[[ii]], chm@inpDir, "row", ii, chan);
+	for (ii in 1:length(chm@rowCovariateBars) )
+	    writeCovariateBar (chm@rowCovariateBars[[ii]], chm@inpDir, "row", ii, chan);
 	close (chan);
     }
-    if (is.list(chm@colClassbars)) {
+    if (is.list(chm@colCovariateBars)) {
 	chan <- file (paste (chm@inpDir, "columnClassification1.txt", sep="/"), "w");
-	for (ii in 1:length(chm@colClassbars))
-	    writeCovariateBar (chm@colClassbars[[ii]], chm@inpDir, "column", ii, chan);
+	for (ii in 1:length(chm@colCovariateBars))
+	    writeCovariateBar (chm@colCovariateBars[[ii]], chm@inpDir, "column", ii, chan);
 	close (chan);
     }
 
@@ -1361,13 +1361,13 @@ setMethod ("chmAddCovariateBar",
     definition = function (chm, where, covar) {
         chm <- chmFixVersion (chm);
 	bar <- covar;
-	validateNewClassbar (chm, where, bar);
+	validateNewCovariateBar (chm, where, bar);
 	if (where == "row" || where == "both") {
-	    chm@rowClassbars <- append (chm@rowClassbars, bar);
+	    chm@rowCovariateBars <- append (chm@rowCovariateBars, bar);
 	    if (where == "both")
-		chm@colClassbars <- append (chm@colClassbars, bar);
+		chm@colCovariateBars <- append (chm@colCovariateBars, bar);
 	} else if (where == "column") {
-	    chm@colClassbars <- append (chm@colClassbars, bar);
+	    chm@colCovariateBars <- append (chm@colCovariateBars, bar);
 	} else {
 	    stop (sprintf ("chmAddCovariateBar: unknown where '%s'. Should be row, column, or both.", where));
 	}
