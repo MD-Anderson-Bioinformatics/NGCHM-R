@@ -1334,26 +1334,6 @@ setMethod ("chmAddAxisType",
     }
 );
 
-#' @rdname chmAddClassBar-method
-#' @aliases chmAddClassBar,ngchm,character,ngchmBar-method
-#'
-setMethod ("chmAddClassBar",
-    signature = c(chm="ngchm", where="character", bar="ngchmBar"),
-    definition = function (chm, where, bar) {
-	warning ('chmAddClassBar is deprecated and will be removed in a future version. Please use chmAddCovariateBar instead.');
-	validateNewClassbar (chm, where, bar);
-	if (where == "row" || where == "both") {
-	    chm@rowClassbars <- append (chm@rowClassbars, bar);
-	    if (where == "both")
-		chm@colClassbars <- append (chm@colClassbars, bar);
-	} else if (where == "column") {
-	    chm@colClassbars <- append (chm@colClassbars, bar);
-	} else {
-	    stop (sprintf ("chmAddClassBar: unknown where '%s'. Should be row, column, or both.", where));
-	}
-	chmUU (chm)
-});
-
 #' @rdname chmAddCovariateBar-method
 #' @aliases chmAddCovariateBar,ngchm,character,ngchmCovariateBar-method
 #'

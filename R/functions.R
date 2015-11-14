@@ -489,7 +489,6 @@ chmNewCovariate <- function (fullname, values, value.properties=NULL, type=NULL,
 #' @seealso chmNewColorMap
 #' @seealso chmNewCovariateBar
 #' @seealso chmAddCovariateBar
-#' @seealso chmAddClassBar
 #'
 chmNewClassBar <- function (label, type, data, colors=NULL, display="visible", thickness=as.integer(10), merge=NULL) {
     if (typeof (label) != "character") {

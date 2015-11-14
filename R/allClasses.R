@@ -388,7 +388,7 @@ setMethod ('show',
 #' @seealso chmRowOrder
 #' @seealso chmColOrder
 #' @seealso chmAddLayer
-#' @seealso chmAddClassBar
+#' @seealso chmAddCovariateBar
 #' @seealso chmAddDataset
 #' @seealso chmAddMenuItem
 #' @seealso chmAddCSS

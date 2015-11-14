@@ -364,28 +364,6 @@ setGeneric ("chmAddAxisType", function (chm, where, type, func) standardGeneric(
 #' @seealso ngchmAxisType-class
 setGeneric ("chmAddSpecificAxisTypeFunction", function (chm, where, type, label, func) standardGeneric("chmAddSpecificAxisTypeFunction"));
 
-#' Add a classification bar to a NGCHM.
-#'
-#' This function is deprecated and will be removed in a future version.  Please use
-#' chmAddCovariateBar instead.
-#' Add a classification bar to a Next Generation Clustered Heat Map (NGCHM) and
-#' return the extended CHM.
-#'
-#' @param chm The chm to add the classification bar to.
-#' @param where The chm axis(axes) to add the classification bar to. Must be one of "row", "column", or "both".
-#' @param bar The classification bar to add to the chm.
-#'
-#' @return The extended chm.
-#'
-#' @exportMethod chmAddClassBar
-#' @rdname chmAddClassBar-method
-#'
-#' @seealso chmNewCovariateBar
-#' @seealso chmAddCovariateBar
-#' @seealso chmNewClassBar
-#' @seealso ngchmBar-class
-setGeneric ("chmAddClassBar", function(chm,where,bar) standardGeneric("chmAddClassBar"));
-
 #' Add a covariate bar to a NGCHM.
 #'
 #' Add a covariate bar to a Next Generation Clustered Heat Map (NGCHM) and
