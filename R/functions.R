@@ -136,6 +136,7 @@ chmNew <- function (name, ...,
 		    colOrder=chmDefaultColOrder, colDist="correlation", colAgglom="ward",
                     rowAxisType=NULL, colAxisType=NULL,
 		    rowCovariates=NULL, colCovariates=NULL,
+                    format="original",
 		    overview=c()) {
     if (typeof (name) != "character") {
         stop (sprintf ("Parameter 'name' must have type 'character', not '%s'", typeof(name)));
@@ -148,6 +149,7 @@ chmNew <- function (name, ...,
     }
     chm <- new (Class="ngchm",
                 name=name,
+                format=format,
 		inpDir=tempfile("ngchm.input"),
 		outDir=tempfile("ngchm.output"));
     chm@uuid <- getuuid (name);

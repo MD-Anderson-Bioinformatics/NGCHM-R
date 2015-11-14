@@ -8,7 +8,7 @@ chmNew(name, ..., rowOrder = chmDefaultRowOrder, rowDist = "correlation",
   rowAgglom = "ward", colOrder = chmDefaultColOrder,
   colDist = "correlation", colAgglom = "ward", rowAxisType = NULL,
   colAxisType = NULL, rowCovariates = NULL, colCovariates = NULL,
-  overview = c())
+  format = "original", overview = c())
 }
 \arguments{
 \item{name}{The name under which the NGCHM will be saved to the NGCHM server.}
