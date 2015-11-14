@@ -385,7 +385,7 @@ writeDataLayer <- function (chm, layer, dir, index, chan) {
                  sep="\t", quote=FALSE);
 }
 
-writeClassBar <- function (cbar, inpDir, type, index, chan) {
+writeCovariateBar <- function (cbar, inpDir, type, index, chan) {
     cat (sprintf ("classification.type%d=%s\n", index, cbar@type), file=chan);
     cat (sprintf ("classification.label%d=%s\n", index, cbar@label), file=chan);
     cat (sprintf ("classification.display%d=%s\n", index, cbar@display), file=chan);
@@ -730,13 +730,13 @@ writeChm <- function (chm) {
     if (is.list (chm@rowClassbars)) {
 	chan <- file (paste (chm@inpDir, "rowClassification1.txt", sep="/"), "w");
 	for (ii in 1:length(chm@rowClassbars) )
-	    writeClassBar (chm@rowClassbars[[ii]], chm@inpDir, "row", ii, chan);
+	    writeCovariateBar (chm@rowClassbars[[ii]], chm@inpDir, "row", ii, chan);
 	close (chan);
     }
     if (is.list(chm@colClassbars)) {
 	chan <- file (paste (chm@inpDir, "columnClassification1.txt", sep="/"), "w");
 	for (ii in 1:length(chm@colClassbars))
-	    writeClassBar (chm@colClassbars[[ii]], chm@inpDir, "column", ii, chan);
+	    writeCovariateBar (chm@colClassbars[[ii]], chm@inpDir, "column", ii, chan);
 	close (chan);
     }
 
