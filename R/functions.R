@@ -147,7 +147,7 @@ chmNew <- function (name, ...,
     if (nchar (name) == 0) {
         stop ("Parameter 'name' cannot be the empty string");
     }
-    chm <- new (Class="ngchm",
+    chm <- new (Class="ngchmVersion2",
                 name=name,
                 format=format,
 		inpDir=tempfile("ngchm.input"),
