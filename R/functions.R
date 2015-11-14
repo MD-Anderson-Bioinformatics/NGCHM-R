@@ -481,13 +481,6 @@ chmNewCovariate <- function (fullname, values, value.properties=NULL, type=NULL,
 #'
 #' @return An object of class ngchmBar
 #'
-#' @examples
-#' bar.data <- ifelse (rnorm(1000) < 0, "negative", "non-negative")
-#' names(bar.data) <- sprintf ("Sample%d", 1:length(bar.data))
-#' bar.colors <- chmNewColorMap (c("negative", "non-negative"),
-#'                               c("white", "black"), missing.color='red')
-#' bar <- ngchmNewBar ("Group", "discrete", bar.data, bar.colors)
-#'
 #' @seealso ngchmBar-class
 #' @seealso chmNewColorMap
 #' @seealso chmNewCovariateBar
@@ -553,6 +546,14 @@ ngchmNewBar <- function (label, type, data, colors=NULL, display="visible", thic
 #' @return An object of class ngchmBar
 #'
 #' @export
+#'
+#' @examples
+#' bar.data <- ifelse (rnorm(1000) < 0, "negative", "non-negative")
+#' names(bar.data) <- sprintf ("Sample%d", 1:length(bar.data))
+#' bar.colors <- chmNewColorMap (c("negative", "non-negative"),
+#'                               c("white", "black"), missing.color='red')
+#' covar <- chmNewCovariate ("Group", bar.data, bar.colors, "discrete")
+#' bar <- chmNewCovariateBar (covar)
 #'
 #' @seealso ngchmBar-class
 #' @seealso chmNewColorMap

@@ -29,13 +29,6 @@ An object of class ngchmBar
 This function is deprecated and will be removed in a future version.  Please use chmNewCovariateBar.
 This function creates a new Classification Bar suitable for adding to a Next Generation Clustered Heat Map.
 }
-\examples{
-bar.data <- ifelse (rnorm(1000) < 0, "negative", "non-negative")
-names(bar.data) <- sprintf ("Sample\%d", 1:length(bar.data))
-bar.colors <- chmNewColorMap (c("negative", "non-negative"),
-                              c("white", "black"), missing.color='red')
-bar <- ngchmNewBar ("Group", "discrete", bar.data, bar.colors)
-}
 \seealso{
 ngchmBar-class
 
