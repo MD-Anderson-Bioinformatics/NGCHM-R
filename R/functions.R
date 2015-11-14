@@ -2167,3 +2167,13 @@ chmUU <- function (chm) {
     chm@uuid <- getuuid(chm@uuid)
     chm
 }
+
+#' @import digest
+gitSha <- function (data) {
+    stopifnot (typeof(data) %in% c("character","raw"));
+    if (typeof(data) == "character") {
+        data <- charToRaw (paste (data, collapse=''));
+    }
+    head <- sprintf ("blob %d", length(data));
+    digest::digest (c(charToRaw(head),raw(1),data),"sha1",serialize=FALSE)
+}
