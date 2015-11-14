@@ -5,7 +5,7 @@ Version: 0.10.4
 Date: 2015-09-03
 Author: Bradley Broom
 Maintainer: Bradley Broom <bmbroom@mdanderson.org>
-Imports:
+Imports: 
     methods,
     tsvio,
     digest,
@@ -13,10 +13,11 @@ Imports:
     jsonlite
 Description: Utitilies for creating Next Generation Clustered Heat Maps.
 License: GPL-3
-Collate:
+Collate: 
     'allClasses.R'
     'allGenerics.R'
     'allMethods.R'
     'functions.R'
     'zzz.R'
     'package.R'
+Suggests: testthat
