@@ -476,21 +476,19 @@ chmNewCovariate <- function (fullname, values, value.properties=NULL, type=NULL,
 #'
 #' @return An object of class ngchmBar
 #'
-#' @export
-#'
 #' @examples
 #' bar.data <- ifelse (rnorm(1000) < 0, "negative", "non-negative")
 #' names(bar.data) <- sprintf ("Sample%d", 1:length(bar.data))
 #' bar.colors <- chmNewColorMap (c("negative", "non-negative"),
 #'                               c("white", "black"), missing.color='red')
-#' bar <- chmNewClassBar ("Group", "discrete", bar.data, bar.colors)
+#' bar <- ngchmNewBar ("Group", "discrete", bar.data, bar.colors)
 #'
 #' @seealso ngchmBar-class
 #' @seealso chmNewColorMap
 #' @seealso chmNewCovariateBar
 #' @seealso chmAddCovariateBar
 #'
-chmNewClassBar <- function (label, type, data, colors=NULL, display="visible", thickness=as.integer(10), merge=NULL) {
+ngchmNewBar <- function (label, type, data, colors=NULL, display="visible", thickness=as.integer(10), merge=NULL) {
     if (typeof (label) != "character") {
         stop (sprintf ("Parameter 'label' must have type 'character', not '%s'", typeof(label)));
     }
@@ -557,7 +555,7 @@ chmNewClassBar <- function (label, type, data, colors=NULL, display="visible", t
 #'
 chmNewCovariateBar <- function (covar, display="visible", thickness=as.integer(10), merge=NULL)
 {
-    chmNewClassBar (covar@fullname, covar@type, covar@label.series, covar@series.properties,
+    ngchmNewBar (covar@fullname, covar@type, covar@label.series, covar@series.properties,
 		    display=display, thickness=thickness, merge=merge)
 }
 
@@ -596,7 +594,7 @@ chmNewCovariateBar <- function (covar, display="visible", thickness=as.integer(1
 #'
 #' @seealso ngchmColormap-class
 #' @seealso chmNewDataLayer
-#' @seealso chmNewClassBar
+#' @seealso chmNewCovariateBar
 #'
 chmNewColorMap <- function (values, colors=NULL, names=NULL, shapes=NULL, zs=NULL, type="linear", missing.color=NULL, palette=NULL) {
     # Validate parameter 'type'

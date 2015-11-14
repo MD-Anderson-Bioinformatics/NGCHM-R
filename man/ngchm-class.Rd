@@ -16,7 +16,7 @@ chmColOrder
 
 chmAddLayer
 
-chmAddClassBar
+chmAddCovariateBar
 
 chmAddDataset
 

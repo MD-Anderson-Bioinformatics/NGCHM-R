@@ -52,6 +52,6 @@ ngchmColormap-class
 
 chmNewDataLayer
 
-chmNewClassBar
+chmNewCovariateBar
 }
 
