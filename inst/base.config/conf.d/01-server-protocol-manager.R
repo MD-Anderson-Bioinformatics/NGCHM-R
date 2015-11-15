@@ -1,4 +1,3 @@
-#requireNameSpace(jsonlite)
 requireNamespace('httr')
 
 # Interact with an NGCHM server using the NGCHM Manager protocol.
