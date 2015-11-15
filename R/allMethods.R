@@ -30,49 +30,49 @@ setMethod ("chmUrlBase",
 #' @aliases chmInstall,ngchmServer,ngchm-method
 setMethod ("chmInstall",
     signature = c(server="ngchmServer", chm="ngchm"),
-    definition = function (server, chm) {
+    definition = function (server, chm, ...) {
         chm <- chmFixVersion (chm);
-	server@serverProtocol@installMethod (server, chm);
+	server@serverProtocol@installMethod (server, chm, ...);
     });
 
 #' @rdname chmInstall-method
 #' @aliases chmInstall,character,ngchm-method
 setMethod ("chmInstall",
     signature = c(server="character", chm="ngchm"),
-    definition = function (server, chm) {
-	chmInstall (chmServerCheck (server), chm);
+    definition = function (server, chm, ...) {
+	chmInstall (chmServerCheck (server), chm, ...);
     });
 
 #' @rdname chmUninstall-method
 #' @aliases chmUninstall,ngchmServer,character-method
 setMethod ("chmUninstall",
     signature = c(server="ngchmServer", chm="character"),
-    definition = function (server, chm) {
-	server@serverProtocol@uninstallMethod (server, chm);
+    definition = function (server, chm, ...) {
+	server@serverProtocol@uninstallMethod (server, chm, ...);
     });
 
 #' @rdname chmUninstall-method
 #' @aliases chmUninstall,ngchmServer,ngchm-method
 setMethod ("chmUninstall",
     signature = c(server="ngchmServer", chm="ngchm"),
-    definition = function (server, chm) {
-        chmUninstall (server, chmName(chm));
+    definition = function (server, chm, ...) {
+        chmUninstall (server, chmName(chm), ...);
 });
 
 #' @rdname chmUninstall-method
 #' @aliases chmUninstall,character,ngchm-method
 setMethod ("chmUninstall",
     signature = c(server="character", chm="ngchm"),
-    definition = function (server, chm) {
-        chmUninstall (chmServerCheck(server), chmName(chm));
+    definition = function (server, chm, ...) {
+        chmUninstall (chmServerCheck(server), chmName(chm), ...);
 });
 
 #' @rdname chmUninstall-method
 #' @aliases chmUninstall,character,character-method
 setMethod ("chmUninstall",
     signature = c(server="character", chm="character"),
-    definition = function (server, chm) {
-        chmUninstall (chmServerCheck(server), chm);
+    definition = function (server, chm, ...) {
+        chmUninstall (chmServerCheck(server), chm, ...);
     });
 
 #' @rdname chmMakePrivate-method

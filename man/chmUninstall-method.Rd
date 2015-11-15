@@ -9,20 +9,22 @@
 \alias{chmUninstall,ngchmServer,ngchm-method}
 \title{Remove an installed NGCHM.}
 \usage{
-chmUninstall(server, chm)
+chmUninstall(server, chm, ...)
 
-\S4method{chmUninstall}{ngchmServer,character}(server, chm)
+\S4method{chmUninstall}{ngchmServer,character}(server, chm, ...)
 
-\S4method{chmUninstall}{ngchmServer,ngchm}(server, chm)
+\S4method{chmUninstall}{ngchmServer,ngchm}(server, chm, ...)
 
-\S4method{chmUninstall}{character,ngchm}(server, chm)
+\S4method{chmUninstall}{character,ngchm}(server, chm, ...)
 
-\S4method{chmUninstall}{character,character}(server, chm)
+\S4method{chmUninstall}{character,character}(server, chm, ...)
 }
 \arguments{
 \item{server}{The server on which the NGCHM to remove is installed.}
 
 \item{chm}{The NGCHM to remove.}
+
+\item{...}{Additional server (protocol) specific parameters.}
 }
 \description{
 Remove the specified Next Generation Clustered Heat Map (NGCHM) from the specified server.
