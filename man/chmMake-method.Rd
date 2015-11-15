@@ -3,46 +3,31 @@
 \docType{methods}
 \name{chmMake}
 \alias{chmMake}
-\alias{chmMake,character,ngchm-method}
-\alias{chmMake,ngchmServer,ngchm-method}
+\alias{chmMake,ngchm-method}
 \title{Compile a NGCHM.}
 \usage{
-chmMake(server, chm, ...)
+chmMake(chm, ...)
 
-\S4method{chmMake}{ngchmServer,ngchm}(server, chm, deleteOld = TRUE,
-  useJAR = NULL, javaOptions = "-Xmx2G", buildArchive = TRUE,
-  javaTraceLevel = "PROGRESS")
-
-\S4method{chmMake}{character,ngchm}(server, chm, ...)
+\S4method{chmMake}{ngchm}(chm, ...)
 }
 \arguments{
-\item{server}{The server for which to compile the NGCHM.}
-
 \item{chm}{The NGCHM to compile.}
 
-\item{...}{Additional chmMake options}
-
-\item{deleteOld}{If TRUE, delete any old CHM of this name before beginning build. (Default is TRUE.)}
-
-\item{useJAR}{If defined, the location (filename) of the chmbuilder jar file. The package will not download
-a current jar file from the server. It is the caller's responsibility to ensure the builder jar file
-is compatible with the server on which the NGCHM will be installed. (Default is not defined.)}
-
-\item{javaOptions}{Additional options to pass to the Java process. (Default is '-Xmx2G'.)}
-
-\item{buildArchive}{If TRUE, build a tar archive of the generated NGCHM. (Default is TRUE.)  Not implemented on the Windows platform.}
-
-\item{javaTraceLevel}{Trace level option passed to the Java process. (Default is 'PROGRESS'.)}
+\item{...}{Additional chmMake options that depend on the format of the NGCHM.  For details
+       of the additional parameters of format x see ngchmMakeFormat.x (e.g. ngchmMakeFormat.original).}
 }
 \description{
-Compile the specified Next Generation Clustered Heat Map (NGCHM) in preparation for installation
-on the specified server.
+Compile the specified Next Generation Clustered Heat Map (NGCHM) in preparation for installation.
 }
 \seealso{
 ngchmServer-class
 
 ngchm-class
 
+chmNew
+
 chmInstall
+
+ngchmMakeFormat.original
 }
 

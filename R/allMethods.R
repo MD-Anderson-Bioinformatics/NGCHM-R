@@ -938,40 +938,69 @@ addToolBoxes <- function (chm)
 }
 
 #' @rdname chmMake-method
-#' @aliases chmMake,ngchmServer,ngchm-method
+#' @aliases chmMake,ngchm-method
 #'
 setMethod ("chmMake",
-    signature = c(server="ngchmServer", chm="ngchm"),
-    definition = function (server, chm, deleteOld=TRUE, useJAR=NULL,
-                           javaOptions = "-Xmx2G", buildArchive=TRUE, javaTraceLevel="PROGRESS") {
-    genSpecFeedback (0, "starting NGCHM make");
+    signature = c(chm="ngchm"),
+    definition = function (chm, ...) {
+
     chm <- chmFixVersion (chm);
     # Compute row and column orders if required.
     while ((length(chm@rowOrder) > 0) && (class(chm@rowOrder) == "function")) {
-	genSpecFeedback (1, "determining default row order");
+	genSpecFeedback (0, "determining row order");
         chm@rowOrder <- chm@rowOrder (chm);
     }
     while ((length(chm@colOrder) > 0) && (class(chm@colOrder) == "function")) {
-	genSpecFeedback (5, "determining default column order");
+	genSpecFeedback (10, "determining column order");
         chm@colOrder <- chm@colOrder (chm);
     }
-    genSpecFeedback (9, "writing NGCHM specification");
+    get (sprintf ("ngchmMakeFormat.%s", chm@format)) (chm, ...)
+});
+
+
+#' Make an original format NGCHM.
+#'
+#' @param chm The original format CHM to compile.
+#' @param server The server for which to compile the NGCHM.  Default NULL. Required iff useJar is not defined.
+#' @param deleteOld If TRUE, delete any old CHM of this name before beginning build. (Default is TRUE.)
+#' @param useJAR If defined, the location (filename) of the chmbuilder jar file. The package will not download
+#'        a current jar file from the server. It is the caller's responsibility to ensure the builder jar file
+#'        is compatible with the server on which the NGCHM will be installed. (Default is not defined.)
+#' @param javaOptions Additional options to pass to the Java process. (Default is '-Xmx2G'.)
+#' @param javaTraceLevel Trace level option passed to the Java process. (Default is 'PROGRESS'.)
+#' @param buildArchive If TRUE, build a tar archive of the generated NGCHM. (Default is TRUE.)  Not implemented on the Windows platform.
+#'
+ngchmMakeFormat.original <- function (chm,
+                                      server=NULL,
+                                      deleteOld=TRUE,
+                                      useJAR=NULL,
+                                      javaTraceLevel="PROGRESS",
+                                      javaOptions="-Xmx2G",
+                                      buildArchive=TRUE
+) {
+
+    genSpecFeedback (20, "writing NGCHM specification");
     writeChm (chm);
 
     genSpecFeedback (96, "preparing output directory");
     dir.create (chm@outDir, recursive=TRUE, showWarnings=FALSE);
-    unlink (file.path (chm@outDir, chm@name), recursive=TRUE);
+    if (deleteOld) {
+        unlink (file.path (chm@outDir, chm@name), recursive=TRUE);
+    }
+
+    if (!is.null (server)) server <- chmServerCheck (server);
 
     if (length(useJAR) == 0) {
         genSpecFeedback (97, "retrieving NGCHM rendering software");
-	useJAR = getBuilderJar (server);
-    }
-    #
-    javaTraceOpts <- ""
-    if ((length(javaTraceLevel) > 0) && (length(server@traceLevel)>0)) {
-	javaTraceOpts <- sprintf ("-l %s -p", shQuote(javaTraceLevel));
+	useJAR <- getBuilderJar (server);
     }
     genSpecFeedback (100, "rendering NGCHM");
+    #
+    javaTraceOpts <- ""
+    if ((length(javaTraceLevel) > 0) && (is.null(server) || (length(server@traceLevel)>0))) {
+	javaTraceOpts <- sprintf ("-l %s -p", shQuote(javaTraceLevel));
+    }
+
     systemCheck (sprintf ("java -Djava.awt.headless=true %s -jar %s %s %s %s/%s %s",
 		  paste (vapply (javaOptions, shQuote, ""), collapse=" "),
 		  shQuote (useJAR),
@@ -995,16 +1024,7 @@ setMethod ("chmMake",
 	}
     }
     postBuildFeedback (100, "post build completed");
-});
-
-#' @rdname chmMake-method
-#' @aliases chmMake,character,ngchm-method
-#'
-setMethod ("chmMake",
-    signature = c(server="character", chm="ngchm"),
-    definition = function (server, chm, ...) {
-        chmMake (chmServerCheck(server), chm, ...)
-    });
+};
 
 #' @rdname chmAdd-method
 #' @aliases chmAdd,ngchm-method
@@ -1015,15 +1035,6 @@ setMethod ("chmAdd",
         chm <- chmFixVersion (chm);
 	chmAddList (chm, list (...))
 });
-
-# @rdname chmMake-method
-# @aliases chmMake,ngchmServer,ngchm,missing-method
-#
-#setMethod ("chmMake",
-#    signature = c(server="ngchmServer", chm="ngchm", deleteOld="missing"),
-#    definition = function (server, chm, deleteOld) {
-#        chmMake (server, chm, TRUE);
-#});
 
 #' @rdname chmAddLayer-method
 #' @aliases chmAddLayer,ngchm,ngchmLayer-method
