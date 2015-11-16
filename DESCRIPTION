@@ -18,6 +18,8 @@ Collate:
     'allGenerics.R'
     'allMethods.R'
     'functions.R'
+    'shaidy.R'
+    'ngchmshaidy.R'
     'zzz.R'
     'package.R'
 Suggests: testthat

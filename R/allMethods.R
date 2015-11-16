@@ -1581,3 +1581,11 @@ setMethod ("chmAddToolboxRC",
 	}
 	CHM
 });
+
+#' @rdname ngchmGetShaid-method
+#' @aliases ngchmGetShaid,ngchm-method
+setMethod ("ngchmGetShaid",
+    signature = c(object="ngchm"),
+    definition = function(object) {
+        stop ("Not implemented")
+});
