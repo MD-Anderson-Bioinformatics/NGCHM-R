@@ -102,7 +102,7 @@ ngchmCollectionInCollection <- function (collection, uuid) {
 ngchmAddMatrixToCollection <- function (collection, name, shaid) {
     mats <- collection$matrices;
     if (!any(mats$Name==name)) {
-        mats <- rbind (mats, data.frame(Name=name, Shaid=shaid));
+        mats <- rbind (mats, data.frame(Name=name, Shaid=shaid@value));
         writeLines(jsonlite::toJSON(mats,pretty=TRUE),
 	           file.path (collection$basepath, "matrices.json"));
         collection$matrices <- mats;
@@ -122,7 +122,7 @@ ngchmAddMatrixToCollection <- function (collection, name, shaid) {
 #' @export
 ngchmAddChmToCollection <- function (collection, shaid) {
     if (!shaid %in% collection$chms) {
-        collection$chms <- append (collection$chms, shaid);
+        collection$chms <- append (collection$chms, shaid@value);
         writeLines(jsonlite::toJSON(collection$chms,pretty=TRUE),
 	           file.path (collection$basepath, "chms.json"));
     }
@@ -177,7 +177,7 @@ ngchmCollectionTree <- function (collection, depth=0) {
 #' @param format The format of the data file
 #' @param filename The filesystem path to the data file
 #'
-#' @return a string containing the shaid of the data file
+#' @return The shaid of the data file
 #'
 #' @import jsonlite
 #'
@@ -187,7 +187,7 @@ ngchmGetDataFileShaid <- function (format, filename) {
     gid <- gitHashObject (filename);
     coreproperties <- list (format=format);
     props.json <- jsonlite::toJSON(coreproperties);
-    gitSha (paste('dataset',props.json,gid,sep='',collapse=''))
+    new ('shaid', value=gitSha (paste('dataset',props.json,gid,sep='',collapse='')))
 }
 
 #' Add a data file to a local shaidy repository
@@ -196,7 +196,7 @@ ngchmGetDataFileShaid <- function (format, filename) {
 #' @param format The format of the data file
 #' @param filename The filesystem path to the data file
 #'
-#' @return A string containing the file's shaid
+#' @return The file's shaid
 #'
 #' @import jsonlite
 #'
@@ -204,7 +204,7 @@ ngchmGetDataFileShaid <- function (format, filename) {
 ngchmAddDatasetBlob <- function (shaidyRepo, format, filename) {
     stopifnot (format == 'tsv');
     shaid <- ngchmGetDataFileShaid (format, filename);
-    blobdir <- shaidyRepo$blob.path ('dataset', shaid);
+    blobdir <- shaidyRepo$blob.path ('dataset', shaid@value);
     if (!dir.exists (blobdir)) {
         dir.create (blobdir);
         properties <- list (format=format);
@@ -244,7 +244,7 @@ ngchmSaveAsDatasetBlob <- function (shaidyRepo, format, mat) {
 #'
 #' @export
 ngchmLoadDatasetBlob <- function (shaidyRepo, shaid) {
-    blobdir <- shaidyRepo$blob.path ('dataset', shaid);
+    blobdir <- shaidyRepo$blob.path ('dataset', shaid@value);
     props <- jsonlite::fromJSON (readLines (file.path (blobdir, "properties.json")));
     mat <- tsvio::tsvGetData (file.path (blobdir, "matrix.tsv"), file.path (blobdir, "index.tsv"),
                               NULL, NULL, 0.0);
@@ -256,15 +256,15 @@ ngchmLoadDatasetBlob <- function (shaidyRepo, shaid) {
 #' @param shaidyRepo The shaidy repository
 #' @param shaid The shaid of the dataset to row center
 #'
-#' @return A string containing the shaid of the row centered dataset
+#' @return A list of shaids for the row centered dataset
 ngchmRowCenter <- function (shaidyRepo, shaid) {
-    provid <- shaidyProvenance (shaidyRepo, name="ngchmRowCenter", shaid=shaid);
+    provid <- shaidyProvenance (shaidyRepo, name="ngchmRowCenter", shaid=shaid@value);
     res <- shaidyRepo$provenanceDB$get (provid);
     if (length(res) == 0) {
         ds <- ngchmLoadDatasetBlob (shaidyRepo, shaid);
 	mm <- rowMeans (ds$mat, na.rm=TRUE);
-	res <- ngchmSaveAsDatasetBlob (shaidyRepo, 'tsv', ds$mat-mm);
-	shaidyRepo$provenanceDB$insert (provid, res);
+	res <- list(ngchmSaveAsDatasetBlob (shaidyRepo, 'tsv', ds$mat-mm));
+	shaidyRepo$provenanceDB$insert (provid, res[[1]]);
     }
     res
 }

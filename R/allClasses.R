@@ -43,6 +43,20 @@ setIs ("numeric", "numericOrCharacter");
 setIs ("character", "numericOrCharacter");
 setIs ("logical", "numericOrCharacter");
 
+#' Class representing the shaid of an object
+#'
+#' @name shaid-class
+#' @rdname shaid-class
+#'
+#' @keywords shaid
+setClass ("shaid", slots=list(value="character"));
+
+setMethod ('show',
+           signature = c('shaid'),
+           definition = function (object) {
+	       cat (sprintf ("shaid %s\n", object@value));
+	   });
+
 #' Class representing the properties of a data point in a Next Generation Clustered Heat Map (NGCHM).
 #'
 #' @name ngchmValueProp-class

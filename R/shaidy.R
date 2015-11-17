@@ -91,15 +91,15 @@ shaidyLoadProvenanceDB <- function(shaidyDir) {
     
     aaa <- function (provid, shaid) {
 	old <- get0 (provid, envir=db, inherits=FALSE);
-	if (!shaid %in% old) {
-	    assign (provid, append (old, shaid), envir=db, inherits=FALSE);
+	if (!shaid@value %in% old) {
+	    assign (provid, append (old, shaid@value), envir=db, inherits=FALSE);
 	}
     };
 
     ggg <- function (provids) {
 	for (pp in provids) {
 	    ids <- get0 (pp, envir=db, inherits=FALSE);
-	    if (length(ids)>0) return (ids);
+	    if (length(ids)>0) return (lapply (ids, function(x)new('shaid',value=x)));
 	}
         NULL
     };

@@ -12,7 +12,7 @@ ngchmGetDataFileShaid(format, filename)
 \item{filename}{The filesystem path to the data file}
 }
 \value{
-a string containing the shaid of the data file
+The shaid of the data file
 }
 \description{
 Compute shaid for a data file

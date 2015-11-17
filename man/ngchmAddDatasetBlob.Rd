@@ -14,7 +14,7 @@ ngchmAddDatasetBlob(shaidyRepo, format, filename)
 \item{filename}{The filesystem path to the data file}
 }
 \value{
-A string containing the file's shaid
+The file's shaid
 }
 \description{
 Add a data file to a local shaidy repository
