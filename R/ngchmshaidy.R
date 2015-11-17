@@ -195,19 +195,20 @@ ngchmGetDataFileShaid <- function (format, filename) {
 #' @param shaidyRepo The shaidy repository
 #' @param format The format of the data file
 #' @param filename The filesystem path to the data file
+#' @param properties A list of additional properties to save with file
 #'
 #' @return The file's shaid
 #'
 #' @import jsonlite
 #'
 #' @export
-ngchmAddDatasetBlob <- function (shaidyRepo, format, filename) {
+ngchmAddDatasetBlob <- function (shaidyRepo, format, filename, properties=NULL) {
     stopifnot (format == 'tsv');
     shaid <- ngchmGetDataFileShaid (format, filename);
     blobdir <- shaidyRepo$blob.path ('dataset', shaid@value);
     if (!dir.exists (blobdir)) {
         dir.create (blobdir);
-        properties <- list (format=format);
+        properties <- c(list (format=format), properties);
         props.json <- jsonlite::toJSON(properties);
 	writeLines (props.json, file.path (blobdir, "properties.json"));
 	stopifnot (file.copy (filename, file.path (blobdir, "matrix.tsv")));
@@ -215,7 +216,7 @@ ngchmAddDatasetBlob <- function (shaidyRepo, format, filename) {
     shaid
 }
 
-#' Save a matrix as a blob in a shaidy repository
+#' Save a numeric matrix as a blob in a shaidy repository
 #'
 #' @param shaidyRepo The shaidy repository
 #' @param format The format in which to save the matrix
@@ -225,10 +226,17 @@ ngchmAddDatasetBlob <- function (shaidyRepo, format, filename) {
 #'
 #' @export
 ngchmSaveAsDatasetBlob <- function (shaidyRepo, format, mat) {
-    stopifnot (format == 'tsv');
+    if (is (mat, 'shaid')) return (mat);
+    stopifnot (format == 'tsv',
+               is (mat, 'matrix'),
+	       is.numeric (mat),
+	       length (dim(mat)) == 2,
+	       length (rownames(mat)) > 0,
+	       length (colnames(mat)) > 0);
     filename <- tempfile ("matrix", fileext='.tsv');
     write.table (mat, filename, quote=FALSE, sep='\t');
-    shaid <- ngchmAddDatasetBlob (shaidyRepo$blob.path, format, filename);
+    shaid <- ngchmAddDatasetBlob (shaidyRepo, format, filename,
+                                  list(nrow=nrow(mat),ncol=ncol(mat)));
     unlink (filename);
     shaid
 }
@@ -269,3 +277,10 @@ ngchmRowCenter <- function (shaidyRepo, shaid) {
     res
 }
 
+#' Make a shaidy format NGCHM.
+#'
+#' @param chm The shaidy format CHM to compile.
+#' @return The CHM
+ngchmMakeFormat.shaidy <- function (chm) {
+    chm
+}

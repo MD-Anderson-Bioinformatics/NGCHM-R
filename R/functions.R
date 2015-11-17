@@ -268,18 +268,7 @@ chmNewDataLayer <- function (label, data, colors=NULL) {
     if (nchar (label) == 0) {
         stop ("Parameter 'label' cannot be the empty string");
     }
-    if (!is.numeric (data)) {
-        stop (sprintf ("Parameter 'data' for layer '%s' must be numeric", label));
-    }
-    if (length (dim(data)) != 2) {
-        stop (sprintf ("Parameter 'data' for layer '%s' must have exactly 2 dimensions, not %d", label, length(dim(data))));
-    }
-    if (length (rownames(data)) == 0) {
-        stop (sprintf ("Parameter 'data' for layer '%s' must have rownames set", label));
-    }
-    if (length (colnames(data)) == 0) {
-        stop (sprintf ("Parameter 'data' for layer '%s' must have colnames set", label));
-    }
+    data <- ngchmSaveAsDatasetBlob (ngchm.env$tmpShaidy, 'tsv', data);
     if (length(colors) == 0)
 	colors <- chmNewColorMap (data, c("green", "black", "red"));
     new (Class="ngchmLayer", name=label, data=data, colors=colors)
@@ -328,18 +317,7 @@ chmNewDataset <- function (name, description, data,
     if (nchar (description) == 0) {
         warning ("Parameter 'description' should not be the empty string");
     }
-    if (!is.numeric (data)) {
-        stop (sprintf ("Parameter 'data' for dataset '%s' must be numeric", name));
-    }
-    if (length (dim(data)) != 2) {
-        stop (sprintf ("Parameter 'data' for dataset '%s' must have exactly 2 dimensions, not %d", name, length(dim(data))));
-    }
-    if (length (rownames(data)) == 0) {
-        stop (sprintf ("Parameter 'data' for dataset '%s' must have rownames set", name));
-    }
-    if (length (colnames(data)) == 0) {
-        stop (sprintf ("Parameter 'data' for dataset '%s' must have colnames set", name));
-    }
+    data <- ngchmSaveAsDatasetBlob (ngchm.env$tmpShaidy, 'tsv', data);
     if (length (row.covariates) > 0) {
         if (class(row.covariates) == "ngchmCovariate") {
 	    row.covariates <- list (row.covariates);
@@ -629,12 +607,16 @@ chmNewColorMap <- function (values, colors=NULL, names=NULL, shapes=NULL, zs=NUL
     }
 
     # Validate 'values'.  Auto-pick values if appropriate.
-    if (class(values) == 'matrix') {
+    if (is(values,'matrix')||is(values,'shaid')) {
 	# User just supplied a data matrix.
 	if (NC == 0) NC <- 3;
         if (type == "quantile") {
 	    values <- (1.0/(NC-1)) * (0:(NC-1));
 	} else if (type == "linear") {
+            if (is(values,"shaid")){
+                # FIXME: redoing calculation is inefficient
+	        values <- ngchmLoadDatasetBlob (ngchm.env$tmpShaidy, values)$mat;
+            }
 	    if ((nrow(values)==1) || (ncol(values)==1)) {
 	        minv <- min (values, na.rm=TRUE);
 	        maxv <- max (values, na.rm=TRUE);
@@ -665,6 +647,7 @@ chmNewColorMap <- function (values, colors=NULL, names=NULL, shapes=NULL, zs=NUL
         stop (sprintf ("chmNewColorMap: values vector has unknown class '%s'. It must be either a vector or a matrix.",
 	               class (values)));
     }
+    # values is now a length NC vector of cut points
     stopifnot (length(values) == NC);
 
     # Auto-pick colors if needed.

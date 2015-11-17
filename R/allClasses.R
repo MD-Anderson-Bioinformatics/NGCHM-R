@@ -87,7 +87,7 @@ setMethod ('show',
 setClass ("ngchmDataset",
           representation (name="character",
 			  description="character",
-	                  data="matrix",
+	                  data="shaid",
 			  row.type="optCharacter",
 			  column.type="optCharacter",
 			  row.covariates="optList",
@@ -96,10 +96,8 @@ setClass ("ngchmDataset",
 setMethod ('show',
            signature = c('ngchmDataset'),
 	   definition = function (object) {
-	       cat (sprintf ("ngchmDataset '%s': %d %s x %d %s\n", object@name,
-	                     ncol(object@data),
+	       cat (sprintf ("ngchmDataset '%s': %s (%s x %s)\n", object@name, object@data@value,
 			     if (length(object@column.type)==0) "unknown" else object@column.type,
-	                     nrow(object@data),
 			     if (length(object@row.type)==0) "unknown" else object@row.type
 			     ));
 	   });
@@ -196,12 +194,13 @@ setIs ("ngchmColormap", "optList");
 #'
 #' @keywords classes
 setClass ("ngchmLayer",
-          representation (name="character", data="matrix", colors="ngchmColormap"));
+          slots=list(name="character", data="shaid", colors="ngchmColormap"));
 
 setMethod ('show',
            signature = c('ngchmLayer'),
 	   definition = function (object) {
-	       cat (sprintf ("ngchmLayer '%s': %d x %d\n", object@name, ncol(object@data), nrow(object@data)));
+	       #cat (sprintf ("ngchmLayer '%s': %d x %d\n", object@name, ncol(object@data), nrow(object@data)));
+	       cat (sprintf ("ngchmLayer '%s': %s\n", object@name, object@data@value));
 	   });
 
 #' Class representing a Generic Property for a Next Generation Clustered Heat Map (NGCHM).

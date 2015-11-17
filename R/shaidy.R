@@ -128,14 +128,15 @@ shaidyLoadRepository <- function (shaidyDir) {
 
 #' Print a shaidy repository
 #'
-#' @param repo The shaidy repository to print
+#' @param x The shaidy repository to print
+#' @param ... Unused extra parameters
 #'
 #' @return The shaidy repository
 #'
 #' @export
-print.shaidyRepo <- function (repo) {
-    cat ("Shaidy repository at", repo$basepath, "\n");
-    invisible (repo)
+print.shaidyRepo <- function (x,...) {
+    cat ("Shaidy repository at", x$basepath, "\n");
+    invisible (x)
 }
 
 #' Create and initialize a local shaidy repository.

@@ -382,7 +382,8 @@ writeDataLayer <- function (chm, layer, dir, index, chan) {
     if (cmid == 0)
         stop (sprintf ("Internal error detected: no color map found for data layer %d (%s). Please report.", index, layer@name));
     cat (sprintf ("%s.defaultCM=cm%d\n", prefix, cmid), file=chan);
-    write.table (layer@data, file=paste (dir, sprintf("%s.data.tsv", prefix), sep="/"),
+    layerData <- ngchmLoadDatasetBlob (ngchm.env$tmpShaidy, layer@data)$mat;
+    write.table (layerData, file=paste (dir, sprintf("%s.data.tsv", prefix), sep="/"),
                  sep="\t", quote=FALSE);
 }
 
@@ -970,6 +971,7 @@ setMethod ("chmMake",
 #' @param javaTraceLevel Trace level option passed to the Java process. (Default is 'PROGRESS'.)
 #' @param buildArchive If TRUE, build a tar archive of the generated NGCHM. (Default is TRUE.)  Not implemented on the Windows platform.
 #'
+#' @return The CHM
 ngchmMakeFormat.original <- function (chm,
                                       server=NULL,
                                       deleteOld=TRUE,

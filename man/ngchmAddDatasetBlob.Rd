@@ -4,7 +4,7 @@
 \alias{ngchmAddDatasetBlob}
 \title{Add a data file to a local shaidy repository}
 \usage{
-ngchmAddDatasetBlob(shaidyRepo, format, filename)
+ngchmAddDatasetBlob(shaidyRepo, format, filename, properties = NULL)
 }
 \arguments{
 \item{shaidyRepo}{The shaidy repository}
@@ -12,6 +12,8 @@ ngchmAddDatasetBlob(shaidyRepo, format, filename)
 \item{format}{The format of the data file}
 
 \item{filename}{The filesystem path to the data file}
+
+\item{properties}{A list of additional properties to save with file}
 }
 \value{
 The file's shaid

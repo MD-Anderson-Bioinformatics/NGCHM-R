@@ -2,7 +2,7 @@
 % Please edit documentation in R/ngchmshaidy.R
 \name{ngchmSaveAsDatasetBlob}
 \alias{ngchmSaveAsDatasetBlob}
-\title{Save a matrix as a blob in a shaidy repository}
+\title{Save a numeric matrix as a blob in a shaidy repository}
 \usage{
 ngchmSaveAsDatasetBlob(shaidyRepo, format, mat)
 }
@@ -17,6 +17,6 @@ ngchmSaveAsDatasetBlob(shaidyRepo, format, mat)
 The shaid of the saved blob
 }
 \description{
-Save a matrix as a blob in a shaidy repository
+Save a numeric matrix as a blob in a shaidy repository
 }
 

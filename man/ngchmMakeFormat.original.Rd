@@ -25,6 +25,9 @@ is compatible with the server on which the NGCHM will be installed. (Default is 
 
 \item{buildArchive}{If TRUE, build a tar archive of the generated NGCHM. (Default is TRUE.)  Not implemented on the Windows platform.}
 }
+\value{
+The CHM
+}
 \description{
 Make an original format NGCHM.
 }
