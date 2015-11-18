@@ -4,7 +4,7 @@
 #'
 #' @export
 ngchmInitShaidyRepository <- function (shaidyDir) {
-    shaidyInitRepository (shaidyDir, c("collection", "chm", "dataset", "tile"))
+    shaidyInitRepository (shaidyDir, c("collection", "chm", "dataset", "dendrogram", "label", "tile"))
 }
 
 
@@ -253,6 +253,26 @@ ngchmLoadDatasetBlob <- function (shaidyRepo, shaid) {
     list (shaid=shaid, properties=props, mat=mat)
 }
 
+#' Save a dendrogram as a blob in a shaidy repository
+#'
+#' @param shaidyRepo The shaidy repository
+#' @param ddg The dendrogram
+#'
+#' @return The shaid of the saved blob
+#'
+#' @export
+ngchmSaveAsDendrogramBlob <- function (shaidyRepo, ddg) {
+    if (is (ddg, 'shaid')) return (ddg);
+    stopifnot (is (ddg, 'dendrogram'));
+    filename <- tempfile ("ddg", fileext='.txt');
+    sink (filename);
+    str (ddg);
+    sink (NULL);
+    shaid <- shaidyAddFileBlob (shaidyRepo, 'dendrogram', 'dendrogram.str', filename);
+    unlink (filename);
+    shaid
+}
+
 #' Row center a shaidy dataset
 #'
 #' @param shaidyRepo The shaidy repository
@@ -277,4 +297,34 @@ ngchmRowCenter <- function (shaidyRepo, shaid) {
 #' @return The CHM
 ngchmMakeFormat.shaidy <- function (chm) {
     chm
+}
+
+#' Get the axis labels of a shaidy dataset
+#'
+#' @param shaidyRepo The shaidy repository
+#' @param shaid The shaid of the dataset to get the labels of
+#' @param axis The axis of the labels to get
+#'
+#' @return A string vector containing the axis labels of the dataset
+#'
+#' @export
+ngchmGetLabels <- function (shaidyRepo, shaid, axis) {
+    stopifnot (is(shaidyRepo,"shaidyRepo"),
+               is(shaid,"shaid"),
+               axis %in% c("row","column"));
+    provid <- shaidyProvenance (shaidyRepo, name="ngchmGetLabels", shaid=shaid@value, axis=axis);
+    res <- shaidyRepo$provenanceDB$get (provid);
+    if (length(res) == 0) {
+        ds <- ngchmLoadDatasetBlob (shaidyRepo, shaid);
+        labels <- (if (axis=="row") rownames else colnames)(ds$mat);
+	filename <- tempfile ("label", fileext='.txt');
+	writeLines (labels, filename);
+	res <- list(shaidyAddFileBlob (shaidyRepo, 'label', 'labels.txt', filename));
+        unlink (filename);
+	shaidyRepo$provenanceDB$insert (provid, res[[1]]);
+        labels
+    } else {
+        blobfile <- ngchm.env$tmpShaidy$blob.path ('label', res[[1]]@value, 'labels.txt');
+	readLines (blobfile)
+    }
 }
