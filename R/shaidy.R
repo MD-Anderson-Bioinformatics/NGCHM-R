@@ -160,14 +160,14 @@ shaidyInitRepository <- function (shaidyDir, blob.types) {
 
 #' Create a provid from a list of label values
 #'
-#' @param shaidyRepo The shaidy repository in which to store the provid -> labels data
-#' @param ... A list of name=value labels to store in the provid
+#' @param ... shaidyRepo followed by a list of name=value labels to store in the provid
 #'
 #' @return A string containing the provid for the list of label values.
 #'
 #' @export
-shaidyProvenance <- function (shaidyRepo, ...) {
-    labels <- list (...);
+shaidyProvenance <- function (...) {
+    shaidyRepo <- ..1;
+    labels <- list (...)[-1];
     oo <- order (names (labels));
     provid <- gitSha (paste(sprintf ("%s=%s", names(labels)[oo], labels[oo]), collapse=','));
     shaidyRepo$providDB$assign (provid, labels);

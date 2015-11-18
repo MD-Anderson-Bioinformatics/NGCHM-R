@@ -4,12 +4,10 @@
 \alias{shaidyProvenance}
 \title{Create a provid from a list of label values}
 \usage{
-shaidyProvenance(shaidyRepo, ...)
+shaidyProvenance(...)
 }
 \arguments{
-\item{shaidyRepo}{The shaidy repository in which to store the provid -> labels data}
-
-\item{...}{A list of name=value labels to store in the provid}
+\item{...}{shaidyRepo followed by a list of name=value labels to store in the provid}
 }
 \value{
 A string containing the provid for the list of label values.
