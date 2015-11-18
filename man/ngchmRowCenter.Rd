@@ -12,7 +12,7 @@ ngchmRowCenter(shaidyRepo, shaid)
 \item{shaid}{The shaid of the dataset to row center}
 }
 \value{
-The shaid of the row centered dataset
+A list of shaids for the row centered dataset
 }
 \description{
 Row center a shaidy dataset

@@ -4,10 +4,12 @@
 \alias{print.shaidyRepo}
 \title{Print a shaidy repository}
 \usage{
-\method{print}{shaidyRepo}(repo)
+\method{print}{shaidyRepo}(x, ...)
 }
 \arguments{
-\item{repo}{The shaidy repository to print}
+\item{x}{The shaidy repository to print}
+
+\item{...}{Unused extra parameters}
 }
 \value{
 The shaidy repository
