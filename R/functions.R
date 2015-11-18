@@ -182,38 +182,64 @@ chmNew <- function (name, ...,
 #'
 #' @param chm An NGCHM containing at least one layer
 #'
-#' @return An ordering object (character vector or dendrogram) suitable for use as the
+#' @return Shaid of a dendrogram suitable for use as the
 #'         chm's column order.
 #'
 #' @export
 chmDefaultColOrder <- function (chm) {
     chm <- chmFixVersion (chm);
     if (length (chm@layers) == 0) stop ("chm requires at least one layer");
-    if (chm@colDist == "correlation") {
-        dd <- as.dist(1-cor(chm@layers[[1]]@data, use="pairwise"));
-    } else {
-        dd <- dist (t(chm@layers[[1]]@data), method=chm@colDist);
+    shaidyRepo <- ngchm.env$tmpShaidy;
+    shaid <- chm@layers[[1]]@data;
+
+    provid <- shaidyProvenance (shaidyRepo, name="chmDefaultColOrder",
+                                shaid=shaid@value, dist=chm@colDist,
+                                agglom=chm@colAgglom);
+    res <- shaidyRepo$provenanceDB$get (provid);
+    if (length(res) == 0) {
+        mat <- ngchmLoadDatasetBlob (shaidyRepo, shaid)$mat;
+	if (chm@colDist == "correlation") {
+	    dd <- as.dist(1-cor(mat, use="pairwise"));
+	} else {
+	    dd <- dist (t(mat), method=chm@colDist);
+	}
+	ddg <- as.dendrogram(hclust(dd, method=chm@colAgglom))
+	res <- list(ngchmSaveAsDendrogramBlob (shaidyRepo, ddg));
+	shaidyRepo$provenanceDB$insert (provid, res[[1]]);
     }
-    as.dendrogram(hclust(dd, method=chm@colAgglom))
+    res[[1]]
 }
 
 #' Return default row order of an NGCHM
 #'
 #' @param chm An NGCHM containing at least one layer
 #'
-#' @return An ordering object (character vector or dendrogram) suitable for use as the
+#' @return Shaid of a dendrogram suitable for use as the
 #'         chm's row order.
 #'
 #' @export
 chmDefaultRowOrder <- function (chm) {
     chm <- chmFixVersion (chm);
     if (length (chm@layers) == 0) stop ("chm requires at least one layer");
-    if (chm@rowDist == "correlation") {
-        dd <- as.dist(1-cor(t(chm@layers[[1]]@data), use="pairwise"))
-    } else {
-        dd <- dist (chm@layers[[1]]@data, method=chm@rowDist);
+    shaidyRepo <- ngchm.env$tmpShaidy;
+    shaid <- chm@layers[[1]]@data;
+
+    provid <- shaidyProvenance (shaidyRepo, name="chmDefaultRowOrder",
+                                shaid=shaid@value, dist=chm@rowDist,
+                                agglom=chm@rowAgglom);
+    res <- shaidyRepo$provenanceDB$get (provid);
+    if (length(res) == 0) {
+        mat <- ngchmLoadDatasetBlob (shaidyRepo, shaid)$mat;
+	if (chm@rowDist == "correlation") {
+	    dd <- as.dist(1-cor(t(mat), use="pairwise"))
+	} else {
+	    dd <- dist (mat, method=chm@rowDist);
+	}
+	ddg <- as.dendrogram(hclust(dd, method=chm@rowAgglom));
+	res <- list(ngchmSaveAsDendrogramBlob (shaidyRepo, ddg));
+	shaidyRepo$provenanceDB$insert (provid, res[[1]]);
     }
-    as.dendrogram(hclust(dd, method=chm@rowAgglom))
+    res[[1]]
 }
 
 # Function used by chmNew and chmAdd:

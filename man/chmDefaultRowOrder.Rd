@@ -10,7 +10,7 @@ chmDefaultRowOrder(chm)
 \item{chm}{An NGCHM containing at least one layer}
 }
 \value{
-An ordering object (character vector or dendrogram) suitable for use as the
+Shaid of a dendrogram suitable for use as the
         chm's row order.
 }
 \description{

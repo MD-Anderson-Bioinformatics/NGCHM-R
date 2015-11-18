@@ -57,6 +57,8 @@ setMethod ('show',
 	       cat (sprintf ("shaid %s\n", object@value));
 	   });
 
+setIs ("shaid", "optDendrogram");
+
 #' Class representing the properties of a data point in a Next Generation Clustered Heat Map (NGCHM).
 #'
 #' @name ngchmValueProp-class

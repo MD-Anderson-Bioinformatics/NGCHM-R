@@ -760,11 +760,15 @@ setMethod ("chmName",
 
 writeOrder <- function (inpDir, type, ord) {
     # Write the order/dendrogram out as a column dendrogram to the inpDir
-    if (class (ord) == "character") {
-	filename <- sprintf ("%s/%s.txt", inpDir, type);
+    if (is(ord, "shaid")) {
+	filename <- file.path (inpDir, sprintf ("dendro_%s.str", type));
+        blobfile <- ngchm.env$tmpShaidy$blob.path ('dendrogram', ord@value, 'dendrogram.str');
+        stopifnot (file.copy (blobfile, filename));
+    } else if (class (ord) == "character") {
+	filename <- file.path (inpDir, sprintf ("%s.txt", type));
         write.table (ord, filename, quote=FALSE, row.names=FALSE, col.names=FALSE)
     } else if ((class (ord) == "dendrogram") || (class (ord) == "hclust")) {
-	sink (paste (inpDir, sprintf ("dendro_%s.str", type), sep="/"))
+	sink (file.path (inpDir, sprintf ("dendro_%s.str", type)))
 	if (class (ord) == "hclust")
 	    ord <- as.dendrogram (ord);
 	str (ord)
