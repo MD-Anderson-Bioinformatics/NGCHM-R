@@ -205,14 +205,8 @@ ngchmGetDataFileShaid <- function (format, filename) {
 ngchmAddDatasetBlob <- function (shaidyRepo, format, filename, properties=NULL) {
     stopifnot (format == 'tsv');
     shaid <- ngchmGetDataFileShaid (format, filename);
-    blobdir <- shaidyRepo$blob.path ('dataset', shaid@value);
-    if (!dir.exists (blobdir)) {
-        dir.create (blobdir);
-        properties <- c(list (format=format), properties);
-        props.json <- jsonlite::toJSON(properties);
-	writeLines (props.json, file.path (blobdir, "properties.json"));
-	stopifnot (file.copy (filename, file.path (blobdir, "matrix.tsv")));
-    }
+    shaidyAddFileBlob (shaidyRepo, 'dataset', 'matrix.tsv', filename,
+                       properties=c(list(format=format),properties), shaid=shaid);
     shaid
 }
 

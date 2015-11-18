@@ -174,3 +174,30 @@ shaidyProvenance <- function (shaidyRepo, ...) {
     provid
 }
 
+#' Add a data file to a local shaidy repository
+#'
+#' @param shaidyRepo The shaidy repository
+#' @param blob.type The blob.type of the data file
+#' @param blob.file Name of file within the blob
+#' @param filename The filesystem path to the file to insert
+#' @param properties A list of additional properties to save with file
+#' @param shaid Shaid to store the blob as.
+#'
+#' @return The file's shaid
+#'
+#' @import jsonlite
+#'
+#' @export
+shaidyAddFileBlob <- function (shaidyRepo, blob.type, blob.file, filename, properties=NULL, shaid=NULL) {
+    if (length(shaid)==0) shaid <- new('shaid', value=gitHashObject (filename));
+    blobdir <- shaidyRepo$blob.path (blob.type, shaid@value);
+    if (!dir.exists (blobdir)) {
+        dir.create (blobdir);
+        if (length(properties) > 0) {
+	    props.json <- jsonlite::toJSON(properties);
+	    writeLines (props.json, file.path (blobdir, "properties.json"));
+	}
+	stopifnot (file.copy (filename, file.path (blobdir, blob.file)));
+    }
+    shaid
+}
