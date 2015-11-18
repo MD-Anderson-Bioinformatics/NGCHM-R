@@ -195,7 +195,7 @@ chmDefaultColOrder <- function (chm) {
     provid <- shaidyProvenance (shaidyRepo, name="chmDefaultColOrder",
                                 shaid=shaid@value, dist=chm@colDist,
                                 agglom=chm@colAgglom);
-    res <- shaidyRepo$provenanceDB$get (provid);
+    res <- shaidyRepo$provenanceDB$get ('dendrogram', provid);
     if (length(res) == 0) {
         mat <- ngchmLoadDatasetBlob (shaidyRepo, shaid)$mat;
 	if (chm@colDist == "correlation") {
@@ -227,7 +227,7 @@ chmDefaultRowOrder <- function (chm) {
     provid <- shaidyProvenance (shaidyRepo, name="chmDefaultRowOrder",
                                 shaid=shaid@value, dist=chm@rowDist,
                                 agglom=chm@rowAgglom);
-    res <- shaidyRepo$provenanceDB$get (provid);
+    res <- shaidyRepo$provenanceDB$get ('dendrogram',provid);
     if (length(res) == 0) {
         mat <- ngchmLoadDatasetBlob (shaidyRepo, shaid)$mat;
 	if (chm@rowDist == "correlation") {

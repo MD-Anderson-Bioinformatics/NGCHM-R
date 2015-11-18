@@ -187,7 +187,7 @@ ngchmGetDataFileShaid <- function (format, filename) {
     gid <- gitHashObject (filename);
     coreproperties <- list (format=format);
     props.json <- jsonlite::toJSON(coreproperties);
-    new ('shaid', value=gitSha (paste('dataset',props.json,gid,sep='',collapse='')))
+    new ('shaid', type='dataset', value=gitSha (paste('dataset',props.json,gid,sep='',collapse='')))
 }
 
 #' Add a data file to a local shaidy repository
@@ -281,7 +281,7 @@ ngchmSaveAsDendrogramBlob <- function (shaidyRepo, ddg) {
 #' @return A list of shaids for the row centered dataset
 ngchmRowCenter <- function (shaidyRepo, shaid) {
     provid <- shaidyProvenance (shaidyRepo, name="ngchmRowCenter", shaid=shaid@value);
-    res <- shaidyRepo$provenanceDB$get (provid);
+    res <- shaidyRepo$provenanceDB$get ('dataset',provid);
     if (length(res) == 0) {
         ds <- ngchmLoadDatasetBlob (shaidyRepo, shaid);
 	mm <- rowMeans (ds$mat, na.rm=TRUE);
@@ -313,7 +313,7 @@ ngchmGetLabels <- function (shaidyRepo, shaid, axis) {
                is(shaid,"shaid"),
                axis %in% c("row","column"));
     provid <- shaidyProvenance (shaidyRepo, name="ngchmGetLabels", shaid=shaid@value, axis=axis);
-    res <- shaidyRepo$provenanceDB$get (provid);
+    res <- shaidyRepo$provenanceDB$get ('label', provid);
     if (length(res) == 0) {
         ds <- ngchmLoadDatasetBlob (shaidyRepo, shaid);
         labels <- (if (axis=="row") rownames else colnames)(ds$mat);

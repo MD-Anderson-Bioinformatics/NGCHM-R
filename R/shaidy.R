@@ -96,10 +96,10 @@ shaidyLoadProvenanceDB <- function(shaidyDir) {
 	}
     };
 
-    ggg <- function (provids) {
+    ggg <- function (type, provids) {
 	for (pp in provids) {
 	    ids <- get0 (pp, envir=db, inherits=FALSE);
-	    if (length(ids)>0) return (lapply (ids, function(x)new('shaid',value=x)));
+	    if (length(ids)>0) return (lapply (ids, function(x)new('shaid',type=type,value=x)));
 	}
         NULL
     };
@@ -189,7 +189,7 @@ shaidyProvenance <- function (...) {
 #'
 #' @export
 shaidyAddFileBlob <- function (shaidyRepo, blob.type, blob.file, filename, properties=NULL, shaid=NULL) {
-    if (length(shaid)==0) shaid <- new('shaid', value=gitHashObject (filename));
+    if (length(shaid)==0) shaid <- new('shaid', type=blob.type, value=gitHashObject (filename));
     blobdir <- shaidyRepo$blob.path (blob.type, shaid@value);
     if (!dir.exists (blobdir)) {
         dir.create (blobdir);

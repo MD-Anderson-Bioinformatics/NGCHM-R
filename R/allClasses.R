@@ -49,12 +49,12 @@ setIs ("logical", "numericOrCharacter");
 #' @rdname shaid-class
 #'
 #' @keywords shaid
-setClass ("shaid", slots=list(value="character"));
+setClass ("shaid", slots=list(type='character', value="character"));
 
 setMethod ('show',
            signature = c('shaid'),
            definition = function (object) {
-	       cat (sprintf ("shaid %s\n", object@value));
+	       cat (sprintf ("shaid %s %s\n", object@type, object@value));
 	   });
 
 setIs ("shaid", "optDendrogram");
