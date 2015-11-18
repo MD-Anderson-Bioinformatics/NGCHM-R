@@ -2169,8 +2169,15 @@ chmFixVersion <- function (chm) {
         }
 	v2@rowCovariateBars <- chm@rowClassbars;
 	v2@colCovariateBars <- chm@colClassbars;
+        for (ii in 1:length(chm@layers)) {
+	    if (is(chm@layers[[ii]]@data,"matrix")) {
+                v2@layers[[ii]]@data <- ngchmSaveAsDatasetBlob (ngchm.env$tmpShaidy, 'tsv', v2@layers[[ii]]@data);
+	    }
+        }
 	chm <- v2;
     }
+    if (is(chm@rowOrder,"function")) chm@rowOrder <- chmDefaultRowOrder;
+    if (is(chm@colOrder,"function")) chm@colOrder <- chmDefaultColOrder;
     chm
 }
 
