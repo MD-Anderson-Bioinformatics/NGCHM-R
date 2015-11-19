@@ -2,7 +2,7 @@
 % Please edit documentation in R/shaidy.R
 \name{shaidyAddFileBlob}
 \alias{shaidyAddFileBlob}
-\title{Add a data file to a local shaidy repository}
+\title{Add data file(s) and properties to a local shaidy repository}
 \usage{
 shaidyAddFileBlob(shaidyRepo, blob.type, blob.file, filename,
   properties = NULL, shaid = NULL)
@@ -12,11 +12,11 @@ shaidyAddFileBlob(shaidyRepo, blob.type, blob.file, filename,
 
 \item{blob.type}{The blob.type of the data file}
 
-\item{blob.file}{Name of file within the blob}
+\item{blob.file}{Name of the file(s) within the blob}
 
-\item{filename}{The filesystem path to the file to insert}
+\item{filename}{The filesystem path(s) to the file(s) to insert}
 
-\item{properties}{A list of additional properties to save with file}
+\item{properties}{A list of additional properties to save with the file(s)}
 
 \item{shaid}{Shaid to store the blob as.}
 }
@@ -24,6 +24,6 @@ shaidyAddFileBlob(shaidyRepo, blob.type, blob.file, filename,
 The file's shaid
 }
 \description{
-Add a data file to a local shaidy repository
+Add data file(s) and properties to a local shaidy repository
 }
 

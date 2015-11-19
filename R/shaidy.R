@@ -192,13 +192,13 @@ shaidyProvenance <- function (...) {
     provid
 }
 
-#' Add a data file to a local shaidy repository
+#' Add data file(s) and properties to a local shaidy repository
 #'
 #' @param shaidyRepo The shaidy repository
 #' @param blob.type The blob.type of the data file
-#' @param blob.file Name of file within the blob
-#' @param filename The filesystem path to the file to insert
-#' @param properties A list of additional properties to save with file
+#' @param blob.file Name of the file(s) within the blob
+#' @param filename The filesystem path(s) to the file(s) to insert
+#' @param properties A list of additional properties to save with the file(s)
 #' @param shaid Shaid to store the blob as.
 #'
 #' @return The file's shaid
@@ -207,15 +207,73 @@ shaidyProvenance <- function (...) {
 #'
 #' @export
 shaidyAddFileBlob <- function (shaidyRepo, blob.type, blob.file, filename, properties=NULL, shaid=NULL) {
-    if (length(shaid)==0) shaid <- new('shaid', type=blob.type, value=gitHashObject (filename));
-    blobdir <- shaidyRepo$blob.path (blob.type, shaid@value);
-    if (!dir.exists (blobdir)) {
-        dir.create (blobdir);
-        if (length(properties) > 0) {
-	    props.json <- jsonlite::toJSON(properties);
-	    writeLines (props.json, file.path (blobdir, "properties.json"));
-	}
-	stopifnot (file.copy (filename, file.path (blobdir, blob.file)));
+    stopifnot (length(blob.file)==length(filename),
+               (!"properties.json" %in% blob.file) || (length(properties)==0),
+               anyDuplicated(blob.file)==0);
+    blobdir <- shaidyCreateProtoBlob(shaidyRepo,blob.type);
+    if (length(properties) > 0) {
+	props.json <- jsonlite::toJSON(properties);
+	writeLines (props.json, file.path (blobdir, "properties.json"));
     }
-    shaid
+    for (ii in 1:length(filename)) {
+        stopifnot (file.copy (filename[[ii]], file.path (blobdir, blob.file[[ii]])));
+    }
+    if (length(shaid)==0) shaid <- shaidyHashProtoBlob(blob.type, blobdir);
+    shaidyFinalizeProtoBlob (shaidyRepo,shaid,blobdir)
+}
+
+#' Create a prototype blob in a shaidy repository
+#'
+#' @param shaidyRepo The shaidy repository
+#' @param blob.type The blob.type of the prototype blob
+#'
+#' @return The file path of the prototype blob
+shaidyCreateProtoBlob <- function(shaidyRepo, blob.type) {
+    protoblob <- tempfile("proto", tmpdir = shaidyRepo$blob.path(blob.type));
+    dir.create (protoblob);
+    protoblob
+}
+
+#' Finalize a prototype blob
+#'
+#' @param shaidyRepo The shaidy repository
+#' @param shaid The shaid to assign the protoblob
+#' @param protoblob The prototype blob to finalize
+#'
+#' @return The shaid (invisibly)
+#'
+#' The protoblob must have been created in the specified shaidy repository
+#' and with the same blob type as the shaid.  When this function returns the
+#' protoblob will no longer be accessible .  If a blob with the same shaid already
+#' exists in this repository, the protoblob is quitely removed without affecting
+#' the existing blob.
+shaidyFinalizeProtoBlob <- function(shaidyRepo, shaid, protoblob) {
+    typedir <- shaidyRepo$blob.path(shaid@type);
+    stopifnot (substr(basename(protoblob),1,5)=="proto",
+               protoblob==file.path(typedir,basename(protoblob)));
+    blobpath <- file.path (typedir, shaid@value);
+    if(file.exists(blobpath)) {
+        unlink (protoblob, recursive=TRUE);
+    } else {
+        file.rename (protoblob, blobpath);
+    }
+    invisible(shaid)
+}
+
+#' Compute the shaid to assign a protoblob
+#'
+#' @param blob.type The blob.type of the prototype blob
+#' @param protoblob The prototype blob
+#'
+#' @return The shaid to assign the protoblob
+shaidyHashProtoBlob <- function(blob.type, protoblob) {
+    stopifnot(file.exists(protoblob));
+    if (file.info(protoblob)$isdir) {
+        files <- sort (dir (protoblob, recursive=TRUE));
+        hashes <- vapply (files, function(x)gitHashObject(file.path(protoblob,x)), "");
+        value <- gitSha(paste(sprintf("%s=%s",files,hashes),collapse=','));
+    } else {
+        value <- gitHashObject (protoblob);
+    }
+    new ('shaid', type=blob.type, value=value)
 }
