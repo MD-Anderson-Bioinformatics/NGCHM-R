@@ -641,7 +641,8 @@ chmNewColorMap <- function (values, colors=NULL, names=NULL, shapes=NULL, zs=NUL
 	} else if (type == "linear") {
             if (is(values,"shaid")){
                 # FIXME: redoing calculation is inefficient
-	        values <- ngchmLoadDatasetBlob (ngchm.env$tmpShaidy, values)$mat;
+                repo <- ngchmFindRepo (values);
+	        values <- ngchmLoadDatasetBlob (repo, values)$mat;
             }
 	    if ((nrow(values)==1) || (ncol(values)==1)) {
 	        minv <- min (values, na.rm=TRUE);
@@ -1629,11 +1630,11 @@ validateNewCovariateBar <- function (chm, where, bar)
 	layer <- chm@layers[[1]];
 	layername <- sprintf ('layer "%s"', layer@name);
 	if (where %in% c("row", "both")) {
-            labels <- ngchmGetLabels (ngchm.env$tmpShaidy, layer@data, "row");
+            labels <- ngchmGetLabels (layer@data, "row");
 	    validateCovariateBar (chm, "Row", layername, labels, bar);
 	}
 	if (where %in% c("column", "both")) {
-            labels <- ngchmGetLabels (ngchm.env$tmpShaidy, layer@data, "column");
+            labels <- ngchmGetLabels (layer@data, "column");
 	    validateCovariateBar (chm, "Column", layername, labels, bar);
 	}
     }

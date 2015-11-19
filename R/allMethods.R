@@ -382,7 +382,8 @@ writeDataLayer <- function (chm, layer, dir, index, chan) {
     if (cmid == 0)
         stop (sprintf ("Internal error detected: no color map found for data layer %d (%s). Please report.", index, layer@name));
     cat (sprintf ("%s.defaultCM=cm%d\n", prefix, cmid), file=chan);
-    layerData <- ngchmLoadDatasetBlob (ngchm.env$tmpShaidy, layer@data)$mat;
+    repo <- ngchmFindRepo (layer@data);
+    layerData <- ngchmLoadDatasetBlob (repo, layer@data)$mat;
     write.table (layerData, file=paste (dir, sprintf("%s.data.tsv", prefix), sep="/"),
                  sep="\t", quote=FALSE);
 }
@@ -761,8 +762,9 @@ setMethod ("chmName",
 writeOrder <- function (inpDir, type, ord) {
     # Write the order/dendrogram out as a column dendrogram to the inpDir
     if (is(ord, "shaid")) {
+        repo <- ngchmFindRepo (ord);
+        blobfile <- repo$blob.path (ord@type, ord@value, 'dendrogram.str');
 	filename <- file.path (inpDir, sprintf ("dendro_%s.str", type));
-        blobfile <- ngchm.env$tmpShaidy$blob.path ('dendrogram', ord@value, 'dendrogram.str');
         stopifnot (file.copy (blobfile, filename));
     } else if (class (ord) == "character") {
 	filename <- file.path (inpDir, sprintf ("%s.txt", type));
@@ -1030,6 +1032,7 @@ ngchmMakeFormat.original <- function (chm,
 	}
     }
     postBuildFeedback (100, "post build completed");
+    chm
 };
 
 #' @rdname chmAdd-method

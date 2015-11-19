@@ -158,6 +158,24 @@ shaidyInitRepository <- function (shaidyDir, blob.types) {
     }
 };
 
+#' Find the first repository, if any, that contains the requested shaid
+#'
+#' @param repos The list of repositories to search
+#' @param shaid The shaid to search for
+#'
+#' @return The first repository containing the shaid, otherwise NULL
+#'
+#' @export
+shaidyFindRepo <- function (repos, shaid) {
+    while (length (repos) > 0) {
+        if (file.exists (repos[[1]]$blob.path (shaid@type, shaid@value))) {
+            return (repos[[1]]);
+        }
+        repos <- repos[-1];
+    }
+    NULL
+}
+
 #' Create a provid from a list of label values
 #'
 #' @param ... shaidyRepo followed by a list of name=value labels to store in the provid

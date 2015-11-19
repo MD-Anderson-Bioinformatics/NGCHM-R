@@ -4,11 +4,9 @@
 \alias{ngchmGetLabels}
 \title{Get the axis labels of a shaidy dataset}
 \usage{
-ngchmGetLabels(shaidyRepo, shaid, axis)
+ngchmGetLabels(shaid, axis)
 }
 \arguments{
-\item{shaidyRepo}{The shaidy repository}
-
 \item{shaid}{The shaid of the dataset to get the labels of}
 
 \item{axis}{The axis of the labels to get}

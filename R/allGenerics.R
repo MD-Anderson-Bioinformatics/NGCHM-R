@@ -428,6 +428,8 @@ setGeneric ("chmUrlBase", function(server) standardGeneric("chmUrlBase"));
 #' @param ... Additional chmMake options that depend on the format of the NGCHM.  For details
 #'        of the additional parameters of format x see ngchmMakeFormat.x (e.g. ngchmMakeFormat.original).
 #'
+#' @return The chm
+#'
 #' @seealso ngchmServer-class
 #' @seealso ngchm-class
 #' @seealso chmNew

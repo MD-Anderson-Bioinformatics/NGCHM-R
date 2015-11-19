@@ -16,6 +16,9 @@ chmMake(chm, ...)
 \item{...}{Additional chmMake options that depend on the format of the NGCHM.  For details
        of the additional parameters of format x see ngchmMakeFormat.x (e.g. ngchmMakeFormat.original).}
 }
+\value{
+The chm
+}
 \description{
 Compile the specified Next Generation Clustered Heat Map (NGCHM) in preparation for installation.
 }

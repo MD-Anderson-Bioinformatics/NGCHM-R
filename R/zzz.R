@@ -34,6 +34,8 @@ ngchm.env <- new.env(parent=emptyenv());
     shaidyDir <- tempfile ("shaidy");
     ngchmInitShaidyRepository (shaidyDir);
     ngchm.env$tmpShaidy <- shaidyLoadRepository (shaidyDir);
+    ngchm.env$tmpShaidyStack <- c();
+    ngchm.env$shaidyStack <- c();
 }
 
 #' Specify per-user configuration for a specific deploy Server.

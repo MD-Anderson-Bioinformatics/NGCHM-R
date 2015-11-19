@@ -7,6 +7,43 @@ ngchmInitShaidyRepository <- function (shaidyDir) {
     shaidyInitRepository (shaidyDir, c("collection", "chm", "dataset", "dendrogram", "label", "tile"))
 }
 
+#' Push a shaidy repository onto the stack of temporary repositories
+#'
+#' @param shaidyDir Basepath of local shaidy repository to use as a temporary repository
+#'
+#' @export
+ngchmPushTempRepository <- function (shaidyDir) {
+    newrepo <- shaidyLoadRepository (shaidyDir);
+    ngchm.env$tmpShaidyStack <- c(list(ngchm.env$tmpShaidy), ngchm.env$tmpShaidyStack);
+    ngchm.env$tmpShaidy <- newrepo
+}
+
+#' Push a shaidy repository onto the stack of source repositories
+#'
+#' @param shaidyDir Basepath of local shaidy repository to use as a source repository
+#'
+#' @export
+ngchmPushSourceRepository <- function (shaidyDir) {
+    newrepo <- shaidyLoadRepository (shaidyDir);
+    ngchm.env$shaidyStack <- c(list(newrepo), ngchm.env$shaidyStack);
+}
+
+#' Find a repository, if any, that contains the requested shaid
+#'
+#' @param shaid The shaid to search for
+#' @param required Abort if requireed and shaid not found in a known repo
+#'
+#' @return The first repository containing the shaid, otherwise NULL.  The
+#'         temporary repositories are searched before source repositories.
+#'
+#' @export
+ngchmFindRepo <- function (shaid, required=TRUE) {
+    repo <- shaidyFindRepo (c(list(ngchm.env$tmpShaidy),ngchm.env$tmpShaidyStack,ngchm.env$shaidyStack), shaid);
+    if (required && length(repo)==0) {
+        stop (sprintf ("Shaid %s %s not found in any known repository", shaid@type, shaid@value));
+    }
+    repo
+}
 
 #' Create a new collection in a local shaidy repository
 #'
@@ -301,17 +338,16 @@ ngchmMakeFormat.shaidy <- function (chm) {
 
 #' Get the axis labels of a shaidy dataset
 #'
-#' @param shaidyRepo The shaidy repository
 #' @param shaid The shaid of the dataset to get the labels of
 #' @param axis The axis of the labels to get
 #'
 #' @return A string vector containing the axis labels of the dataset
 #'
 #' @export
-ngchmGetLabels <- function (shaidyRepo, shaid, axis) {
-    stopifnot (is(shaidyRepo,"shaidyRepo"),
-               is(shaid,"shaid"),
+ngchmGetLabels <- function (shaid, axis) {
+    stopifnot (is(shaid,"shaid"),
                axis %in% c("row","column"));
+    shaidyRepo <- ngchm.env$tmpShaidy;
     provid <- shaidyProvenance (shaidyRepo, name="ngchmGetLabels", shaid=shaid@value, axis=axis);
     res <- shaidyRepo$provenanceDB$get ('label', provid);
     if (length(res) == 0) {
