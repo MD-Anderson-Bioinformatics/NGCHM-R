@@ -275,8 +275,9 @@ writePropertiesPost <- function (outDir, props) {
     }
 }
 
-writeChmPost <- function (chm) {
-    if (is.list(chm@properties)) writePropertiesPost (file.path(chm@outDir,chm@name), chm@properties);
+writeChmPost <- function (chm, outdir=NULL) {
+    if (length(outdir)==0) outdir <- file.path(chm@outDir,chm@name);
+    if (is.list(chm@properties)) writePropertiesPost (outdir, chm@properties);
 }
 
 startcust <- paste ("(function(chm){",
@@ -654,7 +655,7 @@ getFnsRqrd <- function (tflist, type) {
     }
 }
 
-writeChm <- function (chm) {
+writeChm <- function (chm, saveDir=NULL) {
     if (length (chm@layers) == 0)
         stop ("The NGCHM has no data layers. You must add at least one.");
     if (length (chm@colormaps) == 0)
@@ -662,22 +663,25 @@ writeChm <- function (chm) {
 
     #chm <- chmAddAutoMenuItems (chm);
     genSpecFeedback (50, "creating specification directory");
-    unlink (chm@inpDir, recursive=TRUE);
-    if (!dir.create (chm@inpDir, recursive=TRUE)) {
-        stop (sprintf ("Unable to create directory '%s' in which to save CHM specification", chm@inpDir));
+    if (length(saveDir)==0) {
+        unlink (chm@inpDir, recursive=TRUE);
+        if (!dir.create (chm@inpDir, recursive=TRUE)) {
+            stop (sprintf ("Unable to create directory '%s' in which to save CHM specification", chm@inpDir));
+        }
+        #system (sprintf ("/bin/rm -rf %s", chm@inpDir));
+        #systemCheck (sprintf ("/bin/mkdir %s", chm@inpDir));
+        saveDir <- chm@inpDir;
     }
-    #system (sprintf ("/bin/rm -rf %s", chm@inpDir));
-    #systemCheck (sprintf ("/bin/mkdir %s", chm@inpDir));
 
     genSpecFeedback (55, "saving user's CHM");
     orig.chm <- chm;
     chm@inpDir <- chm@outDir <- chm@saveDir <- "";
-    save (chm, file=file.path (orig.chm@inpDir, "chm.Rdata"));
+    save (chm, file=file.path (saveDir, "chm.Rdata"));
     chm <- orig.chm;
     chm@extrafiles <- c (chm@extrafiles, "chm.Rdata");
 
     genSpecFeedback (60, "writing specification");
-    props = file (file.path (chm@inpDir, chm@propFile), "w");
+    props = file (file.path (saveDir, chm@propFile), "w");
     cat (sprintf ("# This NGCHM property description was produced using the R NGCHM library version %s at %s\n",
                   packageDescription("NGCHM")$Version, date()), file=props);
     cat (sprintf ("data.set.name=%s\n", chm@name), file=props);
@@ -694,13 +698,13 @@ writeChm <- function (chm) {
     }
     genSpecFeedback (70, "writing data layers");
     for (ii in 1:length(chm@layers))
-        writeDataLayer (chm, chm@layers[[ii]], chm@inpDir, ii, props);
+        writeDataLayer (chm, chm@layers[[ii]], saveDir, ii, props);
     if (is.list(chm@properties)) {
-        writeProperties (chm@inpDir, chm@properties, props);
+        writeProperties (saveDir, chm@properties, props);
 	if (hasSpecialProperties (chm)) {
 	    chm@extrafiles <- c (chm@extrafiles, "extra.properties");
-	    extraprops <- file (file.path (chm@inpDir, "extra.properties"), "w");
-            writeProperties (chm@inpDir, chm@properties, extraprops, TRUE);
+	    extraprops <- file (file.path (saveDir, "extra.properties"), "w");
+            writeProperties (saveDir, chm@properties, extraprops, TRUE);
 	    close (extraprops);
 	}
     }
@@ -723,31 +727,31 @@ writeChm <- function (chm) {
 
     genSpecFeedback (90, "writing covariate bar data");
     if (!is.null(chm@rowOrder))
-        writeOrder (chm@inpDir, "row", chm@rowOrder);
+        writeOrder (saveDir, "row", chm@rowOrder);
     if (!is.null(chm@colOrder))
-        writeOrder (chm@inpDir, "column", chm@colOrder);
+        writeOrder (saveDir, "column", chm@colOrder);
     if (!is.null(chm@rowMeta))
-        writeMeta (chm@inpDir, "row", chm@rowMeta);
+        writeMeta (saveDir, "row", chm@rowMeta);
     if (!is.null(chm@colMeta))
-        writeMeta (chm@inpDir, "column", chm@colMeta);
+        writeMeta (saveDir, "column", chm@colMeta);
     if (is.list (chm@rowCovariateBars)) {
-	chan <- file (paste (chm@inpDir, "rowClassification1.txt", sep="/"), "w");
+	chan <- file (paste (saveDir, "rowClassification1.txt", sep="/"), "w");
 	for (ii in 1:length(chm@rowCovariateBars) )
-	    writeCovariateBar (chm@rowCovariateBars[[ii]], chm@inpDir, "row", ii, chan);
+	    writeCovariateBar (chm@rowCovariateBars[[ii]], saveDir, "row", ii, chan);
 	close (chan);
     }
     if (is.list(chm@colCovariateBars)) {
-	chan <- file (paste (chm@inpDir, "columnClassification1.txt", sep="/"), "w");
+	chan <- file (paste (saveDir, "columnClassification1.txt", sep="/"), "w");
 	for (ii in 1:length(chm@colCovariateBars))
-	    writeCovariateBar (chm@colCovariateBars[[ii]], chm@inpDir, "column", ii, chan);
+	    writeCovariateBar (chm@colCovariateBars[[ii]], saveDir, "column", ii, chan);
 	close (chan);
     }
 
     genSpecFeedback (95, "writing custom CSS and Javascript");
-    if (is.list(chm@css)) writeCSS (chm@css, chm@inpDir);
-    chmWriteCustomJS (chm, file.path (chm@inpDir, "custom-backup.js"));
+    if (is.list(chm@css)) writeCSS (chm@css, saveDir);
+    chmWriteCustomJS (chm, file.path (saveDir, "custom-backup.js"));
     jsloader <- readLines(system.file("extdata", "custom.js", package="NGCHM"));
-    jsfile <- file (file.path (chm@inpDir, "custom.js"), "w");
+    jsfile <- file (file.path (saveDir, "custom.js"), "w");
     writeLines (jsloader, jsfile);
     close (jsfile);
 }
@@ -1596,7 +1600,7 @@ setMethod ("chmAddToolboxRC",
 setMethod ("shaidyGetShaid",
     signature = c(object="ngchm"),
     definition = function(object) {
-        stop ("Not implemented")
+        ngchmSaveChmAsBlob (ngchm.env$tmpShaidy, object)
 });
 
 #' @rdname shaidyGetComponents-method

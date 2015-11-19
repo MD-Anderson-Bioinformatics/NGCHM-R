@@ -17,7 +17,15 @@ ngchmCreateServerProtocol ("shaidydir",
         shaid <- shaidyGetShaid (chm);
 	shaidyDir <- ngchmGetProtoParam (server, 'basepath');
         shaidyRepo <- shaidyLoadRepository (shaidyDir);
-        collection <- ngchmLoadCollection (shaidyRepo, collectionID);
+        collection <- ngchmLoadCollection (shaidyRepo, collectionId);
+        tocheck <- c(shaid, shaidyGetComponents(chm));
+        present <- shaidyBlobExists (shaidyRepo, tocheck);
+        for (sid in tocheck[!present]) {
+	    cat (sprintf ("Copying shaid %s %s to repository\n", sid@type, sid@value), file=stderr());
+            repo <- ngchmFindRepo (sid);
+            stopifnot (length(repo) > 0);
+            shaidyCopyBlob (repo, sid, shaidyRepo);
+        }
 	cat (sprintf ("Saving chm %s to collection %s\n", chm@name, collectionId), file=stderr());
 	ngchmAddChmToCollection (collection, shaid);
 	return (invisible(shaid));

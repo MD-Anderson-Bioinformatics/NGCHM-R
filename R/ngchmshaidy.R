@@ -366,3 +366,19 @@ ngchmGetLabels <- function (shaid, axis) {
 	readLines (blobfile)
     }
 }
+
+#' Save an NGCHM as a shaidy blob
+#'
+#' @param shaidyRepo The shaidy repository to write to
+#' @param chm The NGCHM to write
+#'
+#' @return The shaid of the saved NGCHM
+ngchmSaveChmAsBlob <- function (shaidyRepo, chm) {
+    stopifnot (is(shaidyRepo,"shaidyRepo"),
+               is(chm,"ngchm"));
+    blob <- shaidyCreateProtoBlob (shaidyRepo, 'chm');
+    writeChm (chm, blob);
+    writeChmPost (chm, blob);
+    shaid <- shaidyHashProtoBlob ('chm', blob);
+    shaidyFinalizeProtoBlob (shaidyRepo, shaid, blob)
+}
