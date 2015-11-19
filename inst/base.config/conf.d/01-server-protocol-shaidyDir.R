@@ -14,7 +14,7 @@ ngchmCreateServerProtocol ("shaidydir",
     paramValidator = validator,
     installMethod = function (server, chm, collectionId) {
 	stopifnot (chm@format == "shaidy");
-        shaid <- ngchmGetShaid (chm);
+        shaid <- shaidyGetShaid (chm);
 	shaidyDir <- ngchmGetProtoParam (server, 'basepath');
         shaidyRepo <- shaidyLoadRepository (shaidyDir);
         collection <- ngchmLoadCollection (shaidyRepo, collectionID);

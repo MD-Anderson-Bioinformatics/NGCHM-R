@@ -1591,10 +1591,19 @@ setMethod ("chmAddToolboxRC",
 	CHM
 });
 
-#' @rdname ngchmGetShaid-method
-#' @aliases ngchmGetShaid,ngchm-method
-setMethod ("ngchmGetShaid",
+#' @rdname shaidyGetShaid-method
+#' @aliases shaidyGetShaid,ngchm-method
+setMethod ("shaidyGetShaid",
     signature = c(object="ngchm"),
     definition = function(object) {
         stop ("Not implemented")
+});
+
+#' @rdname shaidyGetComponents-method
+#' @aliases shaidyGetComponents,ngchm-method
+setMethod ("shaidyGetComponents",
+    signature = c(object="ngchm"),
+    definition = function(object) {
+        c(object@rowOrder, object@colOrder,
+          lapply(object@layers,function(x)x@data))
 });

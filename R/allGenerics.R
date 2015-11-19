@@ -591,11 +591,22 @@ setGeneric ("chmLoadCHM", function(serverOrURL,name) standardGeneric("chmLoadCHM
 
 #' Get shaid for an object
 #'
-#' @exportMethod ngchmGetShaid
-#' @rdname ngchmGetShaid-method
+#' @exportMethod shaidyGetShaid
+#' @rdname shaidyGetShaid-method
 #'
-#' @param object The object, such as a chm, dataset, etc., for which to compute the shaid
+#' @param object The object, such as a chm, dataset, etc., for which to get the shaid
 #'
-#' @return A string containing the object's shaid
+#' @return The shaid of the object.
 #'
-setGeneric ("ngchmGetShaid", function(object) standardGeneric("ngchmGetShaid"))
+setGeneric ("shaidyGetShaid", function(object) standardGeneric("shaidyGetShaid"))
+
+#' Get an object's component shaids
+#'
+#' @exportMethod shaidyGetComponents
+#' @rdname shaidyGetComponents-method
+#'
+#' @param object The object, such as a chm, dataset, etc., for which to get the component shaids
+#'
+#' @return A list of shaids.
+#'
+setGeneric ("shaidyGetComponents", function(object) standardGeneric("shaidyGetComponents"))
