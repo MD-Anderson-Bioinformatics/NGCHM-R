@@ -158,7 +158,9 @@ ngchmAddMatrixToCollection <- function (collection, name, shaid) {
 #'
 #' @export
 ngchmAddChmToCollection <- function (collection, shaid) {
-    if (!shaid %in% collection$chms) {
+    stopifnot (is(shaid,"shaid"),
+               shaid@type == 'chm');
+    if (!shaid@value %in% collection$chms) {
         collection$chms <- append (collection$chms, shaid@value);
         writeLines(jsonlite::toJSON(collection$chms,pretty=TRUE),
 	           file.path (collection$basepath, "chms.json"));
