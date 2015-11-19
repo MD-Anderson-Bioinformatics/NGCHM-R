@@ -277,3 +277,48 @@ shaidyHashProtoBlob <- function(blob.type, protoblob) {
     }
     new ('shaid', type=blob.type, value=value)
 }
+
+#' Determine if one more blobs exist in a shaidy repository
+#'
+#' @param repo The shaidy repository
+#' @param shaids A shaid or list of shaids
+#'
+#' @return a boolean vector
+#'
+#' @export
+shaidyBlobExists <- function(repo, shaids) {
+    if (is(shaids,"shaid")) {
+        dir.exists (repo$blob.path (shaids@type, shaids@value))
+    } else if (is(shaids,"list")) {
+        vapply (shaids, function(sid)shaidyBlobExists(repo,sid), TRUE)
+    } else {
+        stop (sprintf("shaids has unknown class %s", class(shaids)));
+    }
+}
+
+#' Copy a blob from one repository to another
+#'
+#' @param src The source repository
+#' @param shaid The shaid of the blob to copy
+#' @param dst The destination repository
+#'
+#' @return the shaid
+#'
+#' @export
+shaidyCopyBlob <- function (src, shaid, dst) {
+    stopifnot(shaidyBlobExists(src, shaid));
+    if (shaidyBlobExists (dst, shaid)) return;
+    blob <- shaidyCreateProtoBlob (dst, shaid@type);
+    srcdir <- src$blob.path(shaid@type,shaid@value);
+    files <- dir (srcdir, recursive=TRUE, include.dirs=TRUE);
+    for (ff in files) {
+        srcf <- file.path (srcdir, ff);
+        dstf <- file.path (blob, ff);
+        if (file.info(srcf)$isdir) {
+	    stopifnot (dir.create(dstf, recursive=FALSE));
+	} else {
+	    stopifnot(file.copy(srcf, dstf));
+	}
+    }
+    shaidyFinalizeProtoBlob (dst, shaid, blob)
+}
