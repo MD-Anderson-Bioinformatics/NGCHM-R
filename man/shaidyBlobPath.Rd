@@ -10,7 +10,7 @@ shaidyBlobPath(shaidyDir)
 \item{shaidyDir}{Basepath to a local shaidy repository.}
 }
 \value{
-a function (type, ...) that accepts a blob type and optionally
+a function (first, ...) that accepts either a shaid or a blob type and optionally
         additional file path components and returns a filepath
 }
 \description{

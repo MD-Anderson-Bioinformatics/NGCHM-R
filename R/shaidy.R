@@ -18,7 +18,7 @@ gitHashObject <- function (path) {
 #'
 #' @param shaidyDir Basepath to a local shaidy repository.
 #'
-#' @return a function (type, ...) that accepts a blob type and optionally
+#' @return a function (first, ...) that accepts either a shaid or a blob type and optionally
 #'         additional file path components and returns a filepath
 #'
 #' @import jsonlite
@@ -41,9 +41,11 @@ shaidyBlobPath <- function (shaidyDir) {
     names(paths) <- typeTab$Type;
 
     # Return blob.path function for this repository
-    function (type, ...) {
+    function (first, ...) {
+        type <- if (is(first,"shaid")) first@type else first;
 	d <- if (type %in% names(paths)) paths[type] else file.path(shaidyDir, type);
-	file.path (d, ...)
+	if(is(first,"shaid")) d <- file.path (d, first@value);
+        file.path (d, ...)
     }
 };
 
