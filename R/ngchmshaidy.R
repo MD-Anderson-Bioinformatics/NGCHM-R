@@ -401,3 +401,34 @@ ngchmSaveChmAsBlob <- function (shaidyRepo, chm) {
     shaid <- shaidyHashProtoBlob ('chm', blob);
     shaidyFinalizeProtoBlob (shaidyRepo, shaid, blob)
 }
+
+#' Get the tiles for a shaidy dataset
+#'
+#' @param repo The shaidy repository in which to create the tile
+#' @param dataset The shaid of the dataset to tile
+#' @param rowOrder The row order of the tiles
+#' @param colOrder The column order of the tiles
+#'
+#' @return a list of shaids containing the tiles
+#'
+#' @export
+ngchmTileDataset <- function (repo, dataset, rowOrder, colOrder) {
+    stopifnot (is(repo,"shaidyRepo"),
+               is(dataset,"shaid"), is(rowOrder,"shaid"), is(colOrder,"shaid"),
+               rowOrder@type %in% c("label","dendrogram"),
+               colOrder@type %in% c("label","dendrogram"));
+
+    if (rowOrder@type=="dendrogram") rowOrder <- ngchmGetLabels(rowOrder,"row")[[1]];
+    if (colOrder@type=="dendrogram") colOrder <- ngchmGetLabels(colOrder,"column")[[1]];
+    provid <- shaidyProvenance (repo, name="tileDataset", dataset=dataset@value, rowOrder=rowOrder@value, colOrder=colOrder@value);
+    res <- repo$provenanceDB$get ('tile', provid);
+    if (length(res) == 0) {
+        blob <- shaidyCreateProtoBlob (repo, 'tile');
+	stopifnot (system2 ("tiledata", args=c(vapply(c(dataset,rowOrder,colOrder),repo$blob.path,""),blob)) == 0);
+        shaid <- shaidyHashProtoBlob ('tile', blob);
+        shaidyFinalizeProtoBlob (repo, shaid, blob)
+	repo$provenanceDB$insert (provid, shaid);
+        res <- list(shaid)
+    }
+    res
+}
