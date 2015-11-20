@@ -338,33 +338,52 @@ ngchmMakeFormat.shaidy <- function (chm) {
     chm
 }
 
-#' Get the axis labels of a shaidy dataset
+#' Get the axis labels of a shaidy dataset or dendrogram
 #'
-#' @param shaid The shaid of the dataset to get the labels of
-#' @param axis The axis of the labels to get
+#' @param shaid The shaid of the dataset or dendrogram to get the labels of
+#' @param axis For datasets, the axis of the labels to get
 #'
-#' @return A string vector containing the axis labels of the dataset
+#' @return a list of shaids containing the labels
 #'
 #' @export
-ngchmGetLabels <- function (shaid, axis) {
+ngchmGetLabels <- function (shaid, axis=NULL) {
     stopifnot (is(shaid,"shaid"),
-               axis %in% c("row","column"));
+               (shaid@type=='dendrogram') || (axis %in% c("row","column")));
     shaidyRepo <- ngchm.env$tmpShaidy;
-    provid <- shaidyProvenance (shaidyRepo, name="ngchmGetLabels", shaid=shaid@value, axis=axis);
+    provid <- shaidyProvenance (shaidyRepo, name="ngchmGetLabels", type=shaid@type, shaid=shaid@value, axis=axis);
     res <- shaidyRepo$provenanceDB$get ('label', provid);
     if (length(res) == 0) {
-        ds <- ngchmLoadDatasetBlob (shaidyRepo, shaid);
-        labels <- (if (axis=="row") rownames else colnames)(ds$mat);
+        if (shaid@type == 'dataset') {
+            ds <- ngchmLoadDatasetBlob (shaidyRepo, shaid);
+            labels <- (if (axis=="row") rownames else colnames)(ds$mat);
+        } else if (shaid@type == 'dendrogram') {
+	    dend <- readLines (shaidyRepo$blob.path(shaid@type,shaid@value,"dendrogram.str"));
+	    leaves <- which(grepl ('[^"]*--leaf "', dend));
+	    labels <- sub('".*', '', sub ('[^"]*--leaf "', '', dend[leaves]));
+        } else {
+	    stop (sprintf ("Unknown shaid type %s", shaid@type));
+        }
 	filename <- tempfile ("label", fileext='.txt');
 	writeLines (labels, filename);
 	res <- list(shaidyAddFileBlob (shaidyRepo, 'label', 'labels.txt', filename));
         unlink (filename);
 	shaidyRepo$provenanceDB$insert (provid, res[[1]]);
-        labels
-    } else {
-        blobfile <- ngchm.env$tmpShaidy$blob.path ('label', res[[1]]@value, 'labels.txt');
-	readLines (blobfile)
     }
+    res
+}
+
+#' Get the axis labels of a shaidy dataset or dendrogram
+#'
+#' @param shaid The shaid of the dataset or dendrogram to get the labels of
+#' @param axis For datasets, the axis of the labels to get
+#'
+#' @return A string vector containing the axis labels of the dataset or dendrogram
+#'
+#' @export
+ngchmGetLabelsStr <- function (shaid, axis=NULL) {
+    res <- ngchmGetLabels (shaid, axis);
+    blobfile <- ngchm.env$tmpShaidy$blob.path (res[[1]]@type, res[[1]]@value, 'labels.txt');
+    readLines (blobfile)
 }
 
 #' Save an NGCHM as a shaidy blob

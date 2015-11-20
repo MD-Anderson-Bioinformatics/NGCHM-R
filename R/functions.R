@@ -1630,11 +1630,11 @@ validateNewCovariateBar <- function (chm, where, bar)
 	layer <- chm@layers[[1]];
 	layername <- sprintf ('layer "%s"', layer@name);
 	if (where %in% c("row", "both")) {
-            labels <- ngchmGetLabels (layer@data, "row");
+            labels <- ngchmGetLabelsStr (layer@data, "row");
 	    validateCovariateBar (chm, "Row", layername, labels, bar);
 	}
 	if (where %in% c("column", "both")) {
-            labels <- ngchmGetLabels (layer@data, "column");
+            labels <- ngchmGetLabelsStr (layer@data, "column");
 	    validateCovariateBar (chm, "Column", layername, labels, bar);
 	}
     }
