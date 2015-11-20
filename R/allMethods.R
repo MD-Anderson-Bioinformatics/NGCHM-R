@@ -221,6 +221,14 @@ writeColorMap <- function (context, cmap, prefix, suffix, chan) {
     }
 }
 
+jsonColorMap <- function (context, cmap) {
+    stopifnot (length(cmap@missing) > 0);
+    list (type=cmap@type,
+          missing=cmap@missing,
+	  colors=vapply(cmap@points, function(p)p@color, ""),
+	  values=vapply(cmap@points, function(p)as.character(p@value), ""))
+}
+
 writeMenu <- function (menu, prefix, chan) {
     if (is.list(menu)) {
 	for (ii in 1:length(menu)) {
@@ -230,7 +238,7 @@ writeMenu <- function (menu, prefix, chan) {
 }
 
 writeCSS <- function (css, inpDir) {
-    chan <- file (paste (inpDir, "custom.css", sep="/"), "w");
+    chan <- file (file.path (inpDir, "custom.css"), "w");
     for (ii in 1:length(css))
         cat (css[[ii]]@css, sep="\n", file=chan);
     close (chan);
@@ -240,7 +248,7 @@ hasSpecialProperties <- function (chm) {
     any (vapply (chm@properties, function (p) substr(p@label,1,1)=='!', TRUE))
 }
 
-writeProperties <- function (inpDir, props, chan, writeSpecial=FALSE) {
+writeProperties <- function (inpDir, format, props, chan, writeSpecial=FALSE) {
     if (writeSpecial) {
 	for (ii in 1:length(props)) {
 	    l <- props[[ii]]@label;
@@ -261,7 +269,7 @@ writeProperties <- function (inpDir, props, chan, writeSpecial=FALSE) {
     }
 }
 
-writePropertiesPost <- function (outDir, props) {
+writePropertiesPost <- function (outDir, format, props) {
     hidden.tags <- NULL;
     for (ii in 1:length(props)) {
 	if (props[[ii]]@label == "hidden.tags") {
@@ -270,14 +278,19 @@ writePropertiesPost <- function (outDir, props) {
     }
     for (ii in 1:length(props)) {
 	if ((props[[ii]]@label == "hidden") && (props[[ii]]@value == "TRUE")) {
-	    cat (hidden.tags, sep='', file=file.path (outDir, "hidden.txt"));
+	    if (format == "original") {
+	        cat (hidden.tags, sep='', file=file.path (outDir, "hidden.txt"));
+	    } else {
+	        hidden.tags <- sub("\n","",hidden.tags);
+                writeLines(jsonlite::toJSON(hidden.tags,pretty=TRUE), file.path (outDir, "hidden.json"));
+	    }
 	}
     }
 }
 
 writeChmPost <- function (chm, outdir=NULL) {
     if (length(outdir)==0) outdir <- file.path(chm@outDir,chm@name);
-    if (is.list(chm@properties)) writePropertiesPost (outdir, chm@properties);
+    if (is.list(chm@properties)) writePropertiesPost (outdir, chm@format, chm@properties);
 }
 
 startcust <- paste ("(function(chm){",
@@ -365,6 +378,15 @@ sameColormap <- function (cmap1, cmap2) {
 	}
     }
     return (TRUE);
+}
+
+# create list representation of layer for output by toJSON
+#
+prepDataLayer <- function(chm, layer) {
+    cmid <- which(vapply (chm@colormaps, function(cmap)sameColormap(cmap,layer@colors), TRUE));
+    if (length(cmid) == 0)
+        stop (sprintf ("Internal error detected: no color map found for data layer %s. Please report.", layer@name));
+    list(name=layer@name, cmap=cmid[[1]], data=layer@data)
 }
 
 writeDataLayer <- function (chm, layer, dir, index, chan) {
@@ -673,78 +695,119 @@ writeChm <- function (chm, saveDir=NULL) {
         saveDir <- chm@inpDir;
     }
 
-    genSpecFeedback (55, "saving user's CHM");
-    orig.chm <- chm;
-    chm@inpDir <- chm@outDir <- chm@saveDir <- "";
-    save (chm, file=file.path (saveDir, "chm.Rdata"));
-    chm <- orig.chm;
-    chm@extrafiles <- c (chm@extrafiles, "chm.Rdata");
-
-    genSpecFeedback (60, "writing specification");
-    props = file (file.path (saveDir, chm@propFile), "w");
-    cat (sprintf ("# This NGCHM property description was produced using the R NGCHM library version %s at %s\n",
-                  packageDescription("NGCHM")$Version, date()), file=props);
-    cat (sprintf ("data.set.name=%s\n", chm@name), file=props);
-    cat (sprintf ("chm.main.image.height=%d\n", chm@height), file=props);
-    cat (sprintf ("chm.main.image.width=%d\n", chm@width), file=props);
-    if (length (chm@tags) > 0)
-        cat (sprintf ("tags=%s\n", paste(chm@tags,sep=",",collapse=",")), file=props);
-    genSpecFeedback (65, "writing color schemes");
-    for (ii in 1:length(chm@colormaps)) {
-	cmap <- chm@colormaps[[ii]];
-	if (length (cmap@missing) == 0)
-	    cmap@missing <- "white";
-	writeColorMap ("main", cmap, sprintf("colormap%d", ii), "", props);
+    if (chm@format == "original") {
+        genSpecFeedback (55, "saving user's CHM");
+        orig.chm <- chm;
+        chm@inpDir <- chm@outDir <- chm@saveDir <- "";
+        save (chm, file=file.path (saveDir, "chm.Rdata"));
+        chm <- orig.chm;
+        chm@extrafiles <- c (chm@extrafiles, "chm.Rdata");
     }
-    genSpecFeedback (70, "writing data layers");
-    for (ii in 1:length(chm@layers))
-        writeDataLayer (chm, chm@layers[[ii]], saveDir, ii, props);
+
+    if (chm@format == "original") {
+        genSpecFeedback (60, "writing specification");
+	props <- file (file.path (saveDir, chm@propFile), "w");
+	cat (sprintf ("# This NGCHM property description was produced using the R NGCHM library version %s at %s\n",
+		      packageDescription("NGCHM")$Version, date()), file=props);
+	cat (sprintf ("data.set.name=%s\n", chm@name), file=props);
+	cat (sprintf ("chm.main.image.height=%d\n", chm@height), file=props);
+	cat (sprintf ("chm.main.image.width=%d\n", chm@width), file=props);
+    } else {
+        props <- list(name=chm@name);
+    }
+
+    if (length (chm@tags) > 0) {
+	if (chm@format=="original") {
+            cat (sprintf ("tags=%s\n", paste(chm@tags,sep=",",collapse=",")), file=props);
+	} else {
+	    props$tags <- chm@tags;
+	}
+    }
+
+    if (chm@format=="original") {
+	genSpecFeedback (65, "writing color schemes");
+	for (ii in 1:length(chm@colormaps)) {
+	    cmap <- chm@colormaps[[ii]];
+	    if (length (cmap@missing) == 0)
+		cmap@missing <- "white";
+	    writeColorMap ("main", cmap, sprintf("colormap%d", ii), "", props);
+	}
+    } else {
+        props$colormaps <- lapply (chm@colormaps, function(cmap) {
+	    if (length (cmap@missing) == 0)
+		cmap@missing <- "white";
+	    jsonColorMap ("main", cmap)
+	});
+	names(props$colormaps) <- sprintf ("colormap%d", 1:length(chm@colormaps));
+    }
+
+    if (chm@format=="original") {
+        genSpecFeedback (70, "writing data layers");
+        for (ii in 1:length(chm@layers))
+            writeDataLayer (chm, chm@layers[[ii]], saveDir, ii, props);
+    }
+
     if (is.list(chm@properties)) {
-        writeProperties (saveDir, chm@properties, props);
+	if (chm@format == "original") {
+	    writeProperties (saveDir, chm@format, chm@properties, props);
+	} else {
+	    baseprops <- file (file.path (saveDir, "base-properties.json"), "w");
+	    writeProperties (saveDir, chm@format, chm@properties, baseprops);
+	    close (baseprops);
+	}
 	if (hasSpecialProperties (chm)) {
-	    chm@extrafiles <- c (chm@extrafiles, "extra.properties");
-	    extraprops <- file (file.path (saveDir, "extra.properties"), "w");
-            writeProperties (saveDir, chm@properties, extraprops, TRUE);
+	    fname <- if (chm@format=="original") "extra.properties" else "extra-properties.json";
+	    chm@extrafiles <- c (chm@extrafiles, fname);
+	    extraprops <- file (file.path (saveDir, fname), "w");
+	    writeProperties (saveDir, chm@format, chm@properties, extraprops, TRUE);
 	    close (extraprops);
 	}
     }
-    if (is.list(chm@overviews)) {
-	for (ii in 1:length(chm@overviews)) {
-	    ov <- chm@overviews[[ii]];
-	    cat (sprintf ("overview%d.format=%s\n", ii, ov@format), file=props);
-	    if (!is.null(ov@width))
-		cat (sprintf ("overview%d.width=%d\n", ii, ov@width), file=props);
-	    if (!is.null(ov@height))
-		cat (sprintf ("overview%d.height=%d\n", ii, ov@height), file=props);
+
+    if (chm@format == "original") {
+	if (is.list(chm@overviews)) {
+	    for (ii in 1:length(chm@overviews)) {
+		ov <- chm@overviews[[ii]];
+		cat (sprintf ("overview%d.format=%s\n", ii, ov@format), file=props);
+		if (!is.null(ov@width))
+		    cat (sprintf ("overview%d.width=%d\n", ii, ov@width), file=props);
+		if (!is.null(ov@height))
+		    cat (sprintf ("overview%d.height=%d\n", ii, ov@height), file=props);
+	    }
 	}
     }
     genSpecFeedback (80, "writing extra support files");
     chm <- writeChmExtraSupport (chm);
     chm@extrafiles <- c(chm@extrafiles, "custom-backup.js");
-    if (length (chm@extrafiles) > 0)
-        cat (sprintf ("additional.input=%s\n", paste(chm@extrafiles,sep="",collapse=",")), file=props);
-    close (props);
 
-    genSpecFeedback (90, "writing covariate bar data");
-    if (!is.null(chm@rowOrder))
-        writeOrder (saveDir, "row", chm@rowOrder);
-    if (!is.null(chm@colOrder))
-        writeOrder (saveDir, "column", chm@colOrder);
-    if (!is.null(chm@rowMeta))
-        writeMeta (saveDir, "row", chm@rowMeta);
-    if (!is.null(chm@colMeta))
-        writeMeta (saveDir, "column", chm@colMeta);
-    if (is.list (chm@rowCovariateBars)) {
-	chan <- file (paste (saveDir, "rowClassification1.txt", sep="/"), "w");
-	for (ii in 1:length(chm@rowCovariateBars) )
-	    writeCovariateBar (chm@rowCovariateBars[[ii]], saveDir, "row", ii, chan);
-	close (chan);
+    if (chm@format == "original") {
+        if (length (chm@extrafiles) > 0)
+            cat (sprintf ("additional.input=%s\n", paste(chm@extrafiles,sep="",collapse=",")), file=props);
+        close (props);
     }
-    if (is.list(chm@colCovariateBars)) {
-	chan <- file (paste (saveDir, "columnClassification1.txt", sep="/"), "w");
-	for (ii in 1:length(chm@colCovariateBars))
-	    writeCovariateBar (chm@colCovariateBars[[ii]], saveDir, "column", ii, chan);
-	close (chan);
+
+    if (chm@format == "original") {
+	genSpecFeedback (90, "writing covariate bar data");
+	if (!is.null(chm@rowOrder))
+	    writeOrder (saveDir, "row", chm@rowOrder);
+	if (!is.null(chm@colOrder))
+	    writeOrder (saveDir, "column", chm@colOrder);
+	if (!is.null(chm@rowMeta))
+	    writeMeta (saveDir, "row", chm@rowMeta);
+	if (!is.null(chm@colMeta))
+	    writeMeta (saveDir, "column", chm@colMeta);
+	if (is.list (chm@rowCovariateBars)) {
+	    chan <- file (paste (saveDir, "rowClassification1.txt", sep="/"), "w");
+	    for (ii in 1:length(chm@rowCovariateBars) )
+		writeCovariateBar (chm@rowCovariateBars[[ii]], saveDir, "row", ii, chan);
+	    close (chan);
+	}
+	if (is.list(chm@colCovariateBars)) {
+	    chan <- file (paste (saveDir, "columnClassification1.txt", sep="/"), "w");
+	    for (ii in 1:length(chm@colCovariateBars))
+		writeCovariateBar (chm@colCovariateBars[[ii]], saveDir, "column", ii, chan);
+	    close (chan);
+	}
     }
 
     genSpecFeedback (95, "writing custom CSS and Javascript");
@@ -754,6 +817,10 @@ writeChm <- function (chm, saveDir=NULL) {
     jsfile <- file (file.path (saveDir, "custom.js"), "w");
     writeLines (jsloader, jsfile);
     close (jsfile);
+
+    if (chm@format=="shaidy") {
+        writeLines (jsonlite::toJSON(chm), file.path(saveDir, "chm.json"));
+    }
 }
 
 #' @rdname chmName-method
@@ -814,6 +881,36 @@ writeMeta <- function (inpDir, type, metadata) {
     } else {
         stop (sprintf ("chmWriteMeta: unknown class of %s metadata: '%s'", type, class(metadata)));
     }
+}
+
+prepChmOrderings <- function (chm, l) {
+    # Fix row order
+    if (length(chm@rowOrder)==0) {
+        l$rowOrder <- s4ToList (ngchmGetLabels(chm@layers[[1]]@data,"row"));
+    } else if (!is(chm@rowOrder,"shaid")) {
+        stop (sprintf ("For chm %s unknown class for row order: %s", chm@name, class(chm@rowOrder)));
+    } else if (chm@rowOrder@type == 'label') {
+        # Nothing to do.
+    } else if (chm@rowOrder@type == 'dendrogram') {
+        l$rowDendrogram <- l$rowOrder;
+        l$rowOrder <- s4ToList (ngchmGetLabels(chm@rowOrder)[[1]]);
+    } else {
+        stop (sprintf ("For chm %s unknown shaid type for row order: %s", chm@name, chm@rowOrder@type));
+    }
+    # Repeat for col order
+    if (length(chm@colOrder)==0) {
+        l$colOrder <- s4ToList (ngchmGetLabels(chm@layers[[1]]@data,"column"));
+    } else if (!is(chm@colOrder,"shaid")) {
+        stop (sprintf ("For chm %s unknown class for column order: %s", chm@name, class(chm@colOrder)));
+    } else if (chm@colOrder@type == 'label') {
+        # Nothing to do.
+    } else if (chm@colOrder@type == 'dendrogram') {
+        l$colDendrogram <- l$colOrder;
+        l$colOrder <- s4ToList (ngchmGetLabels(chm@colOrder)[[1]]);
+    } else {
+        stop (sprintf ("For chm %s unknown shaid type for column order: %s", chm@name, chm@colOrder@type));
+    }
+    l
 }
 
 #' @rdname chmGetURL-method
@@ -1609,5 +1706,7 @@ setMethod ("shaidyGetComponents",
     signature = c(object="ngchm"),
     definition = function(object) {
         c(object@rowOrder, object@colOrder,
+          if (object@rowOrder@type=='dendrogram') ngchmGetLabels(object@rowOrder)[[1]] else NULL,
+          if (object@colOrder@type=='dendrogram') ngchmGetLabels(object@colOrder)[[1]] else NULL,
           lapply(object@layers,function(x)x@data))
 });

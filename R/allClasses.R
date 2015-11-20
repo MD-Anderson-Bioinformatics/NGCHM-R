@@ -43,6 +43,13 @@ setIs ("numeric", "numericOrCharacter");
 setIs ("character", "numericOrCharacter");
 setIs ("logical", "numericOrCharacter");
 
+s4ToList <- function(x,...) {
+    c(list(class=class(x)),mapply(function(s)slot(x,s),slotNames(class(x)),SIMPLIFY=FALSE))
+}
+s4ToJSON <- function(x,...) {
+    toJSON(s4ToList(x))
+}
+
 #' Class representing the shaid of an object
 #'
 #' @name shaid-class
@@ -58,6 +65,7 @@ setMethod ('show',
 	   });
 
 setIs ("shaid", "optDendrogram");
+setMethod(jsonlite:::asJSON, signature=c("shaid"), definition=s4ToJSON);
 
 #' Class representing the properties of a data point in a Next Generation Clustered Heat Map (NGCHM).
 #'
@@ -78,6 +86,7 @@ setMethod ('show',
 	   definition = function (object) {
 	       cat (sprintf ("ngchmValueProp(%d values)\n", length(object@value)));
 	   });
+setMethod(jsonlite:::asJSON, signature=c("ngchmValueProp"), definition=s4ToJSON);
 
 #' Class representing a Dataset attached to a NGCHM
 #'
@@ -103,6 +112,7 @@ setMethod ('show',
 			     if (length(object@row.type)==0) "unknown" else object@row.type
 			     ));
 	   });
+setMethod(jsonlite:::asJSON, signature=c("ngchmDataset"), definition=s4ToJSON);
 
 #' Class representing a Covariate attached to a Dataset
 #'
@@ -182,6 +192,7 @@ setMethod ('show',
 	   definition = function (object) {
 	       cat (sprintf ("ngchmColormap of type '%s'\n", object@type));
 	   });
+setMethod(jsonlite:::asJSON, signature=c("ngchmColormap"), definition=s4ToJSON);
 
 setClassUnion ("optColormap");
 setIs ("ngchmColormap", "optColormap");
@@ -204,6 +215,7 @@ setMethod ('show',
 	       #cat (sprintf ("ngchmLayer '%s': %d x %d\n", object@name, ncol(object@data), nrow(object@data)));
 	       cat (sprintf ("ngchmLayer '%s': %s\n", object@name, object@data@value));
 	   });
+setMethod(jsonlite:::asJSON, signature=c("ngchmLayer"), definition=s4ToJSON);
 
 #' Class representing a Generic Property for a Next Generation Clustered Heat Map (NGCHM).
 #'
@@ -220,6 +232,7 @@ setMethod ('show',
 	   definition = function (object) {
 	       cat (sprintf ("ngchmProperty '%s': '%s'\n", object@label, paste(object@value,collapse='///')));
 	   });
+setMethod(jsonlite:::asJSON, signature=c("ngchmProperty"), definition=s4ToJSON);
 
 #' Class representing a Menu Item for a Next Generation Clustered Heat Map (NGCHM).
 #'
@@ -236,6 +249,7 @@ setMethod ('show',
 	   definition = function (object) {
 	       cat (sprintf ("ngchmMenuItem '%s': '%s'\n", object@label, object@description));
 	   });
+setMethod(jsonlite:::asJSON, signature=c("ngchmMenuItem"), definition=s4ToJSON);
 
 #' Class representing a custom Javascript function for a Next Generation Clustered Heat Map (NGCHM).
 #'
@@ -253,6 +267,7 @@ setMethod ('show',
 	   definition = function (object) {
 	       cat (sprintf ("ngchmJS '%s': '%s'\n", object@name, object@description));
 	   });
+setMethod(jsonlite:::asJSON, signature=c("ngchmJS"), definition=s4ToJSON);
 
 #' Class representing a type attached to an axis in a Next Generation Clustered Heat Map (NGCHM).
 #'
@@ -268,6 +283,7 @@ setMethod ('show',
 	   definition = function (object) {
 	       cat (sprintf ("ngchmAxisType %s=%s\n", object@where, object@type));
 	   });
+setMethod(jsonlite:::asJSON, signature=c("ngchmAxisType"), definition=s4ToJSON);
 
 #' Class representing an axis function for Next Generation Clustered Heat Map (NGCHM).
 #'
@@ -283,6 +299,7 @@ setMethod ('show',
 	   definition = function (object) {
 	       cat (sprintf ("ngchmAxisFunction %s -> %s\n", object@type, object@label));
 	   });
+setMethod(jsonlite:::asJSON, signature=c("ngchmAxisFunction"), definition=s4ToJSON);
 
 #' Class representing a matrix function for Next Generation Clustered Heat Map (NGCHM).
 #'
@@ -298,6 +315,7 @@ setMethod ('show',
 	   definition = function (object) {
 	       cat (sprintf ("ngchmMatrixFunction %s x %s -> %s\n", object@rowtype, object@coltype, object@label));
 	   });
+setMethod(jsonlite:::asJSON, signature=c("ngchmMatrixFunction"), definition=s4ToJSON);
 
 #' Class representing a type mapper function for Next Generation Clustered Heat Map (NGCHM).
 #'
@@ -313,6 +331,7 @@ setMethod ('show',
 	   definition = function (object) {
 	       cat (sprintf ("ngchmTypeMapper %s -> %s\n", object@fromtype, object@totype));
 	   });
+setMethod(jsonlite:::asJSON, signature=c("ngchmTypeMapper"), definition=s4ToJSON);
 
 #' Class representing custom CSS for a Next Generation Clustered Heat Map (NGCHM).
 #'
@@ -329,6 +348,7 @@ setMethod ('show',
 	   definition = function (object) {
 	       cat (sprintf ("ngchmCSS %s\n", object@css));
 	   });
+setMethod(jsonlite:::asJSON, signature=c("ngchmCSS"), definition=s4ToJSON);
 
 #' Class representing a Covariate Bar on a Next Generation Clustered Heat Map (NGCHM).
 #'
@@ -372,6 +392,7 @@ setMethod ('show',
 	                     if (is.null(object@width)) 0 else object@width,
 			     if (is.null(object@height)) 0 else object@height));
 	   });
+setMethod(jsonlite:::asJSON, signature=c("ngchmOverview"), definition=s4ToJSON);
 
 #' Class representing an addon dialog
 #'
@@ -390,6 +411,7 @@ setMethod ('show',
 	   definition = function (object) {
 	       cat (sprintf ("ngchmDialog %s: %s\n", object@id, object@title));
 	   });
+setMethod(jsonlite:::asJSON, signature=c("ngchmDialog"), definition=s4ToJSON);
 
 #' Class representing a Next Generation Clustered Heat Map (NGCHM) under construction.
 #'
@@ -561,6 +583,15 @@ setMethod ('show',
 	   definition = function (object) {
 	       cat (sprintf ("ngchm %s (%d layers)\n", object@name, length(object@layers)));
 	   });
+setMethod(jsonlite:::asJSON, signature=c("ngchmVersion2"), definition=function(x,...) {
+    l <- s4ToList(x);
+    l$class <- "ngchm";
+    l <- prepChmOrderings (x, l);
+    l$layers <- mapply (function(layer)prepDataLayer(x,layer), x@layers, SIMPLIFY=FALSE);
+    empty <- vapply(l, function(x)length(x)==0, TRUE);
+    exclude <- vapply(names(l), function(x)x %in% c("width","height","uuid","baggage","inpDir","outDir","saveDir","propFile","css"), TRUE);
+    toJSON(l[-which(empty|exclude)], pretty=TRUE)
+});
 
 #' Class representing a deployment method for a Next Generation Clustered Heat Map (NGCHM) server.
 #'
