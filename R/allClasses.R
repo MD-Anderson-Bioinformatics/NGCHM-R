@@ -623,7 +623,7 @@ setMethod ('show',
 #' @keywords classes
 setClass ("ngchmServer",
           representation (name="character",
-                          serverURL="character",
+                          serverURL="optCharacter",
                           traceLevel="optCharacter",
                           jarFile="optCharacter",
 			  serverProtocol="ngchmServerProtocol",
