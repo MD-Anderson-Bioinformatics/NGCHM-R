@@ -834,8 +834,11 @@ writeOrder <- function (inpDir, type, ord) {
     # Write the order/dendrogram out as a column dendrogram to the inpDir
     if (is(ord, "shaid")) {
         repo <- ngchmFindRepo (ord);
-        blobfile <- repo$blob.path (ord@type, ord@value, 'dendrogram.str');
-	filename <- file.path (inpDir, sprintf ("dendro_%s.str", type));
+        blobfile <- repo$blob.path (ord@type, ord@value, 'dendrogram-data.tsv');
+	filename <- file.path (inpDir, sprintf ("dendrogram-data_%s.tsv", type));
+        stopifnot (file.copy (blobfile, filename));
+        blobfile <- repo$blob.path (ord@type, ord@value, 'dendrogram-order.tsv');
+	filename <- file.path (inpDir, sprintf ("dendrogram-order_%s.tsv", type));
         stopifnot (file.copy (blobfile, filename));
     } else if (class (ord) == "character") {
 	filename <- file.path (inpDir, sprintf ("%s.txt", type));

@@ -292,6 +292,21 @@ ngchmLoadDatasetBlob <- function (shaidyRepo, shaid) {
     list (shaid=shaid, properties=props, mat=mat)
 }
 
+writeHCDataTSVs <- function(uDend, theOutputHCDataFileName, theOutputHCOrderFileName)
+{
+    if (is(uDend,'dendrogram')) uDend <- as.hclust(uDend);
+    stopifnot (is (uDend, 'hclust'));
+    data <- cbind(uDend$merge, uDend$height, deparse.level=0);
+    colnames(data)<-c("A", "B", "Height")
+    ###Write out the data as a Tab separated file to the specified location
+    write.table(data, file = theOutputHCDataFileName, append = FALSE, quote = FALSE, sep = "\t", row.names=FALSE)
+
+    data <- cbind(uDend$labels[uDend$order], uDend$order, deparse.level=0)
+    colnames(data) <- c("Id", "Order")
+    ###Write out the order data as a Tab separated file to the specified location (1 more row than data file)
+    write.table(data, file = theOutputHCOrderFileName, append = FALSE, quote = FALSE, sep = "\t", row.names=FALSE)
+}
+
 #' Save a dendrogram as a blob in a shaidy repository
 #'
 #' @param shaidyRepo The shaidy repository
@@ -303,12 +318,14 @@ ngchmLoadDatasetBlob <- function (shaidyRepo, shaid) {
 ngchmSaveAsDendrogramBlob <- function (shaidyRepo, ddg) {
     if (is (ddg, 'shaid')) return (ddg);
     stopifnot (is (ddg, 'dendrogram'));
-    filename <- tempfile ("ddg", fileext='.txt');
-    sink (filename);
-    str (ddg);
-    sink (NULL);
-    shaid <- shaidyAddFileBlob (shaidyRepo, 'dendrogram', 'dendrogram.str', filename);
-    unlink (filename);
+    datafilename <- tempfile ("ddg", fileext='.txt');
+    orderfilename <- tempfile ("ddg", fileext='.txt');
+    writeHCDataTSVs (ddg, datafilename, orderfilename);
+    shaid <- shaidyAddFileBlob (shaidyRepo, 'dendrogram',
+                                c('dendrogram-data.tsv', 'dendrogram-order.tsv'),
+                                c(datafilename, orderfilename));
+    unlink (datafilename);
+    unlink (orderfilename);
     shaid
 }
 
@@ -357,9 +374,8 @@ ngchmGetLabels <- function (shaid, axis=NULL) {
             ds <- ngchmLoadDatasetBlob (shaidyRepo, shaid);
             labels <- (if (axis=="row") rownames else colnames)(ds$mat);
         } else if (shaid@type == 'dendrogram') {
-	    dend <- readLines (shaidyRepo$blob.path(shaid@type,shaid@value,"dendrogram.str"));
-	    leaves <- which(grepl ('[^"]*--leaf "', dend));
-	    labels <- sub('".*', '', sub ('[^"]*--leaf "', '', dend[leaves]));
+	    oo <- read.delim (shaidyRepo$blob.path(shaid@type,shaid@value,"dendrogram-order.tsv"), header=TRUE, colClasses=c('character','numeric'));
+	    labels <- oo$Id[order(oo$Order)]
         } else {
 	    stop (sprintf ("Unknown shaid type %s", shaid@type));
         }
