@@ -11,7 +11,7 @@ Imports:
     digest,
     httr,
     jsonlite
-Description: Utitilies for creating Next Generation Clustered Heat Maps.
+Description: Utilities for creating Next Generation Clustered Heat Maps.
 License: GPL-3
 Collate: 
     'allClasses.R'
