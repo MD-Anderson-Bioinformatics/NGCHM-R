@@ -2,7 +2,11 @@
 #
 (function() {
 
-    thisHost <- c("localhost", system("/bin/hostname -f", intern=TRUE));
+    if (Sys.info()[['sysname']] != "Windows")  {
+        thisHost <- c("localhost", system("/bin/hostname -f", intern=TRUE));
+    } else {
+        thisHost <- c("localhost", paste(Sys.getenv('COMPUTERNAME'),Sys.getenv('USERDNSDOMAIN'),sep='.'));
+    }
 
     chmDeployDir <- function(server) ngchmGetProtoParam (server, 'deployDir');
 
