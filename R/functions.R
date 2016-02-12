@@ -151,8 +151,8 @@ chmNew <- function (name, ...,
     chm <- new (Class="ngchmVersion2",
                 name=name,
                 format=format,
-		inpDir=tempfile("ngchm.input"),
-		outDir=tempfile("ngchm.output"));
+		inpDir=utempfile("ngchm.input"),
+		outDir=utempfile("ngchm.output"));
     chm@uuid <- getuuid (name);
     chm <- chmAddCSS (chm, 'div.overlay { border: 2px solid yellow; }');
     chm@rowOrder <- rowOrder; chm@rowDist <- rowDist; chm@rowAgglom <- rowAgglom;
@@ -2195,4 +2195,14 @@ gitSha <- function (data) {
     }
     head <- sprintf ("blob %d", length(data));
     digest::digest (c(charToRaw(head),raw(1),data),"sha1",serialize=FALSE)
+}
+
+utempfile <- function (...) {
+    # On Windows, file.path separates files by / , tempfile (and tempdir) separate them by backslashes
+    # We need consistency, so convert to canonical separator / here, rather than complicate all other uses
+    filename <- tempfile (...);
+    if (Sys.info()[['sysname']] == "Windows")  {
+        filename <- gsub ("\\\\", "/", filename);
+    }
+    filename
 }

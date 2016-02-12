@@ -266,7 +266,7 @@ ngchmSaveAsDatasetBlob <- function (shaidyRepo, format, mat) {
 	       length (dim(mat)) == 2,
 	       length (rownames(mat)) > 0,
 	       length (colnames(mat)) > 0);
-    filename <- tempfile ("matrix", fileext='.tsv');
+    filename <- utempfile ("matrix", fileext='.tsv');
     write.table (mat, filename, quote=FALSE, sep='\t');
     shaid <- ngchmAddDatasetBlob (shaidyRepo, format, filename,
                                   list(nrow=nrow(mat),ncol=ncol(mat)));
@@ -318,8 +318,8 @@ writeHCDataTSVs <- function(uDend, theOutputHCDataFileName, theOutputHCOrderFile
 ngchmSaveAsDendrogramBlob <- function (shaidyRepo, ddg) {
     if (is (ddg, 'shaid')) return (ddg);
     stopifnot (is (ddg, 'dendrogram'));
-    datafilename <- tempfile ("ddg", fileext='.txt');
-    orderfilename <- tempfile ("ddg", fileext='.txt');
+    datafilename <- utempfile ("ddg", fileext='.txt');
+    orderfilename <- utempfile ("ddg", fileext='.txt');
     writeHCDataTSVs (ddg, datafilename, orderfilename);
     shaid <- shaidyAddFileBlob (shaidyRepo, 'dendrogram',
                                 c('dendrogram-data.tsv', 'dendrogram-order.tsv'),
@@ -379,7 +379,7 @@ ngchmGetLabels <- function (shaid, axis=NULL) {
         } else {
 	    stop (sprintf ("Unknown shaid type %s", shaid@type));
         }
-	filename <- tempfile ("label", fileext='.txt');
+	filename <- utempfile ("label", fileext='.txt');
 	writeLines (labels, filename);
 	res <- list(shaidyAddFileBlob (shaidyRepo, 'label', 'labels.txt', filename));
         unlink (filename);

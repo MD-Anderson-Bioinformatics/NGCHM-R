@@ -231,7 +231,7 @@ shaidyAddFileBlob <- function (shaidyRepo, blob.type, blob.file, filename, prope
 #'
 #' @return The file path of the prototype blob
 shaidyCreateProtoBlob <- function(shaidyRepo, blob.type) {
-    protoblob <- tempfile("proto", tmpdir = shaidyRepo$blob.path(blob.type));
+    protoblob <- utempfile("proto", tmpdir = shaidyRepo$blob.path(blob.type));
     dir.create (protoblob);
     protoblob
 }

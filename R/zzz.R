@@ -31,7 +31,7 @@ ngchm.env <- new.env(parent=emptyenv());
     ngchm.env$jarCache <- new.env(parent=emptyenv());
     ngchm.env$handledb <- new.env (hash=TRUE, parent=emptyenv());
     ngchm.env$nextId <- 0;
-    shaidyDir <- tempfile ("shaidy");
+    shaidyDir <- utempfile ("shaidy");
     ngchmInitShaidyRepository (shaidyDir);
     ngchm.env$tmpShaidy <- shaidyLoadRepository (shaidyDir);
     ngchm.env$tmpShaidyStack <- c();

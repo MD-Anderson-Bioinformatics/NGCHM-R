@@ -189,8 +189,8 @@ loadChmFromURL <- function (chmurl) {
     ee <- new.env();
     load(url(paste (baseurl, "data/", chmname, "/undefined/chm.Rdata", sep="")), ee);
     chm <- chmFixVersion (ee$chm);
-    chm@inpDir <- tempfile ("ngchm.input");
-    chm@outDir <- tempfile ("ngchm.output");
+    chm@inpDir <- utempfile ("ngchm.input");
+    chm@outDir <- utempfile ("ngchm.output");
     chm@saveDir <- ".";
     chm
 }
