@@ -1752,7 +1752,7 @@ getBuilderJar <- function (server) {
         if (!exists (vvv, ngchm.env$jarCache)) {
 	    ws <- sprintf("%s/resources/heatmappipeline.jar", server@serverURL);
             res <- httr::GET (ws, handle=ngchmGetHandleHTTR (server));
-	    tmpJarFile <- system2 ("mktemp", args=c("-p", tempdir(), "hmtXXXXXXXXX.jar"), stdout=TRUE);
+	    tmpJarFile <- utempfile ("hmt", fileext=".jar");
 	    writeBin (res$content, tmpJarFile);
 	    testJava (tmpJarFile);
 	    assign (vvv, tmpJarFile, ngchm.env$jarCache);
@@ -1762,7 +1762,7 @@ getBuilderJar <- function (server) {
     if (!exists (server@jarFile, ngchm.env$jarCache)) {
         # Load server@jarFile into jarCache
 	if (length(grep("^scp://", server@jarFile)) > 0) {
-	    tmpJarFile <- system2 ("mktemp", args=c("-p", tempdir(), "hmtXXXXXXXXX.jar"), stdout=TRUE);
+	    tmpJarFile <- utempfile ("hmt", fileext=".jar");
 	    parts <- URLparts (server@jarFile);
 	    if (parts[3] == "") {
 		systemCheck (sprintf ("scp %s:%s %s",
@@ -1774,12 +1774,12 @@ getBuilderJar <- function (server) {
 	    ngchm.env$jarCache[[server@jarFile]] <- tmpJarFile;
 	}
 	else if (length(grep("^http://", server@jarFile)) > 0) {
-	    tmpJarFile <- system2 ("mktemp", args=c("-p", tempdir(), "hmtXXXXXXXXX.jar"), stdout=TRUE);
+	    tmpJarFile <- utempfile ("hmt", fileext=".jar");
 	    systemCheck (sprintf ("wget -q -O %s %s", tmpJarFile, shQuote (server@jarFile)));
 	    ngchm.env$jarCache[[server@jarFile]] <- tmpJarFile;
 	}
 	else if (length(grep("^https://", server@jarFile)) > 0) {
-	    tmpJarFile <- system2 ("mktemp", args=c("-p", tempdir(), "hmtXXXXXXXXX.jar"), stdout=TRUE);
+	    tmpJarFile <- utempfile ("hmt", fileext=".jar");
 	    systemCheck (sprintf ("wget -q -O %s %s", tmpJarFile, shQuote (server@jarFile)));
 	    ngchm.env$jarCache[[server@jarFile]] <- tmpJarFile;
 	}
@@ -1886,7 +1886,7 @@ chmCreateServer <- function (serverName,
 	    defaultOptions$deployServer <- cfgServer;
 	    defaultOptions$deployDir <- cfgDir;
 
-	    cfgFile <- system2 ("mktemp", args=c("-p", tempdir(), "cfgXXXXXXXXX.txt"), stdout=TRUE);
+	    cfgFile <- utempfile ("cfg", fileext=".txt");
 	    rcfg <- new.env();
 	    if (system2 ("scp", args=c(sprintf ("%s:%s/%s", cfgServer, cfgDir, "config.txt"), cfgFile)) == 0) {
 		readConfigFile (rcfg, cfgFile, '=');
