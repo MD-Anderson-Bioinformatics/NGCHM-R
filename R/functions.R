@@ -1852,10 +1852,18 @@ chmCreateServer <- function (serverName,
 	}
     } else {
         proto <- sub (":.*", "", serverSpec);
-	if (!(proto %in% c('http', 'https', 'scp'))) {
+	if (!(proto %in% c('http', 'https', 'scp', 'file'))) {
 	    stop (sprintf ("Unknown protocol in serverSpec '%s'", serverSpec));
 	}
-	if (proto %in% c('http', 'https')) {
+	if (proto == 'file') {
+	    serverSpec <- sub("file:","",serverSpec);
+	    if (file.exists (file.path (serverSpec, 'config.txt'))) {
+		readConfigFile (cfg, file.path (serverSpec, "config.txt"), '=');
+	    } else {
+		stop (sprintf ("'%s' is not a server configuration directory", serverSpec));
+	    }
+	}
+	else if (proto %in% c('http', 'https')) {
 	    if (substring(serverSpec,nchar(serverSpec)-10) == "/config.txt") {
 		readConfigFile (cfg, serverSpec, '=');
 	    } else {
