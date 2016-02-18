@@ -454,7 +454,7 @@ setGeneric ("chmMake", signature=c("chm"), function(chm,...) standardGeneric("ch
 #' @seealso chmUninstall
 #' @seealso chmMakePrivate
 #' @seealso chmMakePublic
-setGeneric ("chmInstall", function(server,chm,...) standardGeneric("chmInstall"));
+setGeneric ("chmInstall", function(chm,...) standardGeneric("chmInstall"));
 
 #' Remove an installed NGCHM.
 #'
@@ -470,7 +470,7 @@ setGeneric ("chmInstall", function(server,chm,...) standardGeneric("chmInstall")
 #' @seealso ngchmServer-class
 #' @seealso ngchm-class
 #' @seealso chmInstall
-setGeneric ("chmUninstall", function(server,chm,...) standardGeneric("chmUninstall"));
+setGeneric ("chmUninstall", function(chm,...) standardGeneric("chmUninstall"));
 
 #' Get the URL for an installed NGCHM.
 #'

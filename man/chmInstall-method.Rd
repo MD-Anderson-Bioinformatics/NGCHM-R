@@ -3,22 +3,19 @@
 \docType{methods}
 \name{chmInstall}
 \alias{chmInstall}
-\alias{chmInstall,character,ngchm-method}
-\alias{chmInstall,ngchmServer,ngchm-method}
+\alias{chmInstall,ngchm-method}
 \title{Install a compiled NGCHM on a server.}
 \usage{
-chmInstall(server, chm, ...)
+chmInstall(chm, ...)
 
-\S4method{chmInstall}{ngchmServer,ngchm}(server, chm, ...)
-
-\S4method{chmInstall}{character,ngchm}(server, chm, ...)
+\S4method{chmInstall}{ngchm}(chm, server = NULL, ...)
 }
 \arguments{
-\item{server}{The server on which to install the NGCHM.}
-
 \item{chm}{The NGCHM to install.}
 
 \item{...}{Additional server (protocol) specific parameters.}
+
+\item{server}{The server on which to install the NGCHM.}
 }
 \description{
 Install the specified Next Generation Clustered Heat Map (NGCHM) on the specified server.  The installed NGCHM

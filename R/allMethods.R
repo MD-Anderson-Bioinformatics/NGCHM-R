@@ -27,53 +27,59 @@ setMethod ("chmUrlBase",
 
 
 #' @rdname chmInstall-method
-#' @aliases chmInstall,ngchmServer,ngchm-method
+#' @aliases chmInstall,ngchm-method
 setMethod ("chmInstall",
-    signature = c(server="ngchmServer", chm="ngchm"),
-    definition = function (server, chm, ...) {
+    signature = c(chm="ngchm"),
+    definition = function (chm, server=NULL, ...) {
         chm <- chmFixVersion (chm);
+        if (length(server)==0) server <- getOption("NGCHM.Server", chmListServers()[1]);
+        stopifnot(length(server) > 0);
+        if (typeof(server) == 'character') server <- chmServerCheck (server);
 	server@serverProtocol@installMethod (server, chm, ...);
     });
 
-#' @rdname chmInstall-method
-#' @aliases chmInstall,character,ngchm-method
-setMethod ("chmInstall",
-    signature = c(server="character", chm="ngchm"),
-    definition = function (server, chm, ...) {
-	chmInstall (chmServerCheck (server), chm, ...);
-    });
+### ' @rdname chmInstall-method
+### ' @aliases chmInstall,character,ngchm-method
+##setMethod ("chmInstall",
+##    signature = c(server="character", chm="ngchm"),
+##    definition = function (server, chm, ...) {
+##	chmInstall (chmServerCheck (server), chm, ...);
+##    });
 
 #' @rdname chmUninstall-method
-#' @aliases chmUninstall,ngchmServer,character-method
+#' @aliases chmUninstall,character-method
 setMethod ("chmUninstall",
-    signature = c(server="ngchmServer", chm="character"),
-    definition = function (server, chm, ...) {
+    signature = c(chm="character"),
+    definition = function (chm, server=NULL, ...) {
+        if (length(server)==0) server <- getOption("NGCHM.Server", chmListServers()[1]);
+        stopifnot(length(server) > 0);
+        if (typeof(server) == 'character') server <- chmServerCheck (server);
 	server@serverProtocol@uninstallMethod (server, chm, ...);
     });
 
-#' @rdname chmUninstall-method
-#' @aliases chmUninstall,ngchmServer,ngchm-method
-setMethod ("chmUninstall",
-    signature = c(server="ngchmServer", chm="ngchm"),
-    definition = function (server, chm, ...) {
-        chmUninstall (server, chmName(chm), ...);
-});
+### ' @rdname chmUninstall-method
+### ' @aliases chmUninstall,ngchmServer,ngchm-method
+##setMethod ("chmUninstall",
+##    signature = c(server="ngchmServer", chm="ngchm"),
+##    definition = function (server, chm, ...) {
+##        chmUninstall (server, chmName(chm), ...);
+##});
 
 #' @rdname chmUninstall-method
-#' @aliases chmUninstall,character,ngchm-method
+#' @aliases chmUninstall,ngchm-method
 setMethod ("chmUninstall",
-    signature = c(server="character", chm="ngchm"),
-    definition = function (server, chm, ...) {
-        chmUninstall (chmServerCheck(server), chmName(chm), ...);
+    signature = c(chm="ngchm"),
+    definition = function (chm, ...) {
+        chmUninstall (chmName(chm), ...);
 });
 
-#' @rdname chmUninstall-method
-#' @aliases chmUninstall,character,character-method
-setMethod ("chmUninstall",
-    signature = c(server="character", chm="character"),
-    definition = function (server, chm, ...) {
-        chmUninstall (chmServerCheck(server), chm, ...);
-    });
+### ' @rdname chmUninstall-method
+### ' @aliases chmUninstall,character,character-method
+##setMethod ("chmUninstall",
+##    signature = c(server="character", chm="character"),
+##    definition = function (server, chm, ...) {
+##        chmUninstall (chmServerCheck(server), chm, ...);
+##    });
 
 #' @rdname chmMakePrivate-method
 #' @aliases chmMakePrivate,ngchmServer,character-method
