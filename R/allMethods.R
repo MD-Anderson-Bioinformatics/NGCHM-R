@@ -1072,24 +1072,34 @@ setMethod ("chmMake",
 #' Make an original format NGCHM.
 #'
 #' @param chm The original format CHM to compile.
-#' @param server The server for which to compile the NGCHM.  Default NULL. Required iff useJar is not defined.
+#' @param server The server for which to compile the NGCHM.
+#'        Default getOption("NGCHM.Server",chmListServers()[1]).
+#'        Required iff useJar is not defined.
 #' @param deleteOld If TRUE, delete any old CHM of this name before beginning build. (Default is TRUE.)
 #' @param useJAR If defined, the location (filename) of the chmbuilder jar file. The package will not download
 #'        a current jar file from the server. It is the caller's responsibility to ensure the builder jar file
 #'        is compatible with the server on which the NGCHM will be installed. (Default is not defined.)
-#' @param javaOptions Additional options to pass to the Java process. (Default is '-Xmx2G'.)
-#' @param javaTraceLevel Trace level option passed to the Java process. (Default is 'PROGRESS'.)
-#' @param buildArchive If TRUE, build a tar archive of the generated NGCHM. (Default is TRUE.)  Not implemented on the Windows platform.
+#' @param javaOptions Additional options to pass to the Java process.
+#'        Default is getOption('NGCHM.Java.Options','-Xmx2G').
+#' @param javaTraceLevel Trace level option passed to the Java process.
+#'        Default is getOption("NGCHM.Java.Trace','PROGRESS').
+#' @param buildArchive If TRUE, build a tar archive of the generated NGCHM.
+#'        Default is getOption('NGCHM.Build.Archive',TRUE).
 #'
 #' @return The CHM
 ngchmMakeFormat.original <- function (chm,
                                       server=NULL,
                                       deleteOld=TRUE,
                                       useJAR=NULL,
-                                      javaTraceLevel="PROGRESS",
-                                      javaOptions="-Xmx2G",
-                                      buildArchive=TRUE
+                                      javaTraceLevel=NULL,
+                                      javaOptions=NULL,
+                                      buildArchive=NULL
 ) {
+
+    if (length(javaTraceLevel)==0) javaTraceLevel <- getOption("NGCHM.Java.Trace", "PROGRESS");
+    if (length(javaOptions)==0) javaOptions <- getOption("NGCHM.Java.Options", "-Xmx2G");
+    if (length(server)==0) server <- getOption("NGCHM.Server", chmListServers()[1]);
+    if (length(buildArchive)==0) buildArchive <- getOption("NGCHM.Build.Archive", TRUE);
 
     genSpecFeedback (20, "writing NGCHM specification");
     writeChm (chm);
@@ -1126,14 +1136,12 @@ ngchmMakeFormat.original <- function (chm,
     postBuildFeedback (0, "writing post build files");
     writeChmPost (chm);
     if (buildArchive) {
-	if (Sys.info()[['sysname']] != "Windows")  {
-	    postBuildFeedback (50, "creating compressed NGCHM file");
-	    systemCheck (sprintf ("tar czf %s/%s.ngchm.gz -C %s %s",
-				 shQuote (chm@saveDir),
-				 shQuote (chm@name),
-				 shQuote (chm@outDir),
-				 shQuote (chm@name)));
-	}
+	postBuildFeedback (50, "creating compressed NGCHM file");
+	systemCheck (sprintf ("tar czf %s/%s.ngchm.gz -C %s %s",
+			     shQuote (chm@saveDir),
+			     shQuote (chm@name),
+			     shQuote (chm@outDir),
+			     shQuote (chm@name)));
     }
     postBuildFeedback (100, "post build completed");
     chm

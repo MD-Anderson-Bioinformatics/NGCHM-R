@@ -1741,7 +1741,7 @@ getServerVersion <- function (server) {
 
 testJava <- function (jarfile) {
     res <- NULL;
-    suppressWarnings(try ({res <- system2("exec", c("java", "-jar", jarfile), stdout=TRUE, stderr=TRUE);}, silent=TRUE));
+    suppressWarnings(try ({res <- system2("java", c("-jar", jarfile), stdout=TRUE, stderr=TRUE);}, silent=TRUE));
     if (is.null(res)) stop ("Unable to execute Java");
     if (length(res) == 0 || res[length(res)] != "WRONG_NUMBER_OF_PARAMETERS_ERROR") stop ("Bad Java version");
 }

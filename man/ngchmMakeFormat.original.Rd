@@ -5,13 +5,15 @@
 \title{Make an original format NGCHM.}
 \usage{
 ngchmMakeFormat.original(chm, server = NULL, deleteOld = TRUE,
-  useJAR = NULL, javaTraceLevel = "PROGRESS", javaOptions = "-Xmx2G",
-  buildArchive = TRUE)
+  useJAR = NULL, javaTraceLevel = NULL, javaOptions = NULL,
+  buildArchive = NULL)
 }
 \arguments{
 \item{chm}{The original format CHM to compile.}
 
-\item{server}{The server for which to compile the NGCHM.  Default NULL. Required iff useJar is not defined.}
+\item{server}{The server for which to compile the NGCHM.
+Default getOption("NGCHM.Server",chmListServers()[1]).
+Required iff useJar is not defined.}
 
 \item{deleteOld}{If TRUE, delete any old CHM of this name before beginning build. (Default is TRUE.)}
 
@@ -19,11 +21,14 @@ ngchmMakeFormat.original(chm, server = NULL, deleteOld = TRUE,
 a current jar file from the server. It is the caller's responsibility to ensure the builder jar file
 is compatible with the server on which the NGCHM will be installed. (Default is not defined.)}
 
-\item{javaTraceLevel}{Trace level option passed to the Java process. (Default is 'PROGRESS'.)}
+\item{javaTraceLevel}{Trace level option passed to the Java process.
+Default is getOption("NGCHM.Java.Trace','PROGRESS').}
 
-\item{javaOptions}{Additional options to pass to the Java process. (Default is '-Xmx2G'.)}
+\item{javaOptions}{Additional options to pass to the Java process.
+Default is getOption('NGCHM.Java.Options','-Xmx2G').}
 
-\item{buildArchive}{If TRUE, build a tar archive of the generated NGCHM. (Default is TRUE.)  Not implemented on the Windows platform.}
+\item{buildArchive}{If TRUE, build a tar archive of the generated NGCHM.
+       Default is getOption('NGCHM.Build.Archive',TRUE).}
 }
 \value{
 The CHM

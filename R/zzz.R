@@ -70,13 +70,14 @@ chmGetDeployServerConfig <- function (server) {
 getConfigDirs <- function () {
 
     configpath <- Sys.getenv ("NGCHMCONFIGPATH");
+    sep <- if (Sys.info()[['sysname']] == "Windows") ";" else ":";
     if (nzchar(configpath) == 0) {
 	configpath <- paste ("/etc/ngchm", "/usr/local/ngchm", "/opt/ngchm",
 			     file.path (Sys.getenv("HOME"), ".ngchm"),
-			     sep=":");
+			     sep=sep);
     }
 
-    ngchm.env$configdirs <- strsplit (configpath, ':')[[1]];
+    ngchm.env$configdirs <- strsplit (configpath, sep)[[1]];
 }
 
 # Remove leading and trailing spaces from s.
