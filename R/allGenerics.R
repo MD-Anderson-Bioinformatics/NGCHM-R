@@ -589,6 +589,16 @@ setGeneric ("chmAddToolboxRC", function(CHM,rowtype,coltype,datasetname,idstr) s
 #' @param name Name of the CHM to load if the first parameter is a server id
 setGeneric ("chmLoadCHM", function(serverOrURL,name) standardGeneric("chmLoadCHM"))
 
+#' Get the dataset from NG-CHM object
+#'
+#' Get the ngchmDataset object from an NG-CHM object.
+#'
+#' @exportMethod chmGetDataset
+#' @rdname chmGetDataset-method
+#'
+#' @param object An NG-CHM object containing an ngchmDataset
+setGeneric ("chmGetDataset", function(object) standardGeneric("chmGetDataset"))
+
 #' Get shaid for an object
 #'
 #' @exportMethod shaidyGetShaid

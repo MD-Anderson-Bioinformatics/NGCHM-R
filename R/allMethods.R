@@ -1727,3 +1727,13 @@ setMethod ("shaidyGetComponents",
           if (object@colOrder@type=='dendrogram') ngchmGetLabels(object@colOrder)[[1]] else NULL,
           lapply(object@layers,function(x)x@data))
 });
+
+#' @rdname chmGetDataset-method
+#' @aliases chmGetDataset,ngchmLayer-method
+setMethod ("chmGetDataset",
+    signature = c(object="ngchmLayer"),
+    definition = function(object) {
+        shaid <- object@data;
+        repo <- ngchmFindRepo (shaid);
+        ngchmLoadDatasetBlob (repo, shaid)
+});
