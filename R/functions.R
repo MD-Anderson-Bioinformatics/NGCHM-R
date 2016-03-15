@@ -1739,6 +1739,13 @@ getServerVersion <- function (server) {
     as.numeric(jsonlite::fromJSON(rawToChar(res$content))$Build_Number)
 }
 
+testExternalProgram <- function (program) {
+    res <- NULL;
+    suppressWarnings(try ({res <- system2(program, NULL, stdout=TRUE, stderr=TRUE);}, silent=TRUE));
+    if (is.null(res)) warning (sprintf("Unable to execute external program '%s'. Some functionality not available.", program));
+    !is.null(res)
+}
+
 testJava <- function (jarfile) {
     res <- NULL;
     suppressWarnings(try ({res <- system2("java", c("-jar", jarfile), stdout=TRUE, stderr=TRUE);}, silent=TRUE));

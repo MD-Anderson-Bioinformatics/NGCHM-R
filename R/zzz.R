@@ -36,6 +36,8 @@ ngchm.env <- new.env(parent=emptyenv());
     ngchm.env$tmpShaidy <- shaidyLoadRepository (shaidyDir);
     ngchm.env$tmpShaidyStack <- c();
     ngchm.env$shaidyStack <- c();
+
+    for (program in c("git","wget","java","tar","scp","ssh","tiledata")) testExternalProgram(program);
 }
 
 #' Specify per-user configuration for a specific deploy Server.
