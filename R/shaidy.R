@@ -119,6 +119,9 @@ shaidyLoadProvenanceDB <- function(shaidyDir) {
 #'
 #' @export
 shaidyLoadRepository <- function (shaidyDir) {
+    if (Sys.info()[['sysname']] == "Windows")  {
+        shaidyDir <- gsub ("\\\\", "/", shaidyDir);
+    }
     sr <- list (basepath = shaidyDir,
                 blob.path = shaidyBlobPath (shaidyDir),
                 shaid.cache = shaidyNewCache (shaidyDir),
