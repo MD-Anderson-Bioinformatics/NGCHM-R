@@ -321,11 +321,16 @@ ngchmSaveAsDendrogramBlob <- function (shaidyRepo, ddg) {
     datafilename <- utempfile ("ddg", fileext='.txt');
     orderfilename <- utempfile ("ddg", fileext='.txt');
     writeHCDataTSVs (ddg, datafilename, orderfilename);
+    ddgfilename <- utempfile ("ddg", fileext='.str');
+    sink(ddgfilename);
+    str(ddg);
+    sink(NULL);
     shaid <- shaidyAddFileBlob (shaidyRepo, 'dendrogram',
-                                c('dendrogram-data.tsv', 'dendrogram-order.tsv'),
-                                c(datafilename, orderfilename));
+                                c('dendrogram-data.tsv', 'dendrogram-order.tsv', 'dendrogram.str'),
+                                c(datafilename, orderfilename, ddgfilename));
     unlink (datafilename);
     unlink (orderfilename);
+    unlink (ddgfilename);
     shaid
 }
 

@@ -846,6 +846,10 @@ writeOrder <- function (inpDir, type, ord) {
         blobfile <- repo$blob.path (ord@type, ord@value, 'dendrogram-order.tsv');
 	filename <- file.path (inpDir, sprintf ("dendrogram-order_%s.tsv", type));
         stopifnot (file.copy (blobfile, filename));
+        # For legacy
+        blobfile <- repo$blob.path (ord@type, ord@value, 'dendrogram.str');
+	filename <- file.path (inpDir, sprintf ("dendro_%s.str", type));
+        stopifnot (file.copy (blobfile, filename));
     } else if (class (ord) == "character") {
 	filename <- file.path (inpDir, sprintf ("%s.txt", type));
         write.table (ord, filename, quote=FALSE, row.names=FALSE, col.names=FALSE)
