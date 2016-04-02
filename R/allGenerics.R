@@ -479,12 +479,11 @@ setGeneric ("chmUninstall", function(chm,...) standardGeneric("chmUninstall"));
 #' @exportMethod chmGetURL
 #' @rdname chmGetURL-method
 #'
-#' @param server The server on which the NGCHM is installed.
 #' @param chm The NGCHM for which the URL is required.
 #'
 #' @seealso ngchmServer-class
 #' @seealso ngchm-class
-setGeneric ("chmGetURL", function(server,chm) standardGeneric("chmGetURL"));
+setGeneric ("chmGetURL", function(chm,...) standardGeneric("chmGetURL"));
 
 #' Make an installed NGCHM private.
 #'

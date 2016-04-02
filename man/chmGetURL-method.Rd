@@ -3,25 +3,17 @@
 \docType{methods}
 \name{chmGetURL}
 \alias{chmGetURL}
-\alias{chmGetURL,character,character-method}
-\alias{chmGetURL,character,ngchm-method}
-\alias{chmGetURL,ngchmServer,character-method}
-\alias{chmGetURL,ngchmServer,ngchm-method}
+\alias{chmGetURL,character-method}
+\alias{chmGetURL,ngchm-method}
 \title{Get the URL for an installed NGCHM.}
 \usage{
-chmGetURL(server, chm)
+chmGetURL(chm, ...)
 
-\S4method{chmGetURL}{ngchmServer,character}(server, chm)
+\S4method{chmGetURL}{character}(chm, server = NULL, ...)
 
-\S4method{chmGetURL}{ngchmServer,ngchm}(server, chm)
-
-\S4method{chmGetURL}{character,ngchm}(server, chm)
-
-\S4method{chmGetURL}{character,character}(server, chm)
+\S4method{chmGetURL}{ngchm}(chm, ...)
 }
 \arguments{
-\item{server}{The server on which the NGCHM is installed.}
-
 \item{chm}{The NGCHM for which the URL is required.}
 }
 \description{

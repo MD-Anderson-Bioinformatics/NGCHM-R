@@ -151,7 +151,7 @@ setMethod ("chmMakePublic",
 setMethod ("chmLoadCHM",
     signature = c(serverOrURL="ngchmServer",name="character"),
     definition = function (serverOrURL, name) {
-	loadChmFromURL (chmGetURL (serverOrURL, name))
+	loadChmFromURL (chmGetURL (name, server=serverOrURL))
     });
 
 #' @rdname chmLoadCHM-method
@@ -160,7 +160,7 @@ setMethod ("chmLoadCHM",
     signature = c(serverOrURL="character",name="character"),
     definition = function (serverOrURL, name) {
 	if (serverOrURL %in% chmListServers()) {
-	    loadChmFromURL (chmGetURL (serverOrURL, name))
+	    loadChmFromURL (chmGetURL (name, server=serverOrURL))
 	} else {
 	    stop (sprintf ("Unknown server '%s'", serverOrURL));
 	}
@@ -927,35 +927,22 @@ prepChmOrderings <- function (chm, l) {
 }
 
 #' @rdname chmGetURL-method
-#' @aliases chmGetURL,ngchmServer,character-method
+#' @aliases chmGetURL,character-method
 setMethod ("chmGetURL",
-    signature = c(server="ngchmServer", chm="character"),
-    definition = function (server, chm) {
+    signature = c(chm="character"),
+    definition = function (chm, server=NULL, ...) {
+        if (length(server)==0) server <- getOption("NGCHM.Server", chmListServers()[1]);
+        stopifnot(length(server) > 0);
+        if (typeof(server) == 'character') server <- chmServerCheck (server);
         sprintf ("%s/chm.html?name=%s", server@serverURL, chm)
 });
 
 #' @rdname chmGetURL-method
-#' @aliases chmGetURL,ngchmServer,ngchm-method
+#' @aliases chmGetURL,ngchm-method
 setMethod ("chmGetURL",
-    signature = c(server="ngchmServer", chm="ngchm"),
-    definition = function (server, chm) {
-        chmGetURL (server, chmName (chm))
-});
-
-#' @rdname chmGetURL-method
-#' @aliases chmGetURL,ngchmServer,ngchm-method
-setMethod ("chmGetURL",
-    signature = c(server="character", chm="ngchm"),
-    definition = function (server, chm) {
-        chmGetURL (chmServerCheck(server), chmName (chm))
-});
-
-#' @rdname chmGetURL-method
-#' @aliases chmGetURL,ngchmServer,ngchm-method
-setMethod ("chmGetURL",
-    signature = c(server="character", chm="character"),
-    definition = function (server, chm) {
-        chmGetURL (chmServerCheck(server), chm)
+    signature = c(chm="ngchm"),
+    definition = function (chm, ...) {
+        chmGetURL (chmName (chm), ...)
 });
 
 URLparts <- function(x) {
