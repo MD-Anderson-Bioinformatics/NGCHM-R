@@ -26,7 +26,7 @@ ngchmCreateServerProtocol ("shaidydir",
             stopifnot (length(repo) > 0);
             shaidyCopyBlob (repo, sid, shaidyRepo);
         }
-        if (TRUE) {
+        if (testExternalProgram('tiledata')) {
             tiles <- mapply(function(x) {
                 ngchmTileDataset(shaidyRepo,x@data,chm@rowOrder,chm@colOrder)[[1]]
             }, chm@layers, SIMPLIFY=FALSE);
