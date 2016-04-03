@@ -207,7 +207,7 @@ setIs ("ngchmColormap", "optList");
 #'
 #' @keywords classes
 setClass ("ngchmLayer",
-          slots=list(name="character", data="shaid", colors="ngchmColormap"));
+          slots=list(name="character", data="shaid", colors="ngchmColormap", summarizationMethod="character"));
 
 setMethod ('show',
            signature = c('ngchmLayer'),

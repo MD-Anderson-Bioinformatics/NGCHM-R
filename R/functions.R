@@ -284,7 +284,7 @@ chmAddList <- function (chm, args) {
 #' @seealso chmNewColorMap
 #' @seealso chmAddDataLayer
 #' 
-chmNewDataLayer <- function (label, data, colors=NULL) {
+chmNewDataLayer <- function (label, data, colors=NULL, summarizationMethod="average") {
     if (typeof (label) != "character") {
         stop (sprintf ("Parameter 'label' must have type 'character', not '%s'", typeof(label)));
     }
@@ -294,10 +294,16 @@ chmNewDataLayer <- function (label, data, colors=NULL) {
     if (nchar (label) == 0) {
         stop ("Parameter 'label' cannot be the empty string");
     }
+    if (typeof (summarizationMethod) != "character") {
+        stop (sprintf ("Parameter 'summarizationMethod' must have type 'character', not '%s'", typeof(summarizationMethod)));
+    }
+    if (length (summarizationMethod) != 1) {
+        stop (sprintf ("Parameter 'summarizationMethod' must have a single value, not %d", length(summarizationMethod)));
+    }
     data <- ngchmSaveAsDatasetBlob (ngchm.env$tmpShaidy, 'tsv', data);
     if (length(colors) == 0)
 	colors <- chmNewColorMap (data, c("green", "black", "red"));
-    new (Class="ngchmLayer", name=label, data=data, colors=colors)
+    new (Class="ngchmLayer", name=label, data=data, colors=colors, summarizationMethod=summarizationMethod)
 }
 
 #' Create a new Dataset for a NGCHM.
@@ -2191,6 +2197,14 @@ chmFixVersion <- function (chm) {
 	    }
         }
 	chm <- v2;
+    }
+    if (chm@version == 2 && length(chm@layers) > 0) {
+	# Early version2 did not have summarizationMethod slot
+        for (ii in 1:length(chm@layers)) {
+	    if (!.hasSlot(chm@layers[[ii]],"summarizationMethod")) {
+                chm@layers[[ii]]@summarizationMethod <- 'average';
+	    }
+        }
     }
     if (is(chm@rowOrder,"function")) chm@rowOrder <- chmDefaultRowOrder;
     if (is(chm@colOrder,"function")) chm@colOrder <- chmDefaultColOrder;
