@@ -301,7 +301,7 @@ writeHCDataTSVs <- function(uDend, theOutputHCDataFileName, theOutputHCOrderFile
     ###Write out the data as a Tab separated file to the specified location
     write.table(data, file = theOutputHCDataFileName, append = FALSE, quote = FALSE, sep = "\t", row.names=FALSE)
 
-    data <- cbind(uDend$labels[uDend$order], uDend$order, deparse.level=0)
+    data <- t(vapply(1:length(uDend$labels),function(i)c(uDend$labels[i],which(uDend$order==i)),c("a",1)));
     colnames(data) <- c("Id", "Order")
     ###Write out the order data as a Tab separated file to the specified location (1 more row than data file)
     write.table(data, file = theOutputHCOrderFileName, append = FALSE, quote = FALSE, sep = "\t", row.names=FALSE)
