@@ -4,6 +4,7 @@ Title: Utilities for Creating Next Generation Clustered Heat Maps
 Version: 0.10.4.9012
 Date: 2016-03-22
 Author: Bradley Broom
+Depends: R (>= 3.2.0)
 Maintainer: Bradley Broom <bmbroom@mdanderson.org>
 Imports: 
     methods,
