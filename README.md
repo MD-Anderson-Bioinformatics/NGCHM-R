@@ -8,8 +8,10 @@ To install this package into your own R system:
 ```
 > install.packages("devtools")
 > devtools::install_github("bmbroom/tsvio")
-> devtools::install_github("bmbroom/NGCHMR")
+> devtools::install_github("bmbroom/NGCHMR", ref="stable")
 ```
+
+You might also choose to install the beta version of the library, or for the really daring the master branch.
 
 The installed library will be called NGCHM:
 ```
