@@ -4,7 +4,7 @@
 #'
 #' @export
 ngchmInitShaidyRepository <- function (shaidyDir) {
-    shaidyInitRepository (shaidyDir, c("collection", "chm", "dataset", "dendrogram", "label", "tile"))
+    shaidyInitRepository (shaidyDir, c("collection", "chm", "dataset", "dendrogram", "label", "tile", "viewer"))
 }
 
 #' Push a shaidy repository onto the stack of temporary repositories
