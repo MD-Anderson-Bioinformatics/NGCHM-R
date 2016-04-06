@@ -4,7 +4,7 @@
 \alias{chmNewDataLayer}
 \title{Create a new Data Layer for a NGCHM.}
 \usage{
-chmNewDataLayer(label, data, colors = NULL)
+chmNewDataLayer(label, data, colors = NULL, summarizationMethod = "average")
 }
 \arguments{
 \item{label}{The name under which the data layer will be displayed to the user.}
