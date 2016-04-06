@@ -1958,7 +1958,7 @@ chmCreateServer <- function (serverName,
 	}
     }
 
-    classFields <- c('traceLevel', 'serverProtocol', 'deployServer', 'jarFile', 'serverURL')
+    classFields <- c('traceLevel', 'serverProtocol', 'deployServer', 'jarFile', 'serverURL', 'viewServer')
 
     # defaultOptions, overridden by file options, overridden by explicit serverOptions.
     cfg <- defaultOptions;
@@ -1982,6 +1982,7 @@ chmCreateServer <- function (serverName,
 			   traceLevel = cfg$traceLevel,
 			   jarFile = cfg$jarFile,
 			   deployServer = cfg$deployServer,
+                           viewServer = cfg$viewServer,
 			   protoOpts = protoOpts));
 }
 

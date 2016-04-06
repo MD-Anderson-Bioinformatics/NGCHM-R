@@ -628,6 +628,7 @@ setClass ("ngchmServer",
                           jarFile="optCharacter",
 			  serverProtocol="ngchmServerProtocol",
                           deployServer="optCharacter",
+                          viewServer="optCharacter",
                           protoOpts="optList"			# Protocol-specific parameters
                           ));
 

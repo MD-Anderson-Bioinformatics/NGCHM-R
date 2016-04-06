@@ -934,7 +934,9 @@ setMethod ("chmGetURL",
         if (length(server)==0) server <- getOption("NGCHM.Server", chmListServers()[1]);
         stopifnot(length(server) > 0);
         if (typeof(server) == 'character') server <- chmServerCheck (server);
-        sprintf ("%s/chm.html?name=%s", server@serverURL, chm)
+        sprintf ("%s/chm.html?name=%s",
+                 if (length(server@viewServer)>0) server@viewServer else server@serverURL,
+                 chm)
 });
 
 #' @rdname chmGetURL-method
