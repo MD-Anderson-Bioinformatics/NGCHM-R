@@ -1883,7 +1883,7 @@ chmCreateServer <- function (serverName,
 	        # Assume a URL that refers to an NGCHM server.
 		cfg$serverURL <- serverSpec;
 		# If protocol not specified, probe to see if manager API available.
-                if (!'serverProtocol' %in% names(cfg)) {
+                if (!'serverProtocol' %in% names(serverOptions)) {
 		    ws <- sprintf("%s/manager/rest/chmservers", serverSpec);
 		    res <- httr::GET (ws, handle=ngchmGetHandleHTTR (serverSpec));
 		    if (res$status_code >= 200 && res$status_code < 300) {
