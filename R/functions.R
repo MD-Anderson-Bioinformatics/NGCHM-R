@@ -1882,15 +1882,17 @@ chmCreateServer <- function (serverName,
 	    } else {
 	        # Assume a URL that refers to an NGCHM server.
 		cfg$serverURL <- serverSpec;
-		# Probe to see if manager API available.
-		ws <- sprintf("%s/manager/rest/chmservers", serverSpec);
-		res <- httr::GET (ws, handle=ngchmGetHandleHTTR (serverSpec));
-		if (res$status_code >= 200 && res$status_code < 300) {
-		    content <- jsonlite::fromJSON(rawToChar(res$content));
-		    if (length(content) > 0) {
-		        cfg$serverProtocol <- 'manager';
-		        cfg$deployServer <- sprintf ("%s/manager/rest", serverSpec);
-			cfg$serviceName <- names(content)[1];
+		# If protocol not specified, probe to see if manager API available.
+                if (!'serverProtocol' %in% names(cfg)) {
+		    ws <- sprintf("%s/manager/rest/chmservers", serverSpec);
+		    res <- httr::GET (ws, handle=ngchmGetHandleHTTR (serverSpec));
+		    if (res$status_code >= 200 && res$status_code < 300) {
+			content <- jsonlite::fromJSON(rawToChar(res$content));
+			if (length(content) > 0) {
+			    cfg$serverProtocol <- 'manager';
+			    cfg$deployServer <- sprintf ("%s/manager/rest", serverSpec);
+			    cfg$serviceName <- names(content)[1];
+			}
 		    }
 		}
 	    }
