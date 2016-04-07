@@ -1986,6 +1986,39 @@ chmCreateServer <- function (serverName,
 			   protoOpts = protoOpts));
 }
 
+#' Create an ngchmServer object for a managed NG-CHM server
+#'
+#' Create an ngchmServer object called 'serverName' (see details).
+#' The new ngchmServer object is returned and registered so that it can be
+#' referenced by name, including retrieval using chmServer.
+#' This library will communicate with the NG-CHM using the private address.
+#' Returned URLs for viewing NG-CHMs will use the public address.
+#'
+#' @param serverName The name of the new server object.
+#' @param privateAddr Private IP name/address of the server.
+#' @param publicAddr Public IP name/address of the server.
+#' @param chmPort Port on which the chm viewer is listening.
+#' @param managerPort Port on which the chm manager is listening.
+#' @param serviceName Name of the chmManager service
+#' @param ... Additional options passed to chmCreateServer
+#'
+#' @return The created (and registered) ngchmServer object.
+#' @export
+#'
+#' @seealso chmServer
+#' @seealso chmCreateServer
+
+chmCreateManagedServer <- function (serverName, privateAddr, publicAddr=NULL, chmPort=80, managerPort=18080, serviceName="default", ...) {
+    if (is.null(publicAddr)) publicAddr <- privateAddr;
+    chmCreateServer (serverName,
+                     sprintf ("http://%s:%d/chm", privateAddr, chmPort),
+                     list (serverProtocol="manager",
+                           deployServer=sprintf("http://%s:%d/chm/manager/rest", privateAddr, managerPort),
+                           serviceName=serviceName,
+                           viewServer=sprintf("http://%s:%d/chm", publicAddr, chmPort),
+                           ...))
+}
+
 #' Check that all required parameters are specified, and all specified parameters are either required or optional.
 #'
 #' @param params A list of named parameters.

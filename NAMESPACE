@@ -2,6 +2,7 @@
 
 S3method(print,ngchm.type.info)
 S3method(print,shaidyRepo)
+export(chmCreateManagedServer)
 export(chmCreateServer)
 export(chmDefaultColOrder)
 export(chmDefaultRowOrder)
