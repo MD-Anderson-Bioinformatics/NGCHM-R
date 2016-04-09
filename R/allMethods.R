@@ -927,6 +927,8 @@ prepChmOrderings <- function (chm, l) {
 }
 
 #' @rdname chmGetURL-method
+#' @param server The server on which to view the NGCHM
+#' @param ... Ignored.
 #' @aliases chmGetURL,character-method
 setMethod ("chmGetURL",
     signature = c(chm="character"),

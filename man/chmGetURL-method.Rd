@@ -15,6 +15,10 @@ chmGetURL(chm, ...)
 }
 \arguments{
 \item{chm}{The NGCHM for which the URL is required.}
+
+\item{...}{Ignored.}
+
+\item{server}{The server on which to view the NGCHM}
 }
 \description{
 Return the URL for accessing the specified Next Generation Clustered Heat Map (NGCHM) on the specified server.
