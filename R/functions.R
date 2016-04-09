@@ -2271,3 +2271,37 @@ utempfile <- function (...) {
     }
     filename
 }
+
+#' Browse the NGCHMs on the specified server in the viewer.
+#'
+#' Opens the NG-CHM browser page in the viewer.
+#'
+#' @param server The server to browse. Defaults to option "NGCHM.Server" or the first server.
+#' @param viewer The viewer to use. Defaults to option "viewer" or browseURL.
+#' @export
+#'
+#' @seealso browseURL
+chmBrowse <- function (server=NULL, viewer=NULL) {
+    if (is.null(server)) server <- getOption("NGCHM.Server", chmListServers()[1]);
+    if (!is(server,"ngchmServer")) server <- chmServer(server);
+    if (is.null(viewer)) viewer <- getOption("viewer", browseURL);
+    viewer (server@viewServer)
+}
+
+#' Manage the NGCHMs on the specified server in the viewer.
+#'
+#' Opens the NG-CHM manager page in the viewer.
+#'
+#' @param server The server to browse. Defaults to option "NGCHM.Server" or the first server.
+#'        The server must be managed.
+#' @param viewer The viewer to use. Defaults to option "viewer" or browseURL.
+#' @export
+#'
+#' @seealso browseURL
+chmManager <- function (server=NULL, viewer=NULL) {
+    if (is.null(server)) server <- getOption("NGCHM.Server", chmListServers()[1]);
+    if (!is(server,"ngchmServer")) server <- chmServer(server);
+    stopifnot (server@serverProtocol@protocolName == "manager");
+    if (is.null(viewer)) viewer <- getOption("viewer", browseURL);
+    viewer (paste(server@viewServer, "manager", sep="/"))
+}
