@@ -13,6 +13,8 @@ chmNewDataLayer(label, data, colors = NULL, summarizationMethod = "average")
 
 \item{colors}{A color map specifying how the data should be rendered.  If omitted or NULL,
 a default green-black-red color map will be estimated from the data.}
+
+\item{summarizationMethod}{The method to use when summarizing multiple data points per pixel}
 }
 \value{
 An object of class ngchmLayer

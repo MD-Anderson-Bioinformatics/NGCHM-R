@@ -267,6 +267,7 @@ chmAddList <- function (chm, args) {
 #' @param data A matrix containing the data to display. Must have rownames and colnames.
 #' @param colors A color map specifying how the data should be rendered.  If omitted or NULL,
 #' a default green-black-red color map will be estimated from the data.
+#' @param summarizationMethod The method to use when summarizing multiple data points per pixel
 #'
 #' @return An object of class ngchmLayer
 #'
