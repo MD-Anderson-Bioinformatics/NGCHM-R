@@ -1158,6 +1158,10 @@ setMethod ("chmAdd",
 	chmAddList (chm, list (...))
 });
 
+#' @method + ngchmVersion2
+#' @export
+"+.ngchmVersion2" <- chmAdd
+
 #' @rdname chmAddLayer-method
 #' @aliases chmAddLayer,ngchm,ngchmLayer-method
 #'

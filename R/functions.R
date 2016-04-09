@@ -252,6 +252,8 @@ chmAddList <- function (chm, args) {
 	else if (cc == "ngchmDataset") { chm <- chmAddDataset (chm, item); }
 	else if (cc == "ngchmColormap") { chm <- chmAddColormap (chm, item); }
 	else if (cc == "ngchmDialog") { chm <- chmAddDialog (chm, item); }
+	else if (cc == "ngchmProperty") { chm@properties <- append (chm@properties, item); }
+        else if (cc == "list") { chm <- chmAddList (chm, item); }
 	else {
 	    cat (sprintf ("Unable to add item of class '%s' to chm\n", class(item)));
 	}
@@ -823,13 +825,42 @@ chmNewProperty <- function (label, value) {
     if (nchar (label) == 0) {
         stop ("Parameter 'label' cannot be the empty string");
     }
-    if (typeof (value) != "character") {
-        stop (sprintf ("Parameter 'value' for property '%s' must have type 'character', not '%s'", label, typeof(value)));
+    if (!typeof (value) %in% c("character","double","integer","logical")) {
+        stop (sprintf ("Parameter 'value' for property '%s' must have type 'character', 'double', 'integer', or 'logical', not '%s'", label, typeof(value)));
     }
     if (length (value) < 1) {
         stop (sprintf ("Parameter 'value' for property '%s' must have at least one value", label));
     }
-    new (Class="ngchmProperty", label=label, value=value)
+    new (Class="ngchmProperty", label=label, value=as.character(value))
+}
+
+#' Create a list of NGCHM properties.
+#'
+#' Create a list of NGCHM properties.
+#'
+#' @param ... A named list of property values.
+#'
+#' @export
+#' @seealso chmAdd
+chmProperties <- function (...) {
+   props <- list(...);
+   if (length(props) > 0) {
+       if (is.null(names(props)) || any(names(props)=="")) {
+	   stop ("All properties must be named");
+       }
+       props <- lapply(1:length(props), function(idx) {
+	   label <- names(props)[idx];
+	   value <- props[[idx]];
+	   if (!typeof(value) %in% c("character","double","integer","logical")) {
+	       stop (sprintf ("Property %s has invalid type %s", label, typeof(value)));
+	   }
+	   if (length(value) != 1) {
+	       stop (sprintf ("Property %s has length %d", label, length(value)));
+	   }
+	   chmNewProperty (label, as.character(value))
+       });
+   }
+   props
 }
 
 #' Create a new object representing a NGCHM server. 
