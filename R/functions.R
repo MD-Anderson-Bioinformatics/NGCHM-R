@@ -2308,13 +2308,15 @@ chmManager <- function (server=NULL, viewer=NULL) {
 
 #' Open the NG-CHM on the specified server in the viewer.
 #'
+#' @param x The NGCHM to view.
 #' @param server The server containing the NG-CHM.  Defaults to option "NGCHM.Server" or the first server.
 #' @param viewer The viewer to use. Defaults to option "viewer" or browseURL.
+#' @param ... Ignored.
 #' @export
-plot.ngchmVersion2 <- function(chm, server=NULL, viewer=NULL) {
+plot.ngchmVersion2 <- function(x, server=NULL, viewer=NULL, ...) {
     if (is.null(server)) server <- getOption("NGCHM.Server", chmListServers()[1]);
     if (!is(server,"ngchmServer")) server <- chmServer(server);
     if (is.null(viewer)) viewer <- getOption("viewer", browseURL);
-    viewer(chmGetURL(chm,server=server))
+    viewer(chmGetURL(x,server=server))
 }
 
