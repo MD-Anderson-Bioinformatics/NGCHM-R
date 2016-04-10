@@ -1183,6 +1183,10 @@ chmOperatorAdd <- function (left, right) {
     }
 }
 
+setMethod ("+",
+           signature=c(e1="ngchmVersion2", e2="ngchmAxis"),
+           definition = function(e1,e2) chmOperatorAdd (e1, e2));
+
 #' @method + ngchmVersion2
 #' @export
 "+.ngchmVersion2" <- chmOperatorAdd
