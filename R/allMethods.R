@@ -1158,9 +1158,39 @@ setMethod ("chmAdd",
 	chmAddList (chm, list (...))
 });
 
+chmOperatorAdd <- function (left, right) {
+    if (is (left, "ngchm")) {
+        chmAdd (left, right)
+    }
+    else if (is (right, "ngchm")) {
+        chmAdd (right, left)
+    }
+    else if (is (left, "ngchmAxis")) {
+        if (is (right, "ngchmAxis")) {
+	    stopifnot (left@axis == right@axis);
+            left@objects <- append (left@objects, right@objects);
+        } else {
+            left@objects <- append (left@objects, right);
+        }
+        left
+    }
+    else if (is (right, "ngchmAxis")) {
+	right@objects <- append (right@objects, left);
+        right
+    }
+    else {
+        stop ("unknown object class")
+    }
+}
+
 #' @method + ngchmVersion2
 #' @export
-"+.ngchmVersion2" <- chmAdd
+"+.ngchmVersion2" <- chmOperatorAdd
+
+#' @method + ngchmAxis
+#' @export
+"+.ngchmAxis" <- chmOperatorAdd
+
 
 #' @rdname chmAddLayer-method
 #' @aliases chmAddLayer,ngchm,ngchmLayer-method

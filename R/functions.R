@@ -242,6 +242,25 @@ chmDefaultRowOrder <- function (chm) {
     res[[1]]
 }
 
+chmAddAxis <- function (chm, axis) {
+    stopifnot (is(chm, "ngchm") && is(axis,"ngchmAxis"));
+    where <- match.arg (axis@axis, c("row", "column", "both"));
+    chm <- chmFixVersion (chm);
+    for (item in axis@objects) {
+	cc <- class (item);
+	if (cc == "ngchmAxisType") {
+            item@where <- where;
+	    chm@axisTypes <- append (chm@axisTypes, item);
+	    chm <- chmAddProperty (chm, paste('!axistype', where, sep='.'), item@type)
+        } else if (cc %in% c("ngchmBar", "ngchmCovariate")) {
+	    chm <- chmAddCovariateBar (chm, where, item);
+	} else {
+	    stop (sprintf ("Unable to add item of class '%s' to ngchm axis\n", cc));
+	}
+    }
+    chm
+}
+
 # Function used by chmNew and chmAdd:
 chmAddList <- function (chm, args) {
     #cat (sprintf ("chmAdd: %d items to add\n", length(args)), file=stderr());
@@ -253,9 +272,10 @@ chmAddList <- function (chm, args) {
 	else if (cc == "ngchmColormap") { chm <- chmAddColormap (chm, item); }
 	else if (cc == "ngchmDialog") { chm <- chmAddDialog (chm, item); }
 	else if (cc == "ngchmProperty") { chm@properties <- append (chm@properties, item); }
+	else if (cc == "ngchmAxis") { chm <- chmAddAxis (chm, item); }
         else if (cc == "list") { chm <- chmAddList (chm, item); }
 	else {
-	    cat (sprintf ("Unable to add item of class '%s' to chm\n", class(item)));
+	    stop (sprintf ("Unable to add item of class '%s' to ngchm\n", cc));
 	}
     }
     chm
@@ -1740,6 +1760,47 @@ chmNewDialog <- function (id, title, fn) {
     dialog <- new (Class="ngchmDialog", id=id, title=title, fn=fn);
     dialog
 }
+
+#' Create a new Axis for adding to an NG-CHM.
+#'
+#' This function creates a new Axis for adding to a Next Generation Clustered Heat Map.  You can specify any
+#' axis name here, but chmAdd only accepts row, column, and both.
+#'
+#' @param axis The name of the axis
+#' @param ... Objects to add to the axis
+#'
+#' @return An object of class ngchmAxis
+#'
+#' @export
+#'
+#' @seealso chmAdd
+chmAxis <- function (axis, ...) {
+    new ("ngchmAxis", axis=axis, objects=list(...))
+}
+
+#' Create a new AxisType for adding to an ngchmAxis.
+#'
+#' This function creates a new AxisType for adding to an ngchmAxis.
+#'
+#' @param axis The name of the axis type
+#' @param func A javascript function (optional) for obtaining a value of that type from the axis
+#'
+#' @return An object of class ngchmAxisType
+#'
+#' @export
+#'
+#' @seealso chmAxis
+chmAxisType <- function (type, func) {
+    stopifnot (typeof(type) == "character" && length(type)==1);
+    if (missing(func)) {
+        func <- chmGetFunction ("getLabelValue");
+    } else if (typeof(func) == "character" && length(func)==1) {
+        func <- chmGetFunction (func);
+    } else {
+        stopifnot (is(func,"ngchmJS"))
+    }
+    new (Class="ngchmAxisType", where="", type=type, func=func)
+};
 
 #' Return the names of the NGCHM servers defined to date in this session.
 #'

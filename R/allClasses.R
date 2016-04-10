@@ -413,6 +413,24 @@ setMethod ('show',
 	   });
 setMethod(jsonlite:::asJSON, signature=c("ngchmDialog"), definition=s4ToJSON);
 
+#' Class representing an axis of a Next Generation Clustered Heat Map (NG-CHM).
+#'
+#' @exportClass ngchmAxis
+#' @name ngchmAxis-class
+#' @rdname ngchmAxis-class
+#' @keywords classes
+#'
+#' @seealso chmAxis
+setClass ("ngchmAxis",
+          representation (axis="character",
+                          objects="optList"));
+
+setMethod ('show',
+           signature = c('ngchmAxis'),
+           definition = function(object) {
+	       cat (sprintf ("ngchmAxis %s (%d objects)\n", object@axis, length(object@objects)));
+	   });
+
 #' Class representing a Next Generation Clustered Heat Map (NGCHM) under construction.
 #'
 #' @exportClass ngchm
