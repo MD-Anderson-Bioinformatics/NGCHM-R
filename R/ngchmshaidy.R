@@ -287,8 +287,8 @@ ngchmSaveAsDatasetBlob <- function (shaidyRepo, format, mat) {
 ngchmLoadDatasetBlob <- function (shaidyRepo, shaid) {
     blobdir <- shaidyRepo$blob.path ('dataset', shaid@value);
     props <- jsonlite::fromJSON (readLines (file.path (blobdir, "properties.json")));
-    mat <- tsvio::tsvGetData (file.path (blobdir, "matrix.tsv"), file.path (blobdir, "index.tsv"),
-                              NULL, NULL, 0.0);
+    mat <- suppressWarnings (tsvio::tsvGetData (file.path (blobdir, "matrix.tsv"), file.path (blobdir, "index.tsv"),
+                              NULL, NULL, 0.0));
     list (shaid=shaid, properties=props, mat=mat)
 }
 
