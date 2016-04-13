@@ -2,6 +2,10 @@
 
 S3method("+",ngchmAxis)
 S3method("+",ngchmVersion2)
+S3method(dim,ngchmLayer)
+S3method(dim,ngchmVersion2)
+S3method(dimnames,ngchmLayer)
+S3method(dimnames,ngchmVersion2)
 S3method(plot,ngchmVersion2)
 S3method(print,ngchm.type.info)
 S3method(print,shaidyRepo)

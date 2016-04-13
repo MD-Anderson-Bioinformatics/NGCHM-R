@@ -1195,6 +1195,33 @@ setMethod ("+",
 #' @export
 "+.ngchmAxis" <- chmOperatorAdd
 
+#' @method dimnames ngchmVersion2
+#' @export
+dimnames.ngchmVersion2 <- function(chm) {
+    if (length(chm@layers) == 0) {
+        NULL
+    } else {
+        dimnames (chm@layers[[1]])
+    }
+}
+
+#' @method dim ngchmVersion2
+#' @export
+dim.ngchmVersion2 <- function(chm) {
+    vapply (dimnames(chm), length, 0)
+}
+
+#' @method dimnames ngchmLayer
+#' @export
+dimnames.ngchmLayer <- function(ll) {
+    list (ngchmGetLabelsStr (ll@data,"row"), ngchmGetLabelsStr (ll@data,"column"))
+}
+
+#' @method dim ngchmLayer
+#' @export
+dim.ngchmLayer <- function(ll) {
+    vapply (dimnames(ll), length, 0)
+}
 
 #' @rdname chmAddLayer-method
 #' @aliases chmAddLayer,ngchm,ngchmLayer-method
