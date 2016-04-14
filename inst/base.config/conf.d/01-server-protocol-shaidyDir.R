@@ -16,7 +16,7 @@ ngchmCreateServerProtocol ("shaidydir",
 	stopifnot (chm@format == "shaidy");
         shaid <- shaidyGetShaid (chm);
 	shaidyDir <- ngchmGetProtoParam (server, 'basepath');
-        shaidyRepo <- shaidyLoadRepository (shaidyDir);
+        shaidyRepo <- shaidyLoadRepository ('file', shaidyDir);
         collection <- ngchmLoadCollection (shaidyRepo, collectionId);
         tocheck <- c(shaid, shaidyGetComponents(chm));
         present <- shaidyBlobExists (shaidyRepo, tocheck);
@@ -41,7 +41,7 @@ ngchmCreateServerProtocol ("shaidydir",
 	},
     uninstallMethod = function (server, chmname, collectionIds) {
 	shaidyDir <- ngchmGetProtoParam (server, 'basepath');
-        shaidyRepo <- shaidyLoadRepository (shaidyDir);
+        shaidyRepo <- shaidyLoadRepository ('file', shaidyDir);
 	stop ("Not yet implemented by shaidydir protocol");
 	return (invisible(FALSE));
     },

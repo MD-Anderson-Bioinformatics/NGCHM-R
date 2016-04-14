@@ -4,10 +4,12 @@
 \alias{ngchmPushSourceRepository}
 \title{Push a shaidy repository onto the stack of source repositories}
 \usage{
-ngchmPushSourceRepository(shaidyDir)
+ngchmPushSourceRepository(shaidyDir, accessMethod = "file")
 }
 \arguments{
 \item{shaidyDir}{Basepath of local shaidy repository to use as a source repository}
+
+\item{accessMethod}{Method for accessing repository}
 }
 \description{
 Push a shaidy repository onto the stack of source repositories

@@ -13,7 +13,7 @@ ngchmInitShaidyRepository <- function (shaidyDir) {
 #'
 #' @export
 ngchmPushTempRepository <- function (shaidyDir) {
-    newrepo <- shaidyLoadRepository (shaidyDir);
+    newrepo <- shaidyLoadRepository ('file', shaidyDir);
     ngchm.env$tmpShaidyStack <- c(list(ngchm.env$tmpShaidy), ngchm.env$tmpShaidyStack);
     ngchm.env$tmpShaidy <- newrepo
 }
@@ -21,10 +21,11 @@ ngchmPushTempRepository <- function (shaidyDir) {
 #' Push a shaidy repository onto the stack of source repositories
 #'
 #' @param shaidyDir Basepath of local shaidy repository to use as a source repository
+#' @param accessMethod Method for accessing repository
 #'
 #' @export
-ngchmPushSourceRepository <- function (shaidyDir) {
-    newrepo <- shaidyLoadRepository (shaidyDir);
+ngchmPushSourceRepository <- function (shaidyDir, accessMethod='file') {
+    newrepo <- shaidyLoadRepository (accessMethod, shaidyDir);
     ngchm.env$shaidyStack <- c(list(newrepo), ngchm.env$shaidyStack);
 }
 
@@ -375,11 +376,12 @@ ngchmGetLabels <- function (shaid, axis=NULL) {
     provid <- shaidyProvenance (shaidyRepo, name="ngchmGetLabels", type=shaid@type, shaid=shaid@value, axis=axis);
     res <- shaidyRepo$provenanceDB$get ('label', provid);
     if (length(res) == 0) {
+        srcRepo <- ngchmFindRepo (shaid);
         if (shaid@type == 'dataset') {
-            ds <- ngchmLoadDatasetBlob (shaidyRepo, shaid);
+            ds <- ngchmLoadDatasetBlob (srcRepo, shaid);
             labels <- (if (axis=="row") rownames else colnames)(ds$mat);
         } else if (shaid@type == 'dendrogram') {
-	    oo <- read.delim (shaidyRepo$blob.path(shaid@type,shaid@value,"dendrogram-order.tsv"), header=TRUE, colClasses=c('character','numeric'));
+	    oo <- read.delim (srcRepo$blob.path(shaid@type,shaid@value,"dendrogram-order.tsv"), header=TRUE, colClasses=c('character','numeric'));
 	    labels <- oo$Id[order(oo$Order)]
         } else {
 	    stop (sprintf ("Unknown shaid type %s", shaid@type));

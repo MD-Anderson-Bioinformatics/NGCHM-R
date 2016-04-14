@@ -16,16 +16,34 @@ gitHashObject <- function (path) {
 
 #' Return blob.path function for a local shaidy repository.
 #'
+#' @param accessMethod Method for accessing blob.path.  Must be 'http' or 'file'.
 #' @param shaidyDir Basepath to a local shaidy repository.
 #'
 #' @return a function (first, ...) that accepts either a shaid or a blob type and optionally
 #'         additional file path components and returns a filepath
 #'
 #' @import jsonlite
+#' @import httr
 #'
-shaidyBlobPath <- function (shaidyDir) {
+shaidyBlobPath <- function (accessMethod, shaidyDir) {
     # Load shaidyDir/typeTab.json and perform basic sanity checks.
-    stopifnot (file.exists (shaidyDir));
+    accessMethod <- match.arg (accessMethod, c('file', 'http'));
+
+    if (accessMethod == 'file') {
+	stopifnot (file.exists (shaidyDir));
+    } else if (accessMethod == 'http') {
+        resp <- GET (shaidyDir);
+        stopifnot (resp$status_code == 200);
+	tarfile <- utempfile ("shaidcache", fileext='.tar');
+	local <- utempfile ("shaidcache");
+        stopifnot (dir.create (local, recursive=TRUE));
+        writeBin (resp$content, tarfile);
+        systemCheck (sprintf ("tar xf %s -C %s", tarfile, local));
+        unlink (tarfile);
+        shaidyDir <- local;
+    } else {
+        error (sprintf ('Unknown accessMethod %s', accessMethod));
+    }
     filename <- file.path (shaidyDir, "typeTab.json");
     stopifnot (file.exists (filename));
     typeTab <- jsonlite::fromJSON (readLines(filename, warn=FALSE));
@@ -111,19 +129,22 @@ shaidyLoadProvenanceDB <- function(shaidyDir) {
     pdb
 };
 
-#' Load a local shaidy repository
+#' Load a shaidy repository
 #'
-#' @param shaidyDir Basepath to a local shaidy repository.
+#' @param accessMethod Method for accessing repository.  Allowed values are 'http' and 'file'.
+#' @param shaidyDir Basepath to shaidy repository.
 #'
 #' @return A shaidyRepo
 #'
 #' @export
-shaidyLoadRepository <- function (shaidyDir) {
-    if (Sys.info()[['sysname']] == "Windows")  {
+shaidyLoadRepository <- function (accessMethod, shaidyDir) {
+    accessMethod <- match.arg (accessMethod, c('file','http'));
+    if ((accessMethod == 'file') && (Sys.info()[['sysname']] == "Windows"))  {
         shaidyDir <- gsub ("\\\\", "/", shaidyDir);
     }
-    sr <- list (basepath = shaidyDir,
-                blob.path = shaidyBlobPath (shaidyDir),
+    sr <- list (accessMethod = accessMethod,
+                basepath = shaidyDir,
+                blob.path = shaidyBlobPath (accessMethod, shaidyDir),
                 shaid.cache = shaidyNewCache (shaidyDir),
                 providDB = shaidyLoadProvidDB (shaidyDir),
                 provenanceDB = shaidyLoadProvenanceDB (shaidyDir));
@@ -157,7 +178,7 @@ shaidyInitRepository <- function (shaidyDir, blob.types) {
     stopifnot (dir.create (shaidyDir, recursive=TRUE));
     typeTab <- data.frame (Type=blob.types, Path=blob.types);
     writeLines(jsonlite::toJSON(typeTab,pretty=TRUE), file.path (shaidyDir, "typeTab.json"));
-    blob.path <- shaidyBlobPath (shaidyDir);
+    blob.path <- shaidyBlobPath ('file', shaidyDir);
     for (bt in blob.types) {
         stopifnot (dir.create (blob.path (bt), recursive=FALSE));
     }

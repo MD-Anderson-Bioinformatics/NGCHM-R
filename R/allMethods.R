@@ -198,6 +198,7 @@ loadChmFromURL <- function (chmurl) {
     chm@inpDir <- utempfile ("ngchm.input");
     chm@outDir <- utempfile ("ngchm.output");
     chm@saveDir <- ".";
+    try (ngchmPushSourceRepository(paste(baseurl, "data/", chmname, '/undefined/shaidyRepo.tar', sep=""),'http'),TRUE);
     chm
 }
 
@@ -297,6 +298,16 @@ writePropertiesPost <- function (outDir, format, props) {
 writeChmPost <- function (chm, outdir=NULL) {
     if (length(outdir)==0) outdir <- file.path(chm@outDir,chm@name);
     if (is.list(chm@properties)) writePropertiesPost (outdir, chm@format, chm@properties);
+    shaids <- shaidyGetComponents (chm);
+    chmRepo <- file.path (outdir, "shaidyRepo");
+    ngchmInitShaidyRepository (chmRepo);
+    repo <- shaidyLoadRepository ('file', chmRepo);
+    lapply (shaids, function(shaid) {
+        src <- ngchmFindRepo (shaid);
+        shaidyCopyBlob (src, shaid, repo);
+    });
+    systemCheck (sprintf ("tar cf %s.tar -C %s .", chmRepo, chmRepo));
+    unlink (chmRepo, recursive=TRUE);
 }
 
 startcust <- paste ("(function(chm){",
@@ -1782,6 +1793,8 @@ setMethod ("shaidyGetShaid",
 setMethod ("shaidyGetComponents",
     signature = c(object="ngchm"),
     definition = function(object) {
+        if (is(object@rowOrder,"function")) object@rowOrder <- object@rowOrder (object);
+        if (is(object@colOrder,"function")) object@colOrder <- object@colOrder (object);
         c(object@rowOrder, object@colOrder,
           if (object@rowOrder@type=='dendrogram') ngchmGetLabels(object@rowOrder)[[1]] else NULL,
           if (object@colOrder@type=='dendrogram') ngchmGetLabels(object@colOrder)[[1]] else NULL,

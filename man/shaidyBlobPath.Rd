@@ -4,9 +4,11 @@
 \alias{shaidyBlobPath}
 \title{Return blob.path function for a local shaidy repository.}
 \usage{
-shaidyBlobPath(shaidyDir)
+shaidyBlobPath(accessMethod, shaidyDir)
 }
 \arguments{
+\item{accessMethod}{Method for accessing blob.path.  Must be 'http' or 'file'.}
+
 \item{shaidyDir}{Basepath to a local shaidy repository.}
 }
 \value{

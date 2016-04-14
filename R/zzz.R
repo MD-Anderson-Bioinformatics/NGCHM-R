@@ -33,7 +33,7 @@ ngchm.env <- new.env(parent=emptyenv());
     ngchm.env$nextId <- 0;
     shaidyDir <- utempfile ("shaidy");
     ngchmInitShaidyRepository (shaidyDir);
-    ngchm.env$tmpShaidy <- shaidyLoadRepository (shaidyDir);
+    ngchm.env$tmpShaidy <- shaidyLoadRepository ('file', shaidyDir);
     ngchm.env$tmpShaidyStack <- c();
     ngchm.env$shaidyStack <- c();
 

@@ -2,17 +2,19 @@
 % Please edit documentation in R/shaidy.R
 \name{shaidyLoadRepository}
 \alias{shaidyLoadRepository}
-\title{Load a local shaidy repository}
+\title{Load a shaidy repository}
 \usage{
-shaidyLoadRepository(shaidyDir)
+shaidyLoadRepository(accessMethod, shaidyDir)
 }
 \arguments{
-\item{shaidyDir}{Basepath to a local shaidy repository.}
+\item{accessMethod}{Method for accessing repository.  Allowed values are 'http' and 'file'.}
+
+\item{shaidyDir}{Basepath to shaidy repository.}
 }
 \value{
 A shaidyRepo
 }
 \description{
-Load a local shaidy repository
+Load a shaidy repository
 }
 
