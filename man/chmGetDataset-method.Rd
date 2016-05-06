@@ -4,7 +4,7 @@
 \name{chmGetDataset}
 \alias{chmGetDataset}
 \alias{chmGetDataset,ngchmLayer-method}
-\title{Get the dataset from NG-CHM object}
+\title{Get the dataset from an NG-CHM object}
 \usage{
 chmGetDataset(object)
 

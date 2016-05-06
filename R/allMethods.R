@@ -1810,3 +1810,24 @@ setMethod ("chmGetDataset",
         repo <- ngchmFindRepo (shaid);
         ngchmLoadDatasetBlob (repo, shaid)
 });
+
+#' @rdname chmHasProperty-method
+#' @aliases chmHasProperty,ngchmVersion2-method
+setMethod ("chmHasProperty",
+    signature = c(object="ngchmVersion2", label="character"),
+    definition = function(object,label) {
+        matches <- vapply (object@properties, function(p) p@label==label, rep(TRUE,length(label)));
+        if (length(label)==1) any (matches) else apply (matches, 1, any)
+    }
+);
+
+#' @rdname chmGetProperty-method
+#' @aliases chmGetProperty,ngchmVersion2-method
+setMethod ("chmGetProperty",
+    signature = c(object="ngchmVersion2", label="character"),
+    definition = function(object,label) {
+        stopifnot (length(label) == 1);
+        matches <- vapply (object@properties, function(p) p@label==label, TRUE);
+        vapply (object@properties[matches], function(p) p@value, '')
+    }
+);
