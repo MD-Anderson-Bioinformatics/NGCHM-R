@@ -298,16 +298,18 @@ writePropertiesPost <- function (outDir, format, props) {
 writeChmPost <- function (chm, outdir=NULL) {
     if (length(outdir)==0) outdir <- file.path(chm@outDir,chm@name);
     if (is.list(chm@properties)) writePropertiesPost (outdir, chm@format, chm@properties);
-    shaids <- shaidyGetComponents (chm);
-    chmRepo <- file.path (outdir, "shaidyRepo");
-    ngchmInitShaidyRepository (chmRepo);
-    repo <- shaidyLoadRepository ('file', chmRepo);
-    lapply (shaids, function(shaid) {
-        src <- ngchmFindRepo (shaid);
-        shaidyCopyBlob (src, shaid, repo);
-    });
-    systemCheck (sprintf ("tar cf %s.tar -C %s .", chmRepo, chmRepo));
-    unlink (chmRepo, recursive=TRUE);
+    if (chm@format == 'original') {
+	shaids <- shaidyGetComponents (chm);
+	chmRepo <- file.path (outdir, "shaidyRepo");
+	ngchmInitShaidyRepository (chmRepo);
+	repo <- shaidyLoadRepository ('file', chmRepo);
+	lapply (shaids, function(shaid) {
+	    src <- ngchmFindRepo (shaid);
+	    shaidyCopyBlob (src, shaid, repo);
+	});
+	systemCheck (sprintf ("tar cf %s.tar -C %s .", chmRepo, chmRepo));
+	unlink (chmRepo, recursive=TRUE);
+    }
 }
 
 startcust <- paste ("(function(chm){",
