@@ -31,12 +31,8 @@ ngchm.env <- new.env(parent=emptyenv());
     ngchm.env$jarCache <- new.env(parent=emptyenv());
     ngchm.env$handledb <- new.env (hash=TRUE, parent=emptyenv());
     ngchm.env$nextId <- 0;
-    shaidyDir <- utempfile ("shaidy");
-    ngchmInitShaidyRepository (shaidyDir);
-    ngchm.env$tmpShaidy <- shaidyLoadRepository ('file', shaidyDir);
-    ngchm.env$tmpShaidyStack <- c();
-    ngchm.env$shaidyStack <- c();
-
+    shaidyInit();
+    ngchmShaidyInit ();
     for (program in c("git","wget","java","tar","scp","ssh","tiledata")) testExternalProgram(program);
 }
 

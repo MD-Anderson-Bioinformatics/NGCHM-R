@@ -2,6 +2,8 @@
 # This version assumes no one else is writing to the repository concurrently.
 #
 
+shaidy.env <- new.env(parent=emptyenv());
+
 #' Obtain the git hash of an existing file.
 #'
 #' @param path filename of file to hash
@@ -14,58 +16,109 @@ gitHashObject <- function (path) {
     hash
 }
 
-#' Return blob.path function for a local shaidy repository.
+#' Get the methods for the repository API called api
 #'
-#' @param accessMethod Method for accessing blob.path.  Must be 'http' or 'file'.
-#' @param shaidyDir Basepath to a local shaidy repository.
+#' @param api The name of a repository API
 #'
-#' @return a function (first, ...) that accepts either a shaid or a blob type and optionally
+#' @return A list of repository methods
+shaidyRepoAPI <- function (api) {
+    shaidy.env$repoMethods[[api]]
+}
+
+#' Set the methods for the repository API called api
+#'
+#' @param api The name of a repository API
+#' @param methods A list of repository methods
+shaidyRegisterRepoAPI <- function (api, methods) {
+    shaidy.env$repoMethods[[api]] <- methods;
+}
+
+# Provide a simpler method for accessing repo methods
+"$.shaidyRepo" <- function (repo, method) {
+    method <- substitute (method);
+    if (method %in% names(repo)) {
+        return (repo[[method]]);
+    }
+    fn <- NGCHM:::shaidy.env$repoMethods[[repo[['accessMethod']]]][[method]];
+    function (...) do.call(fn, list(repo,...))
+}
+
+#' Initialize the shaidy subsystem
+#'
+#' blobPath returns a function (first, ...) that accepts either a shaid or a blob type and optionally
 #'         additional file path components and returns a filepath
 #'
 #' @import jsonlite
 #' @import httr
 #'
-shaidyBlobPath <- function (accessMethod, shaidyDir) {
-    # Load shaidyDir/typeTab.json and perform basic sanity checks.
-    accessMethod <- match.arg (accessMethod, c('file', 'http'));
 
-    if (accessMethod == 'file') {
-	stopifnot (file.exists (shaidyDir));
-    } else if (accessMethod == 'http') {
-        resp <- GET (shaidyDir);
-        stopifnot (resp$status_code == 200);
-	tarfile <- utempfile ("shaidcache", fileext='.tar');
-	local <- utempfile ("shaidcache");
-        stopifnot (dir.create (local, recursive=TRUE));
-        writeBin (resp$content, tarfile);
-        systemCheck (sprintf ("tar xf %s -C %s", tarfile, local));
-        unlink (tarfile);
-        shaidyDir <- local;
-    } else {
-        error (sprintf ('Unknown accessMethod %s', accessMethod));
-    }
-    filename <- file.path (shaidyDir, "typeTab.json");
-    stopifnot (file.exists (filename));
-    typeTab <- jsonlite::fromJSON (readLines(filename, warn=FALSE));
-    stopifnot(!anyNA (typeTab$Type)); # NA is not allowed
-    stopifnot(all(nzchar(typeTab$Type))); # Empty string is not allowed
-    stopifnot(anyDuplicated(typeTab$Type) == 0); # Duplicates are not allowed
-    stopifnot(!anyNA (typeTab$Path)); # NA is not allowed
-    stopifnot(all(nzchar(typeTab$Path))); # Empty string is not allowed
+shaidyInit <- function() {
+    shaidy.env$repoMethods <- list();
+    shaidyRegisterRepoAPI ("file", list (
+	isLocal = function(repo) TRUE,
+	addObjectToCollection = function (repo, collection, shaid) {
+	    pl <- paste (shaid@type, "s", sep='');
+	    if (!shaid@value %in% collection[[pl]]) {
+		collection[[pl]] <- append (collection[[pl]], shaid@value);
+		writeLines(jsonlite::toJSON(collection[[pl]],pretty=TRUE),
+			   file.path (collection$basepath, paste (pl, ".json", sep='')));
+	    }
+	    collection
+	},
+	blobPath = function (repo, repoBase) {
+	    stopifnot (file.exists (repoBase));
+	    filename <- file.path (repoBase, "typeTab.json");
+	    stopifnot (file.exists (filename));
+	    typeTab <- jsonlite::fromJSON (readLines(filename, warn=FALSE));
+	    stopifnot(!anyNA (typeTab$Type)); # NA is not allowed
+	    stopifnot(all(nzchar(typeTab$Type))); # Empty string is not allowed
+	    stopifnot(anyDuplicated(typeTab$Type) == 0); # Duplicates are not allowed
+	    stopifnot(!anyNA (typeTab$Path)); # NA is not allowed
+	    stopifnot(all(nzchar(typeTab$Path))); # Empty string is not allowed
 
-    # Create named vector of specified blob type paths.
-    paths <- typeTab$Path;
-    paths <- ifelse(substr(paths,1,1) == '/', paths, file.path(shaidyDir,paths));
-    names(paths) <- typeTab$Type;
+	    # Create named vector of specified blob type paths.
+	    paths <- typeTab$Path;
+	    paths <- ifelse(substr(paths,1,1) == '/', paths, file.path(repoBase,paths));
+	    names(paths) <- typeTab$Type;
 
-    # Return blob.path function for this repository
-    function (first, ...) {
-        type <- if (is(first,"shaid")) first@type else first;
-	d <- if (type %in% names(paths)) paths[type] else file.path(shaidyDir, type);
-	if(is(first,"shaid")) d <- file.path (d, first@value);
-        file.path (d, ...)
-    }
-};
+	    # Return blob.path function for this repository
+	    function (first, ...) {
+		type <- if (is(first,"shaid")) first@type else first;
+		d <- if (type %in% names(paths)) paths[type] else file.path(repoBase, type);
+		if(is(first,"shaid")) d <- file.path (d, first@value);
+		others <- c(lapply(list(...),function(item) {
+		    if (is (item, "shaid")) {
+			return (c(item@type, item@value));
+		    } else {
+			return (item);
+		    }
+		}), recursive=TRUE);
+		do.call (file.path, as.list (c(d,others)))
+	    }
+	},
+	copyBlobToLocalDir = function (repo, shaid, localDir) {
+	    # Copy files in repo/shaid to existing local directory
+	    srcblob <- repo$blob.path(shaid);
+	    files <- dir (srcblob, recursive=TRUE, include.dirs=TRUE);
+	    for (ff in files) {
+		srcf <- file.path (srcblob, ff);
+		dstf <- file.path (localDir, ff);
+		if (file.info(srcf)$isdir) {
+		    stopifnot (dir.create(dstf, recursive=FALSE));
+		} else {
+		    stopifnot(file.copy(srcf, dstf));
+		}
+	    }
+	},
+	exists = function (repo, shaid) {
+	    dir.exists (repo$blob.path (shaid))
+	},
+	loadJSON = function (repo, shaid, f) {
+	    p <- repo$blob.path (shaid, f);
+	    if (file.exists (p)) jsonlite::fromJSON(readLines(p, warn=FALSE)) else c()
+	}
+    ));
+}
 
 #' Create in memory shaid cache
 #'
@@ -131,24 +184,24 @@ shaidyLoadProvenanceDB <- function(shaidyDir) {
 
 #' Load a shaidy repository
 #'
-#' @param accessMethod Method for accessing repository.  Allowed values are 'http' and 'file'.
+#' @param accessMethod Method for accessing repository.
 #' @param shaidyDir Basepath to shaidy repository.
 #'
 #' @return A shaidyRepo
 #'
 #' @export
 shaidyLoadRepository <- function (accessMethod, shaidyDir) {
-    accessMethod <- match.arg (accessMethod, c('file','http'));
+    accessMethod <- match.arg (accessMethod, names(shaidy.env$repoMethods));
     if ((accessMethod == 'file') && (Sys.info()[['sysname']] == "Windows"))  {
         shaidyDir <- gsub ("\\\\", "/", shaidyDir);
     }
     sr <- list (accessMethod = accessMethod,
-                basepath = shaidyDir,
-                blob.path = shaidyBlobPath (accessMethod, shaidyDir),
-                shaid.cache = shaidyNewCache (shaidyDir),
-                providDB = shaidyLoadProvidDB (shaidyDir),
-                provenanceDB = shaidyLoadProvenanceDB (shaidyDir));
+                basepath = shaidyDir);
     class(sr) <- "shaidyRepo";
+    sr$blob.path <- shaidy.env$repoMethods[[accessMethod]]$blobPath (sr, shaidyDir);
+    sr$shaid.cache <- shaidyNewCache (shaidyDir);
+    sr$providDB <- shaidyLoadProvidDB (shaidyDir);
+    sr$provenanceDB <- shaidyLoadProvenanceDB (shaidyDir);
     sr
 }
 
@@ -178,9 +231,11 @@ shaidyInitRepository <- function (shaidyDir, blob.types) {
     stopifnot (dir.create (shaidyDir, recursive=TRUE));
     typeTab <- data.frame (Type=blob.types, Path=blob.types);
     writeLines(jsonlite::toJSON(typeTab,pretty=TRUE), file.path (shaidyDir, "typeTab.json"));
-    blob.path <- shaidyBlobPath ('file', shaidyDir);
+    repo <- list (accessMethod='file', basepath=shaidyDir);
+    class(repo) <- "shaidyRepo";
+    repo$blob.path <- shaidy.env$repoMethods$file$blobPath (repo, shaidyDir)
     for (bt in blob.types) {
-        stopifnot (dir.create (blob.path (bt), recursive=FALSE));
+        stopifnot (dir.create (repo$blob.path (bt), recursive=FALSE));
     }
 };
 
@@ -194,8 +249,9 @@ shaidyInitRepository <- function (shaidyDir, blob.types) {
 #' @export
 shaidyFindRepo <- function (repos, shaid) {
     while (length (repos) > 0) {
-        if (file.exists (repos[[1]]$blob.path (shaid@type, shaid@value))) {
-            return (repos[[1]]);
+        rr <- repos[[1]];
+        if (rr$exists (shaid)) {
+            return (rr);
         }
         repos <- repos[-1];
     }
@@ -314,7 +370,7 @@ shaidyHashProtoBlob <- function(blob.type, protoblob) {
 #' @export
 shaidyBlobExists <- function(repo, shaids) {
     if (is(shaids,"shaid")) {
-        dir.exists (repo$blob.path (shaids@type, shaids@value))
+        repo$exists (shaids)
     } else if (is(shaids,"list")) {
         vapply (shaids, function(sid)shaidyBlobExists(repo,sid), TRUE)
     } else {
@@ -334,17 +390,15 @@ shaidyBlobExists <- function(repo, shaids) {
 shaidyCopyBlob <- function (src, shaid, dst) {
     stopifnot(shaidyBlobExists(src, shaid));
     if (shaidyBlobExists (dst, shaid)) return;
-    blob <- shaidyCreateProtoBlob (dst, shaid@type);
-    srcdir <- src$blob.path(shaid@type,shaid@value);
-    files <- dir (srcdir, recursive=TRUE, include.dirs=TRUE);
-    for (ff in files) {
-        srcf <- file.path (srcdir, ff);
-        dstf <- file.path (blob, ff);
-        if (file.info(srcf)$isdir) {
-	    stopifnot (dir.create(dstf, recursive=FALSE));
-	} else {
-	    stopifnot(file.copy(srcf, dstf));
-	}
+
+    if (dst$isLocal()) {
+	dstblob <- shaidyCreateProtoBlob (dst, shaid@type);
+	src$copyBlobToLocalDir (shaid, dstblob);
+	shaidyFinalizeProtoBlob (dst, shaid, dstblob);
+    } else if (src$isLocal()) {
+	srcblob <- src$blob.path (shaid);
+	dst$copyLocalDirToBlob (srcblob, shaid);
+    } else {
+        stop ("remote to remote copy not implemented");
     }
-    shaidyFinalizeProtoBlob (dst, shaid, blob)
 }

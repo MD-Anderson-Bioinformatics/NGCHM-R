@@ -7,7 +7,7 @@
 shaidyLoadRepository(accessMethod, shaidyDir)
 }
 \arguments{
-\item{accessMethod}{Method for accessing repository.  Allowed values are 'http' and 'file'.}
+\item{accessMethod}{Method for accessing repository.}
 
 \item{shaidyDir}{Basepath to shaidy repository.}
 }

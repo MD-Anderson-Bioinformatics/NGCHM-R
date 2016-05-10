@@ -1,4 +1,4 @@
-# Install a shaidy format NGCHM in a local shaidydir repository.
+# Install a shaidy format NGCHM in a remote shaidyAPI repository.
 (function() {
 
   validator <- function (params) {
@@ -8,16 +8,16 @@
       return (FALSE);
   };
 
-ngchmCreateServerProtocol ("shaidydir",
-    requiredParams = c('basepath'),
+ngchmCreateServerProtocol ("shaidyapi",
+    requiredParams = c('baseurl'),
     optionalParams = NULL,
     paramValidator = validator,
     installMethod = function (server, chm, collectionId) {
 	stopifnot (chm@format == "shaidy");
+        stopifnot (!missing(collectionId));
         shaid <- shaidyGetShaid (chm);
-	shaidyDir <- ngchmGetProtoParam (server, 'basepath');
-        shaidyRepo <- shaidyLoadRepository ('file', shaidyDir);
-        collection <- ngchmLoadCollection (shaidyRepo, collectionId);
+	shaidyURL <- ngchmGetProtoParam (server, 'baseurl');
+        shaidyRepo <- shaidyLoadRepository ('api', shaidyURL);
         tocheck <- c(shaid, shaidyGetComponents(chm));
         present <- shaidyBlobExists (shaidyRepo, tocheck);
         for (sid in tocheck[!present]) {
@@ -26,23 +26,15 @@ ngchmCreateServerProtocol ("shaidydir",
             stopifnot (length(repo) > 0);
             shaidyCopyBlob (repo, sid, shaidyRepo);
         }
-        if (NGCHM:::testExternalProgram('tiledata')) {
-            tiles <- mapply(function(x) {
-                ngchmTileDataset(shaidyRepo,x@data,chm@rowOrder,chm@colOrder)[[1]]
-            }, chm@layers, SIMPLIFY=FALSE);
-            tileFile <- shaidyRepo$blob.path(shaid,"tiles.json");
-            if (!file.exists(tileFile)) {
-	        writeLines(jsonlite::toJSON(tiles), tileFile);
-	    }
-        }
 	cat (sprintf ("Saving chm %s to %s\n", chm@name, if(collectionId=="") "base collection" else sprintf ("collection %s",collectionId)), file=stderr());
-	ngchmAddObjectToCollection (collection, shaid);
+        collection <- ngchmLoadCollection (shaidyRepo, collectionId);
+	ngchmAddObjectToCollection (shaidyRepo, collection, shaid);
 	return (invisible(shaid));
 	},
     uninstallMethod = function (server, chmname, collectionIds) {
-	shaidyDir <- ngchmGetProtoParam (server, 'basepath');
-        shaidyRepo <- shaidyLoadRepository ('file', shaidyDir);
-	stop ("Not yet implemented by shaidydir protocol");
+	shaidyURL <- ngchmGetProtoParam (server, 'baseurl');
+        shaidyRepo <- shaidyLoadRepository ('api', shaidyURL);
+	stop ("Not yet implemented by shaidyapi protocol");
 	return (invisible(FALSE));
     },
     makePrivate = function (server, chmname) {

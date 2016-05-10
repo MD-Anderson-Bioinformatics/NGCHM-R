@@ -1,3 +1,82 @@
+
+#' Initialize shaidy subsystem for NGCHMs
+#'
+ngchmShaidyInit <- function() {
+    shaidyRegisterRepoAPI ("http", (function(fileMethods){
+        methods = fileMethods;
+	methods$blobPath = function (repo, repoBase) {
+	    resp <- GET (repoBase);
+	    stopifnot (resp$status_code == 200);
+	    tarfile <- utempfile ("shaidcache", fileext='.tar');
+	    local <- utempfile ("shaidcache");
+	    stopifnot (dir.create (local, recursive=TRUE));
+	    writeBin (resp$content, tarfile);
+	    systemCheck (sprintf ("tar xf %s -C %s", tarfile, local));
+	    unlink (tarfile);
+	    fileMethods$blobPath (repo, local)
+	};
+    }) (shaidyRepoAPI('file')));
+
+    shaidyRegisterRepoAPI ("api", list (
+	isLocal = function(repo) FALSE,
+	addObjectToCollection = function (repo, collection, shaid) {
+	    uri <- collection$shaidyRepo$blob.path(collection$shaid, shaid);
+	    resp <- POST (uri);
+	    stopifnot (resp$status_code == 200);
+	    ngchmLoadCollection (collection$shaidyRepo, collection$uuid)
+	},
+	blobPath = function (repo, repoBase) {
+	    return (function (first, ...) {
+		type <- if (is(first,"shaid")) first@type else first;
+		uri <- paste (repoBase, type, sep='/');
+		if(is(first,"shaid")) uri <- paste (uri, first@value, sep='/');
+		others <- c(lapply(list(...),function(item) {
+		    if (is (item, "shaid")) {
+			return (c(item@type, item@value));
+		    } else {
+			return (item);
+		    }
+		}), recursive=TRUE);
+		paste (c(uri, others), sep='/', collapse='/')
+	    });
+	},
+	copyLocalDirToBlob = function (repo, localDir, shaid) {
+	    dstblob <- repo$blob.path(shaid);
+	    tarfile <- utempfile ("shaidcache", fileext='.tar');
+	    systemCheck (sprintf ("tar cf %s -C %s .", tarfile, localDir));
+	    resp <- PUT (dstblob, body=upload_file(tarfile));
+	    stopifnot (resp$status_code == 200);
+	    unlink (tarfile);
+	},
+	copyBlobToLocalDir = function (repo, shaid, localDir) {
+	    srcblob <- repo$blob.path(shaid);
+	    resp <- GET (srcblob);
+	    stopifnot (resp$status_code == 200);
+	    tarfile <- utempfile ("shaidcache", fileext='.tar');
+	    writeBin (resp$content, tarfile);
+	    systemCheck (sprintf ("tar xf %s -C %s", tarfile, localDir));
+	    unlink (tarfile);
+	},
+	exists = function (repo, shaid) {
+	    uri <- repo$blob.path (shaid);
+	    uri <- sub ('api/', 'api/exists?ids=', uri);
+	    resp <- GET (uri);
+	    return (length (content (resp, type='application/json')) > 0);
+	},
+	loadJSON = function (repo, shaid, f) {
+	    uri <- repo$blob.path (shaid, f);
+	    resp <- GET (uri);
+	    if (status_code(resp) == 200) jsonlite::fromJSON(content(resp,'text')) else c()
+	}
+    ));
+
+    shaidyDir <- utempfile ("shaidy");
+    ngchmInitShaidyRepository (shaidyDir);
+    ngchm.env$tmpShaidy <- shaidyLoadRepository ('file', shaidyDir);
+    ngchm.env$tmpShaidyStack <- c();
+    ngchm.env$shaidyStack <- c();
+}
+
 #' Create a shaidy repository for NG-CHMS
 #'
 #' @param shaidyDir Basepath of local shaidy repository to create
@@ -83,18 +162,18 @@ ngchmNewCollection <- function (shaidyRepo, labels=data.frame()) {
 #'
 #' @export
 ngchmLoadCollection <- function (shaidyRepo, collection.uuid="") {
-    basepath <- shaidyRepo$blob.path ('collection', collection.uuid);
-    stopifnot (file.exists (basepath));
-    ld <- function (f) {
-        p <- file.path (basepath, f);
-        if (file.exists (p)) jsonlite::fromJSON(readLines(p, warn=FALSE)) else c()
-    };
+    shaid <- new ('shaid', type='collection', value=collection.uuid);
+    stopifnot (shaidyRepo$exists (shaid));
+
     bits <- c('labels','matrices','chms','collections');
-    val <- lapply (bits, function(x) ld(sprintf("%s.json",x)));
+    val <- lapply (bits, function(x) shaidyRepo$loadJSON(shaid, sprintf("%s.json",x)));
     names(val) <- bits;
+
     val$shaidyRepo <- shaidyRepo;
-    val$basepath <- basepath;
+    val$basepath <- shaidyRepo$blob.path (shaid);
+    val$shaid <- shaid;
     val$uuid <- collection.uuid;
+    class(val) <- "ngchmCollection";
     val
 };
 
@@ -148,25 +227,21 @@ ngchmAddMatrixToCollection <- function (collection, name, shaid) {
     collection
 };
 
-#' Add a CHM reference to a collection
+#' Add an object reference to a collection
 #'
+#' @param repo The repository containing the collection
 #' @param collection A list containing details of a collection
-#' @param shaid The shaid of the CHM to add to the collection
+#' @param shaid The shaid of the object to add to the collection
 #'
 #' @return An updated list containing details of the collection
 #'
 #' @import jsonlite
 #'
 #' @export
-ngchmAddChmToCollection <- function (collection, shaid) {
+ngchmAddObjectToCollection <- function (repo, collection, shaid) {
     stopifnot (is(shaid,"shaid"),
-               shaid@type == 'chm');
-    if (!shaid@value %in% collection$chms) {
-        collection$chms <- append (collection$chms, shaid@value);
-        writeLines(jsonlite::toJSON(collection$chms,pretty=TRUE),
-	           file.path (collection$basepath, "chms.json"));
-    }
-    collection
+               shaid@type %in% c('chm','dataset','label','collection'));
+    repo$addObjectToCollection (collection, shaid)
 };
 
 #' Add a collection reference to a collection
@@ -244,10 +319,14 @@ ngchmGetDataFileShaid <- function (format, filename) {
 #' @export
 ngchmAddDatasetBlob <- function (shaidyRepo, format, filename, properties=NULL) {
     stopifnot (format == 'tsv');
-    shaid <- ngchmGetDataFileShaid (format, filename);
-    shaidyAddFileBlob (shaidyRepo, 'dataset', 'matrix.tsv', filename,
-                       properties=c(list(format=format),properties), shaid=shaid);
-    shaid
+    if (format == 'tsv') {
+       index.filename <- utempfile ("index", fileext='.tsv');
+       tsvio::tsvGenIndex (filename, index.filename);
+       blobfiles = c('matrix.tsv', 'index.tsv');
+       filenames = c(filename, index.filename);
+    }
+    shaidyAddFileBlob (shaidyRepo, 'dataset', blobfiles, filenames,
+                       properties=c(list(format=format),properties))
 }
 
 #' Save a numeric matrix as a blob in a shaidy repository
