@@ -1,4 +1,4 @@
-# Install a shaidy format NGCHM in a local shaidydir repository.
+# Install a shaidy format NGCHM in a shaidy repository.
 # This version assumes no one else is writing to the repository concurrently.
 #
 
@@ -33,14 +33,28 @@ shaidyRegisterRepoAPI <- function (api, methods) {
     shaidy.env$repoMethods[[api]] <- methods;
 }
 
-# Provide a simpler method for accessing repo methods
+#' Provide a simpler method for accessing repo methods
+#'
+#' @param repo The repository to obtain the method for
+#' @param method The name of the method to obtain
+#'
+#' @return A function that calls the method with the repository as its first parameter
+#'
+#' @export
 "$.shaidyRepo" <- function (repo, method) {
     method <- substitute (method);
     if (method %in% names(repo)) {
         return (repo[[method]]);
     }
-    fn <- NGCHM:::shaidy.env$repoMethods[[repo[['accessMethod']]]][[method]];
-    function (...) do.call(fn, list(repo,...))
+    api <- repo[['accessMethod']];
+    while ((length(api) > 0) && (api %in% names(shaidy.env$repoMethods))) {
+	mtab <- shaidy.env$repoMethods[[api]];
+	if (method %in% names(mtab)) {
+	    return (function (...) do.call(mtab[[method]], list(repo,...)));
+	}
+	api <- mtab[["_super"]];
+    }
+    return (NULL);
 }
 
 #' Initialize the shaidy subsystem
