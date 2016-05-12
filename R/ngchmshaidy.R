@@ -2,9 +2,9 @@
 #' Initialize shaidy subsystem for NGCHMs
 #'
 ngchmShaidyInit <- function() {
-    shaidyRegisterRepoAPI ("http", (function(fileMethods){
-        methods = fileMethods;
-	methods$blobPath = function (repo, repoBase) {
+    shaidyRegisterRepoAPI ("http", (function(fileMethods) list(
+        "_super" = fileMethods,
+	blobPath = function (repo, repoBase) {
 	    resp <- GET (repoBase);
 	    stopifnot (resp$status_code == 200);
 	    tarfile <- utempfile ("shaidcache", fileext='.tar');
@@ -14,8 +14,8 @@ ngchmShaidyInit <- function() {
 	    systemCheck (sprintf ("tar xf %s -C %s", tarfile, local));
 	    unlink (tarfile);
 	    fileMethods$blobPath (repo, local)
-	};
-    }) (shaidyRepoAPI('file')));
+	}
+    )) (shaidyRepoAPI('file')));
 
     shaidyRegisterRepoAPI ("api", list (
 	isLocal = function(repo) FALSE,
@@ -230,7 +230,7 @@ ngchmAddMatrixToCollection <- function (collection, name, shaid) {
 #' Add an object reference to a collection
 #'
 #' @param repo The repository containing the collection
-#' @param collection A list containing details of a collection
+#' @param uuid A collection uuid
 #' @param shaid The shaid of the object to add to the collection
 #'
 #' @return An updated list containing details of the collection
@@ -238,9 +238,10 @@ ngchmAddMatrixToCollection <- function (collection, name, shaid) {
 #' @import jsonlite
 #'
 #' @export
-ngchmAddObjectToCollection <- function (repo, collection, shaid) {
+ngchmAddObjectToCollection <- function (repo, uuid, shaid) {
     stopifnot (is(shaid,"shaid"),
                shaid@type %in% c('chm','dataset','label','collection'));
+    collection <- ngchmLoadCollection (repo, uuid);
     repo$addObjectToCollection (collection, shaid)
 };
 
@@ -533,4 +534,78 @@ ngchmTileDataset <- function (repo, dataset, rowOrder, colOrder) {
         res <- list(shaid)
     }
     res
+}
+
+#' Get the user's current collection
+#'
+#' @return the identity of the current collection
+#'
+#' @export
+chmCurrentCollection <- function () {
+    if (length(ngchm.env$currentServer) == 0 && length(ngchm.env$servers) > 0) {
+	chmSetCollection (getOption("NGCHM.Collection", "//"));
+    }
+    return (ngchm.env$currentCollection);
+}
+
+#' Get the user's current server
+#'
+#' @return the identity of the current server
+#'
+#' @export
+chmCurrentServer <- function () {
+    if (length(ngchm.env$currentServer) == 0 && length(ngchm.env$servers) > 0) {
+	chmSetCollection (getOption("NGCHM.Collection", "//"));
+    }
+    return (ngchm.env$currentServer);
+}
+
+#' Set the user's current server and/or collection
+#'
+#' The path is a sequence of components separated by slashes (/).
+#' If the path begins with a double slash (//) the following
+#' component is interpreted as a server name. If the server name is
+#' omitted (i.e. empty) the default server will be used.  If the path
+#' does not begin with a double slash, the current server will be used.
+#'
+#' If the path begins with a slash, the components (following the
+#' server, if specified) are interpreted relative to
+#' the root collection of the server concerned.  Otherwise, they
+#' are interpreted relative to the current collection.
+#'
+#' The interpretation of each path component is server specific.
+#'
+#' @param path A path specifying a server and/or collection
+#'
+#' @export
+chmSetCollection <- function (path) {
+    stopifnot (!missing(path) && typeof(path)=="character" && length(path)==1);
+    newServer <- ngchm.env$currentServer;
+    newCollection <- ngchm.env$currentCollection;
+    parts <- strsplit (path, "/")[[1]];
+    if (length(parts) > 1 && parts[1]=="" && parts[2]=="") {
+        parts <- parts[c(-1,-2)];
+        if (length(parts) == 0 || parts[1]=="") {
+	    newServer <- chmListServers()[1];
+        } else {
+            newServer <- parts[1];
+        }
+	if (is.na(newServer) || !(newServer %in% chmListServers())) {
+	    stop ("cannot set server: ", newServer);
+	}
+	if (length(parts) > 0) parts <- parts[-1];
+	newCollection <- "";
+    } else if (length(parts) > 0 && parts[1] == "") {
+        parts <- parts[-1];
+	newCollection <- "";
+    }
+    if (length(parts) > 0) {
+        server <- chmServer (newServer);
+	newCollection <- server@serverProtocol@findCollection (server, newCollection, parts);
+        if (length(newCollection)==0) {
+	    stop ("cannot find collection: ", path);
+        }
+    }
+    ngchm.env$currentServer <- newServer;
+    ngchm.env$currentCollection <- newCollection;
 }

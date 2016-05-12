@@ -34,6 +34,9 @@ ngchmCreateServerProtocol ("scl",
     requiredParams = c('deployDir'),
     optionalParams = c('username','keypath'),
     paramValidator = validator,
+    findCollection = function (server, collectionId, path) {
+        return (NULL);
+    },
 
      installMethod = function (server, chm) {
 	# Install the NGCHM using the SCL system.

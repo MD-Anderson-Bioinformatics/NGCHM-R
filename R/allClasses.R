@@ -623,6 +623,7 @@ setClass ("ngchmServerProtocol",
                           requiredParams="optCharacter",
                           optionalParams="optCharacter",
 			  paramValidator="function",
+			  findCollection="function",
 	                  installMethod="function", uninstallMethod="function",
 	                  makePrivate="function", makePublic="function"));
 

@@ -5,7 +5,8 @@
 \title{Create and register an NGCHM server protocol implementation.}
 \usage{
 ngchmCreateServerProtocol(protocolName, requiredParams, optionalParams,
-  paramValidator, installMethod, uninstallMethod, makePrivate, makePublic)
+  paramValidator, findCollection, installMethod, uninstallMethod, makePrivate,
+  makePublic)
 }
 \arguments{
 \item{protocolName}{The name of this protocol implementation.}
@@ -15,6 +16,8 @@ ngchmCreateServerProtocol(protocolName, requiredParams, optionalParams,
 \item{optionalParams}{The protocol's optional parameters, if any.}
 
 \item{paramValidator}{A function(list) for validating the parameters specified for a new server.}
+
+\item{findCollection}{A function(server,collection,path) for finding a collection.}
 
 \item{installMethod}{A function(server,chm) for installing an NG-CHM.}
 

@@ -8,6 +8,9 @@ ngchmCreateServerProtocol ("manual",
     optionalParams = NULL,
     paramValidator = function (params) {
     },
+    findCollection = function (server, collectionId, path) {
+        return (NULL);
+    },
     installMethod = function (server, chm) {
 	stop ("NGCHMs cannot be automatically installed on this server. Please obtain installation instructions from the server administrator.");
     },

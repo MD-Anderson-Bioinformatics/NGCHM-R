@@ -32,7 +32,7 @@ setMethod ("chmInstall",
     signature = c(chm="ngchm"),
     definition = function (chm, server=NULL, ...) {
         chm <- chmFixVersion (chm);
-        if (length(server)==0) server <- getOption("NGCHM.Server", chmListServers()[1]);
+        if (length(server)==0) server <- chmCurrentServer();
         stopifnot(length(server) > 0);
         if (typeof(server) == 'character') server <- chmServerCheck (server);
 	server@serverProtocol@installMethod (server, chm, ...);
@@ -51,7 +51,7 @@ setMethod ("chmInstall",
 setMethod ("chmUninstall",
     signature = c(chm="character"),
     definition = function (chm, server=NULL, ...) {
-        if (length(server)==0) server <- getOption("NGCHM.Server", chmListServers()[1]);
+        if (length(server)==0) server <- chmCurrentServer();
         stopifnot(length(server) > 0);
         if (typeof(server) == 'character') server <- chmServerCheck (server);
 	server@serverProtocol@uninstallMethod (server, chm, ...);
@@ -946,7 +946,7 @@ prepChmOrderings <- function (chm, l) {
 setMethod ("chmGetURL",
     signature = c(chm="character"),
     definition = function (chm, server=NULL, ...) {
-        if (length(server)==0) server <- getOption("NGCHM.Server", chmListServers()[1]);
+        if (length(server)==0) server <- chmCurrentServer();
         stopifnot(length(server) > 0);
         if (typeof(server) == 'character') server <- chmServerCheck (server);
         sprintf ("%s/chm.html?name=%s",
@@ -1112,7 +1112,7 @@ ngchmMakeFormat.original <- function (chm,
 
     if (length(javaTraceLevel)==0) javaTraceLevel <- getOption("NGCHM.Java.Trace", "PROGRESS");
     if (length(javaOptions)==0) javaOptions <- getOption("NGCHM.Java.Options", "-Xmx2G");
-    if (length(server)==0) server <- getOption("NGCHM.Server", chmListServers()[1]);
+    if (length(server)==0) server <- chmCurrentServer();
     if (length(buildArchive)==0) buildArchive <- getOption("NGCHM.Build.Archive", TRUE);
 
     genSpecFeedback (20, "writing NGCHM specification");

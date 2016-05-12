@@ -17,6 +17,9 @@ ngchmCreateServerProtocol ("manager",
     requiredParams = c('serviceName'),
     optionalParams = NULL,
     paramValidator = validator,
+    findCollection = function (server, collectionId, path) {
+        return (NULL);
+    },
     installMethod = function (server, chm) {
 	chmFileName <- sprintf ("%s.ngchm.gz", chm@name);
 	stopifnot (file.exists (chmFileName));

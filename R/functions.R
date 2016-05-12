@@ -1341,6 +1341,7 @@ chmRegisterFunction <- function (fn) {
 #' @param requiredParams The protocol's required parameters, if any.
 #' @param optionalParams The protocol's optional parameters, if any.
 #' @param paramValidator A function(list) for validating the parameters specified for a new server.
+#' @param findCollection A function(server,collection,path) for finding a collection.
 #' @param installMethod A function(server,chm) for installing an NG-CHM.
 #' @param uninstallMethod A function(server,chmname) for uninstalling an NG-CHM.
 #' @param makePrivate A function(server,chmname) for hiding an NG-CHM.
@@ -1351,6 +1352,7 @@ chmRegisterFunction <- function (fn) {
 ngchmCreateServerProtocol <- function (protocolName,
 				       requiredParams, optionalParams,
 				       paramValidator,
+                                       findCollection,
                                        installMethod, uninstallMethod,
 	                               makePrivate, makePublic) {
     if (typeof (protocolName) != "character") {
@@ -1372,6 +1374,7 @@ ngchmCreateServerProtocol <- function (protocolName,
 	       requiredParams = requiredParams,
 	       optionalParams = optionalParams,
 	       paramValidator = paramValidator,
+               findCollection = findCollection,
 	       installMethod=installMethod, uninstallMethod=uninstallMethod,
 	       makePrivate=makePrivate, makePublic=makePublic);
     matches <- which (vapply (ngchm.env$serverProtocols, function(ss) (ss@protocolName == protocolName), TRUE));

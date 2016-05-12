@@ -4,12 +4,12 @@
 \alias{ngchmAddObjectToCollection}
 \title{Add an object reference to a collection}
 \usage{
-ngchmAddObjectToCollection(repo, collection, shaid)
+ngchmAddObjectToCollection(repo, uuid, shaid)
 }
 \arguments{
 \item{repo}{The repository containing the collection}
 
-\item{collection}{A list containing details of a collection}
+\item{uuid}{A collection uuid}
 
 \item{shaid}{The shaid of the object to add to the collection}
 }
