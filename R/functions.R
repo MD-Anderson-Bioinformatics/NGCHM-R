@@ -2416,3 +2416,27 @@ plot.ngchmVersion2 <- function(x, server=NULL, viewer=NULL, ...) {
     viewer(chmGetURL(x,server=server))
 }
 
+#' Write a matrix as a binary viewer tile
+#'
+#' Write the matrix as a vector of 32-bit little-endian floats to the specified file.
+#'
+#' @param mat The matrix to output
+#' @param filename The name of the file to write the tile to
+writeTile <- function (mat, filename) {
+    vec <- t (mat);
+    dim(vec) <- NULL;
+    writeBin (vec, filename, size=4, endian="little");
+}
+
+#' Read a binary viewer tile as a matrix
+#'
+#' Read a vector of little-endian 32-bit floats from the specified file and return
+#' as a matrix with nrow rows and ncol columns.
+#'
+#' @param filename The name of the file to read the tile from
+#' @param nrow Number of rows in the tile
+#' @param ncol Number of columns in the tile
+readTile <- function (filename, nrow, ncol) {
+    vec <- readBin (filename, "double", nrow*ncol, size=4, endian="little");
+    return (matrix (vec, nrow=nrow, byrow=TRUE));
+}
