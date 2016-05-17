@@ -27,18 +27,11 @@
 	invisible(res)
     };
 
-    validator <- function (params) {
-    };
-
 ngchmCreateServerProtocol ("scl",
     requiredParams = c('deployDir'),
     optionalParams = c('username','keypath'),
-    paramValidator = validator,
-    findCollection = function (server, collectionId, path) {
-        return (NULL);
-    },
 
-     installMethod = function (server, chm) {
+    installMethod = function (server, chm) {
 	# Install the NGCHM using the SCL system.
 	# tar lives in different places on different systems - so no absolute path
 	tarballName <- sprintf ("%s.ngchm.gz", chm@name);
@@ -56,8 +49,8 @@ ngchmCreateServerProtocol ("scl",
 	    systemCheck (sprintf ("ssh %s /bin/mv %s/STAGE/%s %s/ADD/", dest, shQuote(ddir), shQuote(chm@name), shQuote(ddir)));
 	    systemCheck (sprintf ("ssh %s while [ -d %s/ADD/%s ] ';' do sleep 1 ';' done", dest, shQuote(ddir), shQuote(chm@name)));
 	}
-     },
-     uninstallMethod = function (server, chmname) {
+    },
+    uninstallMethod = function (server, chmname) {
 	# Uninstall the NGCHM using the SCL system.
 	ddir <- chmDeployDir (server);
 	if (server@deployServer %in% thisHost) {
@@ -70,8 +63,8 @@ ngchmCreateServerProtocol ("scl",
 	    systemCheck (sprintf ("ssh %s /bin/mkdir %s/REMOVE/%s", dest, shQuote(ddir), shQuote(chmname)));
 	    systemCheck (sprintf ("ssh %s while [ -d '%s'/REMOVE/'%s' ] ';' do sleep 1 ';' done", dest, shQuote(ddir), shQuote(chmname)));
 	}
-     },
-     makePrivate = function (server, chmname) {
+    },
+    makePrivate = function (server, chmname) {
 	# Make an NGCHM private (add hidden.txt file) using the SCL system.
 	ddir <- chmDeployDir (server);
 	if (server@deployServer %in% thisHost) {
@@ -87,8 +80,8 @@ ngchmCreateServerProtocol ("scl",
 	    systemCheck (sprintf ("ssh %s /bin/mv %s/STAGE/%s %s/ADD-FILE/", dest, shQuote(ddir), shQuote(chmname), shQuote(ddir)));
 	    systemCheck (sprintf ("ssh %s while [ -d %s/ADD-FILE/%s ] ';' do sleep 1 ';' done", dest, shQuote(ddir), shQuote(chmname)));
 	}
-     },
-     makePublic = function (server, chmname) {
+    },
+    makePublic = function (server, chmname) {
 	# Make an NGCHM public (remove hidden.txt file) using the SCL system.
 	ddir <- chmDeployDir (server);
 	if (server@deployServer %in% thisHost) {
@@ -104,7 +97,7 @@ ngchmCreateServerProtocol ("scl",
 	    systemCheck (sprintf ("ssh %s /bin/mv %s/STAGE/%s %s/REMOVE-FILE/", dest, shQuote(ddir), shQuote(chmname), shQuote(ddir)));
 	    systemCheck (sprintf ("ssh %s while [ -d %s/REMOVE-FILE/%s ] ';' do sleep 1 ';' done", dest, shQuote(ddir), shQuote(chmname)));
 	}
-     }
+    }
 );
 
 })();

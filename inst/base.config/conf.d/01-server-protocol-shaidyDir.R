@@ -1,9 +1,6 @@
 # Install a shaidy format NGCHM in a local shaidydir repository.
 (function() {
 
-    validator <- function (params) {
-    };
-
     findCollection <- function (repo, collection, parts) {
         while (length(parts) > 0 && parts[1]=="") {
             parts <- parts[-1];
@@ -36,8 +33,6 @@
 
 ngchmCreateServerProtocol ("shaidy",
     requiredParams = c('accessMethod','basePath'),
-    optionalParams = NULL,
-    paramValidator = validator,
     findCollection = function (server, collectionId, parts) {
 	accessMethod <- ngchmGetProtoParam (server, 'accessMethod');
 	shaidyDir <- ngchmGetProtoParam (server, 'basePath');
@@ -98,12 +93,6 @@ ngchmCreateServerProtocol ("shaidy",
         shaidyRepo <- shaidyLoadRepository (accessMethod, shaidyDir);
 	stop ("Not yet implemented by shaidydir protocol");
 	return (invisible(FALSE));
-    },
-    makePrivate = function (server, chmname) {
-	stop ("Not yet implemented by shaidydir protocol");
-    },
-    makePublic = function (server, chmname) {
-	stop ("Not yet implemented by shaidydir protocol");
     }
 );
 })();

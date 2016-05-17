@@ -1385,11 +1385,46 @@ ngchmCreateServerProtocol <- function (protocolName,
     if (nchar (protocolName) == 0) {
         stop ("Parameter 'protocolName' cannot be the empty string");
     }
+    if (missing (requiredParams)) {
+        requiredParams <- NULL;
+    }
     if (!is.null(requiredParams) && typeof (requiredParams) != "character") {
         stop (sprintf ("Parameter 'requiredParams' must have type 'character', not '%s'", typeof(requiredParams)));
     }
+    if (missing (optionalParams)) {
+        optionalParams <- NULL;
+    }
     if (!is.null(optionalParams) && typeof (optionalParams) != "character") {
         stop (sprintf ("Parameter 'optionalParams' must have type 'character', not '%s'", typeof(optionalParams)));
+    }
+    if (missing (paramValidator)) {
+        paramValidator <- function (params) {
+        };
+    }
+    if (missing (findCollection)) {
+	findCollection <- function (server, collectionId, path) {
+	    return (NULL);
+	};
+    }
+    if (missing (installMethod)) {
+	installMethod <- function (server, chm) {
+	    stop ("NGCHMs cannot be automatically installed on this server. Please obtain installation instructions from the server administrator.");
+        };
+    }
+    if (missing (uninstallMethod)) {
+	uninstallMethod <- function (server, chmname) {
+	    stop ("NGCHMs cannot be automatically uninstalled from this server. Please obtain instructions from the server administrator.");
+        };
+    }
+    if (missing (makePrivate)) {
+        makePrivate <- function (server, chmname) {
+	    stop ("NGCHMs cannot be automatically made private on this server. Please obtain instructions from the server administrator.");
+        };
+    }
+    if (missing (makePublic)) {
+        makePublic <- function (server, chmname) {
+	    stop ("NGCHMs cannot be automatically made public on this server. Please obtain instructions from the server administrator.");
+        }
     }
     dm <- new (Class="ngchmServerProtocol", protocolName=protocolName,
 	       requiredParams = requiredParams,

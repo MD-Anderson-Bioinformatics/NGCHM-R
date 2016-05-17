@@ -4,9 +4,6 @@ requireNamespace('httr')
 #
 (function() {
 
-  validator <- function (params) {
-  };
-
   configAndProgress <- function (server) {
     cfg <- chmGetDeployServerConfig (server);
     prg <- httr::progress("up");
@@ -15,11 +12,6 @@ requireNamespace('httr')
 
 ngchmCreateServerProtocol ("manager",
     requiredParams = c('serviceName'),
-    optionalParams = NULL,
-    paramValidator = validator,
-    findCollection = function (server, collectionId, path) {
-        return (NULL);
-    },
     installMethod = function (server, chm) {
 	chmFileName <- sprintf ("%s.ngchm.gz", chm@name);
 	stopifnot (file.exists (chmFileName));
@@ -43,12 +35,6 @@ ngchmCreateServerProtocol ("manager",
 		cat(rawToChar(res$content), "\n")
 	}
 	return (invisible(res));
-    },
-    makePrivate = function (server, chmname) {
-	stop ("Not yet implemented by NGCHM Manager protocol");
-    },
-    makePublic = function (server, chmname) {
-	stop ("Not yet implemented by NGCHM Manager protocol");
     }
 );
 })();
