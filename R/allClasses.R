@@ -150,6 +150,8 @@ setClass ("ngchmTemplate",
 			  dest.path="character",
 	                  substitutions="optList"));
 
+setMethod(jsonlite:::asJSON, signature=c("ngchmTemplate"), definition=s4ToJSON);
+
 #' Class representing a link related to a NGCHM
 #'
 #' @exportClass ngchmRelated
@@ -161,6 +163,8 @@ setClass ("ngchmRelated",
           representation (group="character",
 	                  link="character",
 	                  description="character"));
+
+setMethod(jsonlite:::asJSON, signature=c("ngchmRelated"), definition=s4ToJSON);
 
 #' Class representing a group of related links to a NGCHM
 #'
@@ -174,6 +178,8 @@ setClass ("ngchmRelatedGroup",
 	                  header="character",
 	                  linktype="character",
 	                  blurb="optCharacter"));
+
+setMethod(jsonlite:::asJSON, signature=c("ngchmRelatedGroup"), definition=s4ToJSON);
 
 #' Class representing a Color Map on a Next Generation Clustered Heat Map (NGCHM).
 #'
@@ -372,6 +378,8 @@ setMethod ('show',
 	   definition = function (object) {
 	       cat (sprintf ("ngchmBar %s\n", object@label));
 	   });
+
+setMethod(jsonlite:::asJSON, signature=c("ngchmBar"), definition=s4ToJSON);
 
 #' Class representing an overview of a Next Generation Clustered Heat Map (NGCHM).
 #'
