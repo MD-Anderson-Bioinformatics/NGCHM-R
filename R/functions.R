@@ -1667,23 +1667,25 @@ chmRegisterToolboxFunction <- function (tbtype, menulabel, jsfn) {
 #'
 validateNewLayer <- function (chm, layer)
 {
+    newnames <- dimnames (layer);
     if (length (chm@layers) > 0) {
         # Check new layer is compatible with first layer.
+        oldnames <- dimnames (chm@layers[[1]]);
 	layer1 <- chm@layers[[1]];
-	if (any (dim(layer1@data) != dim(layer@data))) {
+	if (any (vapply(newnames,length,0) != vapply(oldnames,length,0))) {
 	    stop (sprintf ('Dimensions of new layer "%s" (%dx%d) for CHM "%s" differ from those of existing layers (%dx%d)',
-	                   layer@name, nrow(layer@data), ncol(layer@data), chm@name, nrow(layer1@data), ncol(layer1@data)));
+	                   layer@name, nrow(layer), ncol(layer), chm@name, nrow(layer1), ncol(layer1)));
 	}
-	nm <- rownames (layer@data);
-	nm1 <- rownames (layer1@data);
+	nm <- newnames[[1]];
+	nm1 <- oldnames[[1]];
 	if (!setequal (nm, nm1)) {
 	    m <- sprintf ('Row names of new layer "%s" for CHM "%s" differ from those of existing layers',
 			   layer@name, chm@name);
 	    errs <- namesdifferror ('new layer', nm, 'existing layers', nm1);
 	    stop (paste (c (m, errs), collapse="\n"));
 	}
-	nm <- colnames (layer@data);
-	nm1 <- colnames (layer1@data);
+	nm <- newnames[[2]];
+	nm1 <- oldnames[[2]];
 	if (!setequal (nm, nm1)) {
 	    m <- sprintf ('Column names of new layer "%s" for CHM "%s" differ from those of existing layers',
 			   layer@name, chm@name);
@@ -1695,12 +1697,12 @@ validateNewLayer <- function (chm, layer)
 	layername <- sprintf ('new layer "%s"', layer@name);
 	if (length (chm@rowCovariateBars) > 0) {
 	    for (ii in 1:length(chm@rowCovariateBars)) {
-	        validateCovariateBar (chm, "Row", layername, rownames(layer@data), chm@rowCovariateBars[[ii]]);
+	        validateCovariateBar (chm, "Row", layername, newnames[[1]], chm@rowCovariateBars[[ii]]);
 	    }
 	}
 	if (length (chm@colCovariateBars) > 0) {
 	    for (ii in 1:length(chm@colCovariateBars)) {
-	        validateCovariateBar (chm, "Column", layername, colnames(layer@data), chm@colCovariateBars[[ii]]);
+	        validateCovariateBar (chm, "Column", layername, newnames[[2]], chm@colCovariateBars[[ii]]);
 	    }
 	}
     }
