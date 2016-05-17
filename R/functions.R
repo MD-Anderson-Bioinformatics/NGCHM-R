@@ -178,6 +178,16 @@ chmNew <- function (name, ...,
     chm
 }
 
+#' Compute cosine distance matrix
+cos.dist1 <- function (data) {
+    dmat <- matrix (0.0, nrow=nrow(data), ncol=nrow(data))
+    sumrowsqr <- sqrt (apply (data*data, 1, sum))
+    inner <- data %*% t(data)
+    dmat <- inner / (sumrowsqr %*% t(sumrowsqr))
+    dmat <- as.dist ((1.0 - dmat)/2.0);
+    return (dmat);
+}
+
 #' Return default column order of an NGCHM
 #'
 #' @param chm An NGCHM containing at least one layer
@@ -200,6 +210,8 @@ chmDefaultColOrder <- function (chm) {
         mat <- ngchmLoadDatasetBlob (shaidyRepo, shaid)$mat;
 	if (chm@colDist == "correlation") {
 	    dd <- as.dist(1-cor(mat, use="pairwise"));
+	} else if (chm@colDist == "cosine") {
+            dd <- cos.dist1 (t(mat));
 	} else {
 	    dd <- dist (t(mat), method=chm@colDist);
 	}
@@ -232,6 +244,8 @@ chmDefaultRowOrder <- function (chm) {
         mat <- ngchmLoadDatasetBlob (shaidyRepo, shaid)$mat;
 	if (chm@rowDist == "correlation") {
 	    dd <- as.dist(1-cor(t(mat), use="pairwise"))
+	} else if (chm@rowDist == "cosine") {
+            dd <- cos.dist1 (mat);
 	} else {
 	    dd <- dist (mat, method=chm@rowDist);
 	}
