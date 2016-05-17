@@ -628,26 +628,25 @@ writeRelated  <- function (groups, links, outdir) {
     NULL
 }
 
-writeChmExtraSupport <- function (chm)
+# Write extra support files to the specified directory
+writeChmExtraSupport <- function (chm, chmSaveDir)
 {
-    #chmOutDir <- file.path (chm@outDir, chm@name);
-    chmOutDir <- file.path (chm@inpDir);
     if ((length(chm@relatedLinks)+length(chm@relatedGroups)) > 0) {
-	writeRelated (chm@relatedGroups, chm@relatedLinks, chmOutDir);
+	writeRelated (chm@relatedGroups, chm@relatedLinks, chmSaveDir);
     }
     if (length(chm@datasets) > 0) {
-	chan <- file (file.path (chmOutDir, "datasets.tsv"), "w");
+	chan <- file (file.path (chmSaveDir, "datasets.tsv"), "w");
 	writeLines ("Dataset\tDescription", con=chan);
 	for (ii in 1:length(chm@datasets)) {
 	    ds <- chm@datasets[[ii]];
-	    chm <- writeDataset (chm, ds, chmOutDir);
+	    chm <- writeDataset (chm, ds, chmSaveDir);
 	    writeLines (sprintf ("%s\t%s", ds@name, ds@description), con=chan);
 	}
 	close (chan);
     }
     if (length(chm@templates) > 0) {
 	for (ii in 1:length(chm@templates))
-	    writeTemplate (chm@templates[[ii]], chmOutDir);
+	    writeTemplate (chm@templates[[ii]], chmSaveDir);
     }
     chm
 }
@@ -796,7 +795,7 @@ writeChm <- function (chm, saveDir=NULL) {
 	}
     }
     genSpecFeedback (80, "writing extra support files");
-    chm <- writeChmExtraSupport (chm);
+    chm <- writeChmExtraSupport (chm, saveDir);
     chm@extrafiles <- c(chm@extrafiles, "custom-backup.js");
 
     if (chm@format == "original") {
