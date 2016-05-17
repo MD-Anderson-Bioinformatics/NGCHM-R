@@ -222,6 +222,13 @@ chmDefaultColOrder <- function (chm) {
     res[[1]]
 }
 
+#' Convert a user specified dendrogram to a shaid
+#'
+chmUserDendrogramToShaid <- function (ddg) {
+    shaidyRepo <- ngchm.env$tmpShaidy;
+    ngchmSaveAsDendrogramBlob (shaidyRepo, ddg)
+}
+
 #' Return default row order of an NGCHM
 #'
 #' @param chm An NGCHM containing at least one layer

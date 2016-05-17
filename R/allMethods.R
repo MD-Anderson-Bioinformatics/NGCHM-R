@@ -1075,9 +1075,15 @@ setMethod ("chmMake",
 	genSpecFeedback (0, "determining row order");
         chm@rowOrder <- chm@rowOrder (chm);
     }
+    if (is(chm@rowOrder,"dendrogram")) {
+        chm@rowOrder <- chmUserDendrogramToShaid (chm@rowOrder);
+    }
     while ((length(chm@colOrder) > 0) && (class(chm@colOrder) == "function")) {
 	genSpecFeedback (10, "determining column order");
         chm@colOrder <- chm@colOrder (chm);
+    }
+    if (is(chm@colOrder,"dendrogram")) {
+        chm@colOrder <- chmUserDendrogramToShaid (chm@colOrder);
     }
     get (sprintf ("ngchmMakeFormat.%s", chm@format)) (chm, ...)
 });
