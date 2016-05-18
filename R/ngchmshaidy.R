@@ -18,12 +18,13 @@ ngchmShaidyInit <- function() {
     )) (shaidyRepoAPI('file')));
 
     shaidyRegisterRepoAPI ("api", list (
+        "__super__" = "__generic__",
 	isLocal = function(repo) FALSE,
 	addObjectToCollection = function (repo, collection, shaid) {
-	    uri <- collection$shaidyRepo$blob.path(collection$shaid, shaid);
+	    uri <- collection$repo$blob.path(collection$shaid, shaid);
 	    resp <- POST (uri);
 	    stopifnot (resp$status_code == 200);
-	    ngchmLoadCollection (collection$shaidyRepo, collection$uuid)
+	    collection$repo$loadCollection(collection$uuid)
 	},
 	blobPath = function (repo, repoBase) {
 	    return (function (first, ...) {
@@ -67,7 +68,28 @@ ngchmShaidyInit <- function() {
 	    uri <- repo$blob.path (shaid, f);
 	    resp <- GET (uri);
 	    if (status_code(resp) == 200) jsonlite::fromJSON(content(resp,'text')) else c()
+	},
+	createCollection = function (repo, labels) {
+	    uri <- repo$blob.path ('collection');
+	    resp <- POST (uri, body=list(labels=labels), encode="json");
+	    if (status_code(resp) == 200) content(resp,type='application/json') else c()
+	},
+	# Add a collection reference to a collection
+	#
+	# The collection graph must be acyclic.
+	#
+	# @param collection A list containing details of a collection
+	# @param uuid The uuid of the collection to add
+	#
+	# @return An updated list containing details of the collection
+	#
+	# @import jsonlite
+	#
+	# @export
+	addCollectionToCollection = function (repo, collection, uuid) {
+            repo$addObjectToCollection (collection, new('shaid',type="collection",value=uuid))
 	}
+
     ));
 
     shaidyDir <- utempfile ("shaidy");
@@ -141,40 +163,7 @@ ngchmNewCollection <- function (shaidyRepo, labels=data.frame()) {
         stopifnot ("Name" %in% colnames(labels));
         stopifnot ("Value" %in% colnames(labels));
     }
-    collection.uuid <- getuuid (paste0(labels,collapse=';'));
-    basepath <- shaidyRepo$blob.path ('collection', collection.uuid);
-    stopifnot (!dir.exists (basepath));
-    stopifnot (dir.create (basepath));
-    if (nrow (labels) > 0) {
-        writeLines(jsonlite::toJSON(labels,pretty=TRUE), file.path (basepath, "labels.json"));
-    }
-    collection.uuid
-};
-
-#' Load a collection from a local shaidy repository
-#'
-#' @param shaidyRepo The shaidy repository
-#' @param collection.uuid A string containing the UUID of the collection to load.
-#'
-#' @return a list containing the collection data
-#'
-#' @import jsonlite
-#'
-#' @export
-ngchmLoadCollection <- function (shaidyRepo, collection.uuid="") {
-    shaid <- new ('shaid', type='collection', value=collection.uuid);
-    stopifnot (shaidyRepo$exists (shaid));
-
-    bits <- c('labels','matrices','chms','collections');
-    val <- lapply (bits, function(x) shaidyRepo$loadJSON(shaid, sprintf("%s.json",x)));
-    names(val) <- bits;
-
-    val$shaidyRepo <- shaidyRepo;
-    val$basepath <- shaidyRepo$blob.path (shaid);
-    val$shaid <- shaid;
-    val$uuid <- collection.uuid;
-    class(val) <- "ngchmCollection";
-    val
+    shaidyRepo$createCollection (labels)
 };
 
 #' Recursively determine if collection uuid is contained in collection 
@@ -189,14 +178,14 @@ ngchmLoadCollection <- function (shaidyRepo, collection.uuid="") {
 ngchmCollectionInCollection <- function (collection, uuid) {
     if (collection$uuid == uuid) return (TRUE);
     if (uuid %in% collection$collections) return (TRUE);
-    shaidyRepo <- collection$shaidyRepo;
+    shaidyRepo <- collection$repo;
     todo <- collection$collections;
     done <- collection$uuid;
     while (length (todo) > 0) {
 	collect.uuid <- todo[[1]];
 	todo <- todo[-1];
 	if (!collect.uuid %in% done) {
-            collection <- ngchmLoadCollection (shaidyRepo, collect.uuid);
+            collection <- shaidyRepo$loadCollection(collect.uuid);
             if (uuid %in% collection$collections) return (TRUE);
 	    todo <- append (collection$collections, todo);
 	    done <- append (done, collection$uuid);
@@ -241,32 +230,9 @@ ngchmAddMatrixToCollection <- function (collection, name, shaid) {
 ngchmAddObjectToCollection <- function (repo, uuid, shaid) {
     stopifnot (is(shaid,"shaid"),
                shaid@type %in% c('chm','dataset','label','collection'));
-    collection <- ngchmLoadCollection (repo, uuid);
+    collection <- repo$loadCollection(uuid);
     repo$addObjectToCollection (collection, shaid)
 };
-
-#' Add a collection reference to a collection
-#'
-#' The collection graph must be acyclic.
-#'
-#' @param collection A list containing details of a collection
-#' @param uuid The uuid of the collection to add
-#'
-#' @return An updated list containing details of the collection
-#'
-#' @import jsonlite
-#'
-#' @export
-ngchmAddCollectionToCollection <- function (collection, uuid) {
-    uuid.collection <- ngchmLoadCollection (collection$shaidyRepo, uuid);
-    if (ngchmCollectionInCollection(uuid.collection, collection$uuid)) {
-        stop (sprintf ("would form a cycle"));
-    }
-    collection$collections <- append (collection$collections, uuid);
-    writeLines(jsonlite::toJSON(collection$collections,pretty=TRUE),
-	       file.path (collection$basepath, "collections.json"));
-    collection
-}
 
 #' Create a recursive description of a collection
 #'
@@ -283,7 +249,7 @@ ngchmCollectionTree <- function (collection, depth=0) {
       sprintf ("%s  matrix %s=%s", indent, collection$matrices$Name, collection$matrices$Shaid),
       sprintf ("%s  ngchm %s", indent, collection$chms),
       lapply (collection$collections, function(uuid) {
-          ngchmCollectionTree (ngchmLoadCollection (collection$shaidyRepo, uuid), depth+1)
+          ngchmCollectionTree (collection$repo$loadCollection(uuid), depth+1)
       }),
       recursive=TRUE)
 }
@@ -608,4 +574,72 @@ chmSetCollection <- function (path) {
     }
     ngchm.env$currentServer <- newServer;
     ngchm.env$currentCollection <- newCollection;
+}
+
+#' Create a new collection
+#'
+#' The path is a sequence of components separated by slashes (/).
+#' If the path begins with a double slash (//) the following
+#' component is interpreted as a server name. If the server name is
+#' omitted (i.e. empty) the default server will be used.  If the path
+#' does not begin with a double slash, the current server will be used.
+#'
+#' If the path begins with a slash, the components (following the
+#' server, if specified) are interpreted relative to
+#' the root collection of the server concerned.  Otherwise, they
+#' are interpreted relative to the current collection.
+#'
+#' The interpretation of each path component is server specific.
+#'
+#' @param path A path specifying a collection to be created
+#' @param recursive If TRUE, create intermediate collections as required
+#'
+#' @export
+chmCreateCollection <- function (path, recursive=FALSE) {
+    stopifnot (!missing(path) && typeof(path)=="character" && length(path)==1);
+    server <- ngchm.env$currentServer;
+    collection <- ngchm.env$currentCollection;
+    parts <- strsplit (path, "/")[[1]];
+    if (length(parts) > 1 && parts[1]=="" && parts[2]=="") {
+        parts <- parts[c(-1,-2)];
+        if (length(parts) == 0 || parts[1]=="") {
+	    server <- chmListServers()[1];
+        } else {
+            server <- parts[1];
+        }
+	if (is.na(server) || !(server %in% chmListServers())) {
+	    stop ("cannot find server: ", server);
+	}
+	if (length(parts) > 0) parts <- parts[-1];
+	collection <- "";
+    } else if (length(parts) > 0 && parts[1] == "") {
+        parts <- parts[-1];
+	collection <- "";
+    }
+    if (length(parts) > 0) {
+        server <- chmServer (server);
+	subCollection <- server@serverProtocol@findCollection (server, collection, parts[1]);
+        while (length(subCollection) != 0) {
+            parts <- parts[-1];
+            collection <- subCollection;
+            if (length(parts) == 0) {
+                subCollection <- NULL;
+            } else {
+	        subCollection <- server@serverProtocol@findCollection (server, collection, parts[1]);
+            }
+        }
+    }
+    if (length(parts) == 0) {
+        stop ("collection ", path, " exists");
+    } else if (!recursive && (length(parts) > 1)) {
+        stop ("collection ", path, " does not exist");
+    } else {
+        while (length (parts) > 0) {
+	    collection <- server@serverProtocol@createCollection (server, collection, parts[1]);
+            if (length(collection) == 0) {
+                stop ("cannot create collection ", path);
+            }
+            parts <- parts[-1];
+        }
+    }
 }

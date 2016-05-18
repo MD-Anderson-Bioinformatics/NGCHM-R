@@ -52,7 +52,7 @@ shaidyRegisterRepoAPI <- function (api, methods) {
 	if (method %in% names(mtab)) {
 	    return (function (...) do.call(mtab[[method]], list(repo,...)));
 	}
-	api <- mtab[["_super"]];
+	api <- mtab[["__super__"]];
     }
     return (NULL);
 }
@@ -68,8 +68,36 @@ shaidyRegisterRepoAPI <- function (api, methods) {
 
 shaidyInit <- function() {
     shaidy.env$repoMethods <- list();
+    shaidyRegisterRepoAPI ("__generic__", list (
+	# Load a collection from a shaidy repository
+	#
+	# @param repo The shaidy repository
+	# @param collection.uuid A string containing the UUID of the collection to load.
+	#
+	# @return an ngchmCollection object containing the collection data
+	#
+	# @import jsonlite
+	#
+	# @export
+	loadCollection = function (repo, collection.uuid="") {
+	    shaid <- new ('shaid', type='collection', value=collection.uuid);
+	    stopifnot (repo$exists (shaid));
+
+	    bits <- c('labels','matrices','chms','collections');
+	    val <- lapply (bits, function(x) repo$loadJSON(shaid, sprintf("%s.json",x)));
+	    names(val) <- bits;
+
+	    val$repo <- repo;
+	    val$basepath <- repo$blob.path (shaid);
+	    val$shaid <- shaid;
+	    val$uuid <- collection.uuid;
+	    class(val) <- "ngchmCollection";
+	    val
+	}
+    ));
     shaidyRegisterRepoAPI ("file", list (
 	isLocal = function(repo) TRUE,
+        "__super__" = "__generic__",
 	addObjectToCollection = function (repo, collection, shaid) {
 	    pl <- paste (shaid@type, "s", sep='');
 	    if (!shaid@value %in% collection[[pl]]) {
@@ -130,7 +158,40 @@ shaidyInit <- function() {
 	loadJSON = function (repo, shaid, f) {
 	    p <- repo$blob.path (shaid, f);
 	    if (file.exists (p)) jsonlite::fromJSON(readLines(p, warn=FALSE)) else c()
+	},
+	createCollection = function (repo, labels) {
+	    collection.uuid <- getuuid (paste0(labels,rnorm(10),collapse=';'));
+	    basepath <- shaidyRepo$blob.path ('collection', collection.uuid);
+	    stopifnot (!dir.exists (basepath));
+	    stopifnot (dir.create (basepath));
+	    if (nrow (labels) > 0) {
+		writeLines(jsonlite::toJSON(labels,pretty=TRUE), file.path (basepath, "labels.json"));
+	    }
+            collection.uuid
+	},
+	# Add a collection reference to a collection
+	#
+	# The collection graph must be acyclic.
+	#
+	# @param collection A list containing details of a collection
+	# @param uuid The uuid of the collection to add
+	#
+	# @return An updated list containing details of the collection
+	#
+	# @import jsonlite
+	#
+	# @export
+	addCollectionToCollection = function (repo, collection, uuid) {
+	    uuid.collection <- repo$loadCollection(uuid);
+	    if (ngchmCollectionInCollection(uuid.collection, collection$uuid)) {
+		stop (sprintf ("would form a cycle"));
+	    }
+	    collection$collections <- append (collection$collections, uuid);
+	    writeLines(jsonlite::toJSON(collection$collections,pretty=TRUE),
+		       file.path (collection$basepath, "collections.json"));
+	    collection
 	}
+
     ));
 }
 

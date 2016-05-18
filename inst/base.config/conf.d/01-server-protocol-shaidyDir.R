@@ -23,7 +23,7 @@
 			# Avoid unnecessary LoadCollection if this is last part.
 			result <- c (result, uuid);
 		    } else {
-			result <- c (result, findCollection (repo, ngchmLoadCollection (repo, uuid), parts[-1]));
+			result <- c (result, findCollection (repo, repo$loadCollection(uuid), parts[-1]));
 		    }
                 }
 	    }
@@ -31,21 +31,41 @@
 	}
     };
 
+    createCollection <- function (repo, collection, name) {
+        stopifnot (typeof(name)=="character" && length(name) == 1 && name != "");
+	fields <- strsplit (name, '=')[[1]];
+	if (length(fields) == 1) {
+	    fields <- c("name", fields);
+	} else if (length(fields) > 2) {
+	    fields <- c(fields[1], paste(fields[-1], collapse='='));
+	}
+        newCollection <- ngchmNewCollection (repo, labels=data.frame(Name=fields[1], Value=fields[2]));
+        repo$addCollectionToCollection (collection, newCollection);
+        invisible (newCollection)
+    };
+
 ngchmCreateServerProtocol ("shaidy",
     requiredParams = c('accessMethod','basePath'),
     findCollection = function (server, collectionId, parts) {
 	accessMethod <- ngchmGetProtoParam (server, 'accessMethod');
-	shaidyDir <- ngchmGetProtoParam (server, 'basePath');
-        shaidyRepo <- shaidyLoadRepository (accessMethod, shaidyDir);
-	collection <- ngchmLoadCollection (shaidyRepo, collectionId);
+	shaidyBase <- ngchmGetProtoParam (server, 'basePath');
+        shaidyRepo <- shaidyLoadRepository (accessMethod, shaidyBase);
+	collection <- shaidyRepo$loadCollection(collectionId);
 	findCollection (shaidyRepo, collection, parts)
+    },
+    createCollection = function (server, collectionId, name) {
+	accessMethod <- ngchmGetProtoParam (server, 'accessMethod');
+	shaidyBase <- ngchmGetProtoParam (server, 'basePath');
+        shaidyRepo <- shaidyLoadRepository (accessMethod, shaidyBase);
+	collection <- shaidyRepo$loadCollection(collectionId);
+        createCollection (shaidyRepo, collection, name)
     },
     installMethod = function (server, chm, path) {
 	stopifnot (chm@format == "shaidy");
 	collectionId <- chmCurrentCollection ();
 	accessMethod <- ngchmGetProtoParam (server, 'accessMethod');
-	shaidyDir <- ngchmGetProtoParam (server, 'basePath');
-        shaidyRepo <- shaidyLoadRepository (accessMethod, shaidyDir);
+	shaidyBase <- ngchmGetProtoParam (server, 'basePath');
+        shaidyRepo <- shaidyLoadRepository (accessMethod, shaidyBase);
         if (!missing (path)) {
             parts <- strsplit (path, '/')[[1]];
             if (length(parts) > 1 && parts[1]=="" && parts[2]=="") {
@@ -56,7 +76,7 @@ ngchmCreateServerProtocol ("shaidy",
                 parts <- parts[-1];
             }
             if (length(parts) > 0) {
-                collection <- ngchmLoadCollection (shaidyRepo, collectionId);
+                collection <- shaidyRepo$loadCollection(collectionId);
 		collectionId <- findCollection (shaidyRepo, collection, parts);
                 if (length(collectionId)==0) {
                     stop ("Cannot find collection: ", path);
@@ -89,8 +109,8 @@ ngchmCreateServerProtocol ("shaidy",
     },
     uninstallMethod = function (server, chmname, collectionIds) {
 	accessMethod <- ngchmGetProtoParam (server, 'accessMethod');
-	shaidyDir <- ngchmGetProtoParam (server, 'basePath');
-        shaidyRepo <- shaidyLoadRepository (accessMethod, shaidyDir);
+	shaidyBase <- ngchmGetProtoParam (server, 'basePath');
+        shaidyRepo <- shaidyLoadRepository (accessMethod, shaidyBase);
 	stop ("Not yet implemented by shaidydir protocol");
 	return (invisible(FALSE));
     }
