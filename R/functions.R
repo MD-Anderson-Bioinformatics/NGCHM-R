@@ -229,6 +229,13 @@ chmUserDendrogramToShaid <- function (ddg) {
     ngchmSaveAsDendrogramBlob (shaidyRepo, ddg)
 }
 
+#' Convert user specified labels to a shaid
+#'
+chmUserLabelsToShaid <- function (labels) {
+    shaidyRepo <- ngchm.env$tmpShaidy;
+    ngchmSaveLabelsAsBlob (shaidyRepo, labels)
+}
+
 #' Return default row order of an NGCHM
 #'
 #' @param chm An NGCHM containing at least one layer
@@ -1898,11 +1905,23 @@ ngchmGetHandleHTTR <- function (server) {
     get (ws, ngchm.env$handledb)
 }
 
+#' Return response content interpreted as JSON
+#'
+#' @param httrResponse The httr response object
+#'
+#' @return The response parsed as JSON and returned as an R object
+#'
+#' @export
+ngchmResponseJSON <- function (httrResponse) {
+    stopifnot (httr::status_code(httrResponse) >= 200 && httr::status_code(httrResponse) < 300);
+    jsonlite::fromJSON(content(httrResponse,'text',encoding='UTF-8'))
+}
+
 getServerVersion <- function (server) {
     url <- if ("ngchmServer" %in% class(server)) server@serverURL else server;
     ws <- sprintf("%s/gdacws/servermetadata", url);
     res <- httr::GET (ws, handle=ngchmGetHandleHTTR (server));
-    as.numeric(jsonlite::fromJSON(rawToChar(res$content))$Build_Number)
+    as.numeric(ngchmResponseJSON(res)$Build_Number)
 }
 
 testExternalProgram <- function (program) {
@@ -2047,7 +2066,7 @@ chmCreateServer <- function (serverName,
 		    ws <- sprintf("%s/manager/rest/chmservers", serverSpec);
 		    res <- httr::GET (ws, handle=ngchmGetHandleHTTR (serverSpec));
 		    if (res$status_code >= 200 && res$status_code < 300) {
-			content <- jsonlite::fromJSON(rawToChar(res$content));
+			content <- ngchmResponseJSON(res);
 			if (length(content) > 0) {
 			    cfg$serverProtocol <- 'manager';
 			    cfg$deployServer <- sprintf ("%s/manager/rest", serverSpec);

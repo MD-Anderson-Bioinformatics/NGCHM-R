@@ -62,17 +62,17 @@ ngchmShaidyInit <- function() {
 	    uri <- repo$blob.path (shaid);
 	    uri <- sub ('api/', 'api/exists?ids=', uri);
 	    resp <- GET (uri);
-	    return (length (content (resp, type='application/json')) > 0);
+	    return (length (ngchmResponseJSON(resp)) > 0);
 	},
 	loadJSON = function (repo, shaid, f) {
 	    uri <- repo$blob.path (shaid, f);
 	    resp <- GET (uri);
-	    if (status_code(resp) == 200) jsonlite::fromJSON(content(resp,'text')) else c()
+	    if (status_code(resp) == 200) ngchmResponseJSON(resp) else c()
 	},
 	createCollection = function (repo, labels) {
 	    uri <- repo$blob.path ('collection');
 	    resp <- POST (uri, body=list(labels=labels), encode="json");
-	    if (status_code(resp) == 200) content(resp,type='application/json') else c()
+	    if (status_code(resp) == 200) ngchmResponseJSON(resp) else c()
 	},
 	# Add a collection reference to a collection
 	#
@@ -432,12 +432,17 @@ ngchmGetLabels <- function (shaid, axis=NULL) {
         } else {
 	    stop (sprintf ("Unknown shaid type %s", shaid@type));
         }
-	filename <- utempfile ("label", fileext='.txt');
-	writeLines (labels, filename);
-	res <- list(shaidyAddFileBlob (shaidyRepo, 'label', 'labels.txt', filename));
-        unlink (filename);
+	res <- list(ngchmSaveLabelsAsBlob (shaidyRepo, labels));
 	shaidyRepo$provenanceDB$insert (provid, res[[1]]);
     }
+    res
+}
+
+ngchmSaveLabelsAsBlob <- function (shaidyRepo, labels) {
+    filename <- utempfile ("label", fileext='.txt');
+    writeLines (labels, filename);
+    res <- shaidyAddFileBlob (shaidyRepo, 'label', 'labels.txt', filename);
+    unlink (filename);
     res
 }
 

@@ -852,16 +852,24 @@ writeOrder <- function (inpDir, type, ord) {
     # Write the order/dendrogram out as a column dendrogram to the inpDir
     if (is(ord, "shaid")) {
         repo <- ngchmFindRepo (ord);
-        blobfile <- repo$blob.path (ord@type, ord@value, 'dendrogram-data.tsv');
-	filename <- file.path (inpDir, sprintf ("dendrogram-data_%s.tsv", type));
-        stopifnot (file.copy (blobfile, filename));
-        blobfile <- repo$blob.path (ord@type, ord@value, 'dendrogram-order.tsv');
-	filename <- file.path (inpDir, sprintf ("dendrogram-order_%s.tsv", type));
-        stopifnot (file.copy (blobfile, filename));
-        # For legacy
-        blobfile <- repo$blob.path (ord@type, ord@value, 'dendrogram.str');
-	filename <- file.path (inpDir, sprintf ("dendro_%s.str", type));
-        stopifnot (file.copy (blobfile, filename));
+        if (ord@type == 'dendrogram') {
+	    blobfile <- repo$blob.path (ord, 'dendrogram-data.tsv');
+	    filename <- file.path (inpDir, sprintf ("dendrogram-data_%s.tsv", type));
+	    stopifnot (file.copy (blobfile, filename));
+	    blobfile <- repo$blob.path (ord, 'dendrogram-order.tsv');
+	    filename <- file.path (inpDir, sprintf ("dendrogram-order_%s.tsv", type));
+	    stopifnot (file.copy (blobfile, filename));
+	    # For legacy
+	    blobfile <- repo$blob.path (ord, 'dendrogram.str');
+	    filename <- file.path (inpDir, sprintf ("dendro_%s.str", type));
+	    stopifnot (file.copy (blobfile, filename));
+        } else if (ord@type == 'label') {
+	    blobfile <- repo$blob.path (ord, 'labels.txt');
+	    filename <- file.path (inpDir, sprintf ("%s.txt", type));
+	    stopifnot (file.copy (blobfile, filename));
+        } else {
+            stop ('Unexpected shaid type: ', ord@type);
+        }
     } else if (class (ord) == "character") {
 	filename <- file.path (inpDir, sprintf ("%s.txt", type));
         write.table (ord, filename, quote=FALSE, row.names=FALSE, col.names=FALSE)
@@ -1076,6 +1084,8 @@ setMethod ("chmMake",
     }
     if (is(chm@rowOrder,"dendrogram")) {
         chm@rowOrder <- chmUserDendrogramToShaid (chm@rowOrder);
+    } else if (is(chm@rowOrder,"character")) {
+        chm@rowOrder <- chmUserLabelsToShaid (chm@rowOrder);
     }
     while ((length(chm@colOrder) > 0) && (class(chm@colOrder) == "function")) {
 	genSpecFeedback (10, "determining column order");
@@ -1083,6 +1093,8 @@ setMethod ("chmMake",
     }
     if (is(chm@colOrder,"dendrogram")) {
         chm@colOrder <- chmUserDendrogramToShaid (chm@colOrder);
+    } else if (is(chm@colOrder,"character")) {
+        chm@colOrder <- chmUserLabelsToShaid (chm@colOrder);
     }
     get (sprintf ("ngchmMakeFormat.%s", chm@format)) (chm, ...)
 });
@@ -1803,8 +1815,8 @@ setMethod ("shaidyGetComponents",
         if (is(object@rowOrder,"function")) object@rowOrder <- object@rowOrder (object);
         if (is(object@colOrder,"function")) object@colOrder <- object@colOrder (object);
         c(object@rowOrder, object@colOrder,
-          if (object@rowOrder@type=='dendrogram') ngchmGetLabels(object@rowOrder)[[1]] else NULL,
-          if (object@colOrder@type=='dendrogram') ngchmGetLabels(object@colOrder)[[1]] else NULL,
+          if (is(object@rowOrder,"shaid") && object@rowOrder@type=='dendrogram') ngchmGetLabels(object@rowOrder)[[1]] else NULL,
+          if (is(object@colOrder,"shaid") && object@colOrder@type=='dendrogram') ngchmGetLabels(object@colOrder)[[1]] else NULL,
           lapply(object@layers,function(x)x@data))
 });
 
