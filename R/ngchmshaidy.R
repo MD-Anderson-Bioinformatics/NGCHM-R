@@ -209,7 +209,7 @@ ngchmNewCollection <- function (shaidyRepo, labels=data.frame()) {
     shaidyRepo$createCollection (labels)
 };
 
-#' Recursively determine if collection uuid is contained in collection 
+#' Recursively determine if collection uuid is contained in collection
 #' A collecton always contains itself.
 #'
 #' @param collection A list containing details of a collection
@@ -594,34 +594,43 @@ chmCurrentServer <- function () {
 #' @export
 chmSetCollection <- function (path) {
     stopifnot (!missing(path) && typeof(path)=="character" && length(path)==1);
+    res <- parsePathSpec (path);
+    ngchm.env$currentServer <- res$server;
+    ngchm.env$currentCollection <- res$collection;
+}
+
+parsePathSpec <- function (path) {
     newServer <- ngchm.env$currentServer;
+    if (length(newServer) == 0 || newServer=="") {
+        newServer <- chmListServers()[1];
+    }
     newCollection <- ngchm.env$currentCollection;
+    if (length(newCollection) == 0) {
+        newCollection <- "";
+    }
     parts <- strsplit (path, "/")[[1]];
     if (length(parts) > 1 && parts[1]=="" && parts[2]=="") {
         parts <- parts[c(-1,-2)];
-        if (length(parts) == 0 || parts[1]=="") {
-	    newServer <- chmListServers()[1];
-        } else {
+        if (length(parts) > 0 && parts[1]!="") {
             newServer <- parts[1];
         }
-	if (is.na(newServer) || !(newServer %in% chmListServers())) {
-	    stop ("cannot set server: ", newServer);
-	}
-	if (length(parts) > 0) parts <- parts[-1];
-	newCollection <- "";
+        if (is.na(newServer) || !(newServer %in% chmListServers())) {
+            stop ("cannot set server: ", newServer);
+        }
+        if (length(parts) > 0) parts <- parts[-1];
+        newCollection <- "";
     } else if (length(parts) > 0 && parts[1] == "") {
         parts <- parts[-1];
-	newCollection <- "";
+        newCollection <- "";
     }
     if (length(parts) > 0) {
         server <- chmServer (newServer);
-	newCollection <- server@serverProtocol@findCollection (server, newCollection, parts);
+        newCollection <- server@serverProtocol@findCollection (server, newCollection, parts);
         if (length(newCollection)==0) {
-	    stop ("cannot find collection: ", path);
+            stop ("cannot find collection: ", path);
         }
     }
-    ngchm.env$currentServer <- newServer;
-    ngchm.env$currentCollection <- newCollection;
+    list (server=newServer, collection=newCollection)
 }
 
 #' Create a new collection

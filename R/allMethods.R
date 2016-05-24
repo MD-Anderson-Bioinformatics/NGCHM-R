@@ -30,12 +30,45 @@ setMethod ("chmUrlBase",
 #' @aliases chmInstall,ngchm-method
 setMethod ("chmInstall",
     signature = c(chm="ngchm"),
-    definition = function (chm, server=NULL, ...) {
-        chm <- chmFixVersion (chm);
-        if (length(server)==0) server <- chmCurrentServer();
-        stopifnot(length(server) > 0);
-        if (typeof(server) == 'character') server <- chmServerCheck (server);
-	server@serverProtocol@installMethod (server, chm, ...);
+    definition = function (chm, path, ...) {
+        if (missing(path)) {
+            dest <- list (server=chmCurrentServer(), collection=chmCurrentCollection());
+        } else {
+            dest <- parsePathSpec (path);
+        }
+        if (typeof(dest$server)=="character") dest$server <- chmServerCheck(dest$server);
+        stopifnot(length(dest$server) > 0);
+
+        maker <- get (sprintf ("ngchmMakeFormat.%s", dest$server@serverProtocol@chmFormat));
+        installer <- dest$server@serverProtocol@installMethod;
+
+        args <- list(...);
+        make.args <- list();
+        install.args <- list();
+        if ("server" %in% names(formals(maker))) {
+            make.args <- list(server=dest$server);
+        }
+        if ("collection" %in% names(formals(installer))) {
+            install.args <- list(collection=dest$collection);
+        }
+        if (length(args) > 0) {
+            stopifnot (!is.null(names(args)));
+            for (ii in 1:length(args)) {
+                if (names(args)[ii] %in% names(formals(maker))) {
+                    make.args <- c (make.args, args[[ii]]);
+                } else if (names(args)[ii] %in% names(formals(maker))) {
+                    install.args <- c (install.args, args[[ii]]);
+                } else {
+                    stop ("unknown parameter ", names(args)[ii]);
+                }
+            }
+
+        }
+
+        chm <- chmMake (chm);
+        chm@format <- dest$server@serverProtocol@chmFormat;
+        chm <- do.call (maker, c(chm, make.args));
+    	do.call (installer, c(dest$server, chm, install.args));
     });
 
 ### ' @rdname chmInstall-method
@@ -1096,7 +1129,7 @@ setMethod ("chmMake",
     } else if (is(chm@colOrder,"character")) {
         chm@colOrder <- chmUserLabelsToShaid (chm@colOrder);
     }
-    get (sprintf ("ngchmMakeFormat.%s", chm@format)) (chm, ...)
+    chm
 });
 
 
@@ -1119,7 +1152,7 @@ setMethod ("chmMake",
 #'
 #' @return The CHM
 ngchmMakeFormat.original <- function (chm,
-                                      server=NULL,
+                                      server,
                                       deleteOld=TRUE,
                                       useJAR=NULL,
                                       javaTraceLevel=NULL,
@@ -1140,8 +1173,6 @@ ngchmMakeFormat.original <- function (chm,
     if (deleteOld) {
         unlink (file.path (chm@outDir, chm@name), recursive=TRUE);
     }
-
-    if (!is.null (server)) server <- chmServerCheck (server);
 
     if (length(useJAR) == 0) {
         genSpecFeedback (97, "retrieving NGCHM rendering software");

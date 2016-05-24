@@ -457,7 +457,7 @@ setMethod ('show',
 #' @seealso chmAddCSS
 #' @seealso chmMake
 #' @seealso chmInstall
-#' 
+#'
 setClassUnion ("ngchm");
 
 setClass ("ngchmVersion1",
@@ -628,6 +628,7 @@ setMethod(jsonlite:::asJSON, signature=c("ngchmVersion2"), definition=function(x
 #' @keywords classes
 setClass ("ngchmServerProtocol",
           representation (protocolName="character",
+                          chmFormat="character",
                           requiredParams="optCharacter",
                           optionalParams="optCharacter",
 			  paramValidator="function",

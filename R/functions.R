@@ -334,7 +334,7 @@ chmAddList <- function (chm, args) {
 #' @seealso ngchmLayer-class
 #' @seealso chmNewColorMap
 #' @seealso chmAddDataLayer
-#' 
+#'
 chmNewDataLayer <- function (label, data, colors=NULL, summarizationMethod="average") {
     if (typeof (label) != "character") {
         stop (sprintf ("Parameter 'label' must have type 'character', not '%s'", typeof(label)));
@@ -376,7 +376,7 @@ chmNewDataLayer <- function (label, data, colors=NULL, summarizationMethod="aver
 #' @seealso ngchmDataset-class
 #' @seealso ngchmCovariate-class
 #' @seealso chmAddDataset
-#' 
+#'
 chmNewDataset <- function (name, description, data,
                            row.type = NULL,
                            column.type = NULL,
@@ -443,7 +443,7 @@ chmNewDataset <- function (name, description, data,
 #' @seealso ngchmCovariate-class
 #' @seealso chmAddCovariate
 #' @seealso chmNewColorMap
-#' 
+#'
 chmNewCovariate <- function (fullname, values, value.properties=NULL, type=NULL, covabbv=NULL)
 {
     # Validate basic properties of 'fullname'.
@@ -844,7 +844,7 @@ chmNewFunction <- function (name, description, implementation, extraParams=NULL,
 }
 
 
-#' Create a new Property for adding to a NGCHM. 
+#' Create a new Property for adding to a NGCHM.
 #'
 #' This function creates a new Property object for adding to
 #' a Next Generation Clustered Heat Map.
@@ -911,7 +911,7 @@ chmProperties <- function (...) {
    props
 }
 
-#' Create a new object representing a NGCHM server. 
+#' Create a new object representing a NGCHM server.
 #'
 #' This function creates a new object that represents a NGCHM server.
 #'
@@ -939,7 +939,7 @@ chmNewServer <- function (serverName, serverPort=8080, deployServer=NULL, protoO
 {
     if (is.null (deployServer)) deployServer = serverName;
     if (is.null (serverURL)) serverURL = paste ("http://", serverName, ":", serverPort, "/chm", sep="");
-    new (Class="ngchmServer", 
+    new (Class="ngchmServer",
 	 deployServer = deployServer,
 	 protoOpts = protoOpts,
 	 jarFile = jarFile,
@@ -1366,6 +1366,7 @@ chmRegisterFunction <- function (fn) {
 #' an NGCHM server.
 #'
 #' @param protocolName The name of this protocol implementation.
+#' @param chmFormat The chm format required by this protocol. Defaults to original format.
 #' @param requiredParams The protocol's required parameters, if any.
 #' @param optionalParams The protocol's optional parameters, if any.
 #' @param paramValidator A function(list) for validating the parameters specified for a new server.
@@ -1378,12 +1379,22 @@ chmRegisterFunction <- function (fn) {
 #'
 #' @export
 
-ngchmCreateServerProtocol <- function (protocolName,
+ngchmCreateServerProtocol <- function (protocolName, chmFormat,
 				       requiredParams, optionalParams,
 				       paramValidator,
                                        findCollection, createCollection,
                                        installMethod, uninstallMethod,
 	                               makePrivate, makePublic) {
+    if (missing(chmFormat)) chmFormat <- "original";
+    if (typeof (chmFormat) != "character") {
+        stop (sprintf ("Parameter 'chmFormat' must have type 'character', not '%s'", typeof(chmFormat)));
+    }
+    if (length (chmFormat) != 1) {
+        stop (sprintf ("Parameter 'chmFormat' must have a single value, not %d", length(chmFormat)));
+    }
+    if (nchar (chmFormat) == 0) {
+        stop ("Parameter 'chmFormat' cannot be the empty string");
+    }
     if (typeof (protocolName) != "character") {
         stop (sprintf ("Parameter 'protocolName' must have type 'character', not '%s'", typeof(protocolName)));
     }
@@ -1439,7 +1450,7 @@ ngchmCreateServerProtocol <- function (protocolName,
 	    stop ("NGCHMs cannot be automatically made public on this server. Please obtain instructions from the server administrator.");
         }
     }
-    dm <- new (Class="ngchmServerProtocol", protocolName=protocolName,
+    dm <- new (Class="ngchmServerProtocol", protocolName=protocolName, chmFormat=chmFormat,
 	       requiredParams = requiredParams,
 	       optionalParams = optionalParams,
 	       paramValidator = paramValidator,
@@ -1826,7 +1837,7 @@ shortnameslist <- function (names, maxnames=5)
 #'
 #' @seealso chmAdd
 #' @seealso chmAddDialog
-#' 
+#'
 chmNewDialog <- function (id, title, fn) {
     if (class(fn) == "character") {
         fn <- chmGetFunction (fn);
@@ -1885,7 +1896,7 @@ chmListServers <- function () {
 }
 
 #' Get a HTTR handle for the server's view/WS URL
-#' 
+#'
 #' This function returns a 'handle' suitable for use with the server's view/WS URL
 #'
 #' @param server An object of class ngchmServer
@@ -2156,7 +2167,7 @@ chmCreateServer <- function (serverName,
     ngchmProtoParamCheck (protoOpts, protocol@requiredParams, protocol@optionalParams);
     protocol@paramValidator (protoOpts);
 
-    ngchmRegisterServer("base", new(Class="ngchmServer", 
+    ngchmRegisterServer("base", new(Class="ngchmServer",
 			   name = serverName,
 			   serverURL = cfg$serverURL,
 			   serverProtocol = protocol,

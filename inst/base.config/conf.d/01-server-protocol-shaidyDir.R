@@ -45,6 +45,7 @@
     };
 
 ngchmCreateServerProtocol ("shaidy",
+    chmFormat = "shaidy",
     requiredParams = c('accessMethod','basePath'),
     findCollection = function (server, collectionId, parts) {
 	accessMethod <- ngchmGetProtoParam (server, 'accessMethod');
@@ -60,29 +61,11 @@ ngchmCreateServerProtocol ("shaidy",
 	collection <- shaidyRepo$loadCollection(collectionId);
         createCollection (shaidyRepo, collection, name)
     },
-    installMethod = function (server, chm, path) {
-	stopifnot (chm@format == "shaidy");
-	collectionId <- chmCurrentCollection ();
-	accessMethod <- ngchmGetProtoParam (server, 'accessMethod');
-	shaidyBase <- ngchmGetProtoParam (server, 'basePath');
+    installMethod = function (server, chm, collection) {
+    	stopifnot (chm@format == "shaidy");
+    	accessMethod <- ngchmGetProtoParam (server, 'accessMethod');
+    	shaidyBase <- ngchmGetProtoParam (server, 'basePath');
         shaidyRepo <- shaidyLoadRepository (accessMethod, shaidyBase);
-        if (!missing (path)) {
-            parts <- strsplit (path, '/')[[1]];
-            if (length(parts) > 1 && parts[1]=="" && parts[2]=="") {
-                stop ("cannot specify server in installMethod");
-            }
-            if (length(parts) > 0 && parts[1]=="") {
-                collectionId <- "";
-                parts <- parts[-1];
-            }
-            if (length(parts) > 0) {
-                collection <- shaidyRepo$loadCollection(collectionId);
-		collectionId <- findCollection (shaidyRepo, collection, parts);
-                if (length(collectionId)==0) {
-                    stop ("Cannot find collection: ", path);
-                }
-            }
-        }
         shaid <- shaidyGetShaid (chm);
         tocheck <- c(shaid, shaidyGetComponents(chm));
         present <- shaidyBlobExists (shaidyRepo, tocheck);
@@ -101,7 +84,7 @@ ngchmCreateServerProtocol ("shaidy",
 #	        writeLines(jsonlite::toJSON(tiles), tileFile);
 #	    }
 #        }
-	for (uuid in collectionId) {
+	for (uuid in collection) {
 	    cat (sprintf ("Saving chm %s to %s\n", chm@name, uuid), file=stderr());
 	    ngchmAddObjectToCollection (shaidyRepo, uuid, shaid);
 	}

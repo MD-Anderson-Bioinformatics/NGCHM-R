@@ -4,9 +4,8 @@
 \alias{ngchmMakeFormat.original}
 \title{Make an original format NGCHM.}
 \usage{
-ngchmMakeFormat.original(chm, server = NULL, deleteOld = TRUE,
-  useJAR = NULL, javaTraceLevel = NULL, javaOptions = NULL,
-  buildArchive = NULL)
+ngchmMakeFormat.original(chm, server, deleteOld = TRUE, useJAR = NULL,
+  javaTraceLevel = NULL, javaOptions = NULL, buildArchive = NULL)
 }
 \arguments{
 \item{chm}{The original format CHM to compile.}

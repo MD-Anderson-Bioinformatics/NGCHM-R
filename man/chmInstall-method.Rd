@@ -8,7 +8,7 @@
 \usage{
 chmInstall(chm, ...)
 
-\S4method{chmInstall}{ngchm}(chm, server = NULL, ...)
+\S4method{chmInstall}{ngchm}(chm, path, ...)
 }
 \arguments{
 \item{chm}{The NGCHM to install.}
