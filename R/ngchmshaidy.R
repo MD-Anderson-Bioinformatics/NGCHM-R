@@ -17,12 +17,31 @@ ngchmShaidyInit <- function() {
 	}
     )) (shaidyRepoAPI('file')));
 
+    tokenStash <- new.env (parent=emptyenv());
+
     shaidyRegisterRepoAPI ("api", list (
         "__super__" = "__generic__",
 	isLocal = function(repo) FALSE,
+        getToken = function (repo) {
+            bp <- repo$blob.path("");
+            if (exists (bp, envir=tokenStash)) {
+                tokenStash[[bp]]
+            } else {
+                repo$getNewToken ();
+            }
+        },
+        getNewToken = function (repo) {
+            cat ("Enter access token: ", file=stderr());
+            tokenStash[[repo$blob.path("")]] <- readLines (n=1);
+            tokenStash[[repo$blob.path("")]]
+        },
+
 	addObjectToCollection = function (repo, collection, shaid) {
-	    uri <- collection$repo$blob.path(collection$shaid, shaid);
-	    resp <- POST (uri);
+	    uri <- collection$repo$blob.path('insert', shaid, collection$shaid);
+	    resp <- POST (uri, add_headers(Authorization=repo$getToken()));
+	    while (resp$status_code == 401) {
+	        resp <- POST (uri, add_headers(Authorization=repo$getNewToken()));
+            }
 	    stopifnot (resp$status_code == 200);
 	    collection$repo$loadCollection(collection$uuid)
 	},
@@ -42,16 +61,25 @@ ngchmShaidyInit <- function() {
 	    });
 	},
 	copyLocalDirToBlob = function (repo, localDir, shaid) {
-	    dstblob <- repo$blob.path(shaid);
+	    dstblob <- repo$blob.path('tar', shaid);
 	    tarfile <- utempfile ("shaidcache", fileext='.tar');
 	    systemCheck (sprintf ("tar cf %s -C %s .", tarfile, localDir));
-	    resp <- PUT (dstblob, body=upload_file(tarfile));
+	    resp <- PUT (dstblob, add_headers(Authorization=repo$getToken()), body=upload_file(tarfile));
+	    while (resp$status_code == 401) {
+	        resp <- PUT (dstblob, add_headers(Authorization=repo$getNewToken()), body=upload_file(tarfile));
+            }
 	    stopifnot (resp$status_code == 200);
 	    unlink (tarfile);
 	},
 	copyBlobToLocalDir = function (repo, shaid, localDir) {
-	    srcblob <- repo$blob.path(shaid);
+	    srcblob <- repo$blob.path('tar', shaid);
 	    resp <- GET (srcblob);
+	    if (resp$status_code == 401) {
+	        resp <- GET (srcblob, add_headers(Authorization=repo$getToken()));
+            }
+	    while (resp$status_code == 401) {
+	        resp <- GET (srcblob, add_headers(Authorization=repo$getNewToken()));
+            }
 	    stopifnot (resp$status_code == 200);
 	    tarfile <- utempfile ("shaidcache", fileext='.tar');
 	    writeBin (resp$content, tarfile);
@@ -62,17 +90,32 @@ ngchmShaidyInit <- function() {
 	    uri <- repo$blob.path (shaid);
 	    uri <- sub ('api/', 'api/exists?ids=', uri);
 	    resp <- GET (uri);
-	    return (length (ngchmResponseJSON(resp)) > 0);
+	    if (resp$status_code == 401) {
+	        resp <- GET (uri, add_headers(Authorization=repo$getToken()));
+            }
+	    while (resp$status_code == 401) {
+	        resp <- GET (uri, add_headers(Authorization=repo$getNewToken()));
+            }
+	    return (length (ngchmResponseJSON(resp)$data) > 0);
 	},
-	loadJSON = function (repo, shaid, f) {
-	    uri <- repo$blob.path (shaid, f);
+	loadProperty = function (repo, shaid, propname) {
+	    uri <- repo$blob.path ('prop', propname, shaid);
 	    resp <- GET (uri);
-	    if (status_code(resp) == 200) ngchmResponseJSON(resp) else c()
+	    if (resp$status_code == 401) {
+	        resp <- GET (uri, add_headers(Authorization=repo$getToken()));
+            }
+	    while (resp$status_code == 401) {
+	        resp <- GET (uri, add_headers(Authorization=repo$getNewToken()));
+            }
+	    if (status_code(resp) == 200) ngchmResponseJSON(resp)$data else c()
 	},
 	createCollection = function (repo, labels) {
-	    uri <- repo$blob.path ('collection');
-	    resp <- POST (uri, body=list(labels=labels), encode="json");
-	    if (status_code(resp) == 200) ngchmResponseJSON(resp) else c()
+	    uri <- repo$blob.path ('create', 'collection');
+	    resp <- POST (uri, add_headers(Authorization=repo$getToken()), body=list(labels=labels), encode="json");
+	    while (resp$status_code == 401) {
+	        resp <- POST (uri, add_headers(Authorization=repo$getNewToken()), body=list(labels=labels), encode="json");
+            }
+	    if (status_code(resp) == 200) ngchmResponseJSON(resp)$data else c()
 	},
 	# Add a collection reference to a collection
 	#

@@ -17,7 +17,7 @@
 	    result <- c();
 	    for (uuid in collection$collections) {
 		shaid <- new ('shaid', type='collection', value=uuid);
-		labels <- repo$loadJSON(shaid, "labels.json");
+		labels <- repo$loadProperty(shaid, "labels");
                 if (any ((labels$Name==fields[1])&(labels$Value==fields[2]))) {
 		    if (length(parts) == 1) {
 			# Avoid unnecessary LoadCollection if this is last part.

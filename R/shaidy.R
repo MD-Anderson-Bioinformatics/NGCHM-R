@@ -84,7 +84,7 @@ shaidyInit <- function() {
 	    stopifnot (repo$exists (shaid));
 
 	    bits <- c('labels','matrices','chms','collections');
-	    val <- lapply (bits, function(x) repo$loadJSON(shaid, sprintf("%s.json",x)));
+	    val <- lapply (bits, function(x) repo$loadProperty(shaid, x));
 	    names(val) <- bits;
 
 	    val$repo <- repo;
@@ -155,8 +155,8 @@ shaidyInit <- function() {
 	exists = function (repo, shaid) {
 	    dir.exists (repo$blob.path (shaid))
 	},
-	loadJSON = function (repo, shaid, f) {
-	    p <- repo$blob.path (shaid, f);
+	loadProperty = function (repo, shaid, propname) {
+	    p <- repo$blob.path (shaid, sprintf ("%s.json", propname));
 	    if (file.exists (p)) jsonlite::fromJSON(readLines(p, warn=FALSE)) else c()
 	},
 	createCollection = function (repo, labels) {
