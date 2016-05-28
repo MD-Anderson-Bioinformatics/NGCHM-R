@@ -3,6 +3,7 @@ setOldClass ("dendrogram");
 setOldClass ("hclust");
 setOldClass ("file");
 setOldClass ("fileContent");
+setOldClass ("singleElement");
 
 #' Optional Dendrogram
 #'
@@ -65,7 +66,10 @@ setMethod ('show',
 	   });
 
 setIs ("shaid", "optDendrogram");
-setMethod(jsonlite:::asJSON, signature=c("shaid"), definition=s4ToJSON);
+setMethod(jsonlite:::asJSON, signature=c("shaid"), definition=function(x,...) {
+    paste0 ('{ "class": "shaid", "type": "', x@type, '", "value": "', x@value, '" }')
+})
+
 
 #' Class representing the properties of a data point in a Next Generation Clustered Heat Map (NGCHM).
 #'
@@ -86,7 +90,18 @@ setMethod ('show',
 	   definition = function (object) {
 	       cat (sprintf ("ngchmValueProp(%d values)\n", length(object@value)));
 	   });
-setMethod(jsonlite:::asJSON, signature=c("ngchmValueProp"), definition=s4ToJSON);
+setMethod(jsonlite:::asJSON, signature=c("ngchmValueProp"), definition=function(x,...) {
+    l <- s4ToList(x);
+    singleElements <- c("class", "value", "color", "name", "shape", "z");
+    for (elem in singleElements) {
+        if (!identical(l[[elem]],NULL)) {
+            class(l[[elem]]) <- 'singleElement';
+        }
+    }
+    empty <- vapply(l, function(x)length(x)==0, TRUE);
+    if (any(empty)) l <- l[-which(empty)];
+    toJSON(l)
+});
 
 #' Class representing a Dataset attached to a NGCHM
 #'
@@ -198,7 +213,18 @@ setMethod ('show',
 	   definition = function (object) {
 	       cat (sprintf ("ngchmColormap of type '%s'\n", object@type));
 	   });
-setMethod(jsonlite:::asJSON, signature=c("ngchmColormap"), definition=s4ToJSON);
+setMethod(jsonlite:::asJSON, signature=c("ngchmColormap"), definition=function(x,...) {
+    l <- s4ToList(x);
+    singleElements <- c("class", "type", "missing");
+    for (elem in singleElements) {
+        if (!identical(l[[elem]],NULL)) {
+            class(l[[elem]]) <- 'singleElement';
+        }
+    }
+    empty <- vapply(l, function(x)length(x)==0, TRUE);
+    if (any(empty)) l <- l[-which(empty)];
+    toJSON(l)
+});
 
 setClassUnion ("optColormap");
 setIs ("ngchmColormap", "optColormap");
@@ -366,7 +392,7 @@ setMethod(jsonlite:::asJSON, signature=c("ngchmCSS"), definition=s4ToJSON);
 setClass ("ngchmBar",
           representation (type="character",
 	                  label="character",
-			  data="numericOrCharacter",
+			  data="shaid",
 			  display="character",
 			  merge="optCharacter",
 			  thickness="integer",
@@ -379,7 +405,23 @@ setMethod ('show',
 	       cat (sprintf ("ngchmBar %s\n", object@label));
 	   });
 
-setMethod(jsonlite:::asJSON, signature=c("ngchmBar"), definition=s4ToJSON);
+setMethod(jsonlite:::asJSON, signature=c("ngchmBar"), definition=function(x,...) {
+    l <- s4ToList(x);
+    singleElements <- c("class", "type", "label", "display", "merge", "thickness");
+    idx <- which(vapply (ngchm.env$covariateRenderers, function(x)sameColormap(x,l$colors), TRUE));
+    if (length(idx)==1) {
+            l$colors <- idx;
+            singleElements <- c(singleElements, 'colors');
+    }
+    for (elem in singleElements) {
+        if (!identical(l[[elem]],NULL)) {
+            class(l[[elem]]) <- 'singleElement';
+        }
+    }
+    empty <- vapply(l, function(x)length(x)==0, TRUE);
+    if (any(empty)) l <- l[-which(empty)];
+    toJSON(l)
+});
 
 #' Class representing an overview of a Next Generation Clustered Heat Map (NGCHM).
 #'
@@ -561,6 +603,7 @@ setClass ("ngchmVersion2",
 			  javascript="optList",
 			  rowOrder="optDendrogram", rowDist="charOrFunction", rowAgglom="charOrFunction",
 			  colOrder="optDendrogram", colDist="charOrFunction", colAgglom="charOrFunction",
+                          rowOrderMethod="character", colOrderMethod="character",
 			  rowMeta="optList",
 			  colMeta="optList",
 			  rowCovariateBars="optList",
@@ -581,8 +624,9 @@ setClass ("ngchmVersion2",
 				propFile="chm.properties",
 				layers=c(),
 				colormaps=NULL,
-				rowOrder=NULL, rowDist="correlation", rowAgglom="ward",
-				colOrder=NULL, colDist="correlation", colAgglom="ward",
+				rowOrder=NULL, rowDist="correlation", rowAgglom="ward.D2",
+				colOrder=NULL, colDist="correlation", colAgglom="ward.D2",
+                                rowOrderMethod="User", colOrderMethod="User",
 				rowMeta=NULL,
 				colMeta=NULL,
 				axisTypes=NULL,
@@ -609,14 +653,59 @@ setMethod ('show',
 	   definition = function (object) {
 	       cat (sprintf ("ngchm %s (%d layers)\n", object@name, length(object@layers)));
 	   });
+
+axisSlots <- c("OrderMethod", "Order", "Dist", "Agglom", "Meta", "CovariateBars", "Dendrogram");
+axisNames <- c("order_method", "labels", "distance_metric", "agglomeration_method", "meta", "covariates", "dendrogram");
+getAxisData <- function (l, axis) {
+    f <- function (name) {
+            l[[paste0 (axis, name)]]
+    }
+    axisData <- lapply (axisSlots, f);
+    names(axisData) <- axisNames;
+    singleElements <- c("order_method", "distance_metric", "agglomeration_method");
+    for (elem in singleElements) {
+        if (!identical(axisData[[elem]],NULL)) {
+            class(axisData[[elem]]) <- 'singleElement';
+        }
+    }
+    empty <- vapply(axisData, function(x)length(x)==0, TRUE);
+    if (any(empty)) axisData <- axisData[-which(empty)];
+    axisData
+}
+setMethod(jsonlite:::asJSON, signature=c("singleElement"), definition=function(x,...) {
+        stopifnot(length(x)==1);
+        if (typeof(x)=="character") {
+                paste0 ('"', x, '"')
+        } else {
+                paste0 (x)
+        }
+});
 setMethod(jsonlite:::asJSON, signature=c("ngchmVersion2"), definition=function(x,...) {
     l <- s4ToList(x);
     l$class <- "ngchm";
     l <- prepChmOrderings (x, l);
     l$layers <- mapply (function(layer)prepDataLayer(x,layer), x@layers, SIMPLIFY=FALSE);
+    l$`row_data` <- getAxisData (l, 'row');
+    l$`col_data` <- getAxisData (l, 'col');
+    singleElements <- c("class", "name", "version");
+    for (elem in singleElements) {
+        if (!identical(l[[elem]],NULL)) {
+            class(l[[elem]]) <- 'singleElement';
+        }
+    }
+    rr <- NULL;
+    for (cv in x@rowCovariateBars) rr <- appendRendererIfNew (rr, cv@colors);
+    for (cv in x@colCovariateBars) rr <- appendRendererIfNew (rr, cv@colors);
+    l$`covariate_renderers` <- rr;
+    ngchm.env$covariateRenderers <- rr;
+    slotsToExclude <- c("width","height","uuid","baggage","inpDir","outDir","saveDir","propFile","css","format",
+           vapply (axisSlots, function(x) paste0("row",x), ''),
+           vapply (axisSlots, function(x) paste0("col",x), '')
+           );
+    exclude <- vapply(names(l), function(x)x %in% slotsToExclude, TRUE);
     empty <- vapply(l, function(x)length(x)==0, TRUE);
-    exclude <- vapply(names(l), function(x)x %in% c("width","height","uuid","baggage","inpDir","outDir","saveDir","propFile","css"), TRUE);
-    toJSON(l[-which(empty|exclude)], pretty=TRUE)
+    if (any(empty|exclude)) l <- l[-which(empty|exclude)];
+    toJSON(l, pretty=TRUE)
 });
 
 #' Class representing a deployment method for a Next Generation Clustered Heat Map (NGCHM) server.

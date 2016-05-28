@@ -5,8 +5,8 @@
 \title{Create a new NGCHM.}
 \usage{
 chmNew(name, ..., rowOrder = chmDefaultRowOrder, rowDist = "correlation",
-  rowAgglom = "ward", colOrder = chmDefaultColOrder,
-  colDist = "correlation", colAgglom = "ward", rowAxisType = NULL,
+  rowAgglom = "ward.D2", colOrder = chmDefaultColOrder,
+  colDist = "correlation", colAgglom = "ward.D2", rowAxisType = NULL,
   colAxisType = NULL, rowCovariates = NULL, colCovariates = NULL,
   format = "original", overview = c())
 }

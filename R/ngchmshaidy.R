@@ -352,7 +352,6 @@ ngchmSaveAsDatasetBlob <- function (shaidyRepo, format, mat) {
     if (is (mat, 'shaid')) return (mat);
     stopifnot (format == 'tsv',
                is (mat, 'matrix'),
-	       is.numeric (mat),
 	       length (dim(mat)) == 2,
 	       length (rownames(mat)) > 0,
 	       length (colnames(mat)) > 0);

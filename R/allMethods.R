@@ -438,7 +438,12 @@ prepDataLayer <- function(chm, layer) {
     cmid <- which(vapply (chm@colormaps, function(cmap)sameColormap(cmap,layer@colors), TRUE));
     if (length(cmid) == 0)
         stop (sprintf ("Internal error detected: no color map found for data layer %s. Please report.", layer@name));
-    list(name=layer@name, cmap=cmid[[1]], data=layer@data)
+    l <- list(name=layer@name, cmap=cmid[[1]], data=layer@data);
+    singleElements <- c("name", "cmap");
+    for (elem in singleElements) {
+            class(l[[elem]]) <- 'singleElement';
+    }
+    l
 }
 
 writeDataLayer <- function (chm, layer, dir, index, chan) {
@@ -477,9 +482,11 @@ writeCovariateBar <- function (cbar, inpDir, type, index, chan) {
     }
 
     chan2 <- file (paste (inpDir, sprintf ("%sClassificationData%d.txt", type, index), sep="/"), "w")
-    nm <- names(cbar@data)
-    for (ii in 1:length(cbar@data))
-        cat (nm[ii], "\t", cbar@data[ii], "\n", sep="", file=chan2);
+    repo <- ngchmFindRepo (cbar@data);
+    barData <- ngchmLoadDatasetBlob (repo, cbar@data)$mat;
+    nm <- rownames(barData)
+    for (ii in 1:nrow(barData))
+        cat (nm[ii], "\t", barData[ii,1], "\n", sep="", file=chan2);
     close (chan2);
 }
 
@@ -933,46 +940,48 @@ writeOrder <- function (inpDir, type, ord) {
 
 writeMeta <- function (inpDir, type, metadata) {
     # Write the metadata out to the inpDir
-    if (class (metadata) == "character" || class(metadata) == "list") {
-	filename = sprintf ("%s/%s_meta.txt", inpDir, type);
-        write.table (metadata, filename, quote=FALSE, row.names=FALSE, col.names=TRUE, sep="\t")
-    } else if (class (metadata) == "file") {
-	filename = (paste (inpDir, sprintf ("%s_meta.txt", type), sep="/"));
-	content <- readLines (metadata);
-	ff = file (filename, "w");
-	writeLines (content, ff);
-	close (ff);
-    } else if (class (metadata) == "NULL") {
-        # Do nothing.
-    } else {
-        stop (sprintf ("chmWriteMeta: unknown class of %s metadata: '%s'", type, class(metadata)));
-    }
+    data <- lapply (metadata, function (shaid) {
+        stopifnot (is (shaid, "shaid"));
+        repo <- ngchmFindRepo (shaid);
+        meta <- ngchmLoadDatasetBlob (repo, shaid)$mat;
+        meta$Value
+    });
+    labels <- sort(unique(do.call(c,lapply (data, function(x)names(x)))));
+    proto <- rep (NA, length(labels));
+    names(proto) <- labels;
+    data <- do.call (rbind, lapply (data, function (cv) {
+        p <- proto;
+        p[names(cv)] <- cv;
+        p
+    }));
+    filename = sprintf ("%s/%s_meta.txt", inpDir, type);
+    write.table (data, filename, quote=FALSE, row.names=FALSE, col.names=TRUE, sep="\t");
 }
 
 prepChmOrderings <- function (chm, l) {
     # Fix row order
     if (length(chm@rowOrder)==0) {
-        l$rowOrder <- s4ToList (ngchmGetLabels(chm@layers[[1]]@data,"row"));
+        l$rowOrder <- ngchmGetLabels(chm@layers[[1]]@data,"row");
     } else if (!is(chm@rowOrder,"shaid")) {
         stop (sprintf ("For chm %s unknown class for row order: %s", chm@name, class(chm@rowOrder)));
     } else if (chm@rowOrder@type == 'label') {
         # Nothing to do.
     } else if (chm@rowOrder@type == 'dendrogram') {
         l$rowDendrogram <- l$rowOrder;
-        l$rowOrder <- s4ToList (ngchmGetLabels(chm@rowOrder)[[1]]);
+        l$rowOrder <- ngchmGetLabels(chm@rowOrder)[[1]];
     } else {
         stop (sprintf ("For chm %s unknown shaid type for row order: %s", chm@name, chm@rowOrder@type));
     }
     # Repeat for col order
     if (length(chm@colOrder)==0) {
-        l$colOrder <- s4ToList (ngchmGetLabels(chm@layers[[1]]@data,"column"));
+        l$colOrder <- ngchmGetLabels(chm@layers[[1]]@data,"column");
     } else if (!is(chm@colOrder,"shaid")) {
         stop (sprintf ("For chm %s unknown class for column order: %s", chm@name, class(chm@colOrder)));
     } else if (chm@colOrder@type == 'label') {
         # Nothing to do.
     } else if (chm@colOrder@type == 'dendrogram') {
         l$colDendrogram <- l$colOrder;
-        l$colOrder <- s4ToList (ngchmGetLabels(chm@colOrder)[[1]]);
+        l$colOrder <- ngchmGetLabels(chm@colOrder)[[1]];
     } else {
         stop (sprintf ("For chm %s unknown shaid type for column order: %s", chm@name, chm@colOrder@type));
     }
@@ -1115,7 +1124,9 @@ setMethod ("chmMake",
 	genSpecFeedback (0, "determining row order");
         chm@rowOrder <- chm@rowOrder (chm);
     }
-    if (is(chm@rowOrder,"dendrogram")) {
+    if (length(chm@rowOrder)==0) {
+        chm@rowOrder <- chmOriginalRowOrder (chm);
+    } else if (is(chm@rowOrder,"dendrogram")) {
         chm@rowOrder <- chmUserDendrogramToShaid (chm@rowOrder);
     } else if (is(chm@rowOrder,"character")) {
         chm@rowOrder <- chmUserLabelsToShaid (chm@rowOrder);
@@ -1124,7 +1135,9 @@ setMethod ("chmMake",
 	genSpecFeedback (10, "determining column order");
         chm@colOrder <- chm@colOrder (chm);
     }
-    if (is(chm@colOrder,"dendrogram")) {
+    if (length(chm@colOrder)==0) {
+        chm@colOrder <- chmOriginalColOrder (chm);
+    } else if (is(chm@colOrder,"dendrogram")) {
         chm@colOrder <- chmUserDendrogramToShaid (chm@colOrder);
     } else if (is(chm@colOrder,"character")) {
         chm@colOrder <- chmUserLabelsToShaid (chm@colOrder);
@@ -1379,23 +1392,20 @@ setMethod ("chmAddCovariate",
         dataset
 });
 
+appendRendererIfNew <- function (colormaps, newmap) {
+    for (cm in colormaps) {
+        if (sameColormap (cm, newmap)) return (colormaps);
+    }
+    append (colormaps, newmap)
+}
+
 #' @rdname chmAddColormap-method
 #' @aliases chmAddColormap,ngchm,ngchmColormap-method
 setMethod ("chmAddColormap",
     signature = c(chm="ngchm", colormap="ngchmColormap"),
     definition = function (chm, colormap) {
         chm <- chmFixVersion (chm);
-	found <- FALSE
-	if (length(chm@colormaps) > 0) {
-	    for (ii in 1:length(chm@colormaps)) {
-	        if (sameColormap (chm@colormaps[[ii]], colormap)) {
-		    found = TRUE;
-		    break;
-		}
-	    }
-	}
-	if (!found)
-	    chm@colormaps <- append (chm@colormaps, colormap);
+        chm@colormaps <- appendRendererIfNew (chm@colormaps, colormap);
         chmUU (chm)
 });
 
@@ -1638,7 +1648,7 @@ setMethod ("chmAddCovariateBar",
 setMethod ("chmAddCovariateBar",
     signature = c(chm="ngchm", where="character", covar="ngchmCovariate"),
     definition = function (chm, where, covar,
-                           display="visible", thickness=as.integer(10), merge=NULL) {
+                           display="visible", thickness=as.integer(10), merge) {
 	bar <- chmNewCovariateBar (covar, display=display, thickness=thickness, merge=merge);
 	chmAddCovariateBar (chm, where, bar)
 });
@@ -1708,6 +1718,18 @@ setMethod ("chmBindFunction",
         chmBindFunction (name, fndef, bindings)
 });
 
+orderMethod <- function(v) {
+    if (length(v)==0) {
+        return ("Original");
+    }
+    if (is(v, "function")) {
+        if (identical(v,chmDefaultRowOrder) || identical(v,chmDefaultColOrder)) return ("Hierarchical");
+        if (identical(v,chmRandomRowOrder) || identical(v,chmRandomColOrder)) return ("Random");
+        if (identical(v,chmOriginalRowOrder) || identical(v,chmOriginalColOrder)) return ("Original");
+    }
+    return ("User");
+}
+
 #' @rdname chmRowOrder-method
 #' @aliases chmRowOrder<-,ngchm,optDendrogram-method
 setReplaceMethod ("chmRowOrder",
@@ -1719,6 +1741,7 @@ setReplaceMethod ("chmRowOrder",
 	    class(value) <- "fileContent";
 	}
 	chm@rowOrder <- value
+	chm@rowOrderMethod <- orderMethod(value);
         chmUU (chm)
 });
 
@@ -1733,8 +1756,22 @@ setReplaceMethod ("chmColOrder",
 	    class(value) <- "fileContent";
 	}
 	chm@colOrder <- value
+	chm@colOrderMethod <- orderMethod(value);
         chmUU (chm)
 });
+
+metaToShaids <- function (metadata) {
+    if (length(metadata)==0) return (NULL);
+    stopifnot (is(metadata,"list"));
+    shaids <- lapply (metadata, function(meta) {
+            stopifnot (!identical(names(meta),NULL));
+            meta <- meta[order(names(meta))];
+            mat <- matrix (meta, ncol=1, dimnames=list(names(meta),'Value'));
+            shaid <- ngchmSaveAsDatasetBlob (ngchm.env$tmpShaidy, 'tsv', mat);
+            shaid
+    });
+    shaids
+}
 
 #' @rdname chmRowMeta-method
 #' @aliases chmRowMeta<-,ngchm,optList-method
@@ -1742,7 +1779,7 @@ setReplaceMethod ("chmRowMeta",
     signature = c(chm="ngchm", value="optList"),
     definition = function (chm, value) {
         chm <- chmFixVersion (chm);
-	chm@rowMeta <- value
+	chm@rowMeta <- metaToShaids (value);
         chmUU (chm)
 });
 
@@ -1752,7 +1789,7 @@ setReplaceMethod ("chmColMeta",
     signature = c(chm="ngchm", value="optList"),
     definition = function (chm, value) {
         chm <- chmFixVersion (chm);
-	chm@colMeta <- value
+	chm@colMeta <- metaToShaids (value);
         chmUU (chm)
 });
 
@@ -1848,7 +1885,11 @@ setMethod ("shaidyGetComponents",
         c(object@rowOrder, object@colOrder,
           if (is(object@rowOrder,"shaid") && object@rowOrder@type=='dendrogram') ngchmGetLabels(object@rowOrder)[[1]] else NULL,
           if (is(object@colOrder,"shaid") && object@colOrder@type=='dendrogram') ngchmGetLabels(object@colOrder)[[1]] else NULL,
-          lapply(object@layers,function(x)x@data))
+          lapply(object@layers,function(x)x@data),
+          lapply(object@colCovariateBars,function(x)x@data),
+          lapply(object@rowCovariateBars,function(x)x@data),
+          object@rowMeta, object@colMeta
+          )
 });
 
 #' @rdname chmGetDataset-method

@@ -5,7 +5,7 @@
 \title{Create a new Classification Bar for a NGCHM}
 \usage{
 ngchmNewBar(label, type, data, colors = NULL, display = "visible",
-  thickness = as.integer(10), merge = NULL)
+  thickness = as.integer(10), merge)
 }
 \arguments{
 \item{label}{The name by which the classification bar will be known.}

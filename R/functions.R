@@ -133,8 +133,8 @@ ngchmGetEnv <- function () {
 #' @seealso chmInstall
 
 chmNew <- function (name, ...,
-                    rowOrder=chmDefaultRowOrder, rowDist="correlation", rowAgglom="ward",
-		    colOrder=chmDefaultColOrder, colDist="correlation", colAgglom="ward",
+                    rowOrder=chmDefaultRowOrder, rowDist="correlation", rowAgglom="ward.D2",
+		    colOrder=chmDefaultColOrder, colDist="correlation", colAgglom="ward.D2",
                     rowAxisType=NULL, colAxisType=NULL,
 		    rowCovariates=NULL, colCovariates=NULL,
                     format="original",
@@ -152,11 +152,18 @@ chmNew <- function (name, ...,
                 name=name,
                 format=format,
 		inpDir=utempfile("ngchm.input"),
-		outDir=utempfile("ngchm.output"));
+		outDir=utempfile("ngchm.output"),
+                rowDist=rowDist,
+                rowAgglom=rowAgglom,
+                colDist=colDist,
+                colAgglom=colAgglom,
+                rowOrderMethod="",
+                colOrderMethod=""
+                );
+    chmRowOrder(chm) <- rowOrder;
+    chmColOrder(chm) <- colOrder;
     chm@uuid <- getuuid (name);
     chm <- chmAddCSS (chm, 'div.overlay { border: 2px solid yellow; }');
-    chm@rowOrder <- rowOrder; chm@rowDist <- rowDist; chm@rowAgglom <- rowAgglom;
-    chm@colOrder <- colOrder; chm@colDist <- colDist; chm@colAgglom <- colAgglom;
     chm <- chmAddList (chm, list(...));
     if (!is.null(rowAxisType)) chm <- chmAddAxisType (chm, 'row', rowAxisType);
     if (!is.null(colAxisType)) chm <- chmAddAxisType (chm, 'column', colAxisType);
@@ -266,6 +273,114 @@ chmDefaultRowOrder <- function (chm) {
 	ddg <- as.dendrogram(hclust(dd, method=chm@rowAgglom));
 	res <- list(ngchmSaveAsDendrogramBlob (shaidyRepo, ddg));
 	shaidyRepo$provenanceDB$insert (provid, res[[1]]);
+    }
+    res[[1]]
+}
+
+#' Return original row order of an NGCHM
+#'
+#' @param chm An NGCHM containing at least one layer
+#'
+#' @return Shaid of a label order suitable for use as the
+#'         chm's row order.
+#'
+#' @export
+chmOriginalRowOrder <- function (chm) {
+    chm <- chmFixVersion (chm);
+    if (length (chm@layers) == 0) stop ("chm requires at least one layer");
+    shaidyRepo <- ngchm.env$tmpShaidy;
+    shaid <- chm@layers[[1]]@data;
+
+    provid <- shaidyProvenance (shaidyRepo, name="chmOriginalRowOrder",
+                                shaid=shaid@value);
+    res <- shaidyRepo$provenanceDB$get ('label',provid);
+    if (length(res) == 0) {
+        mat <- ngchmLoadDatasetBlob (shaidyRepo, shaid)$mat;
+        labels <- rownames(mat);
+        labels.shaid <- ngchmSaveLabelsAsBlob (shaidyRepo, labels);
+	shaidyRepo$provenanceDB$insert (provid, labels.shaid);
+        res <- list(labels.shaid);
+    }
+    res[[1]]
+}
+
+#' Return random row order of an NGCHM
+#'
+#' @param chm An NGCHM containing at least one layer
+#'
+#' @return Shaid of a label order suitable for use as the
+#'         chm's row order.
+#'
+#' @export
+chmRandomRowOrder <- function (chm) {
+    chm <- chmFixVersion (chm);
+    if (length (chm@layers) == 0) stop ("chm requires at least one layer");
+    shaidyRepo <- ngchm.env$tmpShaidy;
+    shaid <- chm@layers[[1]]@data;
+
+    provid <- shaidyProvenance (shaidyRepo, name="chmRandomRowOrder",
+                                shaid=shaid@value);
+    res <- shaidyRepo$provenanceDB$get ('label',provid);
+    if (length(res) == 0) {
+        mat <- ngchmLoadDatasetBlob (shaidyRepo, shaid)$mat;
+        labels <- rownames(mat)[sample.int(nrow(mat),nrow(mat))];
+        labels.shaid <- ngchmSaveLabelsAsBlob (shaidyRepo, labels);
+	shaidyRepo$provenanceDB$insert (provid, labels.shaid);
+        res <- list(labels.shaid);
+    }
+    res[[1]]
+}
+
+#' Return original column order of an NGCHM
+#'
+#' @param chm An NGCHM containing at least one layer
+#'
+#' @return Shaid of a label order suitable for use as the
+#'         chm's column order.
+#'
+#' @export
+chmOriginalColOrder <- function (chm) {
+    chm <- chmFixVersion (chm);
+    if (length (chm@layers) == 0) stop ("chm requires at least one layer");
+    shaidyRepo <- ngchm.env$tmpShaidy;
+    shaid <- chm@layers[[1]]@data;
+
+    provid <- shaidyProvenance (shaidyRepo, name="chmOriginalColOrder",
+                                shaid=shaid@value);
+    res <- shaidyRepo$provenanceDB$get ('label',provid);
+    if (length(res) == 0) {
+        mat <- ngchmLoadDatasetBlob (shaidyRepo, shaid)$mat;
+        labels <- colnames(mat);
+        labels.shaid <- ngchmSaveLabelsAsBlob (shaidyRepo, labels);
+	shaidyRepo$provenanceDB$insert (provid, labels.shaid);
+        res <- list(labels.shaid);
+    }
+    res[[1]]
+}
+
+#' Return random column order of an NGCHM
+#'
+#' @param chm An NGCHM containing at least one layer
+#'
+#' @return Shaid of a label order suitable for use as the
+#'         chm's column order.
+#'
+#' @export
+chmRandomColOrder <- function (chm) {
+    chm <- chmFixVersion (chm);
+    if (length (chm@layers) == 0) stop ("chm requires at least one layer");
+    shaidyRepo <- ngchm.env$tmpShaidy;
+    shaid <- chm@layers[[1]]@data;
+
+    provid <- shaidyProvenance (shaidyRepo, name="chmRandomColOrder",
+                                shaid=shaid@value);
+    res <- shaidyRepo$provenanceDB$get ('label',provid);
+    if (length(res) == 0) {
+        mat <- ngchmLoadDatasetBlob (shaidyRepo, shaid)$mat;
+        labels <- colnames(mat)[sample.int(ncol(mat),ncol(mat))];
+        labels.shaid <- ngchmSaveLabelsAsBlob (shaidyRepo, labels);
+	shaidyRepo$provenanceDB$insert (provid, labels.shaid);
+        res <- list(labels.shaid);
     }
     res[[1]]
 }
@@ -547,7 +662,7 @@ chmNewCovariate <- function (fullname, values, value.properties=NULL, type=NULL,
 #' @seealso chmNewCovariateBar
 #' @seealso chmAddCovariateBar
 #'
-ngchmNewBar <- function (label, type, data, colors=NULL, display="visible", thickness=as.integer(10), merge=NULL) {
+ngchmNewBar <- function (label, type, data, colors=NULL, display="visible", thickness=as.integer(10), merge) {
     if (typeof (label) != "character") {
         stop (sprintf ("Parameter 'label' must have type 'character', not '%s'", typeof(label)));
     }
@@ -584,7 +699,10 @@ ngchmNewBar <- function (label, type, data, colors=NULL, display="visible", thic
 	colors <- vapply (colors, function(cc)substr(cc,1,7), "");
 	colors <- chmNewColorMap (qq, colors);
     }
-    if ((length(merge) > 0) && !(merge %in% c("average", "peakColor", "specialColor", "mostCommon")))
+    if (missing(merge)) {
+        merge <- "average";
+    }
+    if ((length(merge) != 1) || !(merge %in% c("average", "peakColor", "specialColor", "mostCommon")))
         stop (sprintf ("Unknown classbar merge value '%s'. Must be 'average', 'peakColor', 'specialColor' or 'mostCommon'", merge));
     if (length(names(data)) == 0)
         stop (sprintf ("Parameter 'data' for classbar '%s' must have defined names that match those of the CHM axis to which it will be attached", label));
@@ -592,7 +710,10 @@ ngchmNewBar <- function (label, type, data, colors=NULL, display="visible", thic
         dups <- unique(names(data)[which(duplicated(names(data)))]);
 	stop (sprintf ("Parameter 'data' for classbar '%s' has multiple entries for label(s) %s", label, paste (dups, collapse=', ')));
     }
-    new (Class="ngchmBar", label=label, type=type, data=data, thickness=thickness, colors=colors, display=display, merge=merge)
+    data <- data[order(names(data))];
+    mat <- matrix (data, ncol=1, dimnames=list(names(data),'Value'));
+    shaid <- ngchmSaveAsDatasetBlob (ngchm.env$tmpShaidy, 'tsv', mat);
+    new (Class="ngchmBar", label=label, type=type, data=shaid, thickness=thickness, colors=colors, display=display, merge=merge)
 }
 
 #' Create a new covariate Bar for a NGCHM
@@ -620,7 +741,7 @@ ngchmNewBar <- function (label, type, data, colors=NULL, display="visible", thic
 #' @seealso chmNewColorMap
 #' @seealso chmAddCovariateBar
 #'
-chmNewCovariateBar <- function (covar, display="visible", thickness=as.integer(10), merge=NULL)
+chmNewCovariateBar <- function (covar, display="visible", thickness=as.integer(10), merge)
 {
     ngchmNewBar (covar@fullname, covar@type, covar@label.series, covar@series.properties,
 		    display=display, thickness=thickness, merge=merge)
@@ -1785,10 +1906,12 @@ validateNewCovariateBar <- function (chm, where, bar)
 
 validateCovariateBar <- function (chm, where, layername, labels, bar)
 {
-    if (length (intersect (labels, names(bar@data))) == 0) {
+    repo <- ngchmFindRepo (bar@data);
+    barData <- ngchmLoadDatasetBlob (repo, bar@data)$mat;
+    if (length (intersect (labels, rownames(barData))) == 0) {
 	m <- sprintf ('%s names of %s for CHM "%s" are completely different from those of covariate bar "%s"',
 		       where, layername, chm@name, bar@label);
-	errs <- namesdifferror (layername, labels, sprintf ('covariate bar "%s"', bar@label), names(bar@data));
+	errs <- namesdifferror (layername, labels, sprintf ('covariate bar "%s"', bar@label), rownames(barData));
 	stop (paste (c (m, errs), collapse="\n"));
     }
 }
@@ -2432,8 +2555,34 @@ chmFixVersion <- function (chm) {
 	    }
         }
     }
-    if (is(chm@rowOrder,"function")) chm@rowOrder <- chmDefaultRowOrder;
-    if (is(chm@colOrder,"function")) chm@colOrder <- chmDefaultColOrder;
+    if (length(chm@rowOrder)>0 && is(chm@rowOrder,"function")) {
+        if (!identical(chm@rowOrder,chmDefaultRowOrder) &&
+            !identical(chm@rowOrder,chmOriginalRowOrder) &&
+            !identical(chm@rowOrder,chmRandomRowOrder)) {
+            if (chm@rowOrderMethod=="Random") {
+                chm@rowOrder <- chmRandomRowOrder;
+            } else if (chm@rowOrderMethod=="Original") {
+                chm@rowOrder <- chmOriginalRowOrder;
+            } else {
+                chm@rowOrder <- chmDefaultRowOrder;
+                chm@rowOrderMethod <- "Hierarchical";
+            }
+        }
+    }
+    if (length(chm@colOrder)>0 && is(chm@colOrder,"function")) {
+        if (!identical(chm@colOrder,chmDefaultColOrder) &&
+            !identical(chm@colOrder,chmOriginalColOrder) &&
+            !identical(chm@colOrder,chmRandomColOrder)) {
+            if (chm@colOrderMethod=="Random") {
+                chm@colOrder <- chmRandomColOrder;
+            } else if (chm@colOrderMethod=="Original") {
+                chm@colOrder <- chmOriginalColOrder;
+            } else {
+                chm@colOrder <- chmDefaultColOrder;
+                chm@colOrderMethod <- "Hierarchical";
+            }
+        }
+    }
     chm
 }
 
