@@ -5,7 +5,7 @@
 \title{Register a predefined Javascript function for converting values from
 one type to another.}
 \usage{
-chmRegisterTypeMapper(fromtype, totype, fn)
+chmRegisterTypeMapper(fromtype, totype, op, ...)
 }
 \arguments{
 \item{fromtype}{The type of values the function expects as input.}
@@ -13,7 +13,17 @@ chmRegisterTypeMapper(fromtype, totype, fn)
 \item{totype}{The type of values the function will produce.  The length of
 totype must be shorter than fromtype.}
 
-\item{fn}{The Javascript function to register.}
+\item{op}{The operation code for performing the conversion}
+
+\item{...}{Additional parameters required for specifying the conversion (op specific)}
+}
+\value{
+NULL
+
+op can have the following values:
++ 'field' Split source into fields separated by 'separator' and select field 'num' (0 origin)
++ 'expr' Compute string expression 'expr'
++ 'javascript' Evaluate javascript function 'fn' (deprecated)
 }
 \description{
 This function registers a Javascript function that will be automatically

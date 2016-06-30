@@ -47,6 +47,28 @@ setIs ("logical", "numericOrCharacter");
 s4ToList <- function(x,...) {
     c(list(class=class(x)),mapply(function(s)slot(x,s),slotNames(class(x)),SIMPLIFY=FALSE))
 }
+listFix <- function (l, single, exclude, extra) {
+    if (missing(single)) single <- NULL;
+    if (missing(exclude)) exclude <- NULL;
+    if (missing(extra)) extra <- NULL;
+    # Add/replace elements in extra to l
+    if (length(extra) > 0) {
+        for (ii in 1:length(extra)) {
+            l[[names(extra)[ii]]] <- extra[[ii]];
+        }
+    }
+    # Set class of single elements
+    for (elem in single) {
+        if (!identical(l[[elem]],NULL)) {
+            class(l[[elem]]) <- 'singleElement';
+        }
+    }
+    # Remove empty elements and members of exclude
+    exclude <- vapply(names(l), function(x)x %in% exclude, TRUE);
+    empty <- vapply(l, function(x)length(x)==0, TRUE);
+    if (any(empty|exclude)) l <- l[-which(empty|exclude)];
+    l
+}
 s4ToJSON <- function(x,...) {
     toJSON(s4ToList(x))
 }
@@ -127,7 +149,11 @@ setMethod ('show',
 			     if (length(object@row.type)==0) "unknown" else object@row.type
 			     ));
 	   });
-setMethod(jsonlite:::asJSON, signature=c("ngchmDataset"), definition=s4ToJSON);
+setMethod(jsonlite:::asJSON, signature=c("ngchmDataset"), definition=function(x,...) {
+    l <- s4ToList(x);
+    l <- listFix (l, single=c('class', 'name', 'description', 'row.type', 'column.type'));
+    toJSON(l)
+    });
 
 #' Class representing a Covariate attached to a Dataset
 #'
@@ -140,18 +166,26 @@ setClass ("ngchmCovariate",
           representation (label="character",
 			  type="character",
 			  fullname="character",
-			  label.series = "character",
-	                  series.properties="optList"),
-	  prototype = prototype(label=character(0),
-	                        fullname=character(0),
-				label.series=NULL,
-				series.properties=NULL));
+			  label.series = "shaid",
+	                  series.properties="optList"));
 
 setMethod ('show',
            signature = c('ngchmCovariate'),
 	   definition = function (object) {
 	       cat (sprintf ("ngchmCovariate '%s' of type '%s'\n", object@label, object@type));
 	   });
+setMethod(jsonlite:::asJSON, signature=c("ngchmCovariate"), definition=function(x,...){
+    l <- s4ToList(x);
+    singleElements <- c('class', 'label', 'type', 'fullname');
+    l$data <- l$label.series;
+    idx <- which(vapply (ngchm.env$covariateRenderers, function(x)sameColormap(x,l$series.properties), TRUE));
+    if (length(idx)==1) {
+            l$renderer <- idx-1;
+            singleElements <- c(singleElements, 'renderer');
+    }
+    l <- listFix (l, single=singleElements, exclude=c('label.series', 'series.properties'))
+    toJSON(l)
+});
 
 #' Class representing a Template attached to a NGCHM
 #'
@@ -162,10 +196,31 @@ setMethod ('show',
 #' @keywords classes
 setClass ("ngchmTemplate",
           representation (source.path="charOrFunction",
+              dest.blob="shaid",
 			  dest.path="character",
 	                  substitutions="optList"));
 
-setMethod(jsonlite:::asJSON, signature=c("ngchmTemplate"), definition=s4ToJSON);
+setMethod(jsonlite:::asJSON, signature=c("ngchmTemplate"), definition=function(x,...){
+    l <- s4ToList(x);
+    l <- listFix (l, single=c('class', 'dest.path'), exclude=c('source.path','substitutions'));
+    toJSON(l)
+});
+
+#' Class representing meta data attached to an NG-CHM
+#'
+#' @exportClass ngchmMetaData
+#' @name ngchmMetaData-class
+#' @rdname ngchmMetaData-class
+#'
+#' @keywords classes
+setClass ("ngchmMetaData",
+          representation (type="character", value="shaid"));
+
+setMethod(jsonlite:::asJSON, signature=c("ngchmMetaData"), definition=function(x,...){
+    l <- s4ToList(x);
+    l <- listFix (l, single=c('class'));
+    toJSON(l)
+});
 
 #' Class representing a link related to a NGCHM
 #'
@@ -179,7 +234,11 @@ setClass ("ngchmRelated",
 	                  link="character",
 	                  description="character"));
 
-setMethod(jsonlite:::asJSON, signature=c("ngchmRelated"), definition=s4ToJSON);
+setMethod(jsonlite:::asJSON, signature=c("ngchmRelated"), definition=function(x,...){
+    l <- s4ToList(x);
+    l <- listFix (l, single=c('class', 'group', 'link', 'description'));
+    toJSON(l)
+});
 
 #' Class representing a group of related links to a NGCHM
 #'
@@ -194,7 +253,11 @@ setClass ("ngchmRelatedGroup",
 	                  linktype="character",
 	                  blurb="optCharacter"));
 
-setMethod(jsonlite:::asJSON, signature=c("ngchmRelatedGroup"), definition=s4ToJSON);
+setMethod(jsonlite:::asJSON, signature=c("ngchmRelatedGroup"), definition=function(x,...) {
+    l <- s4ToList(x);
+    l <- listFix (l, single=c('class', 'name', 'header', 'linktype', 'blurb'), exclude='fn');
+    toJSON(l)
+});
 
 #' Class representing a Color Map on a Next Generation Clustered Heat Map (NGCHM).
 #'
@@ -264,7 +327,11 @@ setMethod ('show',
 	   definition = function (object) {
 	       cat (sprintf ("ngchmProperty '%s': '%s'\n", object@label, paste(object@value,collapse='///')));
 	   });
-setMethod(jsonlite:::asJSON, signature=c("ngchmProperty"), definition=s4ToJSON);
+setMethod(jsonlite:::asJSON, signature=c("ngchmProperty"), definition=function(x,...){
+    l <- s4ToList(x);
+    l <- listFix (l, single=c('class', 'label', 'value'));
+    toJSON(l)
+});
 
 #' Class representing a Menu Item for a Next Generation Clustered Heat Map (NGCHM).
 #'
@@ -315,7 +382,11 @@ setMethod ('show',
 	   definition = function (object) {
 	       cat (sprintf ("ngchmAxisType %s=%s\n", object@where, object@type));
 	   });
-setMethod(jsonlite:::asJSON, signature=c("ngchmAxisType"), definition=s4ToJSON);
+setMethod(jsonlite:::asJSON, signature=c("ngchmAxisType"), definition=function(x,...) {
+    l <- s4ToList(x);
+    l <- listFix (l, single=c('class', 'where', 'type'), exclude='func');
+    toJSON(l)
+});
 
 #' Class representing an axis function for Next Generation Clustered Heat Map (NGCHM).
 #'
@@ -356,14 +427,30 @@ setMethod(jsonlite:::asJSON, signature=c("ngchmMatrixFunction"), definition=s4To
 #'
 #' @keywords classes
 setClass ("ngchmTypeMapper",
-          representation (fromtype="character", totype="character", func="ngchmJS"));
+          representation (fromtype="character", totype="character",
+          op="character", params="optList"));
 
 setMethod ('show',
            signature = c('ngchmTypeMapper'),
 	   definition = function (object) {
 	       cat (sprintf ("ngchmTypeMapper %s -> %s\n", object@fromtype, object@totype));
 	   });
-setMethod(jsonlite:::asJSON, signature=c("ngchmTypeMapper"), definition=s4ToJSON);
+setMethod(jsonlite:::asJSON, signature=c("ngchmTypeMapper"), definition=function(x,...) {
+    l <- s4ToList(x);
+    single <- c('class', 'op', 'totype');
+    if (x@op == 'field') {
+        l$separator <- x@params$separator;
+        l$num <- x@params$num;
+        single <- c(single, 'separator', 'num');
+    }
+    if (x@op == 'expr') {
+        l$expr <- x@params$expr;
+        l$return <- x@params$return;
+        single <- c(single, 'expr', 'return');
+    }
+    l <- listFix(l, single=single, exclude='params');
+    toJSON(l)
+});
 
 #' Class representing custom CSS for a Next Generation Clustered Heat Map (NGCHM).
 #'
@@ -410,16 +497,10 @@ setMethod(jsonlite:::asJSON, signature=c("ngchmBar"), definition=function(x,...)
     singleElements <- c("class", "type", "label", "display", "merge", "thickness");
     idx <- which(vapply (ngchm.env$covariateRenderers, function(x)sameColormap(x,l$colors), TRUE));
     if (length(idx)==1) {
-            l$colors <- idx;
-            singleElements <- c(singleElements, 'colors');
+            l$renderer <- idx-1;
+            singleElements <- c(singleElements, 'renderer');
     }
-    for (elem in singleElements) {
-        if (!identical(l[[elem]],NULL)) {
-            class(l[[elem]]) <- 'singleElement';
-        }
-    }
-    empty <- vapply(l, function(x)length(x)==0, TRUE);
-    if (any(empty)) l <- l[-which(empty)];
+    l <- listFix (l, single=singleElements, exclude='colors');
     toJSON(l)
 });
 
@@ -461,7 +542,11 @@ setMethod ('show',
 	   definition = function (object) {
 	       cat (sprintf ("ngchmDialog %s: %s\n", object@id, object@title));
 	   });
-setMethod(jsonlite:::asJSON, signature=c("ngchmDialog"), definition=s4ToJSON);
+setMethod(jsonlite:::asJSON, signature=c("ngchmDialog"), definition=function(x,...) {
+    l <- s4ToList(x);
+    l <- listFix (l, single=c('class', 'id', 'title'), exclude='fn');
+    toJSON(l)
+});
 
 #' Class representing an axis of a Next Generation Clustered Heat Map (NG-CHM).
 #'
@@ -674,11 +759,7 @@ getAxisData <- function (l, axis) {
 }
 setMethod(jsonlite:::asJSON, signature=c("singleElement"), definition=function(x,...) {
         stopifnot(length(x)==1);
-        if (typeof(x)=="character") {
-                paste0 ('"', x, '"')
-        } else {
-                paste0 (x)
-        }
+        toJSON (unbox (x[1]))
 });
 setMethod(jsonlite:::asJSON, signature=c("ngchmVersion2"), definition=function(x,...) {
     l <- s4ToList(x);
@@ -687,18 +768,29 @@ setMethod(jsonlite:::asJSON, signature=c("ngchmVersion2"), definition=function(x
     l$layers <- mapply (function(layer)prepDataLayer(x,layer), x@layers, SIMPLIFY=FALSE);
     l$`row_data` <- getAxisData (l, 'row');
     l$`col_data` <- getAxisData (l, 'col');
+    l$tags <- lapply (l$tags, function(t) {
+        f <- strsplit (t, '=')[[1]];
+        new ("ngchmProperty", label=f[1], value=paste(f[-1],collapse='='))
+    });
     singleElements <- c("class", "name", "version");
     for (elem in singleElements) {
         if (!identical(l[[elem]],NULL)) {
             class(l[[elem]]) <- 'singleElement';
         }
     }
+    l$`type_mappers` <- ngchm.env$typeMappers;
     rr <- NULL;
     for (cv in x@rowCovariateBars) rr <- appendRendererIfNew (rr, cv@colors);
     for (cv in x@colCovariateBars) rr <- appendRendererIfNew (rr, cv@colors);
+    for (ds in x@datasets) {
+        for (cv in ds@row.covariates) rr <- appendRendererIfNew (rr, cv@series.properties);
+        for (cv in ds@column.covariates) rr <- appendRendererIfNew (rr, cv@series.properties);
+    }
     l$`covariate_renderers` <- rr;
+    l$renderers <- l$colormaps;
     ngchm.env$covariateRenderers <- rr;
     slotsToExclude <- c("width","height","uuid","baggage","inpDir","outDir","saveDir","propFile","css","format",
+           "javascript", "extrafiles", "colormaps",
            vapply (axisSlots, function(x) paste0("row",x), ''),
            vapply (axisSlots, function(x) paste0("col",x), '')
            );

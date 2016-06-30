@@ -5,7 +5,7 @@
 \title{Create a new covariate Bar for a NGCHM}
 \usage{
 chmNewCovariateBar(covar, display = "visible", thickness = as.integer(10),
-  merge = NULL)
+  merge)
 }
 \arguments{
 \item{covar}{The covariate to be displayed in the bar.}

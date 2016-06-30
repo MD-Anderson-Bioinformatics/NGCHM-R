@@ -1,5 +1,5 @@
 #' Javascript extensions for the Next Generation Clustered Heat Map (NGCHM) Construction Library
-#' 
+#'
 #' Currently:
 #' \itemize{
 #'   \item Axis function View Ideogram is added for the appropriate axis types.
@@ -246,8 +246,7 @@ defineMapper <- function (filename, fields) {
 	else {
 	    fieldsep <- ",";
 	}
-	chmRegisterTypeMapper (strsplit(srctype,",")[[1]], dsttype,
-	    chmFieldAccessFunction (fieldsep, as.integer(fields$field)));
+	chmRegisterTypeMapper (strsplit(srctype,",")[[1]], dsttype, 'field', separator=fieldsep, num=fields$field);
     }
     else if ("stringop" %in% names(fields)) {
 	if (fields$stringop == "substring(0)") {
@@ -256,7 +255,7 @@ defineMapper <- function (filename, fields) {
 	else {
 	    fn <- chmStringopFunction (fields$stringop)
 	}
-	chmRegisterTypeMapper (strsplit(srctype,",")[[1]], dsttype, fn);
+	chmRegisterTypeMapper (strsplit(srctype,",")[[1]], dsttype, 'expr', expr=fields$stringop);
     }
     else {
         stop (sprintf ("No known converter for %s --> %s specified in typemap in file '%s'", srctype, dsttype, filename));
@@ -321,7 +320,7 @@ loadTextConfig <- function(filename) {
 }
 
 #' Get Javascript function name for accessing a specific string field in each element of string vector.
-#' 
+#'
 #' This function returns the name of a Javascript function thats accepts a string vector
 #' as its parameter, and for each string in the vector splits the string into fields separated by
 #' fieldsep, and accesses field idx (zero origin).  The function returns a vector of these fields.
@@ -358,7 +357,7 @@ chmFieldAccessFunction <- function (fieldsep, idx) {
 }
 
 #' Get Javascript function name for performing a specific string operation on each element of a string vector.
-#' 
+#'
 #' This function returns the name of a Javascript function thats accepts a string vector
 #' as its parameter, and for each string in the vector performs the operation stringop on the string.
 #' Stringop must be valid Javascript code that can be appended to a string value.
@@ -395,7 +394,7 @@ chmStringopFunction <- function (stringop) {
 }
 
 #' Initialization of the NGCHM library.
-#' 
+#'
 #' When first loaded the NGCHM library reads configuration files in
 #' the configuration path specified by the NGCHMCONFIGPATH environment variable.  The
 #' configuration path is a colon (:) separated list of directory names.

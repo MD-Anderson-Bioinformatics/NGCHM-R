@@ -148,7 +148,7 @@ ngchmShaidyInit <- function() {
 #'
 #' @export
 ngchmInitShaidyRepository <- function (shaidyDir) {
-    shaidyInitRepository (shaidyDir, c("collection", "chm", "dataset", "dendrogram", "label", "tile", "viewer"))
+    shaidyInitRepository (shaidyDir, c("collection", "chm", "dataset", "dendrogram", "label", "tile", "viewer", "file"))
 }
 
 #' Push a shaidy repository onto the stack of temporary repositories
@@ -357,8 +357,11 @@ ngchmSaveAsDatasetBlob <- function (shaidyRepo, format, mat) {
 	       length (colnames(mat)) > 0);
     filename <- utempfile ("matrix", fileext='.tsv');
     write.table (mat, filename, quote=FALSE, sep='\t');
-    shaid <- ngchmAddDatasetBlob (shaidyRepo, format, filename,
-                                  list(nrow=nrow(mat),ncol=ncol(mat)));
+    class(format) <- 'singleElement';
+    props <- list(nrow=nrow(mat),ncol=ncol(mat));
+    class(props[[1]]) <- 'singleElement';
+    class(props[[2]]) <- 'singleElement';
+    shaid <- ngchmAddDatasetBlob (shaidyRepo, format, filename, props);
     unlink (filename);
     shaid
 }
@@ -367,17 +370,18 @@ ngchmSaveAsDatasetBlob <- function (shaidyRepo, format, mat) {
 #'
 #' @param shaidyRepo The shaidy repository
 #' @param shaid The shaid of the dataset blob to load
+#' @param datatype Prototype of matrix data elements (defaults to 0.0)
 #'
 #' @return a list containing details of the loaded dataset
 #'
 #' @import jsonlite
 #'
 #' @export
-ngchmLoadDatasetBlob <- function (shaidyRepo, shaid) {
+ngchmLoadDatasetBlob <- function (shaidyRepo, shaid, datatype) {
     blobdir <- shaidyRepo$blob.path ('dataset', shaid@value);
     props <- jsonlite::fromJSON (readLines (file.path (blobdir, "properties.json")));
     mat <- suppressWarnings (tsvio::tsvGetData (file.path (blobdir, "matrix.tsv"), file.path (blobdir, "index.tsv"),
-                              NULL, NULL, 0.0));
+                              NULL, NULL, if (missing(datatype)) 0.0 else datatype));
     list (shaid=shaid, properties=props, mat=mat)
 }
 
@@ -394,6 +398,13 @@ writeHCDataTSVs <- function(uDend, theOutputHCDataFileName, theOutputHCOrderFile
     colnames(data) <- c("Id", "Order")
     ###Write out the order data as a Tab separated file to the specified location (1 more row than data file)
     write.table(data, file = theOutputHCOrderFileName, append = FALSE, quote = FALSE, sep = "\t", row.names=FALSE)
+}
+
+ngchmSaveTemplateAsBlob <- function (shaidyRepo, source.path, dest.path, substitutions) {
+    blobdir <- shaidyCreateProtoBlob(shaidyRepo,'file');
+    writeTemplate(source.path, dest.path, substitutions, blobdir);
+    shaid <- shaidyHashProtoBlob('file', blobdir);
+    shaidyFinalizeProtoBlob(shaidyRepo, shaid, blobdir)
 }
 
 #' Save a dendrogram as a blob in a shaidy repository

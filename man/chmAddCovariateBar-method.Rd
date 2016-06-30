@@ -14,7 +14,7 @@ chmAddCovariateBar(chm, where, covar, ...)
 \S4method{chmAddCovariateBar}{ngchm,character,ngchmBar}(chm, where, covar)
 
 \S4method{chmAddCovariateBar}{ngchm,character,ngchmCovariate}(chm, where, covar,
-  display = "visible", thickness = as.integer(10), merge = NULL)
+  display = "visible", thickness = as.integer(10), merge)
 
 \S4method{chmAddCovariateBar}{ngchm,character,list}(chm, where, covar,
   display = "visible", thickness = as.integer(10), merge = NULL)

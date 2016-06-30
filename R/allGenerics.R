@@ -11,7 +11,7 @@
 #' @rdname chmName-method
 #'
 #' @seealso ngchm-class
-#' 
+#'
 setGeneric ("chmName", function(chm) standardGeneric("chmName"));
 
 #' Set the row order of data shown in a NGCHM.
@@ -48,37 +48,20 @@ setGeneric ("chmRowOrder<-", function(chm,value) standardGeneric("chmRowOrder<-"
 #'
 setGeneric ("chmColOrder<-", function(chm,value) standardGeneric("chmColOrder<-"));
 
-#' Set the row meta data.
+#' Add meta data.
 #'
-#' Set the meta data attached to rows in a Next Generation Clustered Heat Map.
+#' Add meta data to the rows/columns of a Next Generation Clustered Heat Map.
 #'
-#' @param chm The chm for which to set the meta data.
+#' @param chm The chm to add the meta data to.
+#' @param where The axis of the chm to add the meta data to (row, column, or both).
+#' @param type The type of the meta data.
 #' @param value A character vector or NULL.
-#' If value is NULL, no meta data is associated with the NGCHM's rows.
 #' If value is a character vector, elements of the vector will be attached as meta data to to NGCHM row of the same name.
 #'
-#' @exportMethod chmRowMeta<-
-#' @rdname chmRowMeta-method
+#' @exportMethod chmAddMetaData
+#' @rdname chmAddMetaData-method
 #'
-#' @seealso "chmColMeta<-"
-#'
-setGeneric ("chmRowMeta<-", function(chm,value) standardGeneric("chmRowMeta<-"));
-
-#' Set the column meta data.
-#'
-#' Set the meta data attached to columns in a Next Generation Clustered Heat Map.
-#'
-#' @param chm The chm for which to set the meta data.
-#' @param value A character vector or NULL
-#' If value is NULL, no meta data is associated with the NGCHM's columns.
-#' If value is a character vector, elements of the vector will be attached as meta data to to NGCHM column of the same name.
-#'
-#' @exportMethod chmColMeta<-
-#' @rdname chmColMeta-method
-#'
-#' @seealso "chmRowMeta<-"
-#'
-setGeneric ("chmColMeta<-", function(chm,value) standardGeneric("chmColMeta<-"));
+setGeneric ("chmAddMetaData", function(chm,where,type,value) standardGeneric("chmAddMetaData"));
 
 #' Add a list of objects to a NGCHM.
 #'
@@ -122,7 +105,7 @@ setGeneric ("chmAddLayer", function(chm,layer) standardGeneric("chmAddLayer"));
 #'
 #' Add an auxiliary dataset to a Next Generation Clustered Heat Map (NGCHM) and return the extended CHM.
 #' The auxiliary dataset will be stored with the NGCHM and be available in whole or in part from the
-#' same server, for use, for example, in custom Javascript functions. 
+#' same server, for use, for example, in custom Javascript functions.
 #' Do not confuse this function with the one for adding an active data layer to the heatmap itself. For
 #' that, please refer to the function chmAddLayer.
 #'

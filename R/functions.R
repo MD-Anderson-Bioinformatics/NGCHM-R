@@ -637,8 +637,11 @@ chmNewCovariate <- function (fullname, values, value.properties=NULL, type=NULL,
 	    stop ("Parameter 'covabbv' cannot be the empty string");
 	}
     }
+    values <- values[order(names(values))];
+    mat <- matrix (values, ncol=1, dimnames=list(names(values),'Value'));
+    shaid <- ngchmSaveAsDatasetBlob (ngchm.env$tmpShaidy, 'tsv', mat);
     new (Class="ngchmCovariate", label=covabbv, fullname=fullname, type=type,
-	 label.series = values,
+	 label.series = shaid,
 	 series.properties=value.properties);
 }
 
@@ -687,8 +690,17 @@ ngchmNewBar <- function (label, type, data, colors=NULL, display="visible", thic
     if (length (display) != 1) {
         stop (sprintf ("Parameter 'display' for classbar '%s' must have a single value, not %d", label, length(display)));
     }
-    if (!(display %in% c("visible", "hidden")))
+    if (!(display %in% c("visible", "hidden"))) {
         stop (sprintf ("Parameter 'display' for classbar '%s' must be either 'visible' or 'hidden', not '%s'", label, display));
+    }
+
+    if (is (data, "shaid")) {
+        shaid <- data;
+        repo <- ngchmFindRepo (shaid);
+        data <- ngchmLoadDatasetBlob (repo, shaid, if(type=='discrete') "" else 0.0)$mat[,'Value'];
+    } else {
+        shaid <- NULL;
+    }
     if ((display == "visible") && (length(colors) == 0)) {
         if (type == "discrete") {
 	    qq <- sort (unique (data));
@@ -704,15 +716,17 @@ ngchmNewBar <- function (label, type, data, colors=NULL, display="visible", thic
     }
     if ((length(merge) != 1) || !(merge %in% c("average", "peakColor", "specialColor", "mostCommon")))
         stop (sprintf ("Unknown classbar merge value '%s'. Must be 'average', 'peakColor', 'specialColor' or 'mostCommon'", merge));
-    if (length(names(data)) == 0)
-        stop (sprintf ("Parameter 'data' for classbar '%s' must have defined names that match those of the CHM axis to which it will be attached", label));
-    if (anyDuplicated(names(data)) != 0) {
-        dups <- unique(names(data)[which(duplicated(names(data)))]);
-	stop (sprintf ("Parameter 'data' for classbar '%s' has multiple entries for label(s) %s", label, paste (dups, collapse=', ')));
+    if (length(shaid)==0) {
+        if (length(names(data)) == 0)
+            stop (sprintf ("Parameter 'data' for classbar '%s' must have defined names that match those of the CHM axis to which it will be attached", label));
+        if (anyDuplicated(names(data)) != 0) {
+            dups <- unique(names(data)[which(duplicated(names(data)))]);
+    	stop (sprintf ("Parameter 'data' for classbar '%s' has multiple entries for label(s) %s", label, paste (dups, collapse=', ')));
+        }
+        data <- data[order(names(data))];
+        mat <- matrix (data, ncol=1, dimnames=list(names(data),'Value'));
+        shaid <- ngchmSaveAsDatasetBlob (ngchm.env$tmpShaidy, 'tsv', mat);
     }
-    data <- data[order(names(data))];
-    mat <- matrix (data, ncol=1, dimnames=list(names(data),'Value'));
-    shaid <- ngchmSaveAsDatasetBlob (ngchm.env$tmpShaidy, 'tsv', mat);
     new (Class="ngchmBar", label=label, type=type, data=shaid, thickness=thickness, colors=colors, display=display, merge=merge)
 }
 
@@ -1407,9 +1421,15 @@ print.ngchm.type.info <- function (x, ...) {
 #' @param fromtype The type of values the function expects as input.
 #' @param totype The type of values the function will produce.  The length of
 #'        totype must be shorter than fromtype.
-#' @param fn The Javascript function to register.
+#' @param op The operation code for performing the conversion
+#' @param ... Additional parameters required for specifying the conversion (op specific)
 #'
 #' @return NULL
+#'
+#' op can have the following values:
+#' + 'field' Split source into fields separated by 'separator' and select field 'num' (0 origin)
+#' + 'expr' Compute string expression 'expr'. 'return' value is a vector or a scalar (default)
+#' + 'javascript' Evaluate javascript function 'fn' (deprecated)
 #'
 #' @export
 #'
@@ -1417,7 +1437,7 @@ print.ngchm.type.info <- function (x, ...) {
 #' @seealso chmRegisterAxisFunction
 #' @seealso chmRegisterMatrixFunction
 #' @seealso chmNewFunction
-chmRegisterTypeMapper <- function (fromtype, totype, fn) {
+chmRegisterTypeMapper <- function (fromtype, totype, op, ...) {
     if (typeof (fromtype) != "character") {
         stop (sprintf ("Parameter 'fromtype' must have type 'character', not '%s'", typeof(fromtype)));
     }
@@ -1431,9 +1451,29 @@ chmRegisterTypeMapper <- function (fromtype, totype, fn) {
     for (ii in 1:length(fromtype))
 	if (nchar(totype) >= nchar(fromtype[ii]))
 	    stop (sprintf ("chmRegisterTypeMapper: totype ('%s') must be shorter than fromtype ('%s').", totype, fromtype[ii]));
-    if (class(fn) == "character")
-        fn <- chmGetFunction (fn);
-    newtm <- new ("ngchmTypeMapper", fromtype=fromtype, totype=totype, func=fn);
+    stopifnot (class(op) == "character" && length(op)==1);
+
+    pp <- list (...);
+    if (op == "field") {
+        stopifnot ("separator" %in% names(pp));
+        stopifnot (class(pp$separator)=="character" && length(pp$separator)==1);
+        if (!"num" %in% names(pp)) pp$num <- 0;
+        params <- list(separator=pp$separator, num=pp$num);
+    } else if (op == "expr") {
+        stopifnot ("expr" %in% names(pp));
+        stopifnot (class(pp$expr)=="character" && length(pp$expr)==1);
+        if (!"return" %in% names(pp)) pp$return <- 'scalar';
+        params <- list(expr=pp$expr, return=pp$return);
+    } else if (op == "javascript") {
+        stopifnot ("fn" %in% names(pp));
+        if (class(pp$fn) == "character") {
+            pp$fn <- chmGetFunction (pp$fn);
+        }
+        params <- list(fn=pp$fn);
+    } else {
+        stop ("unknown type mapper op");
+    }
+    newtm <- new ("ngchmTypeMapper", fromtype=fromtype, totype=totype, op=op, params=params);
     matches <- which (vapply (ngchm.env$typeMappers, function(tm) (length(intersect (tm@fromtype, fromtype)) > 0) && (tm@totype == totype), TRUE));
     if (length(matches) > 0) {
 	matches <- sort (matches, decreasing=TRUE);
@@ -1745,7 +1785,7 @@ chmRegisterTypeSplitter <- function (functionName, listtype, itemtype, separator
 	     paste (sprintf ("function %s (names) {", functionName),
 		    sprintf ("    return names.map(function(nm){return nm.split('%s');}).reduce(function(a,b){return a.concat(b);});", separator),
 		    "}", sep="\n"));
-    chmRegisterTypeMapper (listtype, itemtype, fn);
+    chmRegisterTypeMapper (listtype, itemtype, 'javascript', fn=fn);
 }
 
 #' List known axis types.
@@ -1907,7 +1947,7 @@ validateNewCovariateBar <- function (chm, where, bar)
 validateCovariateBar <- function (chm, where, layername, labels, bar)
 {
     repo <- ngchmFindRepo (bar@data);
-    barData <- ngchmLoadDatasetBlob (repo, bar@data)$mat;
+    barData <- ngchmLoadDatasetBlob (repo, bar@data, if(bar@type=='discrete')"" else 0.0)$mat;
     if (length (intersect (labels, rownames(barData))) == 0) {
 	m <- sprintf ('%s names of %s for CHM "%s" are completely different from those of covariate bar "%s"',
 		       where, layername, chm@name, bar@label);
@@ -2456,8 +2496,14 @@ chmAddAutoMenuItems <- function (chm) {
          for (ii in 1:length(fns)) {
 	     if (length(fns[[ii]]) == 0) {
 		cat ("chmMake: axis/mat fn entry is NULL\n", file=stderr());
-	     } else {
+	     } else if (is (fns[[ii]], "ngchmAxisType")) {
 		 chm <- chmAddMenuItem (chm, "nowhere", "unused", fns[[ii]]@func);
+	     } else if (is (fns[[ii]], "ngchmAxisFunction")) {
+		 chm <- chmAddMenuItem (chm, "nowhere", "unused", fns[[ii]]@func);
+	     } else if (fns[[ii]]@op != "javascript"){
+		cat ("chmMake: axis/mat fn op is not javascript\n", file=stderr());
+	     } else {
+		 chm <- chmAddMenuItem (chm, "nowhere", "unused", fns[[ii]]@params$func);
 	     }
 	 }
 
@@ -2466,8 +2512,14 @@ chmAddAutoMenuItems <- function (chm) {
          for (ii in 1:length(fns))
 	     if (length(fns[[ii]]) == 0) {
 		cat ("chmMake: builders fn entry is NULL\n", file=stderr());
-	     } else {
+	     } else if (is (fns[[ii]], "ngchmAxisType")) {
 		 chm <- chmAddMenuItem (chm, "nowhere", "unused", fns[[ii]]@func);
+	     } else if (is (fns[[ii]], "ngchmAxisFunction")) {
+		 chm <- chmAddMenuItem (chm, "nowhere", "unused", fns[[ii]]@func);
+	     } else if (fns[[ii]]@op != "javascript"){
+		cat ("chmMake: builders fn op is not javascript\n", file=stderr());
+	     } else {
+		 chm <- chmAddMenuItem (chm, "nowhere", "unused", fns[[ii]]@params$func);
 	     }
 
     chmUU (chm)
@@ -2529,6 +2581,23 @@ getuuid <- function(prev="") {
     digest::digest(paste(c(Sys.info(),Sys.time(),rnorm(1),prev,collapse=""),recursive=TRUE),algo="sha256")
 }
 
+chmFixCovariateVersion <- function (covariate) {
+    if (!is(covariate@label.series,'shaid')) {
+        values <- covariate@label.series;
+        stopifnot (is (values, 'character'));
+        values <- values[order(names(values))];
+        mat <- matrix (values, ncol=1, dimnames=list(names(values),'Value'));
+        covariate@label.series <- ngchmSaveAsDatasetBlob (ngchm.env$tmpShaidy, 'tsv', mat);
+    }
+    covariate
+}
+
+chmFixDatasetVersion <- function (dataset) {
+    dataset@row.covariates <- lapply (dataset@row.covariates, chmFixCovariateVersion);
+    dataset@column.covariates <- lapply (dataset@column.covariates, chmFixCovariateVersion);
+    dataset
+}
+
 chmFixVersion <- function (chm) {
     if (chm@version < 2) {
         warning ("Upgrading chm ", chm@name, " from version ", chm@version, " to version 2");
@@ -2547,13 +2616,28 @@ chmFixVersion <- function (chm) {
         }
 	chm <- v2;
     }
-    if (chm@version == 2 && length(chm@layers) > 0) {
-	# Early version2 did not have summarizationMethod slot
-        for (ii in 1:length(chm@layers)) {
-	    if (!.hasSlot(chm@layers[[ii]],"summarizationMethod")) {
-                chm@layers[[ii]]@summarizationMethod <- 'average';
-	    }
+    if (chm@version == 2) {
+        if (length(chm@layers) > 0) {
+    	    # Early version2 did not have summarizationMethod slot
+            for (ii in 1:length(chm@layers)) {
+    	    if (!.hasSlot(chm@layers[[ii]],"summarizationMethod")) {
+                    chm@layers[[ii]]@summarizationMethod <- 'average';
+    	    }
+            }
         }
+        if (length(chm@templates) > 0) {
+    	    # Early version2 did not have dest.blob slot
+            for (ii in 1:length(chm@templates)) {
+    	    if (!.hasSlot(chm@templates[[ii]],"dest.blob")) {
+                    t <- chm@templates[[ii]];
+                    # FIXME: will not work if source.path is a file that is either no longer available or different
+                    # It might be possible to find original template where CHM came from???
+                    chm@templates[[ii]]@dest.blob <-
+                        ngchmSaveTemplateAsBlob(ngchm.env$tmpShaidy, t@source.path, t@dest.path, t@substitutions);
+    	    }
+            }
+        }
+        chm@datasets <- lapply (chm@datasets, chmFixDatasetVersion);
     }
     if (length(chm@rowOrder)>0 && is(chm@rowOrder,"function")) {
         if (!identical(chm@rowOrder,chmDefaultRowOrder) &&

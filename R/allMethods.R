@@ -438,8 +438,8 @@ prepDataLayer <- function(chm, layer) {
     cmid <- which(vapply (chm@colormaps, function(cmap)sameColormap(cmap,layer@colors), TRUE));
     if (length(cmid) == 0)
         stop (sprintf ("Internal error detected: no color map found for data layer %s. Please report.", layer@name));
-    l <- list(name=layer@name, cmap=cmid[[1]], data=layer@data);
-    singleElements <- c("name", "cmap");
+    l <- list(name=layer@name, renderer=cmid[[1]]-1, data=layer@data);
+    singleElements <- c("name", "renderer");
     for (elem in singleElements) {
             class(l[[elem]]) <- 'singleElement';
     }
@@ -483,7 +483,7 @@ writeCovariateBar <- function (cbar, inpDir, type, index, chan) {
 
     chan2 <- file (paste (inpDir, sprintf ("%sClassificationData%d.txt", type, index), sep="/"), "w")
     repo <- ngchmFindRepo (cbar@data);
-    barData <- ngchmLoadDatasetBlob (repo, cbar@data)$mat;
+    barData <- ngchmLoadDatasetBlob (repo, cbar@data, "")$mat;
     nm <- rownames(barData)
     for (ii in 1:nrow(barData))
         cat (nm[ii], "\t", barData[ii,1], "\n", sep="", file=chan2);
@@ -535,7 +535,9 @@ writeDataset <- function (chm, dataset, dir) {
 	first.rowser <- TRUE;
 	first.serprop <- TRUE;
 	for (cov in row.covars) {
-	    rowser <- list (Sample=names(cov@label.series), Series=cov@label.series, Covariate=rep(cov@label,length(cov@label.series)));
+        repo <- ngchmFindRepo (cov@label.series);
+        label.series <- ngchmLoadDatasetBlob (repo, cov@label.series)$mat[,'Value'];
+	    rowser <- list (Sample=names(label.series), Series=label.series, Covariate=rep(cov@label,length(label.series)));
 	    if (first.rowser) {
 	        first.rowser <- FALSE;
 		chm@extrafiles <- c(chm@extrafiles, sprintf ("%s-row-series.tsv", dataset@name));
@@ -564,7 +566,9 @@ writeDataset <- function (chm, dataset, dir) {
 	first.colser <- TRUE;
 	first.serprop <- TRUE;
 	for (cov in col.covars) {
-	    colser <- list (Sample=names(cov@label.series), Series=cov@label.series, Covariate=rep(cov@label,length(cov@label.series)));
+        repo <- ngchmFindRepo (cov@label.series);
+        label.series <- ngchmLoadDatasetBlob (repo, cov@label.series)$mat[,'Value'];
+	    colser <- list (Sample=names(label.series), Series=label.series, Covariate=rep(cov@label,length(label.series)));
 	    if (first.colser) {
 	        first.colser <- FALSE;
 		chm@extrafiles <- c(chm@extrafiles, sprintf ("%s-sample-series.tsv", dataset@name));
@@ -624,24 +628,24 @@ getSeriesProps <- function (label, props)
     }
 }
 
-writeTemplate <- function (template, outDir) {
-    if ((class(template@source.path)=="character") && (length(template@substitutions) == 0)) {
-	if (!file.copy (template@source.path, file.path (outDir, template@dest.path))) {
-	    stop (sprintf ("Unable to copy template file '%s' to '%s'", template@source.path,
-	                   file.path (outDir, template@dest.path)));
+writeTemplate <- function (source.path, dest.path, substitutions, outDir) {
+    if ((class(source.path)=="character") && (length(substitutions) == 0)) {
+	if (!file.copy (source.path, file.path (outDir, dest.path))) {
+	    stop (sprintf ("Unable to copy template file '%s' to '%s'", source.path,
+	                   file.path (outDir, dest.path)));
 	}
         #systemCheck (sprintf ("/bin/cp %s %s",
-	#                       shQuote (template@source.path),
-	#		       shQuote (file.path (outDir, template@dest.path))));
+	#                       shQuote (source.path),
+	#		       shQuote (file.path (outDir, dest.path))));
     } else {
-	if (class(template@source.path)=="character") {
-	    data <- readLines (template@source.path);
+	if (class(source.path)=="character") {
+	    data <- readLines (source.path);
 	} else {
-	    data <- template@source.path ();
+	    data <- source.path ();
 	}
-	for (ss in template@substitutions)
+	for (ss in substitutions)
 	    data <- gsub (ss[1], ss[2], data);
-	writeLines (data, con=file.path (outDir, template@dest.path));
+	writeLines (data, con=file.path (outDir, dest.path));
     }
 }
 
@@ -674,7 +678,7 @@ writeChmExtraSupport <- function (chm, chmSaveDir)
     if ((length(chm@relatedLinks)+length(chm@relatedGroups)) > 0) {
 	writeRelated (chm@relatedGroups, chm@relatedLinks, chmSaveDir);
     }
-    if (length(chm@datasets) > 0) {
+    if (chm@format=='original' && length(chm@datasets) > 0) {
 	chan <- file (file.path (chmSaveDir, "datasets.tsv"), "w");
 	writeLines ("Dataset\tDescription", con=chan);
 	for (ii in 1:length(chm@datasets)) {
@@ -685,8 +689,8 @@ writeChmExtraSupport <- function (chm, chmSaveDir)
 	close (chan);
     }
     if (length(chm@templates) > 0) {
-	for (ii in 1:length(chm@templates))
-	    writeTemplate (chm@templates[[ii]], chmSaveDir);
+	for (t in chm@templates)
+	    writeTemplate (t@source.path, t@dest.path, t@substitutions, chmSaveDir);
     }
     chm
 }
@@ -717,7 +721,15 @@ getValueExpr <- function (tflist, type, where) {
 	    stop (sprintf ("chmMake: internal error detected: unknown getValueExpr location '%s'. Please report.", where));
 	}
     } else if (class(b) == "ngchmTypeMapper") {
-        return (sprintf ("%s(%s)", b@func@name, getValueExpr(tflist, b@fromtype, where)));
+        if (b@op == "expr") {
+            return (sprintf ("%s.%s", getValueExpr(tflist, b@fromtype, where), b@params$expr));
+        } else if (b@op == "field") {
+            return (sprintf ("%s.split(%s)[%s]", getValueExpr(tflist, b@fromtype, where), b@params$separator, b@params$num));
+        } else if (b@op == "javascript") {
+            return (sprintf ("%s(%s)", b@func@name, getValueExpr(tflist, b@fromtype, where)));
+        } else {
+            stop ("unknown ngchmTypeMapper op ", b@op);
+        }
     } else {
         stop (sprintf ("chmMake: internal error detected: unknown value builder class '%s'. Please report.", class(b)));
     }
@@ -808,12 +820,8 @@ writeChm <- function (chm, saveDir=NULL) {
     if (is.list(chm@properties)) {
 	if (chm@format == "original") {
 	    writeProperties (saveDir, chm@format, chm@properties, props);
-	} else {
-	    baseprops <- file (file.path (saveDir, "base-properties.json"), "w");
-	    writeProperties (saveDir, chm@format, chm@properties, baseprops);
-	    close (baseprops);
 	}
-	if (hasSpecialProperties (chm)) {
+	if (chm@format == "original" && hasSpecialProperties (chm)) {
 	    fname <- if (chm@format=="original") "extra.properties" else "extra-properties.json";
 	    chm@extrafiles <- c (chm@extrafiles, fname);
 	    extraprops <- file (file.path (saveDir, fname), "w");
@@ -868,13 +876,15 @@ writeChm <- function (chm, saveDir=NULL) {
 	}
     }
 
-    genSpecFeedback (95, "writing custom CSS and Javascript");
-    if (is.list(chm@css)) writeCSS (chm@css, saveDir);
-    chmWriteCustomJS (chm, file.path (saveDir, "custom-backup.js"));
-    jsloader <- readLines(system.file("extdata", "custom.js", package="NGCHM"));
-    jsfile <- file (file.path (saveDir, "custom.js"), "w");
-    writeLines (jsloader, jsfile);
-    close (jsfile);
+    if (chm@format == "original") {
+        genSpecFeedback (95, "writing custom CSS and Javascript");
+        if (is.list(chm@css)) writeCSS (chm@css, saveDir);
+        chmWriteCustomJS (chm, file.path (saveDir, "custom-backup.js"));
+        jsloader <- readLines(system.file("extdata", "custom.js", package="NGCHM"));
+        jsfile <- file (file.path (saveDir, "custom.js"), "w");
+        writeLines (jsloader, jsfile);
+        close (jsfile);
+    }
 
     if (chm@format=="shaidy") {
         writeLines (jsonlite::toJSON(chm), file.path(saveDir, "chm.json"));
@@ -944,7 +954,7 @@ writeMeta <- function (inpDir, type, metadata) {
         stopifnot (is (shaid, "shaid"));
         repo <- ngchmFindRepo (shaid);
         meta <- ngchmLoadDatasetBlob (repo, shaid)$mat;
-        meta$Value
+        meta[,'Value']
     });
     labels <- sort(unique(do.call(c,lapply (data, function(x)names(x)))));
     proto <- rep (NA, length(labels));
@@ -1482,7 +1492,8 @@ setMethod ("chmAddTemplate",
     signature = c(chm="ngchm", source.path="charOrFunction", dest.path="character", substitutions="optList"),
     definition = function (chm, source.path, dest.path, substitutions) {
         chm <- chmFixVersion (chm);
-	template <- new (Class="ngchmTemplate", source.path=source.path, dest.path=dest.path, substitutions=substitutions);
+    blob <- ngchmSaveTemplateAsBlob(ngchm.env$tmpShaidy, source.path, dest.path, substitutions);
+	template <- new (Class="ngchmTemplate", source.path=source.path, dest.blob=blob, dest.path=dest.path, substitutions=substitutions);
 	chm@extrafiles <- c (chm@extrafiles, dest.path);
 	chm@templates <- append (chm@templates, template);
         chmUU (chm)
@@ -1760,37 +1771,29 @@ setReplaceMethod ("chmColOrder",
         chmUU (chm)
 });
 
-metaToShaids <- function (metadata) {
-    if (length(metadata)==0) return (NULL);
-    stopifnot (is(metadata,"list"));
-    shaids <- lapply (metadata, function(meta) {
-            stopifnot (!identical(names(meta),NULL));
-            meta <- meta[order(names(meta))];
-            mat <- matrix (meta, ncol=1, dimnames=list(names(meta),'Value'));
-            shaid <- ngchmSaveAsDatasetBlob (ngchm.env$tmpShaidy, 'tsv', mat);
-            shaid
-    });
-    shaids
+metaToShaid <- function (metadata) {
+    stopifnot (!identical(names(metadata),NULL));
+    metadata <- metadata[order(names(metadata))];
+    mat <- matrix (metadata, ncol=1, dimnames=list(names(metadata),'Value'));
+    shaid <- ngchmSaveAsDatasetBlob (ngchm.env$tmpShaidy, 'tsv', mat);
+    shaid
 }
 
-#' @rdname chmRowMeta-method
-#' @aliases chmRowMeta<-,ngchm,optList-method
-setReplaceMethod ("chmRowMeta",
-    signature = c(chm="ngchm", value="optList"),
-    definition = function (chm, value) {
-        chm <- chmFixVersion (chm);
-	chm@rowMeta <- metaToShaids (value);
-        chmUU (chm)
-});
-
-#' @rdname chmColMeta-method
-#' @aliases chmColMeta<-,ngchm,optList-method
-setReplaceMethod ("chmColMeta",
-    signature = c(chm="ngchm", value="optList"),
-    definition = function (chm, value) {
-        chm <- chmFixVersion (chm);
-	chm@colMeta <- metaToShaids (value);
-        chmUU (chm)
+#' @rdname chmAddMetaData-method
+#' @aliases chmAddMetaData,ngchm,character,character,character-method
+setMethod ("chmAddMetaData",
+    signature = c(chm="ngchm", where="character", type="character", value="character"),
+    definition = function (chm, where, type, value) {
+        stopifnot(where %in% c("row","column","both"));
+        chm <- chmFixVersion(chm);
+        meta <- new('ngchmMetaData', type=type, value=metaToShaid(value));
+        if (where %in% c('row','both')) {
+	        chm@rowMeta <- append(chm@rowMeta, meta);
+        }
+        if (where %in% c('column','both')) {
+	        chm@colMeta <- append(chm@colMeta, meta);
+        }
+        chmUU(chm)
 });
 
 make.js.names <- function (sss) {
@@ -1882,15 +1885,38 @@ setMethod ("shaidyGetComponents",
     definition = function(object) {
         if (is(object@rowOrder,"function")) object@rowOrder <- object@rowOrder (object);
         if (is(object@colOrder,"function")) object@colOrder <- object@colOrder (object);
-        c(object@rowOrder, object@colOrder,
+        unique(c(object@rowOrder, object@colOrder,
           if (is(object@rowOrder,"shaid") && object@rowOrder@type=='dendrogram') ngchmGetLabels(object@rowOrder)[[1]] else NULL,
           if (is(object@colOrder,"shaid") && object@colOrder@type=='dendrogram') ngchmGetLabels(object@colOrder)[[1]] else NULL,
           lapply(object@layers,function(x)x@data),
           lapply(object@colCovariateBars,function(x)x@data),
           lapply(object@rowCovariateBars,function(x)x@data),
-          object@rowMeta, object@colMeta
-          )
+          lapply(object@templates,function(x)x@dest.blob),
+          lapply(object@rowMeta, function(x)x@value),
+          lapply(object@colMeta, function(x)x@value),
+          lapply(object@datasets, shaidyGetComponents),
+          recursive=TRUE
+          ))
 });
+
+#' @rdname shaidyGetComponents-method
+#' @aliases shaidyGetComponents,ngchmDataset-method
+setMethod ("shaidyGetComponents",
+    signature = c(object="ngchmDataset"),
+    definition = function(object) {
+        unique(c(object@data,
+          lapply(object@row.covariates, shaidyGetComponents),
+          lapply(object@column.covariates, shaidyGetComponents),
+          recursive=TRUE
+        ))
+    });
+#' @rdname shaidyGetComponents-method
+#' @aliases shaidyGetComponents,ngchmCovariate-method
+setMethod ("shaidyGetComponents",
+    signature = c(object="ngchmCovariate"),
+    definition = function(object) {
+        object@label.series
+    });
 
 #' @rdname chmGetDataset-method
 #' @aliases chmGetDataset,ngchmLayer-method
