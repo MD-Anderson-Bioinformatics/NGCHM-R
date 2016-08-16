@@ -185,14 +185,13 @@ chmNew <- function (name, ...,
     chm
 }
 
-#' Compute cosine distance matrix
+#' Compute cosine (angular) distance matrix
 cos.dist1 <- function (data) {
     dmat <- matrix (0.0, nrow=nrow(data), ncol=nrow(data))
     sumrowsqr <- sqrt (apply (data*data, 1, sum))
     inner <- data %*% t(data)
     dmat <- inner / (sumrowsqr %*% t(sumrowsqr))
-    dmat <- as.dist ((1.0 - dmat)/2.0);
-    return (dmat);
+    return (2/pi*acos(as.dist(dmat)));
 }
 
 #' Return default column order of an NGCHM

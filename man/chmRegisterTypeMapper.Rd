@@ -22,7 +22,7 @@ NULL
 
 op can have the following values:
 + 'field' Split source into fields separated by 'separator' and select field 'num' (0 origin)
-+ 'expr' Compute string expression 'expr'
++ 'expr' Compute string expression 'expr'. 'return' value is a vector or a scalar (default)
 + 'javascript' Evaluate javascript function 'fn' (deprecated)
 }
 \description{

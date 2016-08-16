@@ -3,6 +3,8 @@
 S3method("$",shaidyRepo)
 S3method("+",ngchmAxis)
 S3method("+",ngchmVersion2)
+S3method(as.dendrogram,shaid)
+S3method(as.hclust,shaid)
 S3method(dim,ngchmLayer)
 S3method(dim,ngchmVersion2)
 S3method(dimnames,ngchmLayer)

@@ -425,13 +425,31 @@ ngchmSaveAsDendrogramBlob <- function (shaidyRepo, ddg) {
     sink(ddgfilename);
     str(ddg);
     sink(NULL);
+    rdafilename <- utempfile ("ddg", fileext='.rda');
+    save (ddg, file=rdafilename);
     shaid <- shaidyAddFileBlob (shaidyRepo, 'dendrogram',
-                                c('dendrogram-data.tsv', 'dendrogram-order.tsv', 'dendrogram.str'),
-                                c(datafilename, orderfilename, ddgfilename));
+                                c('dendrogram-data.tsv', 'dendrogram-order.tsv', 'dendrogram.str', 'dendrogram.rda'),
+                                c(datafilename, orderfilename, ddgfilename, rdafilename));
     unlink (datafilename);
     unlink (orderfilename);
     unlink (ddgfilename);
+    unlink (rdafilename);
     shaid
+}
+
+#' @export
+as.dendrogram.shaid <- function (shaid) {
+    stopifnot (is(shaid,"shaid"), shaid@type=='dendrogram');
+    repo <- ngchmFindRepo (shaid);
+    ee <- new.env();
+    load (repo$blob.path (shaid, 'dendrogram.rda'), ee);
+    stopifnot (exists ('ddg', ee));
+    return (get ('ddg', ee));
+}
+
+#' @export
+as.hclust.shaid <- function (shaid) {
+   as.hclust (as.dendrogram (shaid));
 }
 
 #' Row center a shaidy dataset

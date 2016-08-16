@@ -4,11 +4,17 @@
 \name{shaidyGetComponents}
 \alias{shaidyGetComponents}
 \alias{shaidyGetComponents,ngchm-method}
+\alias{shaidyGetComponents,ngchmCovariate-method}
+\alias{shaidyGetComponents,ngchmDataset-method}
 \title{Get an object's component shaids}
 \usage{
 shaidyGetComponents(object)
 
 \S4method{shaidyGetComponents}{ngchm}(object)
+
+\S4method{shaidyGetComponents}{ngchmDataset}(object)
+
+\S4method{shaidyGetComponents}{ngchmCovariate}(object)
 }
 \arguments{
 \item{object}{The object, such as a chm, dataset, etc., for which to get the component shaids}
