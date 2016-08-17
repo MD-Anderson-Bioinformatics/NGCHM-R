@@ -62,8 +62,9 @@ setMethod ("chmInstall",
                     stop ("unknown parameter ", names(args)[ii]);
                 }
             }
-
         }
+
+	chm <- chmAddProperty (chm, "chm.info.build.time", format(Sys.time(), "%F %H:%M:%S"));
 
         chm <- chmMake (chm);
         chm@format <- dest$server@serverProtocol@chmFormat;

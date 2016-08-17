@@ -2,11 +2,11 @@
 % Please edit documentation in R/functions.R
 \name{cos.dist1}
 \alias{cos.dist1}
-\title{Compute cosine distance matrix}
+\title{Compute cosine (angular) distance matrix}
 \usage{
 \method{cos}{dist1}(data)
 }
 \description{
-Compute cosine distance matrix
+Compute cosine (angular) distance matrix
 }
 
