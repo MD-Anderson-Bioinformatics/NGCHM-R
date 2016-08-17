@@ -88,6 +88,7 @@ ngchmCreateServerProtocol ("shaidy",
 	    cat (sprintf ("Saving chm %s to %s\n", chm@name, uuid), file=stderr());
 	    ngchmAddObjectToCollection (shaidyRepo, uuid, shaid);
 	}
+        ngchmRenderChm (shaidyRepo, shaid);
 	return (invisible(shaid));
     },
     uninstallMethod = function (server, chmname, collectionIds) {

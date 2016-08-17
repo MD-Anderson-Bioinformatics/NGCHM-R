@@ -45,6 +45,19 @@ ngchmShaidyInit <- function() {
 	    stopifnot (resp$status_code == 200);
 	    collection$repo$loadCollection(collection$uuid)
 	},
+        renderChm = function (repo, shaid) {
+	    uri <- repo$blob.path('render', shaid);
+	    resp <- POST (uri, add_headers(Authorization=repo$getToken()));
+	    while (resp$status_code == 401 || resp$status_code == 504) {
+                if (resp$status_code == 504) {
+                    cat ("Waiting for render to complete.\n", file=stderr());
+	            resp <- POST (uri, add_headers(Authorization=repo$getToken()));
+                } else {
+	            resp <- POST (uri, add_headers(Authorization=repo$getNewToken()));
+                }
+            }
+            cat ('Render', shaid@type, shaid@value, 'status:', resp$status_code, '\n', file=stderr());
+        },
 	blobPath = function (repo, repoBase) {
 	    return (function (first, ...) {
 		type <- if (is(first,"shaid")) first@type else first;
@@ -275,6 +288,20 @@ ngchmAddObjectToCollection <- function (repo, uuid, shaid) {
                shaid@type %in% c('chm','dataset','label','collection'));
     collection <- repo$loadCollection(uuid);
     repo$addObjectToCollection (collection, shaid)
+};
+
+#' Render a shaidy NGCHM
+#'
+#' @param repo The repository containing the chm
+#' @param shaid The shaid of the chm to render
+#'
+#' @return Nothing
+#'
+#' @export
+ngchmRenderChm <- function (repo, shaid) {
+    stopifnot (is(shaid,"shaid"),
+               shaid@type %in% c('chm'));
+    repo$renderChm (shaid)
 };
 
 #' Create a recursive description of a collection
