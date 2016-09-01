@@ -3,7 +3,7 @@
 #'
 ngchmShaidyInit <- function() {
     shaidyRegisterRepoAPI ("http", (function(fileMethods) list(
-        "_super" = fileMethods,
+        "__super__" = fileMethods,
 	blobPath = function (repo, repoBase) {
 	    resp <- GET (repoBase);
 	    stopifnot (resp$status_code == 200);
@@ -30,6 +30,12 @@ ngchmShaidyInit <- function() {
                 repo$getNewToken ();
             }
         },
+
+        setToken = function (repo, token) {
+            tokenStash[[repo$blob.path("")]] <- token;
+            tokenStash[[repo$blob.path("")]]
+        },
+
         getNewToken = function (repo) {
             cat ("Enter access token: ", file=stderr());
             tokenStash[[repo$blob.path("")]] <- readLines (n=1);

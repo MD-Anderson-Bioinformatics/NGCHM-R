@@ -70,6 +70,7 @@ setMethod ("chmInstall",
         chm@format <- dest$server@serverProtocol@chmFormat;
         chm <- do.call (maker, c(chm, make.args));
     	do.call (installer, c(dest$server, chm, install.args));
+        chm
     });
 
 ### ' @rdname chmInstall-method
@@ -1015,11 +1016,21 @@ setMethod ("chmGetURL",
 });
 
 #' @rdname chmGetURL-method
+#' @param server The server on which to view the NGCHM
 #' @aliases chmGetURL,ngchm-method
 setMethod ("chmGetURL",
     signature = c(chm="ngchm"),
-    definition = function (chm, ...) {
-        chmGetURL (chmName (chm), ...)
+    definition = function (chm, server=NULL, ...) {
+        if (length(server)==0) server <- chmCurrentServer();
+        stopifnot(length(server) > 0);
+        if (typeof(server) == 'character') server <- chmServerCheck (server);
+        if (server@serverProtocol@chmFormat == 'shaidy') {
+            sprintf ("%s/chm.html?map=%s",
+                     if (length(server@viewServer)>0) server@viewServer else server@serverURL,
+                     shaidyGetShaid (chm)@value)
+        } else {
+            chmGetURL (chmName (chm), server=server, ...)
+        }
 });
 
 URLparts <- function(x) {

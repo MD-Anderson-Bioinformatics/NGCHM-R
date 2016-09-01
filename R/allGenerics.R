@@ -431,6 +431,7 @@ setGeneric ("chmMake", signature=c("chm"), function(chm,...) standardGeneric("ch
 #' @param server The server on which to install the NGCHM.
 #' @param chm The NGCHM to install.
 #' @param ... Additional server (protocol) specific parameters.
+#' @return The installed chm.
 #'
 #' @seealso ngchmServer-class
 #' @seealso ngchm-class

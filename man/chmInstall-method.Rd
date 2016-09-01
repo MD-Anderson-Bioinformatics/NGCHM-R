@@ -17,6 +17,9 @@ chmInstall(chm, ...)
 
 \item{server}{The server on which to install the NGCHM.}
 }
+\value{
+The installed chm.
+}
 \description{
 Install the specified Next Generation Clustered Heat Map (NGCHM) on the specified server.  The installed NGCHM
 is public by default.

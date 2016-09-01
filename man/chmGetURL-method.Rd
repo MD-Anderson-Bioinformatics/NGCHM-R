@@ -11,12 +11,14 @@ chmGetURL(chm, ...)
 
 \S4method{chmGetURL}{character}(chm, server = NULL, ...)
 
-\S4method{chmGetURL}{ngchm}(chm, ...)
+\S4method{chmGetURL}{ngchm}(chm, server = NULL, ...)
 }
 \arguments{
 \item{chm}{The NGCHM for which the URL is required.}
 
 \item{...}{Ignored.}
+
+\item{server}{The server on which to view the NGCHM}
 
 \item{server}{The server on which to view the NGCHM}
 }
