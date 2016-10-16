@@ -1619,6 +1619,7 @@ setMethod ("chmAddAxisType",
     signature = c(chm="ngchm", where="character", type="character", func="ngchmJS"),
     definition = function (chm, where, type, func) {
         chm <- chmFixVersion (chm);
+        if (length(type) > 1) type <- paste (type, collapse='.bar.');
 	at <- new (Class="ngchmAxisType", where=where, type=type, func=func);
 	chm@axisTypes <- append (chm@axisTypes, at);
 	chmAddProperty (chm, paste('!axistype', where, sep='.'), type)
