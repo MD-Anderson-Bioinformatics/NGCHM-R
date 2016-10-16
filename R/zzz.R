@@ -33,7 +33,7 @@ ngchm.env <- new.env(parent=emptyenv());
     ngchm.env$nextId <- 0;
     shaidyInit();
     ngchmShaidyInit ();
-    for (program in c("git","wget","java","tar","scp","ssh","tiledata")) testExternalProgram(program);
+    for (program in c("git","java","tar","scp","ssh")) testExternalProgram(program);
 }
 
 #' Specify per-user configuration for a specific deploy Server.

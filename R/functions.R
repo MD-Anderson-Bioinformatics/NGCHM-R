@@ -2140,12 +2140,12 @@ getBuilderJar <- function (server) {
 	}
 	else if (length(grep("^http://", server@jarFile)) > 0) {
 	    tmpJarFile <- utempfile ("hmt", fileext=".jar");
-	    systemCheck (sprintf ("wget -q -O %s %s", tmpJarFile, shQuote (server@jarFile)));
+            download.file (server@jarFile, tmpJarFile);
 	    ngchm.env$jarCache[[server@jarFile]] <- tmpJarFile;
 	}
 	else if (length(grep("^https://", server@jarFile)) > 0) {
 	    tmpJarFile <- utempfile ("hmt", fileext=".jar");
-	    systemCheck (sprintf ("wget -q -O %s %s", tmpJarFile, shQuote (server@jarFile)));
+            download.file (server@jarFile, tmpJarFile);
 	    ngchm.env$jarCache[[server@jarFile]] <- tmpJarFile;
 	}
 	else if (length(grep("^file://", server@jarFile)) > 0) {
