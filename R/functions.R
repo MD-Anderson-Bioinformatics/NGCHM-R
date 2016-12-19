@@ -2499,6 +2499,8 @@ chmAddAutoMenuItems <- function (chm) {
 		 chm <- chmAddMenuItem (chm, "nowhere", "unused", fns[[ii]]@func);
 	     } else if (is (fns[[ii]], "ngchmAxisFunction")) {
 		 chm <- chmAddMenuItem (chm, "nowhere", "unused", fns[[ii]]@func);
+	     } else if (is (fns[[ii]], "ngchmMatrixFunction")) {
+		 chm <- chmAddMenuItem (chm, "nowhere", "unused", fns[[ii]]@func);
 	     } else if (fns[[ii]]@op != "javascript"){
 		cat ("chmMake: axis/mat fn op is not javascript\n", file=stderr());
 	     } else {
