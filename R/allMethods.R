@@ -690,7 +690,7 @@ writeChmExtraSupport <- function (chm, chmSaveDir)
 	}
 	close (chan);
     }
-    if (length(chm@templates) > 0) {
+    if (chm@format=='original' && length(chm@templates) > 0) {
 	for (t in chm@templates)
 	    writeTemplate (t@source.path, t@dest.path, t@substitutions, chmSaveDir);
     }

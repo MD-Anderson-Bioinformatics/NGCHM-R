@@ -44,28 +44,28 @@
         invisible (newCollection)
     };
 
+    getServerRepo <- function (server) {
+	accessMethod <- ngchmGetProtoParam (server, 'accessMethod');
+	shaidyBase <- ngchmGetProtoParam (server, 'basePath');
+        shaidyLoadRepository (accessMethod, shaidyBase)
+    };
+
 ngchmCreateServerProtocol ("shaidy",
     chmFormat = "shaidy",
     requiredParams = c('accessMethod','basePath'),
     findCollection = function (server, collectionId, parts) {
-	accessMethod <- ngchmGetProtoParam (server, 'accessMethod');
-	shaidyBase <- ngchmGetProtoParam (server, 'basePath');
-        shaidyRepo <- shaidyLoadRepository (accessMethod, shaidyBase);
+        shaidyRepo <- getServerRepo (server);
 	collection <- shaidyRepo$loadCollection(collectionId);
 	findCollection (shaidyRepo, collection, parts)
     },
     createCollection = function (server, collectionId, name) {
-	accessMethod <- ngchmGetProtoParam (server, 'accessMethod');
-	shaidyBase <- ngchmGetProtoParam (server, 'basePath');
-        shaidyRepo <- shaidyLoadRepository (accessMethod, shaidyBase);
+        shaidyRepo <- getServerRepo (server);
 	collection <- shaidyRepo$loadCollection(collectionId);
         createCollection (shaidyRepo, collection, name)
     },
     installMethod = function (server, chm, collection) {
     	stopifnot (chm@format == "shaidy");
-    	accessMethod <- ngchmGetProtoParam (server, 'accessMethod');
-    	shaidyBase <- ngchmGetProtoParam (server, 'basePath');
-        shaidyRepo <- shaidyLoadRepository (accessMethod, shaidyBase);
+        shaidyRepo <- getServerRepo (server);
         shaid <- shaidyGetShaid (chm);
         tocheck <- c(shaid, shaidyGetComponents(chm));
         present <- shaidyBlobExists (shaidyRepo, tocheck);
@@ -92,9 +92,7 @@ ngchmCreateServerProtocol ("shaidy",
 	return (invisible(shaid));
     },
     uninstallMethod = function (server, chmname, collectionIds) {
-	accessMethod <- ngchmGetProtoParam (server, 'accessMethod');
-	shaidyBase <- ngchmGetProtoParam (server, 'basePath');
-        shaidyRepo <- shaidyLoadRepository (accessMethod, shaidyBase);
+        shaidyRepo <- getServerRepo (server);
 	stop ("Not yet implemented by shaidydir protocol");
 	return (invisible(FALSE));
     }

@@ -191,6 +191,9 @@ cos.dist1 <- function (data) {
     sumrowsqr <- sqrt (apply (data*data, 1, sum))
     inner <- data %*% t(data)
     dmat <- inner / (sumrowsqr %*% t(sumrowsqr))
+    # Adjust distance matrix to avoid clustering error with identical rows.
+    rrr <- matrix (abs(rnorm(length(dmat), sd=1e-10)), nrow=nrow(dmat));
+    dmat <- (1-rrr) * dmat;
     return (2/pi*acos(as.dist(dmat)));
 }
 
