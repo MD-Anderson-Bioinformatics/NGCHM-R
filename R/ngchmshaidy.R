@@ -19,6 +19,17 @@ ngchmShaidyInit <- function() {
 
     tokenStash <- new.env (parent=emptyenv());
 
+    setToken <- function( repo, token ) {
+	bp <- repo$blob.path("");
+	cat ("setToken ", bp, " ", file=stderr());
+	if (exists (bp, envir=tokenStash)) {
+	   cat ("from ", tokenStash[[bp]], " ", file=stderr());
+	}
+	cat ("to ", token, "\n", file=stderr());
+	tokenStash[[repo$blob.path("")]] <- token;
+	tokenStash[[repo$blob.path("")]]
+    };
+
     shaidyRegisterRepoAPI ("api", list (
         "__super__" = "__generic__",
 	isLocal = function(repo) FALSE,
@@ -31,15 +42,11 @@ ngchmShaidyInit <- function() {
             }
         },
 
-        setToken = function (repo, token) {
-            tokenStash[[repo$blob.path("")]] <- token;
-            tokenStash[[repo$blob.path("")]]
-        },
+        setToken = setToken,
 
         getNewToken = function (repo) {
             cat ("Enter access token: ", file=stderr());
-            tokenStash[[repo$blob.path("")]] <- readLines (n=1);
-            tokenStash[[repo$blob.path("")]]
+            setToken( repo, readLines (n=1) )
         },
 
 	addObjectToCollection = function (repo, collection, shaid) {

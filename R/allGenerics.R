@@ -503,6 +503,17 @@ setGeneric ("chmMakePrivate", function(server,chm) standardGeneric("chmMakePriva
 #' @seealso chmMakePrivate
 setGeneric ("chmMakePublic", function(server,chm) standardGeneric("chmMakePublic"));
 
+#' Set access credentials.
+#'
+#' Set access credentials for the specific resource.
+#'
+#' @exportMethod chmSetCredentials
+#' @rdname chmSetCredentials-method
+#'
+#' @param resource The resource (e.g. ngchmServer) to which the credentials apply.
+#' @param credentials The credentials.
+setGeneric( "chmSetCredentials", function(resource,credentials) standardGeneric("chmSetCredentials"));
+
 #' Bind values to an existing JS function.
 #'
 #' Create a new JS function by binding values to extra parameters of an existing JS function.

@@ -180,6 +180,22 @@ setMethod ("chmMakePublic",
         chmMakePublic (chmServerCheck(server), chm);
     });
 
+#' @rdname chmSetCredentials-method
+#' @aliases chmSetCredentials,ngchmServer,character-method
+setMethod( "chmSetCredentials",
+    signature = c( resource="ngchmServer", credentials="character" ),
+    definition = function( resource, credentials ) {
+        resource@serverProtocol@setCredentials( resource, credentials )
+    });
+
+#' @rdname chmSetCredentials-method
+#' @aliases chmSetCredentials,character,character-method
+setMethod( "chmSetCredentials",
+    signature = c( resource="character", credentials="character" ),
+    definition = function( resource, credentials ) {
+        resource <- chmServer( resource );
+        resource@serverProtocol@setCredentials( resource, credentials )
+    });
 
 #' @rdname chmLoadCHM-method
 #' @aliases chmLoadCHM,ngchmServer,character-method

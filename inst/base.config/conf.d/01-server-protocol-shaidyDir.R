@@ -95,6 +95,10 @@ ngchmCreateServerProtocol ("shaidy",
         shaidyRepo <- getServerRepo (server);
 	stop ("Not yet implemented by shaidydir protocol");
 	return (invisible(FALSE));
+    },
+    setCredentials = function (server, credentialstring) {
+        repo <- getServerRepo (server);
+	repo$setToken (credentialstring)
     }
 );
 })();

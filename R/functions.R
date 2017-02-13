@@ -1539,6 +1539,7 @@ chmRegisterFunction <- function (fn) {
 #' @param uninstallMethod A function(server,chmname) for uninstalling an NG-CHM.
 #' @param makePrivate A function(server,chmname) for hiding an NG-CHM.
 #' @param makePublic A function(server,chmname) for showing an NG-CHM.
+#' @param setCredentials A function(server,credentialstring) for setting credentials.
 #'
 #' @export
 
@@ -1547,7 +1548,8 @@ ngchmCreateServerProtocol <- function (protocolName, chmFormat,
 				       paramValidator,
                                        findCollection, createCollection,
                                        installMethod, uninstallMethod,
-	                               makePrivate, makePublic) {
+	                               makePrivate, makePublic,
+                                       setCredentials) {
     if (missing(chmFormat)) chmFormat <- "original";
     if (typeof (chmFormat) != "character") {
         stop (sprintf ("Parameter 'chmFormat' must have type 'character', not '%s'", typeof(chmFormat)));
@@ -1613,13 +1615,19 @@ ngchmCreateServerProtocol <- function (protocolName, chmFormat,
 	    stop ("NGCHMs cannot be automatically made public on this server. Please obtain instructions from the server administrator.");
         }
     }
+    if (missing (setCredentials)) {
+        setCredentials <- function (server, credentialstring) {
+	    stop ("You cannot set credentials for this server. Please obtain instructions from the server administrator.");
+        }
+    }
     dm <- new (Class="ngchmServerProtocol", protocolName=protocolName, chmFormat=chmFormat,
 	       requiredParams = requiredParams,
 	       optionalParams = optionalParams,
 	       paramValidator = paramValidator,
+               setCredentials = setCredentials,
                findCollection = findCollection, createCollection = createCollection,
-	       installMethod=installMethod, uninstallMethod=uninstallMethod,
-	       makePrivate=makePrivate, makePublic=makePublic);
+	       installMethod = installMethod, uninstallMethod = uninstallMethod,
+	       makePrivate = makePrivate, makePublic = makePublic);
     matches <- which (vapply (ngchm.env$serverProtocols, function(ss) (ss@protocolName == protocolName), TRUE));
     if (length (matches) > 0) {
 	ngchm.env$serverProtocols[[matches]] <- dm;
