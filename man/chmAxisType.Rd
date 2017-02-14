@@ -4,12 +4,12 @@
 \alias{chmAxisType}
 \title{Create a new AxisType for adding to an ngchmAxis.}
 \usage{
-chmAxisType(type, func)
+chmAxisType(typename, func)
 }
 \arguments{
-\item{func}{A javascript function (optional) for obtaining a value of that type from the axis}
+\item{typename}{The name of the axis type}
 
-\item{axis}{The name of the axis type}
+\item{func}{A javascript function (optional) for obtaining a value of that type from the axis}
 }
 \value{
 An object of class ngchmAxisType

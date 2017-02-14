@@ -6,6 +6,9 @@
 \usage{
 chmUserLabelsToShaid(labels)
 }
+\arguments{
+\item{labels}{A string vector containing axis labels.}
+}
 \description{
 Convert user specified labels to a shaid
 }

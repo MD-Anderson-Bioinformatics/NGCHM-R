@@ -6,6 +6,9 @@
 \usage{
 chmUserDendrogramToShaid(ddg)
 }
+\arguments{
+\item{ddg}{The dendrogram to convert.}
+}
 \description{
 Convert a user specified dendrogram to a shaid
 }

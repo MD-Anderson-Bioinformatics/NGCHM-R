@@ -1,3 +1,5 @@
+#' @import methods
+#' @import utils
 
 systemCheck <- function (command, ...) {
     # Execute the specified command and halt execution with an error
@@ -186,6 +188,8 @@ chmNew <- function (name, ...,
 }
 
 #' Compute cosine (angular) distance matrix
+#'
+#' @param data A numeric matrix
 cos.dist1 <- function (data) {
     dmat <- matrix (0.0, nrow=nrow(data), ncol=nrow(data))
     sumrowsqr <- sqrt (apply (data*data, 1, sum))
@@ -224,7 +228,7 @@ chmDefaultColOrder <- function (chm) {
 	} else {
 	    dd <- dist (t(mat), method=chm@colDist);
 	}
-	ddg <- as.dendrogram(hclust(dd, method=chm@colAgglom))
+	ddg <- stats::as.dendrogram(stats::hclust(dd, method=chm@colAgglom))
 	res <- list(ngchmSaveAsDendrogramBlob (shaidyRepo, ddg));
 	shaidyRepo$provenanceDB$insert (provid, res[[1]]);
     }
@@ -233,6 +237,7 @@ chmDefaultColOrder <- function (chm) {
 
 #' Convert a user specified dendrogram to a shaid
 #'
+#' @param ddg The dendrogram to convert.
 chmUserDendrogramToShaid <- function (ddg) {
     shaidyRepo <- ngchm.env$tmpShaidy;
     ngchmSaveAsDendrogramBlob (shaidyRepo, ddg)
@@ -240,6 +245,7 @@ chmUserDendrogramToShaid <- function (ddg) {
 
 #' Convert user specified labels to a shaid
 #'
+#' @param labels A string vector containing axis labels.
 chmUserLabelsToShaid <- function (labels) {
     shaidyRepo <- ngchm.env$tmpShaidy;
     ngchmSaveLabelsAsBlob (shaidyRepo, labels)
@@ -272,7 +278,7 @@ chmDefaultRowOrder <- function (chm) {
 	} else {
 	    dd <- dist (mat, method=chm@rowDist);
 	}
-	ddg <- as.dendrogram(hclust(dd, method=chm@rowAgglom));
+	ddg <- stats::as.dendrogram(stats::hclust(dd, method=chm@rowAgglom));
 	res <- list(ngchmSaveAsDendrogramBlob (shaidyRepo, ddg));
 	shaidyRepo$provenanceDB$insert (provid, res[[1]]);
     }
@@ -709,7 +715,7 @@ ngchmNewBar <- function (label, type, data, colors=NULL, display="visible", thic
 	} else {
 	    qq <- quantile (data);
 	}
-	colors <- rainbow(length(qq),start=2/6,end=0);
+	colors <- grDevices::rainbow(length(qq),start=2/6,end=0);
 	colors <- vapply (colors, function(cc)substr(cc,1,7), "");
 	colors <- chmNewColorMap (qq, colors);
     }
@@ -876,7 +882,7 @@ chmNewColorMap <- function (values, colors=NULL, names=NULL, shapes=NULL, zs=NUL
 	if (length(palette) > 0) {
 	    colors <- palette(NC);
 	} else {
-	    colors <- rainbow(NC,start=2/6,end=0);
+	    colors <- grDevices::rainbow(NC,start=2/6,end=0);
 	}
 	colors <- vapply (colors, function(cc)substr(cc,1,7), "");
     }
@@ -889,7 +895,7 @@ chmNewColorMap <- function (values, colors=NULL, names=NULL, shapes=NULL, zs=NUL
 	stop (sprintf ("chmNewColorMap: number of shapes (%d) does not equal number of colors (%d). It should.", length(shapes), NC));
     if (!is.null(zs) && length(zs)!=NC)
 	stop (sprintf ("chmNewColorMap: number of zindices (%d) does not equal number of colors (%d). It should.", length(zs), NC));
-    col2rgb (missing.color);  # error check
+    grDevices::col2rgb (missing.color);  # error check
 
     # Construct ValueMap
     pts <- chmAddValueProperty (NULL, value=values, color=colors, name=names, shape=shapes, z=zs);
@@ -906,7 +912,7 @@ chmAddValueProperty <- function (vps, value, color, name=NULL, shape=NULL, z=NUL
         stop ("unknown shape ", shape);
     if (any(z < 0))
         stop ("z must be non-negative");
-    col2rgb (color);  # error check
+    grDevices::col2rgb (color);  # error check
     for (ii in 1:length(value))
 	vps <- append (vps, new (Class="ngchmValueProp", value=value[ii], color=color[ii], name=name[ii], shape=shape[ii], z=z[ii]));
     vps
@@ -2040,7 +2046,7 @@ chmAxis <- function (axis, ...) {
 #'
 #' This function creates a new AxisType for adding to an ngchmAxis.
 #'
-#' @param axis The name of the axis type
+#' @param typename The name of the axis type
 #' @param func A javascript function (optional) for obtaining a value of that type from the axis
 #'
 #' @return An object of class ngchmAxisType
@@ -2048,8 +2054,8 @@ chmAxis <- function (axis, ...) {
 #' @export
 #'
 #' @seealso chmAxis
-chmAxisType <- function (type, func) {
-    stopifnot (typeof(type) == "character" && length(type)==1);
+chmAxisType <- function (typename, func) {
+    stopifnot (typeof(typename) == "character" && length(typename)==1);
     if (missing(func)) {
         func <- chmGetFunction ("getLabelValue");
     } else if (typeof(func) == "character" && length(func)==1) {
@@ -2057,7 +2063,7 @@ chmAxisType <- function (type, func) {
     } else {
         stopifnot (is(func,"ngchmJS"))
     }
-    new (Class="ngchmAxisType", where="", type=type, func=func)
+    new (Class="ngchmAxisType", where="", type=typename, func=func)
 };
 
 #' Return the names of the NGCHM servers defined to date in this session.

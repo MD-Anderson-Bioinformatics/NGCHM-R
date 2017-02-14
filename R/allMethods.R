@@ -944,7 +944,7 @@ writeOrder <- function (inpDir, type, ord) {
     } else if ((class (ord) == "dendrogram") || (class (ord) == "hclust")) {
 	sink (file.path (inpDir, sprintf ("dendro_%s.str", type)))
 	if (class (ord) == "hclust")
-	    ord <- as.dendrogram (ord);
+	    ord <- stats::as.dendrogram (ord);
 	str (ord)
 	sink (NULL)
     } else if (class (ord) == "fileContent") {
@@ -1295,6 +1295,8 @@ chmOperatorAdd <- function (left, right) {
     }
 }
 
+#' @method + ngchmVersion2,ngchmAxis
+#' @export
 setMethod ("+",
            signature=c(e1="ngchmVersion2", e2="ngchmAxis"),
            definition = function(e1,e2) chmOperatorAdd (e1, e2));
@@ -1309,30 +1311,30 @@ setMethod ("+",
 
 #' @method dimnames ngchmVersion2
 #' @export
-dimnames.ngchmVersion2 <- function(chm) {
-    if (length(chm@layers) == 0) {
+dimnames.ngchmVersion2 <- function(x) {
+    if (length(x@layers) == 0) {
         NULL
     } else {
-        dimnames (chm@layers[[1]])
+        dimnames (x@layers[[1]])
     }
 }
 
 #' @method dim ngchmVersion2
 #' @export
-dim.ngchmVersion2 <- function(chm) {
-    vapply (dimnames(chm), length, 0)
+dim.ngchmVersion2 <- function(x) {
+    vapply (dimnames(x), length, 0)
 }
 
 #' @method dimnames ngchmLayer
 #' @export
-dimnames.ngchmLayer <- function(ll) {
-    list (ngchmGetLabelsStr (ll@data,"row"), ngchmGetLabelsStr (ll@data,"column"))
+dimnames.ngchmLayer <- function(x) {
+    list (ngchmGetLabelsStr (x@data,"row"), ngchmGetLabelsStr (x@data,"column"))
 }
 
 #' @method dim ngchmLayer
 #' @export
-dim.ngchmLayer <- function(ll) {
-    vapply (dimnames(ll), length, 0)
+dim.ngchmLayer <- function(x) {
+    vapply (dimnames(x), length, 0)
 }
 
 #' @rdname chmAddLayer-method

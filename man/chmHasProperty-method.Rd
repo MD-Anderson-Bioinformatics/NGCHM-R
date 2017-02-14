@@ -13,6 +13,8 @@ chmHasProperty(object, label)
 }
 \arguments{
 \item{object}{An NG-CHM object}
+
+\item{label}{The name of the property to check}
 }
 \description{
 Determine if the NG-CHM has the given property.

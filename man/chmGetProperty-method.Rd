@@ -13,6 +13,8 @@ chmGetProperty(object, label)
 }
 \arguments{
 \item{object}{An NG-CHM object}
+
+\item{label}{The name of the property to get}
 }
 \description{
 Get a property value from an NG-CHM object.

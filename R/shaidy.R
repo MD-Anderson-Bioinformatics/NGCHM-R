@@ -161,7 +161,7 @@ shaidyInit <- function() {
 	},
 	createCollection = function (repo, labels) {
 	    collection.uuid <- getuuid (paste0(labels,rnorm(10),collapse=';'));
-	    basepath <- shaidyRepo$blob.path ('collection', collection.uuid);
+	    basepath <- repo$blob.path ('collection', collection.uuid);
 	    stopifnot (!dir.exists (basepath));
 	    stopifnot (dir.create (basepath));
 	    if (nrow (labels) > 0) {

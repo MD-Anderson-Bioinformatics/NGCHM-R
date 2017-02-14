@@ -21,11 +21,6 @@ ngchmShaidyInit <- function() {
 
     setToken <- function( repo, token ) {
 	bp <- repo$blob.path("");
-	cat ("setToken ", bp, " ", file=stderr());
-	if (exists (bp, envir=tokenStash)) {
-	   cat ("from ", tokenStash[[bp]], " ", file=stderr());
-	}
-	cat ("to ", token, "\n", file=stderr());
 	tokenStash[[repo$blob.path("")]] <- token;
 	tokenStash[[repo$blob.path("")]]
     };
@@ -427,7 +422,7 @@ ngchmLoadDatasetBlob <- function (shaidyRepo, shaid, datatype) {
 
 writeHCDataTSVs <- function(uDend, theOutputHCDataFileName, theOutputHCOrderFileName)
 {
-    if (is(uDend,'dendrogram')) uDend <- as.hclust(uDend);
+    if (is(uDend,'dendrogram')) uDend <- stats::as.hclust(uDend);
     stopifnot (is (uDend, 'hclust'));
     data <- cbind(uDend$merge, uDend$height, deparse.level=0);
     colnames(data)<-c("A", "B", "Height")
@@ -477,19 +472,20 @@ ngchmSaveAsDendrogramBlob <- function (shaidyRepo, ddg) {
     shaid
 }
 
+#' @import stats
 #' @export
-as.dendrogram.shaid <- function (shaid) {
-    stopifnot (is(shaid,"shaid"), shaid@type=='dendrogram');
-    repo <- ngchmFindRepo (shaid);
+as.dendrogram.shaid <- function (object, ...) {
+    stopifnot (is(object,"shaid"), object@type=='dendrogram');
+    repo <- ngchmFindRepo (object);
     ee <- new.env();
-    load (repo$blob.path (shaid, 'dendrogram.rda'), ee);
+    load (repo$blob.path (object, 'dendrogram.rda'), ee);
     stopifnot (exists ('ddg', ee));
     return (get ('ddg', ee));
 }
 
 #' @export
-as.hclust.shaid <- function (shaid) {
-   as.hclust (as.dendrogram (shaid));
+as.hclust.shaid <- function (x, ...) {
+   stats::as.hclust (stats::as.dendrogram (x));
 }
 
 #' Row center a shaidy dataset

@@ -6,6 +6,9 @@
 \usage{
 \method{cos}{dist1}(data)
 }
+\arguments{
+\item{data}{A numeric matrix}
+}
 \description{
 Compute cosine (angular) distance matrix
 }

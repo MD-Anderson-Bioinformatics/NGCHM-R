@@ -601,6 +601,7 @@ setGeneric ("chmGetDataset", function(object) standardGeneric("chmGetDataset"))
 #' @rdname chmHasProperty-method
 #'
 #' @param object An NG-CHM object
+#' @param label The name of the property to check
 setGeneric ("chmHasProperty", function(object,label) standardGeneric("chmHasProperty"))
 
 #' Get a property value from an NG-CHM object
@@ -611,6 +612,7 @@ setGeneric ("chmHasProperty", function(object,label) standardGeneric("chmHasProp
 #' @rdname chmGetProperty-method
 #'
 #' @param object An NG-CHM object
+#' @param label The name of the property to get
 setGeneric ("chmGetProperty", function(object,label) standardGeneric("chmGetProperty"))
 
 #' Get shaid for an object
