@@ -422,7 +422,7 @@ ngchmLoadDatasetBlob <- function (shaidyRepo, shaid, datatype) {
 
 writeHCDataTSVs <- function(uDend, theOutputHCDataFileName, theOutputHCOrderFileName)
 {
-    if (is(uDend,'dendrogram')) uDend <- stats::as.hclust(uDend);
+    if (is(uDend,'dendrogram')) uDend <- nr.as.hclust.dendrogram(dendfixh(uDend));
     stopifnot (is (uDend, 'hclust'));
     data <- cbind(uDend$merge, uDend$height, deparse.level=0);
     colnames(data)<-c("A", "B", "Height")
@@ -458,7 +458,7 @@ ngchmSaveAsDendrogramBlob <- function (shaidyRepo, ddg) {
     writeHCDataTSVs (ddg, datafilename, orderfilename);
     ddgfilename <- utempfile ("ddg", fileext='.str');
     sink(ddgfilename);
-    str(ddg);
+    nr.str.dendrogram(ddg);
     sink(NULL);
     rdafilename <- utempfile ("ddg", fileext='.rda');
     save (ddg, file=rdafilename);
@@ -485,7 +485,7 @@ as.dendrogram.shaid <- function (object, ...) {
 
 #' @export
 as.hclust.shaid <- function (x, ...) {
-   stats::as.hclust (stats::as.dendrogram (x));
+   nr.as.hclust.dendrogram (dendfixh (stats::as.dendrogram (x)));
 }
 
 #' Row center a shaidy dataset

@@ -945,8 +945,8 @@ writeOrder <- function (inpDir, type, ord) {
 	sink (file.path (inpDir, sprintf ("dendro_%s.str", type)))
 	if (class (ord) == "hclust")
 	    ord <- stats::as.dendrogram (ord);
-	str (ord)
-	sink (NULL)
+	nr.str.dendrogram (ord);
+	sink (NULL);
     } else if (class (ord) == "fileContent") {
 	filename <- (paste (inpDir, sprintf ("dendro_%s.str", type), sep="/"));
 	ff <- file (filename, "w");
