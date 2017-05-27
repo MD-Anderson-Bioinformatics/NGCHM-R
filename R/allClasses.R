@@ -90,7 +90,7 @@ setMethod ('show',
 setIs ("shaid", "optDendrogram");
 setMethod(jsonlite:::asJSON, signature=c("shaid"), definition=function(x,...) {
     paste0 ('{ "class": "shaid", "type": "', x@type, '", "value": "', x@value, '" }')
-})
+});
 
 
 #' Class representing the properties of a data point in a Next Generation Clustered Heat Map (NGCHM).
@@ -689,6 +689,10 @@ setClass ("ngchmVersion2",
 			  rowOrder="optDendrogram", rowDist="charOrFunction", rowAgglom="charOrFunction",
 			  colOrder="optDendrogram", colDist="charOrFunction", colAgglom="charOrFunction",
                           rowOrderMethod="character", colOrderMethod="character",
+                          rowCutLocations="optInteger", rowCutWidth="optInteger", rowTreeCuts="optInteger",
+                          rowTopItems="optCharacter", rowDisplayLength="optInteger", rowDisplayAbbreviation="optCharacter",
+                          colCutLocations="optInteger", colCutWidth="optInteger", colTreeCuts="optInteger",
+                          colTopItems="optCharacter", colDisplayLength="optInteger", colDisplayAbbreviation="optCharacter",
 			  rowMeta="optList",
 			  colMeta="optList",
 			  rowCovariateBars="optList",
@@ -712,6 +716,10 @@ setClass ("ngchmVersion2",
 				rowOrder=NULL, rowDist="correlation", rowAgglom="ward.D2",
 				colOrder=NULL, colDist="correlation", colAgglom="ward.D2",
                                 rowOrderMethod="User", colOrderMethod="User",
+                                rowCutLocations=NULL, rowCutWidth=NULL, rowTreeCuts=NULL,
+                                rowTopItems=NULL, rowDisplayLength=NULL, rowDisplayAbbreviation=NULL,
+                                colCutLocations=NULL, colCutWidth=NULL, colTreeCuts=NULL,
+                                colTopItems=NULL, colDisplayLength=NULL, colDisplayAbbreviation=NULL,
 				rowMeta=NULL,
 				colMeta=NULL,
 				axisTypes=NULL,
@@ -739,20 +747,42 @@ setMethod ('show',
 	       cat (sprintf ("ngchm %s (%d layers)\n", object@name, length(object@layers)));
 	   });
 
-axisSlots <- c("OrderMethod", "Order", "Dist", "Agglom", "Meta", "CovariateBars", "Dendrogram");
-axisNames <- c("order_method", "labels", "distance_metric", "agglomeration_method", "meta", "covariates", "dendrogram");
+axisSlots <- c("OrderMethod", "Order", "Dist", "Agglom", "Meta", "CovariateBars", "Dendrogram",
+               "CutLocations", "CutWidth", "TreeCuts", "TopItems", "DisplayLength", "DisplayAbbreviation");
+axisNames <- c("order_method", "labels", "distance_metric", "agglomeration_method", "meta", "covariates", "dendrogram",
+               "cut_locations", "cut_width", "tree_cuts", "top_items", "display_length", "display_abbreviation");
 getAxisData <- function (l, axis) {
     f <- function (name) {
             l[[paste0 (axis, name)]]
     }
     axisData <- lapply (axisSlots, f);
     names(axisData) <- axisNames;
-    singleElements <- c("order_method", "distance_metric", "agglomeration_method");
+    axisData$labels <- listFix (s4ToList(axisData$labels), single=c('class', 'type', 'value'));
+
+    numericElements <- c("cut_locations", "cut_width", "tree_cuts", "display_length");
+    for (elem in numericElements) {
+        if (!identical(axisData[[elem]],NULL)) {
+            axisData[[elem]] <- paste( axisData[[elem]], collapse="," );
+        }
+    }
+
+    singleElements <- c("order_method", "distance_metric", "agglomeration_method", "cut_locations", "cut_width",
+                        "tree_cuts", "display_length", "display_abbreviation");
     for (elem in singleElements) {
         if (!identical(axisData[[elem]],NULL)) {
             class(axisData[[elem]]) <- 'singleElement';
         }
     }
+
+    labelElements <- c("display_length", "display_abbreviation");
+    for (elem in labelElements) {
+        if (!identical(axisData[[elem]],NULL)) {
+            axisData$labels[[elem]] <- axisData[[elem]];
+            axisData[[elem]] <- NULL;
+        }
+    }
+
+
     empty <- vapply(axisData, function(x)length(x)==0, TRUE);
     if (any(empty)) axisData <- axisData[-which(empty)];
     axisData
