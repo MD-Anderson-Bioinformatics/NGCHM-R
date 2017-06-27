@@ -2251,8 +2251,10 @@ chmCreateServer <- function (serverName,
 	    } else {
 	        # Assume a URL that refers to an NGCHM server.
 		cfg$serverURL <- serverSpec;
-		# If protocol not specified, probe to see if manager API available.
+		# If protocol not specified, probe to see if API available.
                 if (!'serverProtocol' %in% names(serverOptions)) {
+                    foundAPI <- FALSE;
+                    # try manager API
 		    ws <- sprintf("%s/manager/rest/chmservers", serverSpec);
 		    res <- httr::GET (ws, handle=ngchmGetHandleHTTR (serverSpec));
 		    if (res$status_code >= 200 && res$status_code < 300) {
@@ -2261,8 +2263,23 @@ chmCreateServer <- function (serverName,
 			    cfg$serverProtocol <- 'manager';
 			    cfg$deployServer <- sprintf ("%s/manager/rest", serverSpec);
 			    cfg$serviceName <- names(content)[1];
+                            foundAPI <- TRUE;
 			}
 		    }
+                    if (!foundAPI) {
+                        # try shaidy API
+			ws <- sprintf("%s/api", serverSpec);
+			res <- httr::GET (ws, handle=ngchmGetHandleHTTR (serverSpec));
+			if (res$status_code >= 200 && res$status_code < 300) {
+			    content <- ngchmResponseJSON(res);
+			    if (length(content) > 0) {
+				cfg$serverProtocol <- 'shaidy';
+				cfg$basePath <- sprintf ("%s/api", serverSpec);
+				cfg$accessMethod <- 'api';
+                                foundAPI <- TRUE;
+			    }
+			}
+                    }
 		}
 	    }
 	}
