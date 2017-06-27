@@ -56,7 +56,7 @@ setMethod ("chmInstall",
             for (ii in 1:length(args)) {
                 if (names(args)[ii] %in% names(formals(maker))) {
                     make.args <- c (make.args, args[[ii]]);
-                } else if (names(args)[ii] %in% names(formals(maker))) {
+                } else if (names(args)[ii] %in% names(formals(installer))) {
                     install.args <- c (install.args, args[[ii]]);
                 } else {
                     stop ("unknown parameter ", names(args)[ii]);

@@ -2802,3 +2802,85 @@ readTile <- function (filename, nrow, ncol) {
     vec <- readBin (filename, "double", nrow*ncol, size=4, endian="little");
     return (matrix (vec, nrow=nrow, byrow=TRUE));
 }
+
+#' Export a standalone NGCHM to a file.
+#'
+#' Create a standalone viewer for the NGCHM in the specified file.
+#'
+#' @export chmExportToFile
+#' @rdname chmExportToFile-method
+#'
+#' @param chm The NGCHM to export
+#' @param filename The file in which to save the rendered NGCHM
+#' @param overwrite Overwrite file iff true (default false)
+#' @param shaidyMapGen Path to shaidyMapGen jar file (default to value of environment variable SHAIDYMAPGEN)
+#' @param shaidyMapGenJava Path to java executable with which to run shaidyMapGen (default to value of environment variable SHAIDYMAPGENJAVA or java)
+#' @param shaidyMapGenArgs Additional arguments to pass to java when running shaidyMapGen (default to value of environment variable SHAIDYMAPGENARGS)
+#'
+#' @return the rendered NGCHM
+chmExportToFile <- function(chm,filename,overwrite=FALSE,shaidyMapGen, shaidyMapGenJava, shaidyMapGenArgs) {
+    if( !overwrite && file.exists(filename) ) stop ("'filename' already exists");
+    if (missing(shaidyMapGen)) shaidyMapGen <- Sys.getenv("SHAIDYMAPGEN");
+    if (missing(shaidyMapGenJava)) shaidyMapGenJava <- Sys.getenv("SHAIDYMAPGENJAVA");
+    if (shaidyMapGenJava == "") shaidyMapGenJava <- "java";
+    if (missing(shaidyMapGenArgs)) shaidyMapGenArgs <- strsplit(Sys.getenv("SHAIDYMAPGENARGS"),",")[[1]];
+    if (shaidyMapGen == "") stop ("shaidyMapGen not specified or set in environment");
+
+    chm@format <- "shaidy";
+    chm <- chmAddProperty (chm, "chm.info.build.time", format(Sys.time(), "%F %H:%M:%S"));
+    chm <- chmMake (chm);
+
+    shaidyRepo <- ngchm.env$tmpShaidy;
+    shaid <- shaidyGetShaid (chm);
+    status <- system2(shaidyMapGenJava, c(shaidyMapGenArgs, "-jar", shaidyMapGen, shaidyRepo$basepath, shaid@value, shaid@value));
+    if (status != 0) stop("export to ngchm failed");
+    if (!file.copy (shaidyRepo$blob.path ("viewer", shaid@value, paste(chm@name,"ngchm",sep=".")), filename, TRUE)) {
+        stop("export to ngchm failed");
+    }
+    chm
+}
+
+#' Export a PDF of the NGCHM to a file.
+#'
+#' Create a PDF of the NGCHM in the specified file.
+#'
+#' @export chmExportToPDF
+#' @rdname chmExportToPDF-method
+#'
+#' @param chm The NGCHM to generate the PDF for
+#' @param filename The file in which to save the PDF
+#' @param overwrite Overwrite file iff true (default false)
+#' @param shaidyMapGen Path to shaidyMapGen jar file (default to value of environment variable SHAIDYMAPGEN)
+#' @param shaidyMapGenJava Path to java executable with which to run shaidyMapGen (default to value of environment variable SHAIDYMAPGENJAVA or java)
+#' @param shaidyMapGenArgs Additional arguments to pass to java when running shaidyMapGen (default to value of environment variable SHAIDYMAPGENARGS)
+#'
+#' @return filename
+chmExportToPDF <- function(chm,filename,overwrite=FALSE,shaidyMapGen, shaidyMapGenJava, shaidyMapGenArgs) {
+    if( !overwrite && file.exists(filename) ) stop ("'filename' already exists");
+    if (missing(shaidyMapGen)) shaidyMapGen <- Sys.getenv("SHAIDYMAPGEN");
+    if (missing(shaidyMapGenJava)) shaidyMapGenJava <- Sys.getenv("SHAIDYMAPGENJAVA");
+    if (shaidyMapGenJava == "") shaidyMapGenJava <- "java";
+    if (missing(shaidyMapGenArgs)) shaidyMapGenArgs <- strsplit(Sys.getenv("SHAIDYMAPGENARGS"),",")[[1]];
+
+    if (length(chmGetProperty(chm, "chm.info.build.time"))==0) {
+        chm@format <- "shaidy";
+        chm <- chmAddProperty (chm, "chm.info.build.time", format(Sys.time(), "%F %H:%M:%S"));
+        chm <- chmMake (chm);
+    }
+
+    shaidyRepo <- ngchm.env$tmpShaidy;
+    shaid <- shaidyGetShaid (chm);
+
+    pdfpath <- shaidyRepo$blob.path ("viewer", shaid@value, chm@name, paste(chm@name," HeatMap.pdf",sep=""));
+    if (!file.exists(pdfpath)) {
+        if (shaidyMapGen == "") stop ("shaidyMapGen required but not specified or set in environment");
+        status <- system2(shaidyMapGenJava, c(shaidyMapGenArgs, "-jar", shaidyMapGen, shaidyRepo$basepath, shaid@value, shaid@value));
+        if (status != 0 || !file.exists(pdfpath)) stop("export to pdf failed");
+    }
+
+    if (!file.copy (pdfpath, filename, TRUE)) {
+        stop("export to pdf failed");
+    }
+    filename
+}
+
