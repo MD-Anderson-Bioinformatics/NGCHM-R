@@ -2275,6 +2275,7 @@ chmCreateServer <- function (serverName,
 			    if (length(content) > 0) {
 				cfg$serverProtocol <- 'shaidy';
 				cfg$basePath <- sprintf ("%s/api", serverSpec);
+				cfg$viewServer <- sprintf ("%s/NGCHM", serverSpec);
 				cfg$accessMethod <- 'api';
                                 foundAPI <- TRUE;
 			    }
