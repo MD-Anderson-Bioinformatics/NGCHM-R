@@ -2885,3 +2885,9 @@ chmExportToPDF <- function(chm,filename,overwrite=FALSE,shaidyMapGen, shaidyMapG
     filename
 }
 
+writeBinLines <- function(text, con) {
+    openit <- is.character(con);
+    if (openit) con <- file(con, "wb");
+    writeLines (text, con, "\n");
+    if (openit) close (con);
+}

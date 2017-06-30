@@ -296,7 +296,7 @@ writeMenu <- function (menu, prefix, chan) {
 }
 
 writeCSS <- function (css, inpDir) {
-    chan <- file (file.path (inpDir, "custom.css"), "w");
+    chan <- file (file.path (inpDir, "custom.css"), "wb");
     for (ii in 1:length(css))
         cat (css[[ii]]@css, sep="\n", file=chan);
     close (chan);
@@ -340,7 +340,7 @@ writePropertiesPost <- function (outDir, format, props) {
 	        cat (hidden.tags, sep='', file=file.path (outDir, "hidden.txt"));
 	    } else {
 	        hidden.tags <- sub("\n","",hidden.tags);
-                writeLines(jsonlite::toJSON(hidden.tags,pretty=TRUE), file.path (outDir, "hidden.json"));
+                writeBinLines(jsonlite::toJSON(hidden.tags,pretty=TRUE), file.path (outDir, "hidden.json"));
 	    }
 	}
     }
@@ -403,7 +403,7 @@ writeDialogs <- function (dialogs, chan) {
 
 writeCustomJS <- function (chm, filename) {
     rqJSfuns <- requiredFunctions (list(), chm@javascript);
-    chan <- file (filename, "w");
+    chan <- file (filename, "wb");
     if (length(rqJSfuns) > 0) writeJS (rqJSfuns, chan, TRUE);
     cat (startcust, file=chan);
     if (length(rqJSfuns) > 0) writeJS (rqJSfuns, chan, FALSE);
@@ -483,7 +483,7 @@ writeDataLayer <- function (chm, layer, dir, index, chan) {
     repo <- ngchmFindRepo (layer@data);
     layerData <- ngchmLoadDatasetBlob (repo, layer@data)$mat;
     write.table (layerData, file=paste (dir, sprintf("%s.data.tsv", prefix), sep="/"),
-                 sep="\t", quote=FALSE);
+                 sep="\t", quote=FALSE, eol='\n');
 }
 
 writeCovariateBar <- function (cbar, inpDir, type, index, chan) {
@@ -499,7 +499,7 @@ writeCovariateBar <- function (cbar, inpDir, type, index, chan) {
 	writeColorMap ("class", cbar@colors, "classification", sprintf ("%d", index), chan);
     }
 
-    chan2 <- file (paste (inpDir, sprintf ("%sClassificationData%d.txt", type, index), sep="/"), "w")
+    chan2 <- file (paste (inpDir, sprintf ("%sClassificationData%d.txt", type, index), sep="/"), "wb")
     repo <- ngchmFindRepo (cbar@data);
     barData <- ngchmLoadDatasetBlob (repo, cbar@data, "")$mat;
     nm <- rownames(barData)
@@ -525,7 +525,7 @@ writeDataset <- function (chm, dataset, dir) {
     chm@extrafiles <- c(chm@extrafiles, sprintf ("%s.tsv", dataset@name));
     chm@extrafiles <- c(chm@extrafiles, sprintf ("%s-index.tsv", dataset@name));
 
-    write.table (dataset@data, file.path (dir, sprintf ("%s.tsv", dataset@name)), sep="\t", quote=FALSE);
+    write.table (dataset@data, file.path (dir, sprintf ("%s.tsv", dataset@name)), sep="\t", quote=FALSE, eol='\n');
     tsvio::tsvGenIndex (file.path (dir, sprintf ("%s.tsv", dataset@name)),
                         file.path (dir, sprintf ("%s-index.tsv", dataset@name)));
 
@@ -537,7 +537,7 @@ writeDataset <- function (chm, dataset, dir) {
 	                  Fullname=vapply(col.covars, function(cov)cov@fullname, ""));
 	write.table(cov.table,
 		    file.path (dir, sprintf ("%s-covariates.tsv", dataset@name)),
-		    sep="\t", quote=FALSE, row.names=FALSE);
+		    sep="\t", quote=FALSE, row.names=FALSE, eol='\n');
     }
     if (TRUE) {
 	chm@extrafiles <- c(chm@extrafiles, sprintf ("%s-rowcovariates.tsv", dataset@name));
@@ -545,7 +545,7 @@ writeDataset <- function (chm, dataset, dir) {
 	                  Fullname=vapply(row.covars, function(cov)cov@fullname, ""));
 	write.table(cov.table,
 		    file.path (dir, sprintf ("%s-row-covariates.tsv", dataset@name)),
-		    sep="\t", quote=FALSE, row.names=FALSE);
+		    sep="\t", quote=FALSE, row.names=FALSE, eol='\n');
     }
 
 
@@ -559,20 +559,20 @@ writeDataset <- function (chm, dataset, dir) {
 	    if (first.rowser) {
 	        first.rowser <- FALSE;
 		chm@extrafiles <- c(chm@extrafiles, sprintf ("%s-row-series.tsv", dataset@name));
-		fd.rowser <- file (file.path (dir, sprintf ("%s-row-series.tsv", dataset@name)), "w");
-		write.table(rowser, file=fd.rowser, sep="\t", quote=FALSE, row.names=FALSE, col.names=TRUE);
+		fd.rowser <- file (file.path (dir, sprintf ("%s-row-series.tsv", dataset@name)), "wb");
+		write.table(rowser, file=fd.rowser, sep="\t", quote=FALSE, row.names=FALSE, col.names=TRUE, eol='\n');
 	    } else {
-		write.table(rowser, file=fd.rowser, sep="\t", quote=FALSE, row.names=FALSE, col.names=FALSE);
+		write.table(rowser, file=fd.rowser, sep="\t", quote=FALSE, row.names=FALSE, col.names=FALSE, eol='\n');
 	    }
 	    if (length(cov@series.properties) > 0) {
 		serprop <- getSeriesProps (cov@label, cov@series.properties);
 		if (first.serprop) {
 		    first.serprop <- FALSE;
 		    chm@extrafiles <- c(chm@extrafiles, sprintf ("%s-row-series-properties.tsv", dataset@name));
-		    fd.serprop <- file (file.path (dir, sprintf ("%s-row-series-properties.tsv", dataset@name)), "w");
-		    write.table(serprop, file=fd.serprop, sep="\t", quote=FALSE, row.names=FALSE, col.names=TRUE);
+		    fd.serprop <- file (file.path (dir, sprintf ("%s-row-series-properties.tsv", dataset@name)), "wb");
+		    write.table(serprop, file=fd.serprop, sep="\t", quote=FALSE, row.names=FALSE, col.names=TRUE, eol='\n');
 		} else {
-		    write.table(serprop, file=fd.serprop, sep="\t", quote=FALSE, row.names=FALSE, col.names=FALSE);
+		    write.table(serprop, file=fd.serprop, sep="\t", quote=FALSE, row.names=FALSE, col.names=FALSE, eol='\n');
 		}
 	    }
 	}
@@ -590,20 +590,20 @@ writeDataset <- function (chm, dataset, dir) {
 	    if (first.colser) {
 	        first.colser <- FALSE;
 		chm@extrafiles <- c(chm@extrafiles, sprintf ("%s-sample-series.tsv", dataset@name));
-		fd.colser <- file (file.path (dir, sprintf ("%s-sample-series.tsv", dataset@name)), "w");
-		write.table(colser, file=fd.colser, sep="\t", quote=FALSE, row.names=FALSE, col.names=TRUE);
+		fd.colser <- file (file.path (dir, sprintf ("%s-sample-series.tsv", dataset@name)), "wb");
+		write.table(colser, file=fd.colser, sep="\t", quote=FALSE, row.names=FALSE, col.names=TRUE, eol='\n');
 	    } else {
-		write.table(colser, file=fd.colser, sep="\t", quote=FALSE, row.names=FALSE, col.names=FALSE);
+		write.table(colser, file=fd.colser, sep="\t", quote=FALSE, row.names=FALSE, col.names=FALSE, eol='\n');
 	    }
 	    if (length(cov@series.properties) > 0) {
 		serprop <- getSeriesProps (cov@label, cov@series.properties);
 		if (first.serprop) {
 		    first.serprop <- FALSE;
 		    chm@extrafiles <- c(chm@extrafiles, sprintf ("%s-series-properties.tsv", dataset@name));
-		    fd.serprop <- file (file.path (dir, sprintf ("%s-series-properties.tsv", dataset@name)), "w");
-		    write.table(serprop, file=fd.serprop, sep="\t", quote=FALSE, row.names=FALSE, col.names=TRUE);
+		    fd.serprop <- file (file.path (dir, sprintf ("%s-series-properties.tsv", dataset@name)), "wb");
+		    write.table(serprop, file=fd.serprop, sep="\t", quote=FALSE, row.names=FALSE, col.names=TRUE, eol='\n');
 		} else {
-		    write.table(serprop, file=fd.serprop, sep="\t", quote=FALSE, row.names=FALSE, col.names=FALSE);
+		    write.table(serprop, file=fd.serprop, sep="\t", quote=FALSE, row.names=FALSE, col.names=FALSE, eol='\n');
 		}
 	    }
 	}
@@ -663,7 +663,7 @@ writeTemplate <- function (source.path, dest.path, substitutions, outDir) {
 	}
 	for (ss in substitutions)
 	    data <- gsub (ss[1], ss[2], data);
-	writeLines (data, con=file.path (outDir, dest.path));
+	writeBinLines (data, con=file.path (outDir, dest.path));
     }
 }
 
@@ -681,7 +681,7 @@ writeRelatedGroup  <- function (group, links, chan) {
 }
 
 writeRelated  <- function (groups, links, outdir) {
-    chan <- file (file.path (outdir, "relatedlinks.js"), "w");
+    chan <- file (file.path (outdir, "relatedlinks.js"), "wb");
     cat ("linkoutData = { groups: [\n", file=chan);
     for (ii in 1:length(groups))
         writeRelatedGroup (groups[[ii]], links, chan);
@@ -697,12 +697,12 @@ writeChmExtraSupport <- function (chm, chmSaveDir)
 	writeRelated (chm@relatedGroups, chm@relatedLinks, chmSaveDir);
     }
     if (chm@format=='original' && length(chm@datasets) > 0) {
-	chan <- file (file.path (chmSaveDir, "datasets.tsv"), "w");
-	writeLines ("Dataset\tDescription", con=chan);
+	chan <- file (file.path (chmSaveDir, "datasets.tsv"), "wb");
+	writeBinLines ("Dataset\tDescription", con=chan);
 	for (ii in 1:length(chm@datasets)) {
 	    ds <- chm@datasets[[ii]];
 	    chm <- writeDataset (chm, ds, chmSaveDir);
-	    writeLines (sprintf ("%s\t%s", ds@name, ds@description), con=chan);
+	    writeBinLines (sprintf ("%s\t%s", ds@name, ds@description), con=chan);
 	}
 	close (chan);
     }
@@ -794,7 +794,7 @@ writeChm <- function (chm, saveDir=NULL) {
 
     if (chm@format == "original") {
         genSpecFeedback (60, "writing specification");
-	props <- file (file.path (saveDir, chm@propFile), "w");
+	props <- file (file.path (saveDir, chm@propFile), "wb");
 	cat (sprintf ("# This NGCHM property description was produced using the R NGCHM library version %s at %s\n",
 		      packageDescription("NGCHM")$Version, date()), file=props);
 	cat (sprintf ("data.set.name=%s\n", chm@name), file=props);
@@ -842,7 +842,7 @@ writeChm <- function (chm, saveDir=NULL) {
 	if (chm@format == "original" && hasSpecialProperties (chm)) {
 	    fname <- if (chm@format=="original") "extra.properties" else "extra-properties.json";
 	    chm@extrafiles <- c (chm@extrafiles, fname);
-	    extraprops <- file (file.path (saveDir, fname), "w");
+	    extraprops <- file (file.path (saveDir, fname), "wb");
 	    writeProperties (saveDir, chm@format, chm@properties, extraprops, TRUE);
 	    close (extraprops);
 	}
@@ -881,13 +881,13 @@ writeChm <- function (chm, saveDir=NULL) {
 	if (!is.null(chm@colMeta))
 	    writeMeta (saveDir, "column", chm@colMeta);
 	if (is.list (chm@rowCovariateBars)) {
-	    chan <- file (paste (saveDir, "rowClassification1.txt", sep="/"), "w");
+	    chan <- file (paste (saveDir, "rowClassification1.txt", sep="/"), "wb");
 	    for (ii in 1:length(chm@rowCovariateBars) )
 		writeCovariateBar (chm@rowCovariateBars[[ii]], saveDir, "row", ii, chan);
 	    close (chan);
 	}
 	if (is.list(chm@colCovariateBars)) {
-	    chan <- file (paste (saveDir, "columnClassification1.txt", sep="/"), "w");
+	    chan <- file (paste (saveDir, "columnClassification1.txt", sep="/"), "wb");
 	    for (ii in 1:length(chm@colCovariateBars))
 		writeCovariateBar (chm@colCovariateBars[[ii]], saveDir, "column", ii, chan);
 	    close (chan);
@@ -899,13 +899,13 @@ writeChm <- function (chm, saveDir=NULL) {
         if (is.list(chm@css)) writeCSS (chm@css, saveDir);
         chmWriteCustomJS (chm, file.path (saveDir, "custom-backup.js"));
         jsloader <- readLines(system.file("extdata", "custom.js", package="NGCHM"));
-        jsfile <- file (file.path (saveDir, "custom.js"), "w");
-        writeLines (jsloader, jsfile);
+        jsfile <- file (file.path (saveDir, "custom.js"), "wb");
+        writeBinLines (jsloader, jsfile);
         close (jsfile);
     }
 
     if (chm@format=="shaidy") {
-        writeLines (jsonlite::toJSON(chm), file.path(saveDir, "chm.json"));
+        writeBinLines (jsonlite::toJSON(chm), file.path(saveDir, "chm.json"));
     }
 }
 
@@ -940,7 +940,7 @@ writeOrder <- function (inpDir, type, ord) {
         }
     } else if (class (ord) == "character") {
 	filename <- file.path (inpDir, sprintf ("%s.txt", type));
-        write.table (ord, filename, quote=FALSE, row.names=FALSE, col.names=FALSE)
+        write.table (ord, filename, quote=FALSE, row.names=FALSE, col.names=FALSE, eol='\n')
     } else if ((class (ord) == "dendrogram") || (class (ord) == "hclust")) {
 	sink (file.path (inpDir, sprintf ("dendro_%s.str", type)))
 	if (class (ord) == "hclust")
@@ -949,15 +949,15 @@ writeOrder <- function (inpDir, type, ord) {
 	sink (NULL);
     } else if (class (ord) == "fileContent") {
 	filename <- (paste (inpDir, sprintf ("dendro_%s.str", type), sep="/"));
-	ff <- file (filename, "w");
-	writeLines (ord, ff);
+	ff <- file (filename, "wb");
+	writeBinLines (ord, ff);
 	close (ff);
     } else if (class (ord) == "file") {
 	stop ("Internal error detected: axis order type file should not be here. Please report.");
 	filename <- (paste (inpDir, sprintf ("dendro_%s.str", type), sep="/"));
 	content <- readLines (ord);
-	ff <- file (filename, "w");
-	writeLines (content, ff);
+	ff <- file (filename, "wb");
+	writeBinLines (content, ff);
 	close (ff);
     } else if (class (ord) == "NULL") {
         # Do nothing.
@@ -983,7 +983,7 @@ writeMeta <- function (inpDir, type, metadata) {
         p
     }));
     filename = sprintf ("%s/%s_meta.txt", inpDir, type);
-    write.table (data, filename, quote=FALSE, row.names=FALSE, col.names=TRUE, sep="\t");
+    write.table (data, filename, quote=FALSE, row.names=FALSE, col.names=TRUE, sep="\t", eol='\n');
 }
 
 prepChmOrderings <- function (chm, l) {

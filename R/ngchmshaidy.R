@@ -273,7 +273,7 @@ ngchmAddMatrixToCollection <- function (collection, name, shaid) {
     mats <- collection$matrices;
     if (!any(mats$Name==name)) {
         mats <- rbind (mats, data.frame(Name=name, Shaid=shaid@value));
-        writeLines(jsonlite::toJSON(mats,pretty=TRUE),
+        writeBinLines(jsonlite::toJSON(mats,pretty=TRUE),
 	           file.path (collection$basepath, "matrices.json"));
         collection$matrices <- mats;
     }
@@ -391,7 +391,9 @@ ngchmSaveAsDatasetBlob <- function (shaidyRepo, format, mat) {
 	       length (rownames(mat)) > 0,
 	       length (colnames(mat)) > 0);
     filename <- utempfile ("matrix", fileext='.tsv');
-    write.table (mat, filename, quote=FALSE, sep='\t');
+    con <- file (filename, "wb");
+    write.table (mat, con, quote=FALSE, sep='\t', eol='\n');
+    close(con);
     class(format) <- 'singleElement';
     props <- list(nrow=nrow(mat),ncol=ncol(mat));
     class(props[[1]]) <- 'singleElement';
@@ -427,12 +429,12 @@ writeHCDataTSVs <- function(uDend, theOutputHCDataFileName, theOutputHCOrderFile
     data <- cbind(uDend$merge, uDend$height, deparse.level=0);
     colnames(data)<-c("A", "B", "Height")
     ###Write out the data as a Tab separated file to the specified location
-    write.table(data, file = theOutputHCDataFileName, append = FALSE, quote = FALSE, sep = "\t", row.names=FALSE)
+    write.table(data, file = theOutputHCDataFileName, append = FALSE, quote = FALSE, sep = "\t", row.names=FALSE, eol='\n')
 
     data <- t(vapply(1:length(uDend$labels),function(i)c(uDend$labels[i],which(uDend$order==i)),c("a",1)));
     colnames(data) <- c("Id", "Order")
     ###Write out the order data as a Tab separated file to the specified location (1 more row than data file)
-    write.table(data, file = theOutputHCOrderFileName, append = FALSE, quote = FALSE, sep = "\t", row.names=FALSE)
+    write.table(data, file = theOutputHCOrderFileName, append = FALSE, quote = FALSE, sep = "\t", row.names=FALSE, eol='\n')
 }
 
 ngchmSaveTemplateAsBlob <- function (shaidyRepo, source.path, dest.path, substitutions) {
@@ -547,7 +549,7 @@ ngchmGetLabels <- function (shaid, axis=NULL) {
 
 ngchmSaveLabelsAsBlob <- function (shaidyRepo, labels) {
     filename <- utempfile ("label", fileext='.txt');
-    writeLines (labels, filename);
+    writeBinLines (labels, filename);
     res <- shaidyAddFileBlob (shaidyRepo, 'label', 'labels.txt', filename);
     unlink (filename);
     res

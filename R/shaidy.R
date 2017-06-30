@@ -102,7 +102,7 @@ shaidyInit <- function() {
 	    pl <- paste (shaid@type, "s", sep='');
 	    if (!shaid@value %in% collection[[pl]]) {
 		collection[[pl]] <- append (collection[[pl]], shaid@value);
-		writeLines(jsonlite::toJSON(collection[[pl]],pretty=TRUE),
+		writeBinLines(jsonlite::toJSON(collection[[pl]],pretty=TRUE),
 			   file.path (collection$basepath, paste (pl, ".json", sep='')));
 	    }
 	    collection
@@ -165,7 +165,7 @@ shaidyInit <- function() {
 	    stopifnot (!dir.exists (basepath));
 	    stopifnot (dir.create (basepath));
 	    if (nrow (labels) > 0) {
-		writeLines(jsonlite::toJSON(labels,pretty=TRUE), file.path (basepath, "labels.json"));
+		writeBinLines(jsonlite::toJSON(labels,pretty=TRUE), file.path (basepath, "labels.json"));
 	    }
             collection.uuid
 	},
@@ -187,7 +187,7 @@ shaidyInit <- function() {
 		stop (sprintf ("would form a cycle"));
 	    }
 	    collection$collections <- append (collection$collections, uuid);
-	    writeLines(jsonlite::toJSON(collection$collections,pretty=TRUE),
+	    writeBinLines(jsonlite::toJSON(collection$collections,pretty=TRUE),
 		       file.path (collection$basepath, "collections.json"));
 	    collection
 	}
@@ -305,7 +305,7 @@ shaidyInitRepository <- function (shaidyDir, blob.types) {
     stopifnot (!dir.exists(shaidyDir));
     stopifnot (dir.create (shaidyDir, recursive=TRUE));
     typeTab <- data.frame (Type=blob.types, Path=blob.types);
-    writeLines(jsonlite::toJSON(typeTab,pretty=TRUE), file.path (shaidyDir, "typeTab.json"));
+    writeBinLines(jsonlite::toJSON(typeTab,pretty=TRUE), file.path (shaidyDir, "typeTab.json"));
     repo <- list (accessMethod='file', basepath=shaidyDir);
     class(repo) <- "shaidyRepo";
     repo$blob.path <- shaidy.env$repoMethods$file$blobPath (repo, shaidyDir)
@@ -370,7 +370,7 @@ shaidyAddFileBlob <- function (shaidyRepo, blob.type, blob.file, filename, prope
     blobdir <- shaidyCreateProtoBlob(shaidyRepo,blob.type);
     if (length(properties) > 0) {
 	props.json <- jsonlite::toJSON(properties);
-	writeLines (props.json, file.path (blobdir, "properties.json"));
+	writeBinLines (props.json, file.path (blobdir, "properties.json"));
     }
     for (ii in 1:length(filename)) {
         stopifnot (file.copy (filename[[ii]], file.path (blobdir, blob.file[[ii]])));
