@@ -33,8 +33,6 @@ cloudServ <- chmNewServer ("dnsname.domain")
 \seealso{
 ngchmServer-class
 
-chmMake
-
 chmInstall
 
 chmUninstall

@@ -17,9 +17,10 @@
 #'
 #' @seealso chmNew
 #' @seealso chmAdd
-#' @seealso chmMake
+#' @seealso chmExportToFile
+#' @seealso chmExportToPDF
+#' @seealso chmSetCollection
 #' @seealso chmInstall
-#' @seealso chmListServers
 #' @seealso ngchm-class
 #'
 #' @docType package
@@ -28,13 +29,18 @@
 #' @aliases NGCHM-package
 #'
 #' @examples
+#' data(TCGA.GBM.EXPR)
+#' chm1 <- chmNew('gbm', TCGA.GBM.EXPR[1:50,1:50], rowAxisType='bio.gene.hugo', colAxisType='bio.tcga.barcode.sample.vial.portion.analyte.aliquot');
+#'\dontrun{chmExportToFile(chm1, 'gbm.ngchm');
+#' chmExportToPDF(chm1, 'gbm.pdf');
+#'}
+#'
 #' mat <- matrix(rnorm(100),nrow=10)
 #' rownames(mat) <- sprintf ("ABCA%d", 1:10)
 #' colnames(mat) <- sprintf ("Sample%d", 1:10)
-#' chm <- chmNew ('my-chm', mat, rowAxisType='bio.gene.hugo')
-#'\dontrun{
-#' chmMake ('my-server', chm)
-#' chmInstall ('my-server', chm)
+#' chm <- chmNew ('my-chm', mat)
+#'\dontrun{chmSetCollection ('//server/collection')
+#' chmInstall (chm)
 #'}
 NULL
 

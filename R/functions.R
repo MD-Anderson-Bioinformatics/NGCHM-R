@@ -21,7 +21,6 @@ systemCheck <- function (command, ...) {
 #' @return the server that was registered
 #' @export
 #'
-#' @seealso chmMake
 #' @seealso chmInstall
 #' @seealso chmUninstall
 #' @seealso ngchmUnregisterServer
@@ -74,7 +73,6 @@ ngchmUnregisterServer <- function (uuid, name=NULL) {
 #'
 #' @export
 #'
-#' @seealso chmMake
 #' @seealso chmInstall
 #' @seealso chmUninstall
 #' @seealso ngchmServer-class
@@ -130,9 +128,11 @@ ngchmGetEnv <- function () {
 #' @seealso chmAdd
 #' @seealso chmAddAxisType
 #' @seealso chmAddCovariateBar
+#' @seealso chmAddProperty
 #' @seealso chmAddOverview
-#' @seealso chmMake
 #' @seealso chmInstall
+#' @seealso chmExportToFile
+#' @seealso chmExportToPDF
 
 chmNew <- function (name, ...,
                     rowOrder=chmDefaultRowOrder, rowDist="correlation", rowAgglom="ward.D2",
@@ -1073,7 +1073,6 @@ chmProperties <- function (...) {
 #' cloudServ <- chmNewServer ("dnsname.domain")
 #'
 #' @seealso ngchmServer-class
-#' @seealso chmMake
 #' @seealso chmInstall
 #' @seealso chmUninstall
 #'
@@ -2268,7 +2267,7 @@ chmCreateServer <- function (serverName,
 		    }
                     if (!foundAPI) {
                         # try shaidy API
-			ws <- sprintf("%s/api", serverSpec);
+			ws <- sprintf("%s/api/", serverSpec);
 			res <- httr::GET (ws, handle=ngchmGetHandleHTTR (serverSpec));
 			if (res$status_code >= 200 && res$status_code < 300) {
 			    content <- ngchmResponseJSON(res);

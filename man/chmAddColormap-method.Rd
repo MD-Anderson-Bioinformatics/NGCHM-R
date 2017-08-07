@@ -28,7 +28,7 @@ bars.  These will be included automatically.  Explicitly using this function is 
 order to add additional predefined, but unused colormaps to the NGCHM.
 }
 \seealso{
-chmNewColormap
+chmNewColorMap
 
 ngchmColormap-class
 }

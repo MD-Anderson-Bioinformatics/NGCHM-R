@@ -4,7 +4,7 @@
 \name{chmInstall}
 \alias{chmInstall}
 \alias{chmInstall,ngchm-method}
-\title{Install a compiled NGCHM on a server.}
+\title{Add an NG-CHM to an NG-CHM collection.}
 \usage{
 chmInstall(chm, ...)
 
@@ -15,14 +15,13 @@ chmInstall(chm, ...)
 
 \item{...}{Additional server (protocol) specific parameters.}
 
-\item{server}{The server on which to install the NGCHM.}
+\item{path}{The path to the collection in which to install the NGCHM.}
 }
 \value{
 The installed chm.
 }
 \description{
-Install the specified Next Generation Clustered Heat Map (NGCHM) on the specified server.  The installed NGCHM
-is public by default.
+Add the given Next-Generation Clustered Heat Map (NG-CHM) to the specified collection (default: current collection).
 }
 \seealso{
 ngchmServer-class

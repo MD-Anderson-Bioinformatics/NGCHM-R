@@ -19,8 +19,6 @@ This function registers an ngchmServer that can be used when
 making and installing a Next Generation Clustered Heat Map.
 }
 \seealso{
-chmMake
-
 chmInstall
 
 chmUninstall

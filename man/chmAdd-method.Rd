@@ -24,10 +24,14 @@ require additional information (such as an axis) cannot be added using this func
 Objects that can be added are layers (including numeric matrices), datasets, and colormaps.
 }
 \seealso{
+"chmAddAxisType"
+
 "chmAddColormap"
 
 "chmAddDataset"
 
 "chmAddLayer"
+
+"chmAddMetaData"
 }
 

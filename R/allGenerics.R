@@ -77,9 +77,11 @@ setGeneric ("chmAddMetaData", function(chm,where,type,value) standardGeneric("ch
 #' @exportMethod chmAdd
 #' @rdname chmAdd-method
 #'
+#' @seealso "chmAddAxisType"
 #' @seealso "chmAddColormap"
 #' @seealso "chmAddDataset"
 #' @seealso "chmAddLayer"
+#' @seealso "chmAddMetaData"
 setGeneric ("chmAdd", function(chm, ...) standardGeneric("chmAdd"));
 
 #' Add a Layer to a NGCHM.
@@ -186,7 +188,7 @@ setGeneric ("chmAddTag", function(chm,tag) standardGeneric("chmAddTag"));
 #' @exportMethod chmAddColormap
 #' @rdname chmAddColormap-method
 #'
-#' @seealso chmNewColormap
+#' @seealso chmNewColorMap
 #' @seealso ngchmColormap-class
 setGeneric ("chmAddColormap", function(chm,colormap) standardGeneric("chmAddColormap"));
 
@@ -402,7 +404,9 @@ setGeneric ("chmUrlBase", function(server) standardGeneric("chmUrlBase"));
 
 #' Compile a NGCHM.
 #'
-#' Compile the specified Next Generation Clustered Heat Map (NGCHM) in preparation for installation.
+#' Deprecated.  Users should no longer call this method directly.
+#'
+#' Compiles the specified Next Generation Clustered Heat Map (NGCHM) in preparation for installation.
 #'
 #' @exportMethod chmMake
 #' @rdname chmMake-method
@@ -420,17 +424,16 @@ setGeneric ("chmUrlBase", function(server) standardGeneric("chmUrlBase"));
 #' @seealso ngchmMakeFormat.original
 setGeneric ("chmMake", signature=c("chm"), function(chm,...) standardGeneric("chmMake"));
 
-#' Install a compiled NGCHM on a server.
+#' Add an NG-CHM to an NG-CHM collection.
 #'
-#' Install the specified Next Generation Clustered Heat Map (NGCHM) on the specified server.  The installed NGCHM
-#' is public by default.
+#' Add the given Next-Generation Clustered Heat Map (NG-CHM) to the specified collection (default: current collection).
 #'
 #' @exportMethod chmInstall
 #' @rdname chmInstall-method
 #'
-#' @param server The server on which to install the NGCHM.
 #' @param chm The NGCHM to install.
 #' @param ... Additional server (protocol) specific parameters.
+#' @param path The path to the collection in which to install the NGCHM.
 #' @return The installed chm.
 #'
 #' @seealso ngchmServer-class

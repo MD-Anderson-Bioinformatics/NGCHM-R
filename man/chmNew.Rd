@@ -62,10 +62,14 @@ chmAddAxisType
 
 chmAddCovariateBar
 
+chmAddProperty
+
 chmAddOverview
 
-chmMake
-
 chmInstall
+
+chmExportToFile
+
+chmExportToPDF
 }
 

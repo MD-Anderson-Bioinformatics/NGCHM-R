@@ -20,7 +20,10 @@ of the additional parameters of format x see ngchmMakeFormat.x (e.g. ngchmMakeFo
 The chm
 }
 \description{
-Compile the specified Next Generation Clustered Heat Map (NGCHM) in preparation for installation.
+Deprecated.  Users should no longer call this method directly.
+}
+\details{
+Compiles the specified Next Generation Clustered Heat Map (NGCHM) in preparation for installation.
 }
 \seealso{
 ngchmServer-class
