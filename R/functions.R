@@ -869,6 +869,9 @@ chmNewColorMap <- function (values, colors=NULL, names=NULL, shapes=NULL, zs=NUL
 	}
 	if (length(values) != NC)
 	    stop (sprintf ("chmNewColorMap: number of values (%d) does not equal number of color (%d). It should.", length(values), NC));
+        if (class(values) %in% c('numeric','integer') && !all(is.finite(values))) {
+            stop('chmNewColorMap: values contains non-finite values');
+        }
     } else {
 	# Don't know what the user provided.
         stop (sprintf ("chmNewColorMap: values vector has unknown class '%s'. It must be either a vector or a matrix.",
