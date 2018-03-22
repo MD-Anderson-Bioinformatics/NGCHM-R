@@ -2837,7 +2837,7 @@ chmExportToFile <- function(chm,filename,overwrite=FALSE,shaidyMapGen, shaidyMap
     shaid <- shaidyGetShaid (chm);
     status <- system2(shaidyMapGenJava, c(shaidyMapGenArgs, "-jar", shaidyMapGen, shaidyRepo$basepath, shaid@value, shaid@value));
     if (status != 0) stop("export to ngchm failed");
-    if (!file.copy (shaidyRepo$blob.path ("viewer", shaid@value, paste(chm@name,"ngchm",sep=".")), filename, TRUE)) {
+    if (!file.copy (shaidyRepo$blob.path ("viewer", shaid@value, chm@name, paste(chm@name,"ngchm",sep=".")), filename, TRUE)) {
         stop("export to ngchm failed");
     }
     chm
