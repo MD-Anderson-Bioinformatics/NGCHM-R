@@ -456,8 +456,8 @@ prepDataLayer <- function(chm, layer) {
     cmid <- which(vapply (chm@colormaps, function(cmap)sameColormap(cmap,layer@colors), TRUE));
     if (length(cmid) == 0)
         stop (sprintf ("Internal error detected: no color map found for data layer %s. Please report.", layer@name));
-    l <- list(name=layer@name, renderer=cmid[[1]]-1, data=layer@data);
-    singleElements <- c("name", "renderer");
+    l <- list(name=layer@name, renderer=cmid[[1]]-1, data=layer@data, summary_method=layer@summarizationMethod);
+    singleElements <- c("name", "renderer", "summary_method");
     for (elem in singleElements) {
             class(l[[elem]]) <- 'singleElement';
     }

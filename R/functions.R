@@ -440,7 +440,7 @@ chmAddList <- function (chm, args) {
 #' @param data A matrix containing the data to display. Must have rownames and colnames.
 #' @param colors A color map specifying how the data should be rendered.  If omitted or NULL,
 #' a default green-black-red color map will be estimated from the data.
-#' @param summarizationMethod The method to use when summarizing multiple data points per pixel
+#' @param summarizationMethod The method to use when summarizing multiple data points per pixel.  Possible values are average (default), sample, and mode.
 #'
 #' @return An object of class ngchmLayer
 #'
@@ -474,6 +474,7 @@ chmNewDataLayer <- function (label, data, colors=NULL, summarizationMethod="aver
     if (length (summarizationMethod) != 1) {
         stop (sprintf ("Parameter 'summarizationMethod' must have a single value, not %d", length(summarizationMethod)));
     }
+    summarizationMethod = match.arg (summarizationMethod, c("average", "sample", "mode"));
     data <- ngchmSaveAsDatasetBlob (ngchm.env$tmpShaidy, 'tsv', data);
     if (length(colors) == 0)
 	colors <- chmNewColorMap (data, c("green", "black", "red"));
