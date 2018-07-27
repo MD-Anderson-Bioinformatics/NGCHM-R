@@ -390,6 +390,8 @@ ngchmSaveAsDatasetBlob <- function (shaidyRepo, format, mat) {
 	       length (dim(mat)) == 2,
 	       length (rownames(mat)) > 0,
 	       length (colnames(mat)) > 0);
+    stopifnot (sum(duplicated(rownames(mat))) == 0,
+               sum(duplicated(colnames(mat))) == 0);
     filename <- utempfile ("matrix", fileext='.tsv');
     con <- file (filename, "wb");
     write.table (mat, con, quote=FALSE, sep='\t', eol='\n');
