@@ -479,7 +479,7 @@ chmNewDataLayer <- function (label, data, colors=NULL, summarizationMethod="aver
     data <- ngchmSaveAsDatasetBlob (ngchm.env$tmpShaidy, 'tsv', data);
     if (length(colors) == 0)
 	colors <- chmNewColorMap (data, c("#0010a0", "#f0f0f0", "#a01000"), missing='#ff00ff'); # Blue, Off-white, Red. Missing=bright magenta.
-    new (Class="ngchmLayer", name=label, data=data, colors=colors, summarizationMethod=summarizationMethod, cuts_color="#F2F2F2")
+    new (Class="ngchmLayer", name=label, data=data, colors=colors, summarizationMethod=summarizationMethod, cuts_color="#4c4c4c")
 }
 
 #' Create a new Dataset for a NGCHM.
