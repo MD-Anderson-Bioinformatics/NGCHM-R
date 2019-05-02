@@ -40,8 +40,12 @@ ngchmShaidyInit <- function() {
         setToken = setToken,
 
         getNewToken = function (repo) {
-            cat ("Enter access token: ", file=stderr());
-            setToken( repo, readLines (n=1) )
+            if (interactive()) {
+                cat ("Enter access token: ", file=stderr());
+                setToken( repo, readLines (n=1) )
+            } else {
+                stop ("Access token required.  Try setting using chmSetCredentials.");
+            }
         },
 
 	addObjectToCollection = function (repo, collection, shaid) {
