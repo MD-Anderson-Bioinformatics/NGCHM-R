@@ -1166,6 +1166,8 @@ setMethod ("chmMake",
         chm@rowOrder <- chmOriginalRowOrder (chm);
     } else if (is(chm@rowOrder,"dendrogram")) {
         chm@rowOrder <- chmUserDendrogramToShaid (chm@rowOrder);
+    } else if (is(chm@rowOrder,"hclust")) {
+        chm@rowOrder <- chmUserDendrogramToShaid (as.dendrogram(chm@rowOrder));
     } else if (is(chm@rowOrder,"character")) {
         chm@rowOrder <- chmUserLabelsToShaid (chm@rowOrder);
     }
@@ -1177,6 +1179,8 @@ setMethod ("chmMake",
         chm@colOrder <- chmOriginalColOrder (chm);
     } else if (is(chm@colOrder,"dendrogram")) {
         chm@colOrder <- chmUserDendrogramToShaid (chm@colOrder);
+    } else if (is(chm@colOrder,"hclust")) {
+        chm@colOrder <- chmUserDendrogramToShaid (as.dendrogram(chm@colOrder));
     } else if (is(chm@colOrder,"character")) {
         chm@colOrder <- chmUserLabelsToShaid (chm@colOrder);
     }
@@ -1815,7 +1819,9 @@ metaToShaid <- function (metadata) {
 setMethod ("chmAddMetaData",
     signature = c(chm="ngchm", where="character", type="character", value="character"),
     definition = function (chm, where, type, value) {
-        stopifnot(where %in% c("row","column","both"));
+        stopifnot(length(where) == 1, typeof(where) == "character", where %in% c("row","column","both"));
+        stopifnot(length(type) == 1, typeof(type) == "character", type != "");
+        stopifnot(length(value) > 0, typeof(value) == "character", all(value != ""));
         chm <- chmFixVersion(chm);
         meta <- new('ngchmMetaData', type=type, value=metaToShaid(value));
         if (where %in% c('row','both')) {

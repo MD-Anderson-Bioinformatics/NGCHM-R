@@ -459,7 +459,7 @@ chmAddList <- function (chm, args) {
 #' @seealso chmNewColorMap
 #' @seealso chmAddDataLayer
 #'
-chmNewDataLayer <- function (label, data, colors=NULL, summarizationMethod="average") {
+chmNewDataLayer <- function (label, data, colors=NULL, summarizationMethod="average", cuts_color="#4c4c4c") {
     if (typeof (label) != "character") {
         stop (sprintf ("Parameter 'label' must have type 'character', not '%s'", typeof(label)));
     }
@@ -475,11 +475,17 @@ chmNewDataLayer <- function (label, data, colors=NULL, summarizationMethod="aver
     if (length (summarizationMethod) != 1) {
         stop (sprintf ("Parameter 'summarizationMethod' must have a single value, not %d", length(summarizationMethod)));
     }
+    if (typeof (cuts_color) != "character") {
+        stop (sprintf ("Parameter 'cuts_color' must have type 'character', not '%s'", typeof(cuts_color)));
+    }
+    if (length (cuts_color) != 1) {
+        stop (sprintf ("Parameter 'cuts_color' must have a single value, not %d", length(cuts_color)));
+    }
     summarizationMethod = match.arg (summarizationMethod, c("average", "sample", "mode"));
     data <- ngchmSaveAsDatasetBlob (ngchm.env$tmpShaidy, 'tsv', data);
     if (length(colors) == 0)
 	colors <- chmNewColorMap (data, c("#0010a0", "#f0f0f0", "#a01000"), missing='#ff00ff'); # Blue, Off-white, Red. Missing=bright magenta.
-    new (Class="ngchmLayer", name=label, data=data, colors=colors, summarizationMethod=summarizationMethod, cuts_color="#4c4c4c")
+    new (Class="ngchmLayer", name=label, data=data, colors=colors, summarizationMethod=summarizationMethod, cuts_color=cuts_color)
 }
 
 #' Create a new Dataset for a NGCHM.

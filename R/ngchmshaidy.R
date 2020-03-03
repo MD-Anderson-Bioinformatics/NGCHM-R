@@ -538,7 +538,16 @@ ngchmGetLabels <- function (shaid, axis=NULL) {
     res <- shaidyRepo$provenanceDB$get ('label', provid);
     if (length(res) == 0) {
         srcRepo <- ngchmFindRepo (shaid);
-        if (shaid@type == 'dataset') {
+	if (srcRepo$accessMethod == "api") {
+	    if (shaid@type == 'dataset' && axis == 'row') {
+		labels <- jsonlite::fromJSON(readLines(srcRepo$blob.path ('rowlabels', shaid@type, shaid@value)))[[1]];
+	    } else if (shaid@type == 'dataset' && axis == 'column') {
+		labels <- readLines(srcRepo$blob.path ('bylabel', shaid@type, shaid@value))[[1]];
+		labels <- strsplit (labels, '\t')[[1]];
+	    } else {
+		stop ("Not implemented");
+	    }
+	} else if (shaid@type == 'dataset') {
             ds <- ngchmLoadDatasetBlob (srcRepo, shaid);
             labels <- (if (axis=="row") rownames else colnames)(ds$mat);
         } else if (shaid@type == 'dendrogram') {
