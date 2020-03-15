@@ -4,11 +4,22 @@
 \alias{chmNew}
 \title{Create a new NGCHM.}
 \usage{
-chmNew(name, ..., rowOrder = chmDefaultRowOrder, rowDist = "correlation",
-  rowAgglom = "ward.D2", colOrder = chmDefaultColOrder,
-  colDist = "correlation", colAgglom = "ward.D2", rowAxisType = NULL,
-  colAxisType = NULL, rowCovariates = NULL, colCovariates = NULL,
-  format = "original", overview = c())
+chmNew(
+  name,
+  ...,
+  rowOrder = chmDefaultRowOrder,
+  rowDist = "correlation",
+  rowAgglom = "ward.D2",
+  colOrder = chmDefaultColOrder,
+  colDist = "correlation",
+  colAgglom = "ward.D2",
+  rowAxisType = NULL,
+  colAxisType = NULL,
+  rowCovariates = NULL,
+  colCovariates = NULL,
+  format = "original",
+  overview = c()
+)
 }
 \arguments{
 \item{name}{The name under which the NGCHM will be saved to the NGCHM server.}
@@ -52,24 +63,23 @@ mychm <- chmNew ("test_chm")
 
 }
 \seealso{
-ngchm-class
+\linkS4class{ngchm}
 
-ngchmServer-class
+\linkS4class{ngchmServer}
 
-chmAdd
+\code{\link[=chmAdd]{chmAdd()}}
 
-chmAddAxisType
+\code{\link[=chmAddAxisType]{chmAddAxisType()}}
 
-chmAddCovariateBar
+\code{\link[=chmAddCovariateBar]{chmAddCovariateBar()}}
 
-chmAddProperty
+\code{\link[=chmAddProperty]{chmAddProperty()}}
 
-chmAddOverview
+\code{\link[=chmAddOverview]{chmAddOverview()}}
 
-chmInstall
+\code{\link[=chmInstall]{chmInstall()}}
 
-chmExportToFile
+\code{\link[=chmExportToFile]{chmExportToFile()}}
 
-chmExportToPDF
+\code{\link[=chmExportToPDF]{chmExportToPDF()}}
 }
-

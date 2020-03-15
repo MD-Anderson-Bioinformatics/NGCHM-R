@@ -17,4 +17,3 @@ The shaidy repository
 \description{
 Print a shaidy repository
 }
-

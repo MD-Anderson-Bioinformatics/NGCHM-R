@@ -19,4 +19,3 @@ TRUE iff collection contains uuid, otherwise FALSE
 Recursively determine if collection uuid is contained in collection
 A collecton always contains itself.
 }
-

@@ -13,12 +13,11 @@ chmListFunctions(re = ".*")
 This function lists the predefined Javascript functions available for use in NGCHM menus.
 }
 \seealso{
-chmAddMenuItem
+\code{\link[=chmAddMenuItem]{chmAddMenuItem()}}
 
-chmGetFunction
+\code{\link[=chmGetFunction]{chmGetFunction()}}
 
-chmRegisterFunction
+\code{\link[=chmRegisterFunction]{chmRegisterFunction()}}
 
-grep
+\code{\link[=grep]{grep()}}
 }
-

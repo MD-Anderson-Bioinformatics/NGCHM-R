@@ -8,4 +8,3 @@
 Class representing the shaid of an object
 }
 \keyword{shaid}
-

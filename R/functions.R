@@ -21,10 +21,10 @@ systemCheck <- function (command, ...) {
 #' @return the server that was registered
 #' @export
 #'
-#' @seealso chmInstall
-#' @seealso chmUninstall
-#' @seealso ngchmUnregisterServer
-#' @seealso ngchmServer-class
+#' @seealso [chmInstall()]
+#' @seealso [chmUninstall()]
+#' @seealso [ngchmUnregisterServer()]
+#' @seealso [ngchmServer-class]
 #'
 ngchmRegisterServer <- function (uuid, server) {
     obj <- list (uuid=uuid, name=server@name, server=server);
@@ -47,8 +47,8 @@ ngchmRegisterServer <- function (uuid, server) {
 #'
 #' @export
 #'
-#' @seealso ngchmRegisterServer
-#' @seealso ngchmServer-class
+#' @seealso [ngchmRegisterServer()]
+#' @seealso [ngchmServer-class]
 #'
 ngchmUnregisterServer <- function (uuid, name=NULL) {
     if (length(name) == 0) {
@@ -73,9 +73,9 @@ ngchmUnregisterServer <- function (uuid, name=NULL) {
 #'
 #' @export
 #'
-#' @seealso chmInstall
-#' @seealso chmUninstall
-#' @seealso ngchmServer-class
+#' @seealso [chmInstall()]
+#' @seealso [chmUninstall()]
+#' @seealso [ngchmServer-class]
 #'
 chmServer <- function (name) {
     matches <- which (vapply (ngchm.env$servers, function(srv) (srv$name == name), TRUE));
@@ -123,16 +123,16 @@ ngchmGetEnv <- function () {
 #' @examples
 #' mychm <- chmNew ("test_chm")
 #'
-#' @seealso ngchm-class
-#' @seealso ngchmServer-class
-#' @seealso chmAdd
-#' @seealso chmAddAxisType
-#' @seealso chmAddCovariateBar
-#' @seealso chmAddProperty
-#' @seealso chmAddOverview
-#' @seealso chmInstall
-#' @seealso chmExportToFile
-#' @seealso chmExportToPDF
+#' @seealso [ngchm-class]
+#' @seealso [ngchmServer-class]
+#' @seealso [chmAdd()]
+#' @seealso [chmAddAxisType()]
+#' @seealso [chmAddCovariateBar()]
+#' @seealso [chmAddProperty()]
+#' @seealso [chmAddOverview()]
+#' @seealso [chmInstall()]
+#' @seealso [chmExportToFile()]
+#' @seealso [chmExportToPDF()]
 
 chmNew <- function (name, ...,
                     rowOrder=chmDefaultRowOrder, rowDist="correlation", rowAgglom="ward.D2",
@@ -455,9 +455,9 @@ chmAddList <- function (chm, args) {
 #'                                 c("green", "black", "red"), missing.color="yellow")
 #' layer <- chmNewDataLayer ("Noisy Data", noise, noise.colors)
 #'
-#' @seealso ngchmLayer-class
-#' @seealso chmNewColorMap
-#' @seealso chmAddDataLayer
+#' @seealso [ngchmLayer-class]
+#' @seealso [chmNewColorMap()]
+#' @seealso [chmAddDataLayer()]
 #'
 chmNewDataLayer <- function (label, data, colors=NULL, summarizationMethod="average", cuts_color="#4c4c4c") {
     if (typeof (label) != "character") {
@@ -504,9 +504,9 @@ chmNewDataLayer <- function (label, data, colors=NULL, summarizationMethod="aver
 #'
 #' @export
 #'
-#' @seealso ngchmDataset-class
-#' @seealso ngchmCovariate-class
-#' @seealso chmAddDataset
+#' @seealso [ngchmDataset-class]
+#' @seealso [ngchmCovariate-class]
+#' @seealso [chmAddDataset()]
 #'
 chmNewDataset <- function (name, description, data,
                            row.type = NULL,
@@ -571,9 +571,9 @@ chmNewDataset <- function (name, description, data,
 #'
 #' @export
 #'
-#' @seealso ngchmCovariate-class
-#' @seealso chmAddCovariate
-#' @seealso chmNewColorMap
+#' @seealso [ngchmCovariate-class]
+#' @seealso [chmAddCovariate()]
+#' @seealso [chmNewColorMap()]
 #'
 chmNewCovariate <- function (fullname, values, value.properties=NULL, type=NULL, covabbv=NULL)
 {
@@ -676,10 +676,10 @@ chmNewCovariate <- function (fullname, values, value.properties=NULL, type=NULL,
 #'
 #' @return An object of class ngchmBar
 #'
-#' @seealso ngchmBar-class
-#' @seealso chmNewColorMap
-#' @seealso chmNewCovariateBar
-#' @seealso chmAddCovariateBar
+#' @seealso [ngchmBar-class]
+#' @seealso [chmNewColorMap()]
+#' @seealso [chmNewCovariateBar()]
+#' @seealso [chmAddCovariateBar()]
 #'
 ngchmNewBar <- function (label, type, data, colors=NULL, display="visible", thickness=as.integer(10), merge) {
     if (typeof (label) != "character") {
@@ -767,9 +767,9 @@ ngchmNewBar <- function (label, type, data, colors=NULL, display="visible", thic
 #' covar <- chmNewCovariate ("Group", bar.data, bar.colors, "discrete")
 #' bar <- chmNewCovariateBar (covar)
 #'
-#' @seealso ngchmBar-class
-#' @seealso chmNewColorMap
-#' @seealso chmAddCovariateBar
+#' @seealso [ngchmBar-class]
+#' @seealso [chmNewColorMap()]
+#' @seealso [chmAddCovariateBar()]
 #'
 chmNewCovariateBar <- function (covar, display="visible", thickness=as.integer(10), merge)
 {
@@ -810,9 +810,9 @@ chmNewCovariateBar <- function (covar, display="visible", thickness=as.integer(1
 #'                               c("#00FFFF", "#FF00FF"),
 #'                               type="quantile")
 #'
-#' @seealso ngchmColormap-class
-#' @seealso chmNewDataLayer
-#' @seealso chmNewCovariateBar
+#' @seealso [ngchmColormap-class]
+#' @seealso [chmNewDataLayer()]
+#' @seealso [chmNewCovariateBar()]
 #'
 chmNewColorMap <- function (values, colors=NULL, names=NULL, shapes=NULL, zs=NULL, type="linear", missing.color=NULL, palette=NULL) {
     # Validate parameter 'type'
@@ -954,10 +954,10 @@ chmAddValueProperty <- function (vps, value, color, name=NULL, shape=NULL, z=NUL
 #'                             "function showAlert(database, label) { alert(database[label]); }",
 #'                             c("database"))
 #'
-#' @seealso ngchmJS-class
-#' @seealso chmAddMenuItem
-#' @seealso chmBindFunction
-#' @seealso chmRegisterFunction
+#' @seealso [ngchmJS-class]
+#' @seealso [chmAddMenuItem()]
+#' @seealso [chmBindFunction()]
+#' @seealso [chmRegisterFunction()]
 #'
 chmNewFunction <- function (name, description, implementation, extraParams=NULL, requires=NULL, global=FALSE) {
     if (typeof (name) != "character") {
@@ -1014,8 +1014,8 @@ chmNewFunction <- function (name, description, implementation, extraParams=NULL,
 #' prop <- chmNewProperty ("chm.info.caption",
 #'                            "This is a nifty new CHM.")
 #'
-#' @seealso ngchm-class
-#' @seealso chmAddProperty
+#' @seealso [ngchm-class]
+#' @seealso [chmAddProperty()]
 #'
 chmNewProperty <- function (label, value) {
     if (typeof (label) != "character") {
@@ -1043,7 +1043,7 @@ chmNewProperty <- function (label, value) {
 #' @param ... A named list of property values.
 #'
 #' @export
-#' @seealso chmAdd
+#' @seealso [chmAdd()]
 chmProperties <- function (...) {
    props <- list(...);
    if (length(props) > 0) {
@@ -1083,9 +1083,9 @@ chmProperties <- function (...) {
 #' @examples
 #' cloudServ <- chmNewServer ("dnsname.domain")
 #'
-#' @seealso ngchmServer-class
-#' @seealso chmInstall
-#' @seealso chmUninstall
+#' @seealso [ngchmServer-class]
+#' @seealso [chmInstall()]
+#' @seealso [chmUninstall()]
 #'
 chmNewServer <- function (serverName, serverPort=8080, deployServer=NULL, protoOpts=NULL,
                        jarFile=NULL, serverURL=NULL)
@@ -1115,9 +1115,10 @@ chmNewServer <- function (serverName, serverPort=8080, deployServer=NULL, protoO
 #'
 #' @export
 #'
-#' @seealso chmAddMenuItem
-#' @seealso chmNewFunction
-#' @seealso ngchmFunction-class
+#' @seealso [chmAddMenuItem()]
+#' @seealso [chmNewFunction()]
+#' @seealso [ngchmAxisFunction-class]
+#' @seealso [ngchmMatrixFunction-class]
 #'
 chmGetFunction <- function (name) {
     if (typeof (name) != "character") {
@@ -1149,10 +1150,10 @@ chmGetFunction <- function (name) {
 #'
 #' @export
 #'
-#' @seealso chmAddAxisType
-#' @seealso chmRegisterMatrixFunction
-#' @seealso chmRegisterTypeMapper
-#' @seealso chmNewFunction
+#' @seealso [chmAddAxisType()]
+#' @seealso [chmRegisterMatrixFunction()]
+#' @seealso [chmRegisterTypeMapper()]
+#' @seealso [chmNewFunction()]
 chmRegisterAxisFunction <- function (type, label, fn) {
     if (typeof (label) != "character") {
         stop (sprintf ("Parameter 'label' must have type 'character', not '%s'", typeof(label)));
@@ -1267,10 +1268,10 @@ getAllMatrixTypeFunctions <- function (chm, rowtypes, columntypes) {
 #'
 #' @export
 #'
-#' @seealso chmAddAxisType
-#' @seealso chmRegisterAxisFunction
-#' @seealso chmRegisterTypeMapper
-#' @seealso chmNewFunction
+#' @seealso [chmAddAxisType()]
+#' @seealso [chmRegisterAxisFunction()]
+#' @seealso [chmRegisterTypeMapper()]
+#' @seealso [chmNewFunction()]
 chmRegisterMatrixFunction <- function (rowtype, columntype, label, fn) {
     if (typeof (label) != "character") {
         stop (sprintf ("Parameter 'label' must have type 'character', not '%s'", typeof(label)));
@@ -1320,9 +1321,9 @@ chmRegisterMatrixFunction <- function (rowtype, columntype, label, fn) {
 #'
 #' @export
 #'
-#' @seealso chmListTypes
-#' @seealso chmGetTypeInfo
-#' @seealso chmRegisterTypeMapper
+#' @seealso [chmListTypes()]
+#' @seealso [chmGetTypeInfo()]
+#' @seealso [chmRegisterTypeMapper()]
 chmRegisterType <- function (typename, description) {
     if (typeof (typename) != "character") {
         stop (sprintf ("Parameter 'typename' must have type 'character', not '%s'", typeof(typename)));
@@ -1360,8 +1361,8 @@ chmRegisterType <- function (typename, description) {
 #'
 #' @export
 #'
-#' @seealso chmListTypes
-#' @seealso chmRegisterType
+#' @seealso [chmListTypes()]
+#' @seealso [chmRegisterType()]
 chmGetTypeInfo <- function (typename) {
     if (typeof (typename) != "character") {
         stop (sprintf ("Parameter 'typename' must have type 'character', not '%s'", typeof(typename)));
@@ -1411,7 +1412,7 @@ chmGetTypeInfo <- function (typename) {
 #'
 #' @export
 #'
-#' @seealso chmGetTypeInfo
+#' @seealso [chmGetTypeInfo()]
 print.ngchm.type.info <- function (x, ...) {
     cat (sprintf ("NGCHM type %s: %s\n", x$name, x$description));
     if (length (x$axisFunctions) > 0) {
@@ -1451,10 +1452,10 @@ print.ngchm.type.info <- function (x, ...) {
 #'
 #' @export
 #'
-#' @seealso chmAddAxisType
-#' @seealso chmRegisterAxisFunction
-#' @seealso chmRegisterMatrixFunction
-#' @seealso chmNewFunction
+#' @seealso [chmAddAxisType()]
+#' @seealso [chmRegisterAxisFunction()]
+#' @seealso [chmRegisterMatrixFunction()]
+#' @seealso [chmNewFunction()]
 chmRegisterTypeMapper <- function (fromtype, totype, op, ...) {
     if (typeof (fromtype) != "character") {
         stop (sprintf ("Parameter 'fromtype' must have type 'character', not '%s'", typeof(fromtype)));
@@ -1522,9 +1523,10 @@ chmRegisterTypeMapper <- function (fromtype, totype, op, ...) {
 #'
 #' @export
 #'
-#' @seealso chmAddMenuItem
-#' @seealso chmNewFunction
-#' @seealso ngchmFunction-class
+#' @seealso [chmAddMenuItem()]
+#' @seealso [chmNewFunction()]
+#' @seealso [ngchmAxisFunction-class]
+#' @seealso [ngchmMatrixFunction-class]
 #'
 chmRegisterFunction <- function (fn) {
     if (class(fn) != "ngchmJS") {
@@ -1712,10 +1714,10 @@ ngchmGetProtoParam <- function (server, option, default=NULL) {
 #'
 #' @export
 #'
-#' @seealso chmAddMenuItem
-#' @seealso chmGetFunction
-#' @seealso chmRegisterFunction
-#' @seealso grep
+#' @seealso [chmAddMenuItem()]
+#' @seealso [chmGetFunction()]
+#' @seealso [chmRegisterFunction()]
+#' @seealso [grep()]
 #'
 chmListFunctions <- function (re=".*") {
     if (typeof (re) != "character") {
@@ -1740,9 +1742,9 @@ chmListFunctions <- function (re=".*") {
 #'
 #' @export
 #'
-#' @seealso chmAddAxisType
-#' @seealso chmGetFunction
-#' @seealso chmListFunctions
+#' @seealso [chmAddAxisType()]
+#' @seealso [chmGetFunction()]
+#' @seealso [chmListFunctions()]
 #'
 chmRegisterGetMetadataFunction <- function (functionName, metadataColumnName) {
     if (typeof (functionName) != "character") {
@@ -1782,9 +1784,9 @@ chmRegisterGetMetadataFunction <- function (functionName, metadataColumnName) {
 #'
 #' @export
 #'
-#' @seealso chmGetFunction
-#' @seealso chmListFunctions
-#' @seealso chmRegisterTypeMapper
+#' @seealso [chmGetFunction()]
+#' @seealso [chmListFunctions()]
+#' @seealso [chmRegisterTypeMapper()]
 #'
 chmRegisterTypeSplitter <- function (functionName, listtype, itemtype, separator) {
     if (typeof (functionName) != "character") {
@@ -1824,7 +1826,7 @@ chmRegisterTypeSplitter <- function (functionName, listtype, itemtype, separator
 #'
 #' @export
 #'
-#' @seealso chmAddAxisType
+#' @seealso [chmAddAxisType()]
 chmListTypes <- function (re=".*") {
     if (typeof (re) != "character") {
         stop (sprintf ("Parameter 're' must have type 'character', not '%s'", typeof(re)));
@@ -1856,8 +1858,9 @@ chmListTypes <- function (re=".*") {
 #'
 #' @export
 #'
-#' @seealso chmNewFunction
-#' @seealso ngchmFunction-class
+#' @seealso [chmNewFunction()]
+#' @seealso [ngchmAxisFunction-class]
+#' @seealso [ngchmMatrixFunction-class]
 #'
 chmRegisterToolboxFunction <- function (tbtype, menulabel, jsfn) {
     if (typeof (menulabel) != "character") {
@@ -2024,8 +2027,8 @@ shortnameslist <- function (names, maxnames=5)
 #'
 #' @export
 #'
-#' @seealso chmAdd
-#' @seealso chmAddDialog
+#' @seealso [chmAdd()]
+#' @seealso [chmAddDialog()]
 #'
 chmNewDialog <- function (id, title, fn) {
     if (class(fn) == "character") {
@@ -2047,7 +2050,7 @@ chmNewDialog <- function (id, title, fn) {
 #'
 #' @export
 #'
-#' @seealso chmAdd
+#' @seealso [chmAdd()]
 chmAxis <- function (axis, ...) {
     new ("ngchmAxis", axis=axis, objects=list(...))
 }
@@ -2063,7 +2066,7 @@ chmAxis <- function (axis, ...) {
 #'
 #' @export
 #'
-#' @seealso chmAxis
+#' @seealso [chmAxis()]
 chmAxisType <- function (typename, func) {
     stopifnot (typeof(typename) == "character" && length(typename)==1);
     if (missing(func)) {
@@ -2215,10 +2218,10 @@ getBuilderJar <- function (server) {
 #'  \item{'traceLevel'. }{The amount of trace to output. Defaults to "PROGRESS".}
 #' }
 #'
-#' @seealso chmServer
-#' @seealso ngchmServer-class
-#' @seealso ngchmGetServerProtocol
-#' @seealso ngchmServerProtocol-class
+#' @seealso [chmServer()]
+#' @seealso [ngchmServer-class]
+#' @seealso [ngchmGetServerProtocol()]
+#' @seealso [ngchmServerProtocol-class]
 
 
 chmCreateServer <- function (serverName,
@@ -2404,8 +2407,8 @@ chmCreateServer <- function (serverName,
 #' @return The created (and registered) ngchmServer object.
 #' @export
 #'
-#' @seealso chmServer
-#' @seealso chmCreateServer
+#' @seealso [chmServer()]
+#' @seealso [chmCreateServer()]
 
 chmCreateManagedServer <- function (serverName, privateAddr, publicAddr=NULL, chmPort=80, managerPort=18080, serviceName="default", ...) {
     if (is.null(publicAddr)) publicAddr <- privateAddr;
@@ -2749,7 +2752,7 @@ utempfile <- function (...) {
 #' @param viewer The viewer to use. Defaults to option "viewer" or browseURL.
 #' @export
 #'
-#' @seealso browseURL
+#' @seealso [utils::browseURL()]
 chmBrowse <- function (server=NULL, viewer=NULL) {
     if (is.null(server)) server <- getOption("NGCHM.Server", chmListServers()[1]);
     if (!is(server,"ngchmServer")) server <- chmServer(server);
@@ -2766,7 +2769,7 @@ chmBrowse <- function (server=NULL, viewer=NULL) {
 #' @param viewer The viewer to use. Defaults to option "viewer" or browseURL.
 #' @export
 #'
-#' @seealso browseURL
+#' @seealso [utils::browseURL()]
 chmManager <- function (server=NULL, viewer=NULL) {
     if (is.null(server)) server <- getOption("NGCHM.Server", chmListServers()[1]);
     if (!is(server,"ngchmServer")) server <- chmServer(server);
@@ -2900,4 +2903,143 @@ writeBinLines <- function(text, con) {
     if (openit) con <- file(con, "wb");
     writeLines (text, con, "\n");
     if (openit) close (con);
+}
+
+#' Add TSNE coordinates to an NG-CHM.
+#'
+#' Add TSNE coordinates as hidden covariate bars to an axis of an NG-CHM.  One hidden
+#' covariate bar is added for each TSNE coordinate.  Coordinates have names 'BASENAME.coordinate.N',
+#' where BASENAME is specified by the parameter basename (default TSNE) and N ranges from 1 to the number of
+#' added covariate bars.
+#'
+#' pointIds is required because [Rtsne::Rtsne()] does not preserve the rownames of the data matrix it was applied to.
+#' Their values must match those on that axis of the NGCHM, but their order must match those in the data
+#' matrix passed to [Rtsne::Rtsne()].
+#'
+#' @examples
+#' rtc <- Rtsne::Rtsne(t(TCGA.GBM.EXPR));
+#' hm <- chmNew ("gbm", TCGA.GBM.EXPR);
+#' hm <- chmAddTSNE(hm, "column", rtc, colnames(TCGA.GBM.EXPR));
+#'
+#' @export chmAddTSNE
+#'
+#' @param hm The NGCHM to add the coordinates to
+#' @param axis The NGCHM axis ("row" or "column") to add the coordinates to
+#' @param tsne TSNE coordinates (output of [Rtsne::Rtsne()]) for the specified NGCHM axis
+#' @param pointIds The NGCHM names for the data points in tsne
+#' @param baseName The prefix to use for the coordinate names.
+#'
+#' @return The NGCHM with added coordinates.
+#' @seealso [chmAddPCA()]
+#' @seealso [chmAddUMAP()]
+
+chmAddTSNE <- function (hm, axis, tsne, pointIds, basename = "TSNE") {
+	stopifnot (class(hm) == "ngchmVersion2");
+	stopifnot (mode(axis) == "character" && length(axis) == 1);
+	stopifnot (axis == "row" || axis == "column");
+	stopifnot (mode(pointIds) == "character" && length(pointIds) == nrow(tsne$Y));
+	stopifnot (mode(basename) == "character" && length(basename) == 1);
+
+	for (idx in 1:ncol(tsne$Y)) {
+		coordname <- sprintf ("%s.coordinate.%d", basename, idx);
+		vals <- tsne$Y[,idx];
+		names(vals) <- pointIds;
+		minv <- min (vals, na.rm=TRUE);
+		maxv <- max (vals, na.rm=TRUE);
+		midv <- if (minv*maxv < 0) 0.0 else (minv+maxv)/2.0;
+		cmap <- chmNewColorMap(c(minv,midv,maxv), colors=c("#00007f","#d0d0d0","#7f0000"));
+		cv <- chmNewCovariate(coordname, vals, cmap);
+		hm <- chmAddCovariateBar(hm, axis, cv, display = "hidden");
+	}
+	return (hm);
+}
+
+#' Add PCA coordinates to an NG-CHM.
+#'
+#' Add PCA coordinates as hidden covariate bars to an axis of an NG-CHM.
+#' One hidden covariate bar is added for each PCA coordinate (up to ndim coordinates).
+#' Coordinates are given names 'BASENAME.coordinate.N', where BASENAME is specified by the
+#' parameter basename (default "PC") and N ranges from 1 to the number of added covariate bars.
+#'
+#' @examples
+#' prc <- prcomp(TCGA.GBM.EXPR);
+#' hm <- chmNew ("gbm", TCGA.GBM.EXPR);
+#' hm <- chmAddPCA(hm, "column", prc);
+#'
+#' @export chmAddPCA
+#'
+#' @param hm The NGCHM to add the coordinates to.
+#' @param axis The NGCHM axis ("row" or "column") to add the coordinates to.
+#' @param prc Principal component coordinates (output of [stats::prcomp()]) for the specified NGCHM axis.
+#' @param baseName The prefix to use for the coordinate names.
+#' @param ndim The maximum number of coordinates to add.
+#'
+#' @return The NGCHM with added coordinates.
+#' @seealso [chmAddTSNE()]
+#' @seealso [chmAddUMAP()]
+
+chmAddPCA <- function (hm, axis, prc, basename = "PC", ndim=2) {
+	stopifnot (class(hm) == "ngchmVersion2");
+	stopifnot (mode(axis) == "character" && length(axis) == 1);
+	stopifnot (axis == "row" || axis == "column");
+	stopifnot (mode(basename) == "character" && length(basename) == 1);
+	stopifnot (mode(ndim) == "numeric" && length(basename) == 1);
+
+	pointIds <- rownames(prc$rotation);
+	for (idx in 1:min(ncol(prc$rotation),ndim)) {
+		coordname <- sprintf ("%s.coordinate.%d", basename, idx);
+		vals <- prc$rotation[,idx];
+		names(vals) <- pointIds;
+		minv <- min (vals, na.rm=TRUE);
+		maxv <- max (vals, na.rm=TRUE);
+		midv <- if (minv*maxv < 0) 0.0 else (minv+maxv)/2.0;
+		cmap <- chmNewColorMap(c(minv,midv,maxv), colors=c("#00007f","#d0d0d0","#7f0000"));
+		cv <- chmNewCovariate(coordname, vals, cmap);
+		hm <- chmAddCovariateBar(hm, axis, cv, display = "hidden");
+	}
+	return (hm);
+}
+
+#' Add UMAP coordinates to an NG-CHM.
+#'
+#' Add UMAP coordinates as hidden covariate bars to an axis of an NG-CHM.  One hidden
+#' covariate bar is added for each UMAP coordinate.  Coordinates have names 'BASENAME.coordinate.N',
+#' where BASENAME is specified by the parameter basename (default UMAP) and N ranges from 1 to the number of
+#' added covariate bars.
+#'
+#' @examples
+#' umc <- umap::umap(t(TCGA.GBM.EXPR));
+#' hm <- chmNew ("gbm", TCGA.GBM.EXPR);
+#' hm <- chmAddUMAP(hm, "column", umc);
+#'
+#' @export chmAddUMAP
+#'
+#' @param hm The NGCHM to add the coordinates to.
+#' @param axis The NGCHM axis ("row" or "column") to add the coordinates to.
+#' @param umap TSNE coordinates (output of [umap::umap()]) for the specified NGCHM axis.
+#' @param baseName The prefix to use for the coordinate names.
+#'
+#' @return The NGCHM with added coordinates.
+#' @seealso [chmAddPCA()]
+#' @seealso [chmAddTSNE()]
+
+chmAddUMAP <- function (hm, axis, umap, basename = "UMAP") {
+	stopifnot (class(hm) == "ngchmVersion2");
+	stopifnot (mode(axis) == "character" && length(axis) == 1);
+	stopifnot (axis == "row" || axis == "column");
+	stopifnot (mode(basename) == "character" && length(basename) == 1);
+
+	pointIds <- rownames(umap$layout);
+	for (idx in 1:ncol(umap$layout)) {
+		coordname <- sprintf ("%s.coordinate.%d", basename, idx);
+		vals <- umap$layout[,idx];
+		names(vals) <- pointIds;
+		minv <- min (vals, na.rm=TRUE);
+		maxv <- max (vals, na.rm=TRUE);
+		midv <- if (minv*maxv < 0) 0.0 else (minv+maxv)/2.0;
+		cmap <- chmNewColorMap(c(minv,midv,maxv), colors=c("#00007f","#d0d0d0","#7f0000"));
+		cv <- chmNewCovariate(coordname, vals, cmap);
+		hm <- chmAddCovariateBar(hm, axis, cv, display = "hidden");
+	}
+	return (hm);
 }

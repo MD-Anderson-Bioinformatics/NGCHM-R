@@ -4,8 +4,15 @@
 \alias{chmCreateManagedServer}
 \title{Create an ngchmServer object for a managed NG-CHM server}
 \usage{
-chmCreateManagedServer(serverName, privateAddr, publicAddr = NULL,
-  chmPort = 80, managerPort = 18080, serviceName = "default", ...)
+chmCreateManagedServer(
+  serverName,
+  privateAddr,
+  publicAddr = NULL,
+  chmPort = 80,
+  managerPort = 18080,
+  serviceName = "default",
+  ...
+)
 }
 \arguments{
 \item{serverName}{The name of the new server object.}
@@ -33,8 +40,7 @@ This library will communicate with the NG-CHM using the private address.
 Returned URLs for viewing NG-CHMs will use the public address.
 }
 \seealso{
-chmServer
+\code{\link[=chmServer]{chmServer()}}
 
-chmCreateServer
+\code{\link[=chmCreateServer]{chmCreateServer()}}
 }
-

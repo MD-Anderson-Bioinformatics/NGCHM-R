@@ -12,4 +12,3 @@
 \description{
 Compute cosine (angular) distance matrix
 }
-

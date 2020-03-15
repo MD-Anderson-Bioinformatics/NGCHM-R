@@ -8,4 +8,3 @@
 Class representing a Color Map on a Next Generation Clustered Heat Map (NGCHM).
 }
 \keyword{classes}
-

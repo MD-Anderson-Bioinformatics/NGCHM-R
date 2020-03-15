@@ -12,4 +12,3 @@ ngchmInitShaidyRepository(shaidyDir)
 \description{
 Create a shaidy repository for NG-CHMS
 }
-

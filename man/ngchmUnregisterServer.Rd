@@ -16,8 +16,7 @@ namespace are unregistered.}
 This function unregisters one or more ngchmServer(s).
 }
 \seealso{
-ngchmRegisterServer
+\code{\link[=ngchmRegisterServer]{ngchmRegisterServer()}}
 
-ngchmServer-class
+\linkS4class{ngchmServer}
 }
-

@@ -11,9 +11,8 @@ chmOriginalRowOrder(chm)
 }
 \value{
 Shaid of a label order suitable for use as the
-        chm's row order.
+chm's row order.
 }
 \description{
 Return original row order of an NGCHM
 }
-

@@ -19,12 +19,11 @@ This function registers an ngchmServer that can be used when
 making and installing a Next Generation Clustered Heat Map.
 }
 \seealso{
-chmInstall
+\code{\link[=chmInstall]{chmInstall()}}
 
-chmUninstall
+\code{\link[=chmUninstall]{chmUninstall()}}
 
-ngchmUnregisterServer
+\code{\link[=ngchmUnregisterServer]{ngchmUnregisterServer()}}
 
-ngchmServer-class
+\linkS4class{ngchmServer}
 }
-

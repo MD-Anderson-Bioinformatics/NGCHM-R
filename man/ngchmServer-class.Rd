@@ -8,4 +8,3 @@
 Class representing a Next Generation Clustered Heat Map (NGCHM) server.
 }
 \keyword{classes}
-

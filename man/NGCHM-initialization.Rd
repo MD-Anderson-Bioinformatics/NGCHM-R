@@ -43,6 +43,7 @@ R scripts are sourced.  They can be used to define local NGCHM related functions
 
 Javascript files define context specific menu entries.
 }
+
 \examples{
 \dontrun{
 #/usr/local/ngchm/conf.d/00-servers.txt :
@@ -54,4 +55,3 @@ my-server = /usr/local/ngchm/my-server
 serverProtocol = manual
 }
 }
-

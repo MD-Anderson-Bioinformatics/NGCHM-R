@@ -23,12 +23,11 @@ axes types.
 This function is intended for use by NGCHM system developers.
 }
 \seealso{
-chmAddAxisType
+\code{\link[=chmAddAxisType]{chmAddAxisType()}}
 
-chmRegisterAxisFunction
+\code{\link[=chmRegisterAxisFunction]{chmRegisterAxisFunction()}}
 
-chmRegisterTypeMapper
+\code{\link[=chmRegisterTypeMapper]{chmRegisterTypeMapper()}}
 
-chmNewFunction
+\code{\link[=chmNewFunction]{chmNewFunction()}}
 }
-

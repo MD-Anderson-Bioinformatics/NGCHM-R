@@ -20,8 +20,7 @@ An object of class ngchmDialog
 This function creates a new Dialog suitable for adding to a Next Generation Clustered Heat Map.
 }
 \seealso{
-chmAdd
+\code{\link[=chmAdd]{chmAdd()}}
 
-chmAddDialog
+\code{\link[=chmAddDialog]{chmAddDialog()}}
 }
-

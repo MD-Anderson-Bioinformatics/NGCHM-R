@@ -4,8 +4,15 @@
 \alias{chmNewDataset}
 \title{Create a new Dataset for a NGCHM.}
 \usage{
-chmNewDataset(name, description, data, row.type = NULL, column.type = NULL,
-  row.covariates = NULL, column.covariates = NULL)
+chmNewDataset(
+  name,
+  description,
+  data,
+  row.type = NULL,
+  column.type = NULL,
+  row.covariates = NULL,
+  column.covariates = NULL
+)
 }
 \arguments{
 \item{name}{The filename prefix under which the dataset will be saved to the ngchm.}
@@ -29,10 +36,9 @@ An object of class ngchmDataset
 This function creates a new Dataset suitable for attaching to a Next Generation Clustered Heat Map.
 }
 \seealso{
-ngchmDataset-class
+\linkS4class{ngchmDataset}
 
-ngchmCovariate-class
+\linkS4class{ngchmCovariate}
 
-chmAddDataset
+\code{\link[=chmAddDataset]{chmAddDataset()}}
 }
-

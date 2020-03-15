@@ -8,4 +8,3 @@
 Class representing a custom Javascript function for a Next Generation Clustered Heat Map (NGCHM).
 }
 \keyword{classes}
-

@@ -25,4 +25,3 @@ the existing blob.
 \description{
 Finalize a prototype blob
 }
-

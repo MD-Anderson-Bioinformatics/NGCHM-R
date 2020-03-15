@@ -5,8 +5,8 @@
 #'   \item Axis function View Ideogram is added for the appropriate axis types.
 #' }
 #'
-#' @seealso chmGetFunction
-#' @seealso chmListFunctions
+#' @seealso [chmGetFunction()]
+#' @seealso [chmListFunctions()]
 #'
 #' @name NGCHM-functions
 #' @rdname NGCHM-functions
@@ -334,8 +334,8 @@ loadTextConfig <- function(filename) {
 #'
 #' @export
 #'
-#' @seealso chmGetFunction
-#' @seealso chmStringopFunction
+#' @seealso [chmGetFunction()]
+#' @seealso [chmStringopFunction()]
 #'
 chmFieldAccessFunction <- function (fieldsep, idx) {
     key <- sprintf ("fa%s%d", fieldsep, idx);
@@ -371,8 +371,8 @@ chmFieldAccessFunction <- function (fieldsep, idx) {
 #'
 #' @export
 #'
-#' @seealso chmGetFunction
-#' @seealso chmFieldAccessFunction
+#' @seealso [chmGetFunction()]
+#' @seealso [chmFieldAccessFunction()]
 #'
 chmStringopFunction <- function (stringop) {
     key <- sprintf ("sop%s", stringop);

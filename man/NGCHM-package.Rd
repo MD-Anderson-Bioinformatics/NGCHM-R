@@ -23,6 +23,7 @@ a colon (:) separated list of directory names.  If not set it defaults to
 /etc/ngchm:/usr/local/ngchm:/opt/ngchm:$HOME/.ngchm.
 See NGCHM-initialization for details.
 }
+
 \examples{
 data(TCGA.GBM.EXPR)
 chm1 <- chmNew('gbm', TCGA.GBM.EXPR[1:50,1:50], rowAxisType='bio.gene.hugo', colAxisType='bio.tcga.barcode.sample.vial.portion.analyte.aliquot');
@@ -39,18 +40,17 @@ chmInstall (chm)
 }
 }
 \seealso{
-chmNew
+\code{\link[=chmNew]{chmNew()}}
 
-chmAdd
+\code{\link[=chmAdd]{chmAdd()}}
 
-chmExportToFile
+\code{\link[=chmExportToFile]{chmExportToFile()}}
 
-chmExportToPDF
+\code{\link[=chmExportToPDF]{chmExportToPDF()}}
 
-chmSetCollection
+\code{\link[=chmSetCollection]{chmSetCollection()}}
 
-chmInstall
+\code{\link[=chmInstall]{chmInstall()}}
 
-ngchm-class
+\linkS4class{ngchm}
 }
-

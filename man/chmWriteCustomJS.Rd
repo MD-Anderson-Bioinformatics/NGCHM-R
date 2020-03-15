@@ -14,4 +14,3 @@ chmWriteCustomJS(chm, filename)
 \description{
 This function outputs the Javascript required to customize an NGCHM.
 }
-

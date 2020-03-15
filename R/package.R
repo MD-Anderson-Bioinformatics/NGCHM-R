@@ -15,13 +15,13 @@
 #' /etc/ngchm:/usr/local/ngchm:/opt/ngchm:$HOME/.ngchm.
 #' See NGCHM-initialization for details.
 #'
-#' @seealso chmNew
-#' @seealso chmAdd
-#' @seealso chmExportToFile
-#' @seealso chmExportToPDF
-#' @seealso chmSetCollection
-#' @seealso chmInstall
-#' @seealso ngchm-class
+#' @seealso [chmNew()]
+#' @seealso [chmAdd()]
+#' @seealso [chmExportToFile()]
+#' @seealso [chmExportToPDF()]
+#' @seealso [chmSetCollection()]
+#' @seealso [chmInstall()]
+#' @seealso [ngchm-class]
 #'
 #' @docType package
 #' @name NGCHM

@@ -15,4 +15,3 @@ An HTTR handle
 \description{
 This function returns a 'handle' suitable for use with the server's view/WS URL
 }
-

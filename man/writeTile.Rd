@@ -14,4 +14,3 @@ writeTile(mat, filename)
 \description{
 Write the matrix as a vector of 32-bit little-endian floats to the specified file.
 }
-

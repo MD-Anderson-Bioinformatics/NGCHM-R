@@ -9,4 +9,3 @@ ngchmShaidyInit()
 \description{
 Initialize shaidy subsystem for NGCHMs
 }
-

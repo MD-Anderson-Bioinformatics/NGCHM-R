@@ -12,4 +12,3 @@ A character vector
 \description{
 List defined server protocols
 }
-

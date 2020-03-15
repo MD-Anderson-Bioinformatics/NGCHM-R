@@ -10,7 +10,7 @@
 #' @exportMethod chmName
 #' @rdname chmName-method
 #'
-#' @seealso ngchm-class
+#' @seealso [ngchm-class]
 #'
 setGeneric ("chmName", function(chm) standardGeneric("chmName"));
 
@@ -99,8 +99,8 @@ setGeneric ("chmAdd", function(chm, ...) standardGeneric("chmAdd"));
 #' @exportMethod chmAddLayer
 #' @rdname chmAddLayer-method
 #'
-#' @seealso chmNewDataLayer
-#' @seealso ngchmLayer-class
+#' @seealso [chmNewDataLayer()]
+#' @seealso [ngchmLayer-class]
 setGeneric ("chmAddLayer", function(chm,layer) standardGeneric("chmAddLayer"));
 
 #' Add an auxiliary dataset to a NGCHM.
@@ -119,8 +119,8 @@ setGeneric ("chmAddLayer", function(chm,layer) standardGeneric("chmAddLayer"));
 #' @exportMethod chmAddDataset
 #' @rdname chmAddDataset-method
 #'
-#' @seealso chmNewDataset
-#' @seealso ngchmDataset-class
+#' @seealso [chmNewDataset()]
+#' @seealso [ngchmDataset-class]
 setGeneric ("chmAddDataset", function(chm,dataset) standardGeneric("chmAddDataset"));
 
 #' Add an extra dialog to a NGCHM.
@@ -135,8 +135,8 @@ setGeneric ("chmAddDataset", function(chm,dataset) standardGeneric("chmAddDatase
 #' @exportMethod chmAddDialog
 #' @rdname chmAddDialog-method
 #'
-#' @seealso chmNewDialog
-#' @seealso ngchmDialog-class
+#' @seealso [chmNewDialog()]
+#' @seealso [ngchmDialog-class]
 setGeneric ("chmAddDialog", function(chm,dialog) standardGeneric("chmAddDialog"));
 
 #' Add a covariate to an auxiliary dataset.
@@ -154,8 +154,8 @@ setGeneric ("chmAddDialog", function(chm,dialog) standardGeneric("chmAddDialog")
 #' @exportMethod chmAddCovariate
 #' @rdname chmAddCovariate-method
 #'
-#' @seealso chmNewCovariate
-#' @seealso ngchmCovariate-class
+#' @seealso [chmNewCovariate()]
+#' @seealso [ngchmCovariate-class]
 setGeneric ("chmAddCovariate", function(dataset,where,covariate) standardGeneric("chmAddCovariate"));
 
 #' Add tags to a NGCHM.
@@ -188,8 +188,8 @@ setGeneric ("chmAddTag", function(chm,tag) standardGeneric("chmAddTag"));
 #' @exportMethod chmAddColormap
 #' @rdname chmAddColormap-method
 #'
-#' @seealso chmNewColorMap
-#' @seealso ngchmColormap-class
+#' @seealso [chmNewColorMap()]
+#' @seealso [ngchmColormap-class]
 setGeneric ("chmAddColormap", function(chm,colormap) standardGeneric("chmAddColormap"));
 
 #' Add a group of related links to the NGCHM.
@@ -262,7 +262,7 @@ setGeneric ("chmAddTemplate", function(chm, source.path, dest.path, substitution
 #' @exportMethod chmAddCSS
 #' @rdname chmAddCSS-method
 #'
-#' @seealso ngchmCSS-class
+#' @seealso [ngchmCSS-class]
 setGeneric ("chmAddCSS", function(chm,css) standardGeneric("chmAddCSS"));
 
 #' Add custom property to a NGCHM.
@@ -279,7 +279,7 @@ setGeneric ("chmAddCSS", function(chm,css) standardGeneric("chmAddCSS"));
 #' @exportMethod chmAddProperty
 #' @rdname chmAddProperty-method
 #'
-#' @seealso ngchmProperty-class
+#' @seealso [ngchmProperty-class]
 setGeneric ("chmAddProperty", function(chm,label,value) standardGeneric("chmAddProperty"));
 
 #' Add a menu entry to a NGCHM.
@@ -297,7 +297,7 @@ setGeneric ("chmAddProperty", function(chm,label,value) standardGeneric("chmAddP
 #' @exportMethod chmAddMenuItem
 #' @rdname chmAddMenuItem-method
 #'
-#' @seealso ngchmMenuItem-class
+#' @seealso [ngchmMenuItem-class]
 setGeneric ("chmAddMenuItem", function(chm,where,label,func) standardGeneric("chmAddMenuItem"));
 
 #' Add an axis type to a NGCHM.
@@ -319,11 +319,11 @@ setGeneric ("chmAddMenuItem", function(chm,where,label,func) standardGeneric("ch
 #' @exportMethod chmAddAxisType
 #' @rdname chmAddAxisType-method
 #'
-#' @seealso chmListTypes
-#' @seealso chmRegisterAxisFunction
-#' @seealso chmRegisterMatrixFunction
-#' @seealso chmRegisterTypeMapper
-#' @seealso ngchmAxisType-class
+#' @seealso [chmListTypes()]
+#' @seealso [chmRegisterAxisFunction()]
+#' @seealso [chmRegisterMatrixFunction()]
+#' @seealso [chmRegisterTypeMapper()]
+#' @seealso [ngchmAxisType-class]
 setGeneric ("chmAddAxisType", function (chm, where, type, func) standardGeneric("chmAddAxisType"));
 
 #' Add a CHM-specific axis type function to a NGCHM.
@@ -345,8 +345,8 @@ setGeneric ("chmAddAxisType", function (chm, where, type, func) standardGeneric(
 #' @exportMethod chmAddSpecificAxisTypeFunction
 #' @rdname chmAddSpecificAxisTypeFunction-method
 #'
-#' @seealso chmListTypes
-#' @seealso ngchmAxisType-class
+#' @seealso [chmListTypes()]
+#' @seealso [ngchmAxisType-class]
 setGeneric ("chmAddSpecificAxisTypeFunction", function (chm, where, type, label, func) standardGeneric("chmAddSpecificAxisTypeFunction"));
 
 #' Add a covariate bar to a NGCHM.
@@ -359,7 +359,7 @@ setGeneric ("chmAddSpecificAxisTypeFunction", function (chm, where, type, label,
 #' @param where The chm axis(axes) to add the covariate bar to. Must be one of "row", "column", or "both".
 #' @param covar The covariate or covariate bar to add to the chm.
 #' @param ... Additional parameters passed to chmNewCovariateBar if covar is a covariate.
-#' @param display Whether the bar is displayed or not. Defaults to "visible".
+#' @param display Whether the bar is displayed ("visible") or not ("hidden"). Defaults to "visible".
 #' @param thickness Initial thickness of bar in pixels. Defaults to 10.
 #' @param merge Algorithm for merging multiple items into a single pixel. Default.
 #'
@@ -368,9 +368,9 @@ setGeneric ("chmAddSpecificAxisTypeFunction", function (chm, where, type, label,
 #' @exportMethod chmAddCovariateBar
 #' @rdname chmAddCovariateBar-method
 #'
-#' @seealso chmNewCovariate
-#' @seealso chmNewCovariateBar
-#' @seealso ngchmCovariate-class
+#' @seealso [chmNewCovariate()]
+#' @seealso [chmNewCovariateBar()]
+#' @seealso [ngchmCovariate-class]
 setGeneric ("chmAddCovariateBar", function(chm,where,covar,...) standardGeneric("chmAddCovariateBar"));
 
 #' Get the name of a NGCHM server.
@@ -384,7 +384,7 @@ setGeneric ("chmAddCovariateBar", function(chm,where,covar,...) standardGeneric(
 #' @exportMethod chmDeployServer
 #' @rdname chmDeployServer-method
 #'
-#' @seealso ngchmServer-class
+#' @seealso [ngchmServer-class]
 setGeneric ("chmDeployServer", function(server) standardGeneric("chmDeployServer"));
 
 #' Get the base URL for a NGCHM installed on a NGCHM server.
@@ -399,7 +399,7 @@ setGeneric ("chmDeployServer", function(server) standardGeneric("chmDeployServer
 #' @exportMethod chmUrlBase
 #' @rdname chmUrlBase-method
 #'
-#' @seealso ngchmServer-class
+#' @seealso [ngchmServer-class]
 setGeneric ("chmUrlBase", function(server) standardGeneric("chmUrlBase"));
 
 #' Compile a NGCHM.
@@ -417,11 +417,11 @@ setGeneric ("chmUrlBase", function(server) standardGeneric("chmUrlBase"));
 #'
 #' @return The chm
 #'
-#' @seealso ngchmServer-class
-#' @seealso ngchm-class
-#' @seealso chmNew
-#' @seealso chmInstall
-#' @seealso ngchmMakeFormat.original
+#' @seealso [ngchmServer-class]
+#' @seealso [ngchm-class]
+#' @seealso [chmNew()]
+#' @seealso [chmInstall()]
+#' @seealso [ngchmMakeFormat.original()]
 setGeneric ("chmMake", signature=c("chm"), function(chm,...) standardGeneric("chmMake"));
 
 #' Add an NG-CHM to an NG-CHM collection.
@@ -436,11 +436,11 @@ setGeneric ("chmMake", signature=c("chm"), function(chm,...) standardGeneric("ch
 #' @param path The path to the collection in which to install the NGCHM.
 #' @return The installed chm.
 #'
-#' @seealso ngchmServer-class
-#' @seealso ngchm-class
-#' @seealso chmUninstall
-#' @seealso chmMakePrivate
-#' @seealso chmMakePublic
+#' @seealso [ngchmServer-class]
+#' @seealso [ngchm-class]
+#' @seealso [chmUninstall()]
+#' @seealso [chmMakePrivate()]
+#' @seealso [chmMakePublic()]
 setGeneric ("chmInstall", function(chm,...) standardGeneric("chmInstall"));
 
 #' Remove an installed NGCHM.
@@ -454,9 +454,9 @@ setGeneric ("chmInstall", function(chm,...) standardGeneric("chmInstall"));
 #' @param chm The NGCHM to remove.
 #' @param ... Additional server (protocol) specific parameters.
 #'
-#' @seealso ngchmServer-class
-#' @seealso ngchm-class
-#' @seealso chmInstall
+#' @seealso [ngchmServer-class]
+#' @seealso [ngchm-class]
+#' @seealso [chmInstall()]
 setGeneric ("chmUninstall", function(chm,...) standardGeneric("chmUninstall"));
 
 #' Get the URL for an installed NGCHM.
@@ -468,8 +468,8 @@ setGeneric ("chmUninstall", function(chm,...) standardGeneric("chmUninstall"));
 #'
 #' @param chm The NGCHM for which the URL is required.
 #'
-#' @seealso ngchmServer-class
-#' @seealso ngchm-class
+#' @seealso [ngchmServer-class]
+#' @seealso [ngchm-class]
 setGeneric ("chmGetURL", function(chm,...) standardGeneric("chmGetURL"));
 
 #' Make an installed NGCHM private.
@@ -482,11 +482,11 @@ setGeneric ("chmGetURL", function(chm,...) standardGeneric("chmGetURL"));
 #' @param server The server on which the NGCHM to make private is installed.
 #' @param chm The NGCHM to make private.
 #'
-#' @seealso ngchmServer-class
-#' @seealso ngchm-class
-#' @seealso chmInstall
-#' @seealso chmUninstall
-#' @seealso chmMakePublic
+#' @seealso [ngchmServer-class]
+#' @seealso [ngchm-class]
+#' @seealso [chmInstall()]
+#' @seealso [chmUninstall()]
+#' @seealso [chmMakePublic()]
 setGeneric ("chmMakePrivate", function(server,chm) standardGeneric("chmMakePrivate"));
 
 #' Make an installed NGCHM public.
@@ -499,11 +499,11 @@ setGeneric ("chmMakePrivate", function(server,chm) standardGeneric("chmMakePriva
 #' @param server The server on which the NGCHM to make public is installed.
 #' @param chm The NGCHM to make public.
 #'
-#' @seealso ngchmServer-class
-#' @seealso ngchm-class
-#' @seealso chmInstall
-#' @seealso chmUninstall
-#' @seealso chmMakePrivate
+#' @seealso [ngchmServer-class]
+#' @seealso [ngchm-class]
+#' @seealso [chmInstall()]
+#' @seealso [chmUninstall()]
+#' @seealso [chmMakePrivate()]
 setGeneric ("chmMakePublic", function(server,chm) standardGeneric("chmMakePublic"));
 
 #' Set access credentials.
@@ -530,7 +530,7 @@ setGeneric( "chmSetCredentials", function(resource,credentials) standardGeneric(
 #'        binds one parameter, starting from the first unbound parameter, and the name
 #'        of each list element must match the name of the corresponding parameter.
 #'
-#' @seealso chmNewFunction
+#' @seealso [chmNewFunction()]
 setGeneric ("chmBindFunction", function(name,fn,bindings) standardGeneric("chmBindFunction"));
 
 #' Add standard toolbox to an axis

@@ -17,4 +17,3 @@ The shaid of the saved blob
 \description{
 Save a dendrogram as a blob in a shaidy repository
 }
-

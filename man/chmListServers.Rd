@@ -9,4 +9,3 @@ chmListServers()
 \description{
 Return the names of the NGCHM servers defined to date in this session.
 }
-

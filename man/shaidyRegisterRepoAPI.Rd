@@ -14,4 +14,3 @@ shaidyRegisterRepoAPI(api, methods)
 \description{
 Set the methods for the repository API called api
 }
-

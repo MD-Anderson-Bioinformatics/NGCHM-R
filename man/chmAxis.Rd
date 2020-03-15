@@ -19,6 +19,5 @@ This function creates a new Axis for adding to a Next Generation Clustered Heat 
 axis name here, but chmAdd only accepts row, column, and both.
 }
 \seealso{
-chmAdd
+\code{\link[=chmAdd]{chmAdd()}}
 }
-

@@ -16,4 +16,3 @@ ngchmProtoParamCheck(params, required, optional)
 \description{
 Check that all required parameters are specified, and all specified parameters are either required or optional.
 }
-

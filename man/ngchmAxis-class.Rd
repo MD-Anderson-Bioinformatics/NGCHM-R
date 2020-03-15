@@ -8,7 +8,6 @@
 Class representing an axis of a Next Generation Clustered Heat Map (NG-CHM).
 }
 \seealso{
-chmAxis
+\code{\link[=chmAxis]{chmAxis()}}
 }
 \keyword{classes}
-

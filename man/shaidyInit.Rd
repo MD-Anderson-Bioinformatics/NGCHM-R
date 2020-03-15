@@ -8,6 +8,5 @@ shaidyInit()
 }
 \description{
 blobPath returns a function (first, ...) that accepts either a shaid or a blob type and optionally
-        additional file path components and returns a filepath
+additional file path components and returns a filepath
 }
-

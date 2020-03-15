@@ -17,10 +17,11 @@ This function returns a predefined Javascript function that can be used when
 building a Next Generation Clustered Heat Map.
 }
 \seealso{
-chmAddMenuItem
+\code{\link[=chmAddMenuItem]{chmAddMenuItem()}}
 
-chmNewFunction
+\code{\link[=chmNewFunction]{chmNewFunction()}}
 
-ngchmFunction-class
+\linkS4class{ngchmAxisFunction}
+
+\linkS4class{ngchmMatrixFunction}
 }
-

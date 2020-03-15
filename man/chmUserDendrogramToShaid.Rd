@@ -12,4 +12,3 @@ chmUserDendrogramToShaid(ddg)
 \description{
 Convert a user specified dendrogram to a shaid
 }
-

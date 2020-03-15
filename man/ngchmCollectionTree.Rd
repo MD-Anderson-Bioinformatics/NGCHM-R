@@ -17,4 +17,3 @@ a string vector describing the contents of the collection
 \description{
 Create a recursive description of a collection
 }
-

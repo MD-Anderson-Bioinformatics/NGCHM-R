@@ -17,4 +17,3 @@ A function that calls the method with the repository as its first parameter
 \description{
 Provide a simpler method for accessing repo methods
 }
-

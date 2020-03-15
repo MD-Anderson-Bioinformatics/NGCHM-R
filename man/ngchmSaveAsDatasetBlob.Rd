@@ -19,4 +19,3 @@ The shaid of the saved blob
 \description{
 Save a numeric matrix as a blob in a shaidy repository
 }
-

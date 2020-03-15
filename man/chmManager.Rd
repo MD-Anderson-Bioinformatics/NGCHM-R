@@ -16,6 +16,5 @@ The server must be managed.}
 Opens the NG-CHM manager page in the viewer.
 }
 \seealso{
-browseURL
+\code{\link[utils:browseURL]{utils::browseURL()}}
 }
-

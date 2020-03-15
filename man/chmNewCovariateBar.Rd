@@ -4,8 +4,12 @@
 \alias{chmNewCovariateBar}
 \title{Create a new covariate Bar for a NGCHM}
 \usage{
-chmNewCovariateBar(covar, display = "visible", thickness = as.integer(10),
-  merge)
+chmNewCovariateBar(
+  covar,
+  display = "visible",
+  thickness = as.integer(10),
+  merge
+)
 }
 \arguments{
 \item{covar}{The covariate to be displayed in the bar.}
@@ -32,10 +36,9 @@ bar <- chmNewCovariateBar (covar)
 
 }
 \seealso{
-ngchmBar-class
+\linkS4class{ngchmBar}
 
-chmNewColorMap
+\code{\link[=chmNewColorMap]{chmNewColorMap()}}
 
-chmAddCovariateBar
+\code{\link[=chmAddCovariateBar]{chmAddCovariateBar()}}
 }
-

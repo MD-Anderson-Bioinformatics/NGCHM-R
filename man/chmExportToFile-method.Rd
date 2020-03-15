@@ -4,8 +4,14 @@
 \alias{chmExportToFile}
 \title{Export a standalone NGCHM to a file.}
 \usage{
-chmExportToFile(chm, filename, overwrite = FALSE, shaidyMapGen,
-  shaidyMapGenJava, shaidyMapGenArgs)
+chmExportToFile(
+  chm,
+  filename,
+  overwrite = FALSE,
+  shaidyMapGen,
+  shaidyMapGenJava,
+  shaidyMapGenArgs
+)
 }
 \arguments{
 \item{chm}{The NGCHM to export}
@@ -26,4 +32,3 @@ the rendered NGCHM
 \description{
 Create a standalone viewer for the NGCHM in the specified file.
 }
-

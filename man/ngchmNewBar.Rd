@@ -4,8 +4,15 @@
 \alias{ngchmNewBar}
 \title{Create a new Classification Bar for a NGCHM}
 \usage{
-ngchmNewBar(label, type, data, colors = NULL, display = "visible",
-  thickness = as.integer(10), merge)
+ngchmNewBar(
+  label,
+  type,
+  data,
+  colors = NULL,
+  display = "visible",
+  thickness = as.integer(10),
+  merge
+)
 }
 \arguments{
 \item{label}{The name by which the classification bar will be known.}
@@ -30,12 +37,11 @@ This function is deprecated and will be removed in a future version.  Please use
 This function creates a new Classification Bar suitable for adding to a Next Generation Clustered Heat Map.
 }
 \seealso{
-ngchmBar-class
+\linkS4class{ngchmBar}
 
-chmNewColorMap
+\code{\link[=chmNewColorMap]{chmNewColorMap()}}
 
-chmNewCovariateBar
+\code{\link[=chmNewCovariateBar]{chmNewCovariateBar()}}
 
-chmAddCovariateBar
+\code{\link[=chmAddCovariateBar]{chmAddCovariateBar()}}
 }
-

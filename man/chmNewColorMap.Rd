@@ -4,8 +4,16 @@
 \alias{chmNewColorMap}
 \title{Create a new Color Map for use in constructing a NGCHM}
 \usage{
-chmNewColorMap(values, colors = NULL, names = NULL, shapes = NULL,
-  zs = NULL, type = "linear", missing.color = NULL, palette = NULL)
+chmNewColorMap(
+  values,
+  colors = NULL,
+  names = NULL,
+  shapes = NULL,
+  zs = NULL,
+  type = "linear",
+  missing.color = NULL,
+  palette = NULL
+)
 }
 \arguments{
 \item{values}{A vector specifying the series / break points for which the following colors are defined, or a data matrix.}
@@ -49,10 +57,9 @@ bar.colors <- chmNewColorMap (c("small", "big"),
 
 }
 \seealso{
-ngchmColormap-class
+\linkS4class{ngchmColormap}
 
-chmNewDataLayer
+\code{\link[=chmNewDataLayer]{chmNewDataLayer()}}
 
-chmNewCovariateBar
+\code{\link[=chmNewCovariateBar]{chmNewCovariateBar()}}
 }
-

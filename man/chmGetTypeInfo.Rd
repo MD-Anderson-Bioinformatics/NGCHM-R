@@ -19,8 +19,7 @@ Registration of a typename is (currently) not required in order to use it, so it
 valid type name not to have any registered information.
 }
 \seealso{
-chmListTypes
+\code{\link[=chmListTypes]{chmListTypes()}}
 
-chmRegisterType
+\code{\link[=chmRegisterType]{chmRegisterType()}}
 }
-

@@ -6,12 +6,11 @@
 \description{
 Currently:
 \itemize{
-  \item Axis function View Ideogram is added for the appropriate axis types.
+\item Axis function View Ideogram is added for the appropriate axis types.
 }
 }
 \seealso{
-chmGetFunction
+\code{\link[=chmGetFunction]{chmGetFunction()}}
 
-chmListFunctions
+\code{\link[=chmListFunctions]{chmListFunctions()}}
 }
-

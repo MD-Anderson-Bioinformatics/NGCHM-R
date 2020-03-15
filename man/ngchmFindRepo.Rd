@@ -13,9 +13,8 @@ ngchmFindRepo(shaid, required = TRUE)
 }
 \value{
 The first repository containing the shaid, otherwise NULL.  The
-        temporary repositories are searched before source repositories.
+temporary repositories are searched before source repositories.
 }
 \description{
 Find a repository, if any, that contains the requested shaid
 }
-

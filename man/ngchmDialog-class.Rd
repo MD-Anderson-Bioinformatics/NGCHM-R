@@ -8,4 +8,3 @@
 Class representing an addon dialog
 }
 \keyword{classes}
-

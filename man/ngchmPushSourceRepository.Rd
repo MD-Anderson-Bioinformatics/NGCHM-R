@@ -14,4 +14,3 @@ ngchmPushSourceRepository(shaidyDir, accessMethod = "file")
 \description{
 Push a shaidy repository onto the stack of source repositories
 }
-

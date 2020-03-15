@@ -19,4 +19,3 @@ An updated list containing details of the collection
 \description{
 Add an object reference to a collection
 }
-

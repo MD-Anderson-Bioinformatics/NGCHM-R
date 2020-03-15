@@ -16,6 +16,5 @@ a character vector of axis type names
 This function returns a list of the axis types for which axis- or matrix- menu entries may be defined.
 }
 \seealso{
-chmAddAxisType
+\code{\link[=chmAddAxisType]{chmAddAxisType()}}
 }
-

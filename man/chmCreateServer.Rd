@@ -25,27 +25,26 @@ referenced by name, including retrieval using chmServer.
 \details{
 serverSpec can be any of:
 \itemize{
-  \item{A configuration directory path. }{The specification will be read from a file 'config.txt' in that directory.}
-  \item{An NGCHM server URL (ending in '/chm' or '/Viewer' for instance). }{A minimal specification will be inferred.
-        Known methods for uploading NGCHMs to the server will be autoprobed unless specified manually.}
-  \item{A URL referencing a configuration file (must end in '/config.txt'). }{The specification will be read from the
-        specified URL.}
+\item{A configuration directory path. }{The specification will be read from a file 'config.txt' in that directory.}
+\item{An NGCHM server URL (ending in '/chm' or '/Viewer' for instance). }{A minimal specification will be inferred.
+Known methods for uploading NGCHMs to the server will be autoprobed unless specified manually.}
+\item{A URL referencing a configuration file (must end in '/config.txt'). }{The specification will be read from the
+specified URL.}
 }
 serverOptions can include both protocol-specific options and the following generic options:
 \itemize{
- \item{'serverURL'. }{The URL for the NGCHM server.}
- \item{'serverProtocol'. }{The protocol to be used for uploading etc. NGCHMs to the server.}
- \item{'jarFile'. }{The jarFile used to build NGCHMs.}
- \item{'traceLevel'. }{The amount of trace to output. Defaults to "PROGRESS".}
+\item{'serverURL'. }{The URL for the NGCHM server.}
+\item{'serverProtocol'. }{The protocol to be used for uploading etc. NGCHMs to the server.}
+\item{'jarFile'. }{The jarFile used to build NGCHMs.}
+\item{'traceLevel'. }{The amount of trace to output. Defaults to "PROGRESS".}
 }
 }
 \seealso{
-chmServer
+\code{\link[=chmServer]{chmServer()}}
 
-ngchmServer-class
+\linkS4class{ngchmServer}
 
-ngchmGetServerProtocol
+\code{\link[=ngchmGetServerProtocol]{ngchmGetServerProtocol()}}
 
-ngchmServerProtocol-class
+\linkS4class{ngchmServerProtocol}
 }
-

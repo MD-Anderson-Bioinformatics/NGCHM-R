@@ -4,7 +4,13 @@
 \alias{chmNewDataLayer}
 \title{Create a new Data Layer for a NGCHM.}
 \usage{
-chmNewDataLayer(label, data, colors = NULL, summarizationMethod = "average")
+chmNewDataLayer(
+  label,
+  data,
+  colors = NULL,
+  summarizationMethod = "average",
+  cuts_color = "#4c4c4c"
+)
 }
 \arguments{
 \item{label}{The name under which the data layer will be displayed to the user.}
@@ -14,7 +20,9 @@ chmNewDataLayer(label, data, colors = NULL, summarizationMethod = "average")
 \item{colors}{A color map specifying how the data should be rendered.  If omitted or NULL,
 a default green-black-red color map will be estimated from the data.}
 
-\item{summarizationMethod}{The method to use when summarizing multiple data points per pixel}
+\item{summarizationMethod}{The method to use when summarizing multiple data points per pixel.  Possible values are average (default), sample, and mode.}
+
+\item{cuts_color}{color of cuts}
 }
 \value{
 An object of class ngchmLayer
@@ -32,10 +40,9 @@ layer <- chmNewDataLayer ("Noisy Data", noise, noise.colors)
 
 }
 \seealso{
-ngchmLayer-class
+\linkS4class{ngchmLayer}
 
-chmNewColorMap
+\code{\link[=chmNewColorMap]{chmNewColorMap()}}
 
-chmAddDataLayer
+\code{\link[=chmAddDataLayer]{chmAddDataLayer()}}
 }
-

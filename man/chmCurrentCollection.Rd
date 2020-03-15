@@ -12,4 +12,6 @@ the identity of the current collection
 \description{
 Get the user's current collection
 }
-
+\seealso{
+\code{\link[=chmSetCollection]{chmSetCollection()}}
+}

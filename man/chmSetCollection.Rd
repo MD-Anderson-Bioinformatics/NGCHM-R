@@ -24,4 +24,10 @@ are interpreted relative to the current collection.
 
 The interpretation of each path component is server specific.
 }
+\seealso{
+\code{\link[=chmCurrentCollection]{chmCurrentCollection()}}
 
+\code{\link[=chmServer]{chmServer()}}
+
+\code{\link[=chmListServers]{chmListServers()}}
+}

@@ -15,6 +15,5 @@
 Pretty print the result returned by chmGetTypeInfo.
 }
 \seealso{
-chmGetTypeInfo
+\code{\link[=chmGetTypeInfo]{chmGetTypeInfo()}}
 }
-

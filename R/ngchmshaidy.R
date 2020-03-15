@@ -636,6 +636,8 @@ ngchmTileDataset <- function (repo, dataset, rowOrder, colOrder) {
 #' @return the identity of the current collection
 #'
 #' @export
+#'
+#' @seealso [chmSetCollection()]
 chmCurrentCollection <- function () {
     if (length(ngchm.env$currentServer) == 0 && length(ngchm.env$servers) > 0) {
 	chmSetCollection (getOption("NGCHM.Collection", "//"));
@@ -648,6 +650,9 @@ chmCurrentCollection <- function () {
 #' @return the identity of the current server
 #'
 #' @export
+#' @seealso [chmListServers()]
+#' @seealso [chmServer()]
+#' @seealso [chmSetCollection()]
 chmCurrentServer <- function () {
     if (length(ngchm.env$currentServer) == 0 && length(ngchm.env$servers) > 0) {
 	chmSetCollection (getOption("NGCHM.Collection", "//"));
@@ -673,6 +678,11 @@ chmCurrentServer <- function () {
 #' @param path A path specifying a server and/or collection
 #'
 #' @export
+#'
+#' @seealso [chmCurrentCollection()]
+#' @seealso [chmServer()]
+#' @seealso [chmListServers()]
+
 chmSetCollection <- function (path) {
     stopifnot (!missing(path) && typeof(path)=="character" && length(path)==1);
     res <- parsePathSpec (path);
@@ -733,6 +743,8 @@ parsePathSpec <- function (path) {
 #' @param recursive If TRUE, create intermediate collections as required
 #'
 #' @export
+#'
+#' @seealso [chmCurrentCollection()]
 chmCreateCollection <- function (path, recursive=FALSE) {
     stopifnot (!missing(path) && typeof(path)=="character" && length(path)==1);
     server <- ngchm.env$currentServer;

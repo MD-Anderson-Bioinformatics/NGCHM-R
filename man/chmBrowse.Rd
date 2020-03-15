@@ -15,6 +15,5 @@ chmBrowse(server = NULL, viewer = NULL)
 Opens the NG-CHM browser page in the viewer.
 }
 \seealso{
-browseURL
+\code{\link[utils:browseURL]{utils::browseURL()}}
 }
-

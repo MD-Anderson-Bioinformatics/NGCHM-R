@@ -11,9 +11,8 @@ chmDefaultRowOrder(chm)
 }
 \value{
 Shaid of a dendrogram suitable for use as the
-        chm's row order.
+chm's row order.
 }
 \description{
 Return default row order of an NGCHM
 }
-

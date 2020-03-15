@@ -4,8 +4,14 @@
 \alias{chmExportToPDF}
 \title{Export a PDF of the NGCHM to a file.}
 \usage{
-chmExportToPDF(chm, filename, overwrite = FALSE, shaidyMapGen,
-  shaidyMapGenJava, shaidyMapGenArgs)
+chmExportToPDF(
+  chm,
+  filename,
+  overwrite = FALSE,
+  shaidyMapGen,
+  shaidyMapGenJava,
+  shaidyMapGenArgs
+)
 }
 \arguments{
 \item{chm}{The NGCHM to generate the PDF for}
@@ -26,4 +32,3 @@ filename
 \description{
 Create a PDF of the NGCHM in the specified file.
 }
-

@@ -17,4 +17,3 @@ a boolean vector
 \description{
 Determine if one more blobs exist in a shaidy repository
 }
-

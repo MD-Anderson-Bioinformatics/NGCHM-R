@@ -8,4 +8,3 @@
 Class representing meta data attached to an NG-CHM
 }
 \keyword{classes}
-

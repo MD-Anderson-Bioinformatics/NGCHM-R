@@ -19,4 +19,3 @@ An updated list contaiing details of the collection
 \description{
 Add a matrix reference to a collection
 }
-

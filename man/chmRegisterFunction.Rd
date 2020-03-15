@@ -15,10 +15,11 @@ building a Next Generation Clustered Heat Map.  This function is
 intended for use by NGCHM system developers.
 }
 \seealso{
-chmAddMenuItem
+\code{\link[=chmAddMenuItem]{chmAddMenuItem()}}
 
-chmNewFunction
+\code{\link[=chmNewFunction]{chmNewFunction()}}
 
-ngchmFunction-class
+\linkS4class{ngchmAxisFunction}
+
+\linkS4class{ngchmMatrixFunction}
 }
-

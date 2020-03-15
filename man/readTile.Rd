@@ -17,4 +17,3 @@ readTile(filename, nrow, ncol)
 Read a vector of little-endian 32-bit floats from the specified file and return
 as a matrix with nrow rows and ncol columns.
 }
-

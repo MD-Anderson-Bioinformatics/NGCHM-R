@@ -15,4 +15,3 @@ A list of repository methods
 \description{
 Get the methods for the repository API called api
 }
-

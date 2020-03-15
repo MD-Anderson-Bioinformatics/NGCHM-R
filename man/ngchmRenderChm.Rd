@@ -17,4 +17,3 @@ Nothing
 \description{
 Render a shaidy NGCHM
 }
-

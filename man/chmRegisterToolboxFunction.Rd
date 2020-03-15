@@ -19,8 +19,9 @@ the toolbox of an NGCHM.  This function is
 intended for use by NGCHM system developers.
 }
 \seealso{
-chmNewFunction
+\code{\link[=chmNewFunction]{chmNewFunction()}}
 
-ngchmFunction-class
+\linkS4class{ngchmAxisFunction}
+
+\linkS4class{ngchmMatrixFunction}
 }
-

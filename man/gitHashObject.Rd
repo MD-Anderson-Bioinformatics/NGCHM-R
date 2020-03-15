@@ -15,4 +15,3 @@ a string containing the file hash
 \description{
 Obtain the git hash of an existing file.
 }
-

@@ -8,4 +8,3 @@
 Class representing a matrix function for Next Generation Clustered Heat Map (NGCHM).
 }
 \keyword{classes}
-

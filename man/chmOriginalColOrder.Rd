@@ -11,9 +11,8 @@ chmOriginalColOrder(chm)
 }
 \value{
 Shaid of a label order suitable for use as the
-        chm's column order.
+chm's column order.
 }
 \description{
 Return original column order of an NGCHM
 }
-

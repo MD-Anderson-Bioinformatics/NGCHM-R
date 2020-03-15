@@ -17,4 +17,3 @@ The shaid to assign the protoblob
 \description{
 Compute the shaid to assign a protoblob
 }
-

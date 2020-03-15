@@ -22,8 +22,7 @@ constant within an R session, but may differ between R sessions (or if this
 library is unloaded and reloaded).
 }
 \seealso{
-chmGetFunction
+\code{\link[=chmGetFunction]{chmGetFunction()}}
 
-chmStringopFunction
+\code{\link[=chmStringopFunction]{chmStringopFunction()}}
 }
-

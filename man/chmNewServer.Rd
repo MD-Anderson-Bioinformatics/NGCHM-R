@@ -4,8 +4,14 @@
 \alias{chmNewServer}
 \title{Create a new object representing a NGCHM server.}
 \usage{
-chmNewServer(serverName, serverPort = 8080, deployServer = NULL,
-  protoOpts = NULL, jarFile = NULL, serverURL = NULL)
+chmNewServer(
+  serverName,
+  serverPort = 8080,
+  deployServer = NULL,
+  protoOpts = NULL,
+  jarFile = NULL,
+  serverURL = NULL
+)
 }
 \arguments{
 \item{serverName}{The DNS name of the NGCHM server.}
@@ -31,10 +37,9 @@ cloudServ <- chmNewServer ("dnsname.domain")
 
 }
 \seealso{
-ngchmServer-class
+\linkS4class{ngchmServer}
 
-chmInstall
+\code{\link[=chmInstall]{chmInstall()}}
 
-chmUninstall
+\code{\link[=chmUninstall]{chmUninstall()}}
 }
-

@@ -4,9 +4,20 @@
 \alias{ngchmCreateServerProtocol}
 \title{Create and register an NGCHM server protocol implementation.}
 \usage{
-ngchmCreateServerProtocol(protocolName, chmFormat, requiredParams,
-  optionalParams, paramValidator, findCollection, createCollection,
-  installMethod, uninstallMethod, makePrivate, makePublic, setCredentials)
+ngchmCreateServerProtocol(
+  protocolName,
+  chmFormat,
+  requiredParams,
+  optionalParams,
+  paramValidator,
+  findCollection,
+  createCollection,
+  installMethod,
+  uninstallMethod,
+  makePrivate,
+  makePublic,
+  setCredentials
+)
 }
 \arguments{
 \item{protocolName}{The name of this protocol implementation.}
@@ -37,4 +48,3 @@ ngchmCreateServerProtocol(protocolName, chmFormat, requiredParams,
 This function creates and registers a protocol implementation for manipulating
 an NGCHM server.
 }
-

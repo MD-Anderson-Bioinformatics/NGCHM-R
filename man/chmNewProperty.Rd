@@ -24,8 +24,7 @@ prop <- chmNewProperty ("chm.info.caption",
 
 }
 \seealso{
-ngchm-class
+\linkS4class{ngchm}
 
-chmAddProperty
+\code{\link[=chmAddProperty]{chmAddProperty()}}
 }
-

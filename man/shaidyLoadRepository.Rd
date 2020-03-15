@@ -17,4 +17,3 @@ A shaidyRepo
 \description{
 Load a shaidy repository
 }
-

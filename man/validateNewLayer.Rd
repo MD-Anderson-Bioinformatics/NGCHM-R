@@ -14,4 +14,3 @@ validateNewLayer(chm, layer)
 \description{
 Stops with an error if the specified layer cannot be added to the specified NGCHM.
 }
-

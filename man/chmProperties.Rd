@@ -13,6 +13,5 @@ chmProperties(...)
 Create a list of NGCHM properties.
 }
 \seealso{
-chmAdd
+\code{\link[=chmAdd]{chmAdd()}}
 }
-

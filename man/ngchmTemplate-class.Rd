@@ -8,4 +8,3 @@
 Class representing a Template attached to a NGCHM
 }
 \keyword{classes}
-

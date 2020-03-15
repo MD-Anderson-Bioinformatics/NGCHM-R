@@ -16,4 +16,3 @@ ngchmGetProtoParam(server, option, default = NULL)
 \description{
 Get a server protocol parameter
 }
-

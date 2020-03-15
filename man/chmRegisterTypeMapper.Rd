@@ -21,9 +21,11 @@ totype must be shorter than fromtype.}
 NULL
 
 op can have the following values:
-+ 'field' Split source into fields separated by 'separator' and select field 'num' (0 origin)
-+ 'expr' Compute string expression 'expr'. 'return' value is a vector or a scalar (default)
-+ 'javascript' Evaluate javascript function 'fn' (deprecated)
+\itemize{
+\item 'field' Split source into fields separated by 'separator' and select field 'num' (0 origin)
+\item 'expr' Compute string expression 'expr'. 'return' value is a vector or a scalar (default)
+\item 'javascript' Evaluate javascript function 'fn' (deprecated)
+}
 }
 \description{
 This function registers a Javascript function that will be automatically
@@ -32,12 +34,11 @@ values from one type into another more basic type.
 This function is intended for use by NGCHM system developers.
 }
 \seealso{
-chmAddAxisType
+\code{\link[=chmAddAxisType]{chmAddAxisType()}}
 
-chmRegisterAxisFunction
+\code{\link[=chmRegisterAxisFunction]{chmRegisterAxisFunction()}}
 
-chmRegisterMatrixFunction
+\code{\link[=chmRegisterMatrixFunction]{chmRegisterMatrixFunction()}}
 
-chmNewFunction
+\code{\link[=chmNewFunction]{chmNewFunction()}}
 }
-

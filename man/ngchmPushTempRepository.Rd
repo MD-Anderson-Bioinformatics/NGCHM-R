@@ -12,4 +12,3 @@ ngchmPushTempRepository(shaidyDir)
 \description{
 Push a shaidy repository onto the stack of temporary repositories
 }
-

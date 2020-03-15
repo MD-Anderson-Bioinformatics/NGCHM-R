@@ -15,4 +15,3 @@ The response parsed as JSON and returned as an R object
 \description{
 Return response content interpreted as JSON
 }
-

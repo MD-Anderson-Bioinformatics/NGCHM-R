@@ -19,4 +19,3 @@ a list containing details of the loaded dataset
 \description{
 Load a data matrix from a local shaidy repository
 }
-

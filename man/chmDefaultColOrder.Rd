@@ -11,9 +11,8 @@ chmDefaultColOrder(chm)
 }
 \value{
 Shaid of a dendrogram suitable for use as the
-        chm's column order.
+chm's column order.
 }
 \description{
 Return default column order of an NGCHM
 }
-

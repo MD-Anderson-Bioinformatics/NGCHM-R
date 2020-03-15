@@ -14,4 +14,3 @@ shaidyInitRepository(shaidyDir, blob.types)
 \description{
 Create and initialize a local shaidy repository.
 }
-

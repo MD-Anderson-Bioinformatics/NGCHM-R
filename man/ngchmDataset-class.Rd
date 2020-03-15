@@ -8,4 +8,3 @@
 Class representing a Dataset attached to a NGCHM
 }
 \keyword{classes}
-

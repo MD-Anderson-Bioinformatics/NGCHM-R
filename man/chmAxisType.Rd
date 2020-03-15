@@ -18,6 +18,5 @@ An object of class ngchmAxisType
 This function creates a new AxisType for adding to an ngchmAxis.
 }
 \seealso{
-chmAxis
+\code{\link[=chmAxis]{chmAxis()}}
 }
-

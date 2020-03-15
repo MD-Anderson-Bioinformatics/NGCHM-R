@@ -8,4 +8,3 @@
 Class representing a Covariate Bar on a Next Generation Clustered Heat Map (NGCHM).
 }
 \keyword{classes}
-

@@ -17,10 +17,9 @@ metadata value and returning it as a javascript list.  The function is suitable 
 use as an axis type accessor function.
 }
 \seealso{
-chmAddAxisType
+\code{\link[=chmAddAxisType]{chmAddAxisType()}}
 
-chmGetFunction
+\code{\link[=chmGetFunction]{chmGetFunction()}}
 
-chmListFunctions
+\code{\link[=chmListFunctions]{chmListFunctions()}}
 }
-

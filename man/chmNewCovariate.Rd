@@ -4,8 +4,13 @@
 \alias{chmNewCovariate}
 \title{Create a new Covariate for adding to an NGCHM auxilary dataset.}
 \usage{
-chmNewCovariate(fullname, values, value.properties = NULL, type = NULL,
-  covabbv = NULL)
+chmNewCovariate(
+  fullname,
+  values,
+  value.properties = NULL,
+  type = NULL,
+  covabbv = NULL
+)
 }
 \arguments{
 \item{fullname}{The full (human readable) name of the covariate.}
@@ -25,10 +30,9 @@ An object of class ngchmCovariate.
 This function creates a new Covariate suitable for a covariate bar or attaching to an NGCHM auxilary dataset.
 }
 \seealso{
-ngchmCovariate-class
+\linkS4class{ngchmCovariate}
 
-chmAddCovariate
+\code{\link[=chmAddCovariate]{chmAddCovariate()}}
 
-chmNewColorMap
+\code{\link[=chmNewColorMap]{chmNewColorMap()}}
 }
-

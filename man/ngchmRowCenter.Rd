@@ -17,4 +17,3 @@ A list of shaids for the row centered dataset
 \description{
 Row center a shaidy dataset
 }
-

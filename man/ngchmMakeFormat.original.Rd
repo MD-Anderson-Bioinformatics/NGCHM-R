@@ -4,14 +4,21 @@
 \alias{ngchmMakeFormat.original}
 \title{Make an original format NGCHM.}
 \usage{
-ngchmMakeFormat.original(chm, server, deleteOld = TRUE, useJAR = NULL,
-  javaTraceLevel = NULL, javaOptions = NULL, buildArchive = NULL)
+ngchmMakeFormat.original(
+  chm,
+  server,
+  deleteOld = TRUE,
+  useJAR = NULL,
+  javaTraceLevel = NULL,
+  javaOptions = NULL,
+  buildArchive = NULL
+)
 }
 \arguments{
 \item{chm}{The original format CHM to compile.}
 
 \item{server}{The server for which to compile the NGCHM.
-Default getOption("NGCHM.Server",chmListServers()[1]).
+Default getOption("NGCHM.Server",chmListServers()\link{1}).
 Required iff useJar is not defined.}
 
 \item{deleteOld}{If TRUE, delete any old CHM of this name before beginning build. (Default is TRUE.)}
@@ -35,4 +42,3 @@ The CHM
 \description{
 Make an original format NGCHM.
 }
-

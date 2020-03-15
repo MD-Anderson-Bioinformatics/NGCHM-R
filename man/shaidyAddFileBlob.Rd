@@ -4,8 +4,14 @@
 \alias{shaidyAddFileBlob}
 \title{Add data file(s) and properties to a local shaidy repository}
 \usage{
-shaidyAddFileBlob(shaidyRepo, blob.type, blob.file, filename,
-  properties = NULL, shaid = NULL)
+shaidyAddFileBlob(
+  shaidyRepo,
+  blob.type,
+  blob.file,
+  filename,
+  properties = NULL,
+  shaid = NULL
+)
 }
 \arguments{
 \item{shaidyRepo}{The shaidy repository}
@@ -26,4 +32,3 @@ The file's shaid
 \description{
 Add data file(s) and properties to a local shaidy repository
 }
-

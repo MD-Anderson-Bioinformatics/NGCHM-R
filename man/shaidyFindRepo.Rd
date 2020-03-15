@@ -17,4 +17,3 @@ The first repository containing the shaid, otherwise NULL
 \description{
 Find the first repository, if any, that contains the requested shaid
 }
-

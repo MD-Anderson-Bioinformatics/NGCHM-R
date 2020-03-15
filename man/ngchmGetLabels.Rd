@@ -17,4 +17,3 @@ a list of shaids containing the labels
 \description{
 Get the axis labels of a shaidy dataset or dendrogram
 }
-

@@ -20,10 +20,9 @@ This function defines and registers a Javascript function for converting a list 
 separated by the specified separator into the single values, and registers it as a type mapper.
 }
 \seealso{
-chmGetFunction
+\code{\link[=chmGetFunction]{chmGetFunction()}}
 
-chmListFunctions
+\code{\link[=chmListFunctions]{chmListFunctions()}}
 
-chmRegisterTypeMapper
+\code{\link[=chmRegisterTypeMapper]{chmRegisterTypeMapper()}}
 }
-

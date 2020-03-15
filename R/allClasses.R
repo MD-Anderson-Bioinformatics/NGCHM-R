@@ -555,7 +555,7 @@ setMethod(jsonlite:::asJSON, signature=c("ngchmDialog"), definition=function(x,.
 #' @rdname ngchmAxis-class
 #' @keywords classes
 #'
-#' @seealso chmAxis
+#' @seealso [chmAxis()]
 setClass ("ngchmAxis",
           representation (axis="character",
                           objects="optList"));
@@ -568,22 +568,26 @@ setMethod ('show',
 
 #' Class representing a Next Generation Clustered Heat Map (NGCHM) under construction.
 #'
+#' An NG-CHM is produced by creating a heat map object with [chmNew()], possibly modifying or augmenting it
+#' using additional functions, such as [chmAddLayer()], [chmAddCovariateBar()], etc., and then
+#' either saving it to a server using [chmInstall()] or saving it to a standalone file using [chmExportToFile()].
+#'
 #' @exportClass ngchm
 #' @name ngchm-class
 #' @rdname ngchm-class
 #'
 #' @keywords classes
 #'
-#' @seealso chmNew
-#' @seealso chmRowOrder
-#' @seealso chmColOrder
-#' @seealso chmAddLayer
-#' @seealso chmAddCovariateBar
-#' @seealso chmAddDataset
-#' @seealso chmAddMenuItem
-#' @seealso chmAddCSS
-#' @seealso chmMake
-#' @seealso chmInstall
+#' @seealso [chmNew()]
+#' @seealso [chmRowOrder()]
+#' @seealso [chmColOrder()]
+#' @seealso [chmAdd()]
+#' @seealso [chmAddLayer()]
+#' @seealso [chmAddCovariateBar()]
+#' @seealso [chmAddDataset()]
+#' @seealso [chmAddAxisType()]
+#' @seealso [chmInstall()]
+#' @seealso [chmExportToFile()]
 #'
 setClassUnion ("ngchm");
 

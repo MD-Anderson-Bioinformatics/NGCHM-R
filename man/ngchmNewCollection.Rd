@@ -17,4 +17,3 @@ a string containing the UUID of the newly created repository
 \description{
 Create a new collection in a local shaidy repository
 }
-

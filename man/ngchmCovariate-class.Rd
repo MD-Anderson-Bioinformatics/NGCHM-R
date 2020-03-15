@@ -8,4 +8,3 @@
 Class representing a Covariate attached to a Dataset
 }
 \keyword{classes}
-

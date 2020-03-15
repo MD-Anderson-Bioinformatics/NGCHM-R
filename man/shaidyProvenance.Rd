@@ -15,4 +15,3 @@ A string containing the provid for the list of label values.
 \description{
 Create a provid from a list of label values
 }
-

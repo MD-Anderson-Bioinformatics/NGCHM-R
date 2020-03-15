@@ -12,4 +12,3 @@ ngchmGetServerProtocol(protocolName)
 \description{
 Lookup a Server Protocol
 }
-

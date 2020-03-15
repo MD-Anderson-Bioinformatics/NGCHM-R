@@ -20,12 +20,11 @@ Clustered Heat Map for axes that match the function's axis type.
 This function is intended for use by NGCHM system developers.
 }
 \seealso{
-chmAddAxisType
+\code{\link[=chmAddAxisType]{chmAddAxisType()}}
 
-chmRegisterMatrixFunction
+\code{\link[=chmRegisterMatrixFunction]{chmRegisterMatrixFunction()}}
 
-chmRegisterTypeMapper
+\code{\link[=chmRegisterTypeMapper]{chmRegisterTypeMapper()}}
 
-chmNewFunction
+\code{\link[=chmNewFunction]{chmNewFunction()}}
 }
-

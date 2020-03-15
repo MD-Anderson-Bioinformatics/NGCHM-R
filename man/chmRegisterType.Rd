@@ -19,10 +19,9 @@ basic information about the semantic interpretation of a type name.  Registratio
 of a typename is (currently) not required in order to use it.
 }
 \seealso{
-chmListTypes
+\code{\link[=chmListTypes]{chmListTypes()}}
 
-chmGetTypeInfo
+\code{\link[=chmGetTypeInfo]{chmGetTypeInfo()}}
 
-chmRegisterTypeMapper
+\code{\link[=chmRegisterTypeMapper]{chmRegisterTypeMapper()}}
 }
-

@@ -9,4 +9,3 @@ ngchmGetEnv()
 \description{
 Get the library's internal ngchm environment to help debugging.
 }
-

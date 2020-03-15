@@ -18,10 +18,9 @@ This function returns a ngchmServer object that can be used when
 making and installing a Next Generation Clustered Heat Map.
 }
 \seealso{
-chmInstall
+\code{\link[=chmInstall]{chmInstall()}}
 
-chmUninstall
+\code{\link[=chmUninstall]{chmUninstall()}}
 
-ngchmServer-class
+\linkS4class{ngchmServer}
 }
-

@@ -4,8 +4,14 @@
 \alias{chmNewFunction}
 \title{Create a new Javascript function for adding to a NGCHM menu.}
 \usage{
-chmNewFunction(name, description, implementation, extraParams = NULL,
-  requires = NULL, global = FALSE)
+chmNewFunction(
+  name,
+  description,
+  implementation,
+  extraParams = NULL,
+  requires = NULL,
+  global = FALSE
+)
 }
 \arguments{
 \item{name}{The name of the Javascript function}
@@ -38,12 +44,11 @@ dbLookup <- chmNewFunction ("dbLookup", "Lookup the parameter in a database",
 
 }
 \seealso{
-ngchmJS-class
+\linkS4class{ngchmJS}
 
-chmAddMenuItem
+\code{\link[=chmAddMenuItem]{chmAddMenuItem()}}
 
-chmBindFunction
+\code{\link[=chmBindFunction]{chmBindFunction()}}
 
-chmRegisterFunction
+\code{\link[=chmRegisterFunction]{chmRegisterFunction()}}
 }
-

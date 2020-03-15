@@ -12,4 +12,10 @@ the identity of the current server
 \description{
 Get the user's current server
 }
+\seealso{
+\code{\link[=chmListServers]{chmListServers()}}
 
+\code{\link[=chmServer]{chmServer()}}
+
+\code{\link[=chmSetCollection]{chmSetCollection()}}
+}

@@ -8,4 +8,3 @@
 Class representing a group of related links to a NGCHM
 }
 \keyword{classes}
-

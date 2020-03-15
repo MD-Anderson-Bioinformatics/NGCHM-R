@@ -17,4 +17,3 @@ A string vector containing the axis labels of the dataset or dendrogram
 \description{
 Get the axis labels of a shaidy dataset or dendrogram
 }
-

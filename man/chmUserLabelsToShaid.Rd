@@ -12,4 +12,3 @@ chmUserLabelsToShaid(labels)
 \description{
 Convert user specified labels to a shaid
 }
-
