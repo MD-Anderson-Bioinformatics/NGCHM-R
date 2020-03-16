@@ -36,4 +36,6 @@ hm <- chmAddPCA(hm, "column", prc);
 \code{\link[=chmAddTSNE]{chmAddTSNE()}}
 
 \code{\link[=chmAddUMAP]{chmAddUMAP()}}
+
+\code{\link[=chmAddUWOT]{chmAddUWOT()}}
 }

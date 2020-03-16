@@ -90,7 +90,7 @@ chmServer <- function (name) {
 #'
 #' Get the library's internal ngchm environment to help debugging.
 #'
-#' @export ngchmGetEnv
+#' @export
 ngchmGetEnv <- function () {
     return (ngchm.env);
 }
@@ -2821,7 +2821,7 @@ readTile <- function (filename, nrow, ncol) {
 #'
 #' Create a standalone viewer for the NGCHM in the specified file.
 #'
-#' @export chmExportToFile
+#' @export
 #' @rdname chmExportToFile-method
 #'
 #' @param chm The NGCHM to export
@@ -2858,7 +2858,7 @@ chmExportToFile <- function(chm,filename,overwrite=FALSE,shaidyMapGen, shaidyMap
 #'
 #' Create a PDF of the NGCHM in the specified file.
 #'
-#' @export chmExportToPDF
+#' @export
 #' @rdname chmExportToPDF-method
 #'
 #' @param chm The NGCHM to generate the PDF for
@@ -2921,7 +2921,7 @@ writeBinLines <- function(text, con) {
 #' hm <- chmNew ("gbm", TCGA.GBM.EXPR);
 #' hm <- chmAddTSNE(hm, "column", rtc, colnames(TCGA.GBM.EXPR));
 #'
-#' @export chmAddTSNE
+#' @export
 #'
 #' @param hm The NGCHM to add the coordinates to
 #' @param axis The NGCHM axis ("row" or "column") to add the coordinates to
@@ -2932,6 +2932,7 @@ writeBinLines <- function(text, con) {
 #' @return The NGCHM with added coordinates.
 #' @seealso [chmAddPCA()]
 #' @seealso [chmAddUMAP()]
+#' @seealso [chmAddUWOT()]
 
 chmAddTSNE <- function (hm, axis, tsne, pointIds, basename = "TSNE") {
 	stopifnot (class(hm) == "ngchmVersion2");
@@ -2966,7 +2967,7 @@ chmAddTSNE <- function (hm, axis, tsne, pointIds, basename = "TSNE") {
 #' hm <- chmNew ("gbm", TCGA.GBM.EXPR);
 #' hm <- chmAddPCA(hm, "column", prc);
 #'
-#' @export chmAddPCA
+#' @export
 #'
 #' @param hm The NGCHM to add the coordinates to.
 #' @param axis The NGCHM axis ("row" or "column") to add the coordinates to.
@@ -2977,6 +2978,7 @@ chmAddTSNE <- function (hm, axis, tsne, pointIds, basename = "TSNE") {
 #' @return The NGCHM with added coordinates.
 #' @seealso [chmAddTSNE()]
 #' @seealso [chmAddUMAP()]
+#' @seealso [chmAddUWOT()]
 
 chmAddPCA <- function (hm, axis, prc, basename = "PC", ndim=2) {
 	stopifnot (class(hm) == "ngchmVersion2");
@@ -3012,7 +3014,7 @@ chmAddPCA <- function (hm, axis, prc, basename = "PC", ndim=2) {
 #' hm <- chmNew ("gbm", TCGA.GBM.EXPR);
 #' hm <- chmAddUMAP(hm, "column", umc);
 #'
-#' @export chmAddUMAP
+#' @export
 #'
 #' @param hm The NGCHM to add the coordinates to.
 #' @param axis The NGCHM axis ("row" or "column") to add the coordinates to.
@@ -3022,6 +3024,7 @@ chmAddPCA <- function (hm, axis, prc, basename = "PC", ndim=2) {
 #' @return The NGCHM with added coordinates.
 #' @seealso [chmAddPCA()]
 #' @seealso [chmAddTSNE()]
+#' @seealso [chmAddUWOT()]
 
 chmAddUMAP <- function (hm, axis, umap, basename = "UMAP") {
 	stopifnot (class(hm) == "ngchmVersion2");
@@ -3033,6 +3036,56 @@ chmAddUMAP <- function (hm, axis, umap, basename = "UMAP") {
 	for (idx in 1:ncol(umap$layout)) {
 		coordname <- sprintf ("%s.coordinate.%d", basename, idx);
 		vals <- umap$layout[,idx];
+		names(vals) <- pointIds;
+		minv <- min (vals, na.rm=TRUE);
+		maxv <- max (vals, na.rm=TRUE);
+		midv <- if (minv*maxv < 0) 0.0 else (minv+maxv)/2.0;
+		cmap <- chmNewColorMap(c(minv,midv,maxv), colors=c("#00007f","#d0d0d0","#7f0000"));
+		cv <- chmNewCovariate(coordname, vals, cmap);
+		hm <- chmAddCovariateBar(hm, axis, cv, display = "hidden");
+	}
+	return (hm);
+}
+
+#' Add UWOT::UMAP coordinates to an NG-CHM.
+#'
+#' Add UWOT::UMAP coordinates as hidden covariate bars to an axis of an NG-CHM.  One hidden
+#' covariate bar is added for each UMAP coordinate.  Coordinates have names 'BASENAME.coordinate.N',
+#' where BASENAME is specified by the parameter basename (default UMAP) and N ranges from 1 to the number of
+#' added covariate bars.
+#'
+#' pointIds is required because [uwot::umap()] does not preserve the rownames of the data matrix it was applied to.
+#' Their values must match those on that axis of the NGCHM, but their order must match those in the data
+#' matrix passed to [uwot::umap()].
+#'
+#' @examples
+#' umc <- uwot::umap(t(TCGA.GBM.EXPR));
+#' hm <- chmNew ("gbm", TCGA.GBM.EXPR);
+#' hm <- chmAddUWOT(hm, "column", umc, colnames(TCGA.GBM.EXPR));
+#'
+#' @export
+#'
+#' @param hm The NGCHM to add the coordinates to.
+#' @param axis The NGCHM axis ("row" or "column") to add the coordinates to.
+#' @param uwot UMAP coordinates (output of [uwot::umap()]) for the specified NGCHM axis.
+#' @param pointIds The NGCHM names for the data points in uwot
+#' @param baseName The prefix to use for the coordinate names.
+#'
+#' @return The NGCHM with added coordinates.
+#' @seealso [chmAddPCA()]
+#' @seealso [chmAddTSNE()]
+#' @seealso [chmAddUMAP()]
+
+chmAddUWOT <- function (hm, axis, uwot, pointIds, basename = "UMAP") {
+	stopifnot (class(hm) == "ngchmVersion2");
+	stopifnot (mode(axis) == "character" && length(axis) == 1);
+	stopifnot (axis == "row" || axis == "column");
+	stopifnot (mode(pointIds) == "character" && length(pointIds) == nrow(uwot));
+	stopifnot (mode(basename) == "character" && length(basename) == 1);
+
+	for (idx in 1:ncol(uwot)) {
+		coordname <- sprintf ("%s.coordinate.%d", basename, idx);
+		vals <- uwot[,idx];
 		names(vals) <- pointIds;
 		minv <- min (vals, na.rm=TRUE);
 		maxv <- max (vals, na.rm=TRUE);
