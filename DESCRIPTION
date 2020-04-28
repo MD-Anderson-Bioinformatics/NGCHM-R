@@ -1,7 +1,7 @@
 Package: NGCHM
 Type: Package
 Title: Utilities for Creating Next Generation Clustered Heat Maps
-Version: 0.12.2
+Version: 0.12.3
 Date: 2020-03-14
 Author: Bradley Broom
 Maintainer: Bradley Broom <bmbroom@mdanderson.org>

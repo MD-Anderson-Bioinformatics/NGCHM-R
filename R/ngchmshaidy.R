@@ -2,11 +2,20 @@
 #' Initialize shaidy subsystem for NGCHMs
 #'
 ngchmShaidyInit <- function() {
+
+    checkStatusCode <- function (resp, code) {
+        if (resp$status_code != code) {
+	    print (sprintf ("Unexpected HTTP Response Code. Expected: %d", code));
+	    print (resp);
+	    stop ();
+	}
+    };
+
     shaidyRegisterRepoAPI ("http", (function(fileMethods) list(
         "__super__" = fileMethods,
 	blobPath = function (repo, repoBase) {
 	    resp <- GET (repoBase);
-	    stopifnot (resp$status_code == 200);
+	    checkStatusCode (resp, 200);
 	    tarfile <- utempfile ("shaidcache", fileext='.tar');
 	    local <- utempfile ("shaidcache");
 	    stopifnot (dir.create (local, recursive=TRUE));
@@ -54,7 +63,7 @@ ngchmShaidyInit <- function() {
 	    while (resp$status_code == 401) {
 	        resp <- POST (uri, add_headers(Authorization=repo$getNewToken()));
             }
-	    stopifnot (resp$status_code == 200);
+	    checkStatusCode (resp, 200);
 	    collection$repo$loadCollection(collection$uuid)
 	},
         renderChm = function (repo, shaid) {
@@ -93,7 +102,7 @@ ngchmShaidyInit <- function() {
 	    while (resp$status_code == 401) {
 	        resp <- PUT (dstblob, add_headers(Authorization=repo$getNewToken()), body=upload_file(tarfile));
             }
-	    stopifnot (resp$status_code == 200);
+	    checkStatusCode (resp, 200);
 	    unlink (tarfile);
 	},
 	copyBlobToLocalDir = function (repo, shaid, localDir) {
@@ -105,7 +114,7 @@ ngchmShaidyInit <- function() {
 	    while (resp$status_code == 401) {
 	        resp <- GET (srcblob, add_headers(Authorization=repo$getNewToken()));
             }
-	    stopifnot (resp$status_code == 200);
+	    checkStatusCode (resp, 200);
 	    tarfile <- utempfile ("shaidcache", fileext='.tar');
 	    writeBin (resp$content, tarfile);
 	    systemCheck (sprintf ("tar xf %s -C %s", tarfile, localDir));
