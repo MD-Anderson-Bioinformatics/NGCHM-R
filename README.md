@@ -8,8 +8,8 @@ A docker image containing RStudio with this package preinstalled is available.  
 To install this package into your own R system:
 ```
 > install.packages("devtools")
-> devtools::install_github("bmbroom/tsvio")
-> devtools::install_github("bmbroom/NGCHMR", ref="stable")
+> devtools::install_github("MD-Anderson-Bioinformatics/tsvio")
+> devtools::install_github("MD-Anderson-Bioinformatics/NGCHM-R", ref="stable")
 ```
 
 You might also choose to install the beta version of the package, or for the really daring the master branch.
