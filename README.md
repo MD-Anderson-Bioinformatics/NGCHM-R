@@ -2,7 +2,7 @@
 An R package for creating [Next-Generation Clustered Heat Maps (NG-CHM)](https://bioinformatics.mdanderson.org/main/NG-CHM:Overview
 )
 
-A docker image containing RStudio with this package preinstalled is available.  Follow the [instructions for using rstudio](https://github.com/rocker-org/rocker/wiki/Using-the-RStudio-image), but substitute "bmbroom/rstudio-ngchm" for the name of the repository.
+A docker image containing RStudio with this package preinstalled is available.  Follow the [instructions for using rstudio](https://github.com/rocker-org/rocker/wiki/Using-the-RStudio-image), but substitute "MD-Anderson-Bioinformatics/rstudio-ngchm" for the name of the repository.
 
 ## Installing on Linux or Mac
 To install this package into your own R system:
