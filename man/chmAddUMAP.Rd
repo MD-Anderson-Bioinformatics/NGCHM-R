@@ -36,4 +36,6 @@ hm <- chmAddUMAP(hm, "column", umc);
 \code{\link[=chmAddTSNE]{chmAddTSNE()}}
 
 \code{\link[=chmAddUWOT]{chmAddUWOT()}}
+
+\code{\link[=chmAddReducedDim]{chmAddReducedDim()}}
 }

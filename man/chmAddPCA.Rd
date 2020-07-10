@@ -38,4 +38,6 @@ hm <- chmAddPCA(hm, "column", prc);
 \code{\link[=chmAddUMAP]{chmAddUMAP()}}
 
 \code{\link[=chmAddUWOT]{chmAddUWOT()}}
+
+\code{\link[=chmAddReducedDim]{chmAddReducedDim()}}
 }

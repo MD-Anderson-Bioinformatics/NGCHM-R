@@ -15,7 +15,7 @@ chmAddUWOT(hm, axis, uwot, pointIds, basename = "UMAP")
 
 \item{pointIds}{The NGCHM names for the data points in uwot}
 
-\item{baseName}{The prefix to use for the coordinate names.}
+\item{basename}{The prefix to use for the coordinate names.}
 }
 \value{
 The NGCHM with added coordinates.
@@ -43,4 +43,6 @@ hm <- chmAddUWOT(hm, "column", umc, colnames(TCGA.GBM.EXPR));
 \code{\link[=chmAddTSNE]{chmAddTSNE()}}
 
 \code{\link[=chmAddUMAP]{chmAddUMAP()}}
+
+\code{\link[=chmAddReducedDim]{chmAddReducedDim()}}
 }

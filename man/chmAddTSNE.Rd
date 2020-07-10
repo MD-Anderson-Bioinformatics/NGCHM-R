@@ -43,4 +43,6 @@ hm <- chmAddTSNE(hm, "column", rtc, colnames(TCGA.GBM.EXPR));
 \code{\link[=chmAddUMAP]{chmAddUMAP()}}
 
 \code{\link[=chmAddUWOT]{chmAddUWOT()}}
+
+\code{\link[=chmAddReducedDim]{chmAddReducedDim()}}
 }

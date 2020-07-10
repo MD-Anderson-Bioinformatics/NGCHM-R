@@ -2933,6 +2933,7 @@ writeBinLines <- function(text, con) {
 #' @seealso [chmAddPCA()]
 #' @seealso [chmAddUMAP()]
 #' @seealso [chmAddUWOT()]
+#' @seealso [chmAddReducedDim()]
 
 chmAddTSNE <- function (hm, axis, tsne, pointIds, basename = "TSNE") {
 	stopifnot (class(hm) == "ngchmVersion2");
@@ -2979,6 +2980,7 @@ chmAddTSNE <- function (hm, axis, tsne, pointIds, basename = "TSNE") {
 #' @seealso [chmAddTSNE()]
 #' @seealso [chmAddUMAP()]
 #' @seealso [chmAddUWOT()]
+#' @seealso [chmAddReducedDim()]
 
 chmAddPCA <- function (hm, axis, prc, basename = "PC", ndim=2) {
 	stopifnot (class(hm) == "ngchmVersion2");
@@ -3025,6 +3027,7 @@ chmAddPCA <- function (hm, axis, prc, basename = "PC", ndim=2) {
 #' @seealso [chmAddPCA()]
 #' @seealso [chmAddTSNE()]
 #' @seealso [chmAddUWOT()]
+#' @seealso [chmAddReducedDim()]
 
 chmAddUMAP <- function (hm, axis, umap, basename = "UMAP") {
 	stopifnot (class(hm) == "ngchmVersion2");
@@ -3069,12 +3072,13 @@ chmAddUMAP <- function (hm, axis, umap, basename = "UMAP") {
 #' @param axis The NGCHM axis ("row" or "column") to add the coordinates to.
 #' @param uwot UMAP coordinates (output of [uwot::umap()]) for the specified NGCHM axis.
 #' @param pointIds The NGCHM names for the data points in uwot
-#' @param baseName The prefix to use for the coordinate names.
+#' @param basename The prefix to use for the coordinate names.
 #'
 #' @return The NGCHM with added coordinates.
 #' @seealso [chmAddPCA()]
 #' @seealso [chmAddTSNE()]
 #' @seealso [chmAddUMAP()]
+#' @seealso [chmAddReducedDim()]
 
 chmAddUWOT <- function (hm, axis, uwot, pointIds, basename = "UMAP") {
 	stopifnot (class(hm) == "ngchmVersion2");
@@ -3095,4 +3099,50 @@ chmAddUWOT <- function (hm, axis, uwot, pointIds, basename = "UMAP") {
 		hm <- chmAddCovariateBar(hm, axis, cv, display = "hidden");
 	}
 	return (hm);
-}
+};
+
+#' Add SingleCellExperiment::reducedDim coordinates to an NG-CHM.
+#'
+#' Add SingleCellExperiment::reducedDim coordinates from a single cell experiment object sce
+#' as hidden covariate bars to an axis of an NG-CHM.  dimName specifies the name of the reduced
+#' dimension of interest in sce.  One hidden covariate bar is added for each coordinate.
+#' If specified, maxDim limits the maximum number of covariate bars added to the chm.
+#' Coordinates have names 'BASENAME.coordinate.N', where BASENAME is specified by the parameter
+#' basename (defaults to dimName if omitted) and N ranges from 1 to the number of added covariate bars.
+#'
+#' @examples
+#' hm <- chmAddReducedDim(hm, "column", sce, "PCA", 3, "PC");
+#' hm <- chmAddReducedDim(hm, "column", sce, "TSNE");
+#'
+#' @export
+#'
+#' @param hm The NGCHM to add the coordinates to.
+#' @param axis The NGCHM axis ("row" or "column") to add the coordinates to.
+#' @param sce A Single Cell Experiment object containing the reduced dimension.
+#' @param dimName The name of the reduced dimension to create covariate bars for.
+#' @param maxDim The maximum number of coordinates to add (default all).
+#' @param basename The prefix to use for the coordinate names (defaults to dimName).
+#'
+#' @return The NGCHM with added coordinates.
+#' @seealso [chmAddPCA()]
+#' @seealso [chmAddTSNE()]
+#' @seealso [chmAddUMAP()]
+#' @seealso [chmAddUWOT()]
+
+chmAddReducedDim <- function (hm, axis, sce, dimName, maxDim, basename) {
+    layout <- SingleCellExperiment::reducedDim (sce, dimName);
+    if (missing(maxDim)) maxDim <- ncol (layout);
+    if (missing(basename)) basename <- dimName;
+    for (idx in 1:maxDim) {
+        coordname <- sprintf ("%s.coordinate.%d", basename, idx);
+	vals <- layout[,idx];
+	minv <- min (vals, na.rm = TRUE);
+	maxv <- max (vals, na.rm = TRUE);
+	midv <- if (minv*maxv < 0) 0 else (minv+maxv)/2.0;
+	cmap <- chmNewColorMap (c(minv, midv, maxv), colors=c("#00007f", "#d0d0d0", "#7f0000"));
+	cv <- chmNewCovariate (coordname, vals, cmap)
+	hm <- chmAddCovariateBar (hm, axis, cv, display="hidden");
+    }
+    return (hm);
+};
+
