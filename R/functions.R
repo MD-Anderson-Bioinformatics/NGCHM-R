@@ -1,5 +1,6 @@
 #' @import methods
 #' @import utils
+NULL
 
 systemCheck <- function (command, ...) {
     # Execute the specified command and halt execution with an error
@@ -422,7 +423,7 @@ chmAddList <- function (chm, args) {
 	else if (cc == "ngchmDataset") { chm <- chmAddDataset (chm, item); }
 	else if (cc == "ngchmColormap") { chm <- chmAddColormap (chm, item); }
 	else if (cc == "ngchmDialog") { chm <- chmAddDialog (chm, item); }
-	else if (cc == "ngchmProperty") { chm@properties <- append (chm@properties, item); }
+	else if (cc == "ngchmProperty") { chmProperty(chm, item@label) <- item; }
 	else if (cc == "ngchmAxis") { chm <- chmAddAxis (chm, item); }
         else if (cc == "list") { chm <- chmAddList (chm, item); }
 	else {
@@ -457,9 +458,9 @@ chmAddList <- function (chm, args) {
 #'
 #' @seealso [ngchmLayer-class]
 #' @seealso [chmNewColorMap()]
-#' @seealso [chmAddDataLayer()]
+#' @seealso [chmAddLayer()]
 #'
-chmNewDataLayer <- function (label, data, colors=NULL, summarizationMethod="average", cuts_color="#4c4c4c") {
+chmNewDataLayer <- function (label, data, colors, summarizationMethod, cuts_color) {
     if (typeof (label) != "character") {
         stop (sprintf ("Parameter 'label' must have type 'character', not '%s'", typeof(label)));
     }
@@ -469,6 +470,9 @@ chmNewDataLayer <- function (label, data, colors=NULL, summarizationMethod="aver
     if (nchar (label) == 0) {
         stop ("Parameter 'label' cannot be the empty string");
     }
+    if (missing(colors)) colors <- NULL;
+    if (missing(summarizationMethod)) summarizationMethod <- "average";
+    if (missing(cuts_color)) cuts_color <- "#4c4c4c";
     if (typeof (summarizationMethod) != "character") {
         stop (sprintf ("Parameter 'summarizationMethod' must have type 'character', not '%s'", typeof(summarizationMethod)));
     }
@@ -486,7 +490,136 @@ chmNewDataLayer <- function (label, data, colors=NULL, summarizationMethod="aver
     if (length(colors) == 0)
 	colors <- chmNewColorMap (data, c("#0010a0", "#f0f0f0", "#a01000"), missing='#ff00ff'); # Blue, Off-white, Red. Missing=bright magenta.
     new (Class="ngchmLayer", name=label, data=data, colors=colors, summarizationMethod=summarizationMethod, cuts_color=cuts_color)
-}
+};
+
+#' Get a specified Data Layer from an NG-CHM.
+#'
+#' This function returns a Data Layer contained in a Next Generation Clustered Heat Map.
+#'
+#' @param hm The NG-CHM object to get the data layer from.
+#' @param label The name or index of the data layer to get.  If a name, return the layer with
+#'        that name.  If no layer with that name exists or if the index is out of range,
+#'        return NULL.
+#'
+#' @return An object of class ngchmLayer or NULL.
+#'
+#' @export
+#'
+#' @examples
+#' layer <- chmLayer (hm, "Layer 1")
+#' layer <- chmLayer (hm, 1)
+#'
+#' @seealso [ngchmLayer-class]
+#'
+chmLayer <- function (hm, label) {
+    stopifnot (!missing(hm), is(hm, "ngchm"));
+    stopifnot (missing(label) || length(label) == 1);
+    if (length(hm@layers) == 0) return (NULL);
+    # Determine numeric layeridx from specified label
+    if (missing (label)) {
+    	layeridx <- 1;
+    } else if (mode(label) == "character") {
+        layernames <- vapply (hm@layers, function(x)x@name, "");
+	layeridx <- which(label == layernames);
+	if (length(layeridx) == 0) return (NULL);
+	if (length(layeridx) > 1) stop ("NGCHM contains multiple layers with that name");
+    } else if (mode(label) == "numeric") {
+        if ((label < 1) || (label > length(hm@layers))) return (NULL);
+	layeridx <- label;
+    } else {
+        stop ("mode of label must be character or numeric");
+    }
+    hm@layers[[layeridx]]
+};
+
+#' Set (or append) a specified Data Layer in an NG-CHM.
+#'
+#' This function sets a Data Layer in a Next Generation Clustered Heat Map.
+#'
+#' @param x The NG-CHM object to set the data layer of
+#' @param label The name or index of the data layer to set.  If a name, replace the layer with
+#'        that name.  Append a new layer if no layer with that name exists.  If an index,
+#'	  replace the specified layer.  If zero (0), prepend the new layer.  If minus one (-1)
+#'        or N+1 (for an NG-CHM with N layers), appends a new layer.
+#' @param colors A colormap for the new layer.  If missing, defaults to the color map of the
+#'        layer being replaced, or to the default new layer color map for a new layer.
+#' @param summarizationMethod The summarization method for the new layer.  If
+#'        missing, defaults to the summarization method of the layer being
+#'        replaced, or to the default new layer summarization method for a new layer.
+#' @param cuts_color The cuts color for the new layer.  If
+#'        missing, defaults to the cuts color of the layer being
+#'        replaced, or to the default cuts color for a new layer.
+#' @param value Either a matrix or a data layer to set in the NG-CHM.  If value is a matrix,
+#'        the other data layer parameters (label, colors, summarizationMethod,
+#'        and cuts_color) are set from the parameters if specified, from the old
+#'        data layer (if any), or the defaults for a new data layer (see chmNewDataLayer).
+#'        If value is a data layer, any other data layer parameters specified will
+#'        override those in the replacement layer.
+#'
+#' @return An object of class ngchm.
+#'
+#' @export
+#'
+#' @examples
+#' chmLayer (hm, "Layer 1") <- matrix;
+#' chmLayer (hm, 1, cuts_color = "#fefefe") <- chmNewDataLayer ("New data layer", matrix);
+#'
+#' @seealso [ngchmLayer-class]
+#' @seealso chmNewDataLayer
+#'
+assign('chmLayer<-', function (x, label, colors, summarizationMethod, cuts_color, value) {
+    stopifnot (!missing(x), is(x, "ngchm"));
+    stopifnot (missing(label) || length(label) == 1);
+    stopifnot (!missing(value), is(value, "matrix") || is (value, "ngchmLayer"));
+    hm <- NGCHM:::chmFixVersion (x);
+    # Convert label into a numeric layeridx and a character label
+    if (missing(label)) {
+	layeridx <- length(hm@layers)+1;
+	label <- sprintf ("Layer %d", layeridx);
+    } else if (mode(label) == "character") {
+        layernames <- vapply (hm@layers, function(x)x@name, "");
+	layeridx <- which(label == layernames);
+	if (length(layeridx) > 1) stop ("NGCHM contains multiple layers with that name");
+	if (length(layeridx) == 0) layeridx <- length(hm@layers) + 1;
+    } else if (mode(label) == "numeric") {
+        if ((label < -1) || (label > length(hm@layers)+1)) stop("Invalid label");
+	if (label < 0) {
+	    layeridx <- length(hm@layers) + 1;
+	} else {
+	    layeridx <- label;
+	}
+	if (label == 0) {
+	    label <- "Layer 0";
+	} else if (label > length(hm@layers)) {
+	    label <- sprintf ("Layer %d", length(hm@layers)+1);
+	} else {
+	    label <- hm@layers[[layeridx]]@name;
+	}
+    } else {
+	stop ("mode of label must be either character or numeric")
+    }
+    if (is (value, "matrix")) {
+	if (layeridx <= length(hm@layers)) {
+	    tmp <- hm@layers[[layeridx]];
+	    if (missing(colors)) colors <- tmp@colors;
+	    if (missing(summarizationMethod)) summarizationMethod <- tmp@summarizationMethod;
+	    if (missing(cuts_color)) cuts_color <- tmp@cuts_color;
+	}
+	newlayer <- chmNewDataLayer (label, data=value, colors=colors, summarizationMethod=summarizationMethod, cuts_color=cuts_color);
+    } else if (is (value, "ngchmLayer")) {
+	newlayer <- value;
+	if (!missing(colors)) newlayer@colors <- colors;
+	if (!missing(summarizationMethod)) newlayer@summarizationMethod <- summarizationMethod;
+	if (!missing(cuts_color)) newlayer@cuts_color <- cuts_color;
+    }
+    NGCHM:::validateNewLayer (hm, newlayer);
+    if (layeridx == 0) {
+	hm@layers <- c (newlayer, hm@layers);
+    } else {
+	hm@layers[[layeridx]] <- newlayer;
+    }
+    chmAddColormap (hm, newlayer@colors)
+});
 
 #' Create a new Dataset for a NGCHM.
 #'
@@ -657,9 +790,50 @@ chmNewCovariate <- function (fullname, values, value.properties=NULL, type=NULL,
     mat <- matrix (values, ncol=1, dimnames=list(names(values),'Value'));
     shaid <- ngchmSaveAsDatasetBlob (ngchm.env$tmpShaidy, 'tsv', mat);
     new (Class="ngchmCovariate", label=covabbv, fullname=fullname, type=type,
-	 label.series = shaid,
-	 series.properties=value.properties);
-}
+	 label.series = shaid, series.properties=value.properties);
+};
+
+#' Get a covariate attached to an NG-CHM dataset.
+#'
+#' @param dataset The NG-CHM dataset to get the covariate from.
+#' @param fullname The full name of the covariate to get.
+#'        If no covariate with that name exists, return NULL.
+#' @param where The axis or axes on which to look for the covariate  Can be "row", "column", or "both" (default).
+#'
+#' @return A ngchmCovariate or NULL.
+#'
+#' @export
+#'
+#' @examples
+#' chmCovariate (dataset, "Age")
+#'
+#' @seealso [ngchmCovariate-class]
+#' @seealso chmNewCovariate
+#' @seealso chmCovariateBar
+#'
+chmCovariate <- function (dataset, fullname, where) {
+    stopifnot (is (dataset, "ngchmDataset"));
+    checkLabel (fullname, "fullname");
+    where <- if (missing(where)) "both" else match.arg (where, c("row", "column", "both"));
+    if (where %in% c("row", "both")) {
+	names <- lapply (dataset@row.covariates, function(cv) cv@fullname);
+	idx <- which (names == fullname);
+	if (length(idx) > 0) {
+	    stopifnot (length(idx) == 1);
+	    return (dataset@row.covariates[[idx]]);
+	}
+	if (where == "row") return(NULL);
+    }
+    # where must be either "column" or "both".
+    names <- lapply (dataset@column.covariates, function(cv) cv@fullname);
+    idx <- which (names == fullname);
+    if (length(idx) > 0) {
+	stopifnot (length(idx) == 1);
+	return (dataset@column.covariates[[idx]]);
+    }
+    return(NULL);
+};
+
 
 #' Create a new Classification Bar for a NGCHM
 #'
@@ -744,7 +918,51 @@ ngchmNewBar <- function (label, type, data, colors=NULL, display="visible", thic
         shaid <- ngchmSaveAsDatasetBlob (ngchm.env$tmpShaidy, 'tsv', mat);
     }
     new (Class="ngchmBar", label=label, type=type, data=shaid, thickness=thickness, colors=colors, display=display, merge=merge)
-}
+};
+
+
+#' Get a covariate bar attached to an NG-CHM.
+#'
+#' @param hm The NG-CHM to get the covariate bar from.
+#' @param fullname The full name of the covariate bar to get.
+#'        If no covariate bar with that name exists, return NULL.
+#' @param where The axis or axes on which to look for the covariate bar  Can be "row", "column", or "both" (default).
+#'
+#' @return An ngchmBar or NULL.
+#'
+#' @export
+#'
+#' @examples
+#' chmCovariateBar (hm, "Age")
+#'
+#' @seealso [ngchmBar-class]
+#' @seealso chmNewCovariateBar
+#' @seealso chmCovariate
+#'
+chmCovariateBar <- function (hm, fullname, where) {
+    stopifnot (is (hm, "ngchm"));
+    checkLabel (fullname, "fullname");
+    where <- if (missing(where)) "both" else match.arg (where, c("row", "column", "both"));
+    if (where %in% c("row", "both")) {
+	names <- lapply (hm@rowCovariateBars, function(cvb) cvb@label);
+	idx <- which (names == fullname);
+	if (length(idx) > 0) {
+	    stopifnot (length(idx) == 1);
+	    return (hm@rowCovariateBars[[idx]]);
+	}
+	if (where == "row") return(NULL);
+    }
+    # where must be either "column" or "both".
+    names <- lapply (hm@colCovariateBars, function(cvb) cvb@label);
+    idx <- which (names == fullname);
+    if (length(idx) > 0) {
+	stopifnot (length(idx) == 1);
+	return (hm@colCovariateBars[[idx]]);
+    }
+    return(NULL);
+};
+
+
 
 #' Create a new covariate Bar for a NGCHM
 #'
@@ -998,6 +1216,27 @@ chmNewFunction <- function (name, description, implementation, extraParams=NULL,
 }
 
 
+checkLabel <- function (label, paramName = "label") {
+    if (typeof (label) != "character") {
+        stop (sprintf ("Parameter '%s' must have type 'character', not '%s'", paramName, typeof(label)));
+    }
+    if (length (label) != 1) {
+        stop (sprintf ("Parameter '%s' must have a single value, not %d", paramName, length(label)));
+    }
+    if (nchar (label) == 0) {
+        stop (sprintf ("Parameter '%s' cannot be the empty string", paramName));
+    }
+};
+
+checkPropertyValue <- function (label, value) {
+    if (!typeof (value) %in% c("character","double","integer","logical")) {
+        stop (sprintf ("Parameter 'value' for property '%s' must have type 'character', 'double', 'integer', or 'logical', not '%s'", label, typeof(value)));
+    }
+    if (length (value) < 1) {
+        stop (sprintf ("Parameter 'value' for property '%s' must have at least one value", label));
+    }
+};
+
 #' Create a new Property for adding to a NGCHM.
 #'
 #' This function creates a new Property object for adding to
@@ -1018,23 +1257,71 @@ chmNewFunction <- function (name, description, implementation, extraParams=NULL,
 #' @seealso [chmAddProperty()]
 #'
 chmNewProperty <- function (label, value) {
-    if (typeof (label) != "character") {
-        stop (sprintf ("Parameter 'label' must have type 'character', not '%s'", typeof(label)));
-    }
-    if (length (label) != 1) {
-        stop (sprintf ("Parameter 'label' must have a single value, not %d", length(label)));
-    }
-    if (nchar (label) == 0) {
-        stop ("Parameter 'label' cannot be the empty string");
-    }
-    if (!typeof (value) %in% c("character","double","integer","logical")) {
-        stop (sprintf ("Parameter 'value' for property '%s' must have type 'character', 'double', 'integer', or 'logical', not '%s'", label, typeof(value)));
-    }
-    if (length (value) < 1) {
-        stop (sprintf ("Parameter 'value' for property '%s' must have at least one value", label));
-    }
+    checkLabel(label);
+    checkPropertyValue(label, value);
     new (Class="ngchmProperty", label=label, value=as.character(value))
 }
+
+#' Get the value of an NG-CHM property.
+#'
+#' @param hm The NG-CHM object to get the property value from.
+#' @param label The name of the property to get.
+#'        If no property with that name exists, return NULL.
+#'
+#'        Well-known property labels used by the NG-CHM system include:
+#'
+#'        * "chm.info.caption"  A paragraph describing the NG-CHM's contents (set by user).
+#'	  * "chm.info.built.time"  The date and time the NG-CHM was saved (set by system).
+#'
+#' @return A property value or NULL.
+#'
+#' @export
+#'
+#' @examples
+#' chmProperty (hm, "chm.info.caption")
+#'
+#' @seealso [ngchm-class]
+#'
+chmProperty <- function (hm, label) {
+    stopifnot (is (hm, "ngchm"));
+    checkLabel(label);
+    labels <- lapply (hm@properties, function(p) p@label);
+    idx <- which (label == labels);
+    if (length(idx) == 0) return(NULL);
+    stopifnot (length(idx) == 1);
+    hm@properties[[idx]]@value
+};
+
+#' Set the value of an NG-CHM property.
+#'
+#' @param hm The NG-CHM object on which to set the property.
+#' @param label The name of the property to set.
+#'        If no property with that name exists, a new property with that name is appended.
+#' @param value A non-empty vector of character, logical, or numeric values.
+#'
+#' @return The modified NG-CHM object.
+#'
+#' @export
+#'
+#' @examples
+#' chmProperty (hm, "chm.info.caption") <- "Nothing to see here";
+#'
+#' @seealso [ngchm-class]
+#'
+"chmProperty<-" <- function (x, label, value) {
+    stopifnot (is (x, "ngchm"));
+    checkLabel(label);
+    checkPropertyValue(label, value);
+    labels <- lapply (x@properties, function(p) p@label);
+    idx <- which (label == labels);
+    if (length(idx) == 0) {
+	x@properties <- append (x@properties, new(Class="ngchmProperty", label=label, value=as.character(value)));
+    } else {
+	stopifnot (length(idx) == 1);
+	x@properties[[idx]]@value <- as.character(value);
+    }
+    x
+};
 
 #' Create a list of NGCHM properties.
 #'
@@ -1063,7 +1350,7 @@ chmProperties <- function (...) {
        });
    }
    props
-}
+};
 
 #' Create a new object representing a NGCHM server.
 #'
@@ -2117,7 +2404,7 @@ ngchmGetHandleHTTR <- function (server) {
 #' @export
 ngchmResponseJSON <- function (httrResponse) {
     stopifnot (httr::status_code(httrResponse) >= 200 && httr::status_code(httrResponse) < 300);
-    jsonlite::fromJSON(content(httrResponse,'text',encoding='UTF-8'))
+    jsonlite::fromJSON(content(httrResponse,'text',encoding='UTF-8'), simplifyVector = FALSE)
 }
 
 getServerVersion <- function (server) {
@@ -2271,8 +2558,8 @@ chmCreateServer <- function (serverName,
 		    ws <- sprintf("%s/manager/rest/chmservers", serverSpec);
 		    res <- httr::GET (ws, handle=ngchmGetHandleHTTR (serverSpec));
 		    if (res$status_code >= 200 && res$status_code < 300) {
-			content <- ngchmResponseJSON(res);
-			if (length(content) > 0) {
+			content <- try(ngchmResponseJSON(res), silent=TRUE);
+			if ((class(content) != 'try-error') && (length(content) > 0)) {
 			    cfg$serverProtocol <- 'manager';
 			    cfg$deployServer <- sprintf ("%s/manager/rest", serverSpec);
 			    cfg$serviceName <- names(content)[1];
@@ -2284,8 +2571,8 @@ chmCreateServer <- function (serverName,
 			ws <- sprintf("%s/api/", serverSpec);
 			res <- httr::GET (ws, handle=ngchmGetHandleHTTR (serverSpec));
 			if (res$status_code >= 200 && res$status_code < 300) {
-			    content <- ngchmResponseJSON(res);
-			    if (length(content) > 0) {
+			    content <- try(ngchmResponseJSON(res), silent=TRUE);
+			    if ((class(content) != 'try-error') && (length(content) > 0)) {
 				cfg$serverProtocol <- 'shaidy';
 				cfg$basePath <- sprintf ("%s/api", serverSpec);
 				cfg$viewServer <- sprintf ("%s/NGCHM", serverSpec);
@@ -2876,9 +3163,9 @@ chmExportToPDF <- function(chm,filename,overwrite=FALSE,shaidyMapGen, shaidyMapG
     if (shaidyMapGenJava == "") shaidyMapGenJava <- "java";
     if (missing(shaidyMapGenArgs)) shaidyMapGenArgs <- strsplit(Sys.getenv("SHAIDYMAPGENARGS"),",")[[1]];
 
-    if (length(chmGetProperty(chm, "chm.info.build.time"))==0) {
+    if (length(chmProperty(chm, "chm.info.build.time"))==0) {
         chm@format <- "shaidy";
-        chm <- chmAddProperty (chm, "chm.info.build.time", format(Sys.time(), "%F %H:%M:%S"));
+        chmProperty (chm, "chm.info.build.time") <- format(Sys.time(), "%F %H:%M:%S");
         chm <- chmMake (chm);
     }
 

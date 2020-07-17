@@ -2,7 +2,7 @@
 % Please edit documentation in R/ngchmshaidy.R
 \name{ngchmPushSourceRepository}
 \alias{ngchmPushSourceRepository}
-\title{Push a shaidy repository onto the stack of source repositories}
+\title{Push a local shaidy repository onto the stack of source repositories}
 \usage{
 ngchmPushSourceRepository(shaidyDir, accessMethod = "file")
 }
@@ -12,5 +12,5 @@ ngchmPushSourceRepository(shaidyDir, accessMethod = "file")
 \item{accessMethod}{Method for accessing repository}
 }
 \description{
-Push a shaidy repository onto the stack of source repositories
+Push a local shaidy repository onto the stack of source repositories
 }

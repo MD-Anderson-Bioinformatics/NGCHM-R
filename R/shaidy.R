@@ -157,7 +157,7 @@ shaidyInit <- function() {
 	},
 	loadProperty = function (repo, shaid, propname) {
 	    p <- repo$blob.path (shaid, sprintf ("%s.json", propname));
-	    if (file.exists (p)) jsonlite::fromJSON(readLines(p, warn=FALSE)) else c()
+	    if (file.exists (p)) jsonlite::fromJSON(readLines(p, warn=FALSE), simplifyVector = FALSE) else c()
 	},
 	createCollection = function (repo, labels) {
 	    collection.uuid <- getuuid (paste0(labels,rnorm(10),collapse=';'));
@@ -474,6 +474,13 @@ shaidyCopyBlob <- function (src, shaid, dst) {
 	srcblob <- src$blob.path (shaid);
 	dst$copyLocalDirToBlob (srcblob, shaid);
     } else {
-        stop ("remote to remote copy not implemented");
+	# Create a local copy of the blob.
+        tmp <- ngchm.env$tmpShaidy;
+	if (!shaidyBlobExists (tmp, shaid)) {
+	    tmpblob <- shaidyCreateProtoBlob (tmp, shaid@type);
+	    src$copyBlobToLocalDir (shaid, tmpblob);
+	    shaidyFinalizeProtoBlob (tmp, shaid, tmpblob);
+	}
+	shaidyCopyBlob (tmp, shaid, dst);
     }
-}
+};

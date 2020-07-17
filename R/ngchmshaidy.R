@@ -196,7 +196,7 @@ ngchmPushTempRepository <- function (shaidyDir) {
     ngchm.env$tmpShaidy <- newrepo
 }
 
-#' Push a shaidy repository onto the stack of source repositories
+#' Push a local shaidy repository onto the stack of source repositories
 #'
 #' @param shaidyDir Basepath of local shaidy repository to use as a source repository
 #' @param accessMethod Method for accessing repository
@@ -204,8 +204,28 @@ ngchmPushTempRepository <- function (shaidyDir) {
 #' @export
 ngchmPushSourceRepository <- function (shaidyDir, accessMethod='file') {
     newrepo <- shaidyLoadRepository (accessMethod, shaidyDir);
-    ngchm.env$shaidyStack <- c(list(newrepo), ngchm.env$shaidyStack);
+    assign(envir=ngchm.env, 'shaidyStack',  c(list(newrepo), ngchm.env$shaidyStack));
 }
+
+#' Push a shaidy server onto the stack of source repositories
+#'
+#' @param server An ngchmServer or the name of one.
+#'
+#' @seealso [chmLoadShaidyCHM()]
+#' @seealso [chmCreateServer()]
+#'
+#' @export
+ngchmPushSourceServer <- function (server) {
+    if (is(server, "character")) {
+	stopifnot (length(server) == 1);
+	server <- chmServer(server);
+    } else {
+	stopifnot (is(server, "ngchmServer"));
+    }
+    sr <- shaidyLoadRepository(server@protoOpts$accessMethod, server@protoOpts$basePath);
+    assign(envir=ngchm.env, 'shaidyStack', c(list(sr), ngchm.env$shaidyStack));
+};
+
 
 #' Find a repository, if any, that contains the requested shaid
 #'
@@ -549,7 +569,7 @@ ngchmGetLabels <- function (shaid, axis=NULL) {
         srcRepo <- ngchmFindRepo (shaid);
 	if (srcRepo$accessMethod == "api") {
 	    if (shaid@type == 'dataset' && axis == 'row') {
-		labels <- jsonlite::fromJSON(readLines(srcRepo$blob.path ('rowlabels', shaid@type, shaid@value)))[[1]];
+		labels <- jsonlite::fromJSON(readLines(srcRepo$blob.path ('rowlabels', shaid@type, shaid@value), warn=FALSE))[[1]];
 	    } else if (shaid@type == 'dataset' && axis == 'column') {
 		labels <- readLines(srcRepo$blob.path ('bylabel', shaid@type, shaid@value))[[1]];
 		labels <- strsplit (labels, '\t')[[1]];

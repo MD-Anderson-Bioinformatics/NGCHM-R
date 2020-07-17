@@ -1540,7 +1540,7 @@ setMethod ("chmAddProperty",
     signature = c(chm="ngchm", label="character", value="character"),
     definition = function (chm, label, value) {
         chm <- chmFixVersion (chm);
-	chm@properties <- append (chm@properties, new (Class="ngchmProperty", label=label, value=value));
+	chmProperty (chm, label) <- value;
         chmUU (chm)
 });
 
@@ -1980,8 +1980,7 @@ setMethod ("chmHasProperty",
 setMethod ("chmGetProperty",
     signature = c(object="ngchmVersion2", label="character"),
     definition = function(object,label) {
-        stopifnot (length(label) == 1);
-        matches <- vapply (object@properties, function(p) p@label==label, TRUE);
-        vapply (object@properties[matches], function(p) p@value, '')
+	checkLabel (label);
+	chmProperty (object, label)
     }
 );

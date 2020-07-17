@@ -4,13 +4,7 @@
 \alias{chmNewDataLayer}
 \title{Create a new Data Layer for a NGCHM.}
 \usage{
-chmNewDataLayer(
-  label,
-  data,
-  colors = NULL,
-  summarizationMethod = "average",
-  cuts_color = "#4c4c4c"
-)
+chmNewDataLayer(label, data, colors, summarizationMethod, cuts_color)
 }
 \arguments{
 \item{label}{The name under which the data layer will be displayed to the user.}
@@ -44,5 +38,5 @@ layer <- chmNewDataLayer ("Noisy Data", noise, noise.colors)
 
 \code{\link[=chmNewColorMap]{chmNewColorMap()}}
 
-\code{\link[=chmAddDataLayer]{chmAddDataLayer()}}
+\code{\link[=chmAddLayer]{chmAddLayer()}}
 }
