@@ -7,12 +7,12 @@
 chmProperty(x, label) <- value
 }
 \arguments{
+\item{x}{The NG-CHM object on which to set the property.}
+
 \item{label}{The name of the property to set.
 If no property with that name exists, a new property with that name is appended.}
 
 \item{value}{A non-empty vector of character, logical, or numeric values.}
-
-\item{hm}{The NG-CHM object on which to set the property.}
 }
 \value{
 The modified NG-CHM object.

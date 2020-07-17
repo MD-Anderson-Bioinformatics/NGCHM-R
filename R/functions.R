@@ -1294,7 +1294,7 @@ chmProperty <- function (hm, label) {
 
 #' Set the value of an NG-CHM property.
 #'
-#' @param hm The NG-CHM object on which to set the property.
+#' @param x The NG-CHM object on which to set the property.
 #' @param label The name of the property to set.
 #'        If no property with that name exists, a new property with that name is appended.
 #' @param value A non-empty vector of character, logical, or numeric values.
@@ -1350,6 +1350,169 @@ chmProperties <- function (...) {
        });
    }
    props
+};
+
+#' Get the label/name of an NG-CHM object.
+#'
+#' @param hm The NG-CHM object to get the label/name of.  Can be:
+#'
+#' * An object of class ngchm
+#' * An object of class ngchmLayer
+#' * An object of class ngchmDataset
+#' * An object of class ngchmBar
+#' * An object of class ngchmCovariate
+#' * An object of class ngchmColormap
+#'
+#' @return A character string (or a vector of strings for an ngchmColormap)
+#'
+#' @export
+#'
+#' @examples
+#' chmLabel (chmNew('New CHM'))
+#'
+#' @seealso [ngchm-class]
+#'
+chmLabel <- function (x) {
+    if (is (x, "ngchm") || is(x, "ngchmLayer") || is(x, "ngchmDataset")) {
+	return (x@name);
+    }
+    if (is (x, "ngchmBar") || is(x, "ngchmCovariate")) {
+	return (x@label);
+    }
+    if (is (x, "ngchmColormap")) {
+	return (vapply (x@points, function(p) p@name, ""));
+    }
+    stop ("Unknown object class");
+};
+
+#' Set the label/name of an NG-CHM object
+#'
+#' @param x The NG-CHM object on which to set the label/name.
+#' @param value The new name (a single character string).
+#'
+#' @return The modified NG-CHM object.
+#'
+#' @export
+#'
+#' @examples
+#' chmLabel (hm) <- "A new name";
+#'
+#' @seealso [chmLabel]
+#'
+"chmLabel<-" <- function (x, value) {
+    stopifnot (is (value, "character") || is(value, "numeric") || is(value, "logical"),
+               length(value) == 1 || is(x,"ngchmColormap"));
+    value <- as.character (value);
+    if (is (x, "ngchm") || is(x, "ngchmLayer") || is (x, "ngchmDataset")) {
+	x@name <- value;
+    } else if (is (x, "ngchmBar") || is(x, "ngchmCovariate")) {
+	x@label <- value;
+    } else if (is (x, "ngchmColormap")) {
+	stopifnot (length(x@points) == length(value));
+	for (idx in 1:length(x@points)) x@points[[idx]]@name <- value[idx];
+    } else {
+	stop ("unknown object class");
+    }
+    x
+};
+
+#' Get the color map of an NG-CHM object.
+#'
+#' @param hm The NG-CHM object to get the color map of.  Can be:
+#'
+#' * An object of class ngchmLayer
+#' * An object of class ngchmBar
+#' * An object of class ngchmCovariate
+#'
+#' @return An ngchmColormap
+#'
+#' @export
+#'
+#' @examples
+#' chmColorMap (chmNewDataLayer('New layer', TCGA.GBM.EXPR[1:3,1:3))
+#'
+#' @seealso [chmNewColorMap]
+#'
+chmColorMap <- function (x) {
+    if (is(x, "ngchmLayer") || is(x, "ngchmBar")) {
+	return (x@colors);
+    }
+    if (is(x, "ngchmCovariate")) {
+	return (x@series.properties);
+    }
+    stop ("Unknown object class");
+};
+
+#' Set the color map of an NG-CHM object
+#'
+#' @param x The NG-CHM object on which to set the color map.
+#' @param value The ngchmColormap value to set.
+#'
+#' @return The modified NG-CHM object.
+#'
+#' @export
+#'
+#' @examples
+#' chmColorMap (chmNewDataLayer('New layer', TCGA.GBM.EXPR[1:3,1:3]), chmNewColormap (c(2,14));
+#'
+#' @seealso [chmColorMap]
+#'
+"chmColorMap<-" <- function (x, value) {
+    stopifnot (is (value, "ngchmColormap"));
+    if (is(x, "ngchmLayer") || is (x, "ngchmBar")) {
+	x@colors <- value;
+    } else if (is(x, "ngchmCovariate")) {
+	x@series.properties <- value;
+    } else {
+	stop ("Unknown object class");
+    }
+    x
+};
+
+#' Get the colors of an ngchmColormap, ngchmLayer, ngchmBar, or ngchmCovariate.
+#'
+#' @param x The object to get the colors of.
+#'
+#' @return A character string vector of the map colors.
+#'
+#' @export
+#'
+#' @examples
+#' chmColors (chmNewDataLayer('New Layer', TCGA.GBM.EXPR[1:50,1:50))
+#'
+#' @seealso [ngchm-class]
+#'
+chmColors <- function (x) {
+    if (!is(x, "ngchmColormap")) x <- chmColorMap(x);
+    vapply (x@points, function(p) p@color, "")
+};
+
+#' Set the colors of an ngchmColormap, ngchmLayer, ngchmBar, or ngchmCovariate.
+#'
+#' @param x The NG-CHM object on which to set the colors.
+#' @param value A character string vector of colors.  The vector length must equal
+#'        the number of data points in the color map.
+#'
+#' @return The modified NG-CHM object.
+#'
+#' @export
+#'
+#' @examples
+#' chmColors (layer) <- c("blue", "white", "red")
+#'
+#' @seealso [chmColors]
+#'
+"chmColors<-" <- function (x, value) {
+    stopifnot (is (value, "character"));
+    cm <- if (is(x,"ngchmColormap")) x else chmColorMap(x);
+    stopifnot (length(cm@points) == length(value));
+    for (idx in 1:length(cm@points)) cm@points[[idx]]@color <- value[idx];
+    if (is(x, "ngchmColormap")) {
+	return (cm);
+    } else {
+	chmColorMap(x) <- cm;
+	x
+    }
 };
 
 #' Create a new object representing a NGCHM server.
