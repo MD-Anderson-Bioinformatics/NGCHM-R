@@ -53,6 +53,10 @@ Add a covariate bar to a Next Generation Clustered Heat Map (NGCHM) and
 return the extended CHM.  If passed a covariate, a covariate bar will be created
 (using any optional parameters supplied) and added.
 }
+\details{
+If a covariate bar with the same name already exists on the specified axis or axes,
+the existing bar will be replaced by the new bar.
+}
 \seealso{
 \code{\link[=chmNewCovariate]{chmNewCovariate()}}
 

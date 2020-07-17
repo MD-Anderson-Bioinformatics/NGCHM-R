@@ -355,6 +355,9 @@ setGeneric ("chmAddSpecificAxisTypeFunction", function (chm, where, type, label,
 #' return the extended CHM.  If passed a covariate, a covariate bar will be created
 #' (using any optional parameters supplied) and added.
 #'
+#' If a covariate bar with the same name already exists on the specified axis or axes,
+#' the existing bar will be replaced by the new bar.
+#'
 #' @param chm The chm to add the covariate bar to.
 #' @param where The chm axis(axes) to add the covariate bar to. Must be one of "row", "column", or "both".
 #' @param covar The covariate or covariate bar to add to the chm.

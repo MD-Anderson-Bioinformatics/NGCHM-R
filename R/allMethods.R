@@ -1675,16 +1675,28 @@ setMethod ("chmAddCovariateBar",
     signature = c(chm="ngchm", where="character", covar="ngchmBar"),
     definition = function (chm, where, covar) {
         chm <- chmFixVersion (chm);
+	where <- match.arg (where, c("row", "column", "both"));
 	bar <- covar;
 	validateNewCovariateBar (chm, where, bar);
 	if (where == "row" || where == "both") {
-	    chm@rowCovariateBars <- append (chm@rowCovariateBars, bar);
-	    if (where == "both")
+	    idx <- which (bar@label == lapply (chm@rowCovariateBars, function(cvb) cvb@label));
+	    if (length(idx) == 0) {
+		chm@rowCovariateBars <- append (chm@rowCovariateBars, bar);
+	    } else if (length(idx) == 1) {
+		chm@rowCovariateBars[[idx]] <- bar;
+	    } else {
+		stop("chm contains multiple copies of covariate bar")
+	    }
+	}
+	if (where == "column" || where == "both") {
+	    idx <- which (bar@label == lapply (chm@colCovariateBars, function(cvb) cvb@label));
+	    if (length(idx) == 0) {
 		chm@colCovariateBars <- append (chm@colCovariateBars, bar);
-	} else if (where == "column") {
-	    chm@colCovariateBars <- append (chm@colCovariateBars, bar);
-	} else {
-	    stop (sprintf ("chmAddCovariateBar: unknown where '%s'. Should be row, column, or both.", where));
+	    } else if (length(idx) == 1) {
+		chm@colCovariateBars[[idx]] <- bar;
+	    } else {
+		stop("chm contains multiple copies of covariate bar")
+	    }
 	}
 	chmUU (chm)
 });
