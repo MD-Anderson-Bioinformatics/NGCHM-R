@@ -3335,7 +3335,7 @@ chmExportToPDF <- function(chm,filename,overwrite=FALSE,shaidyMapGen, shaidyMapG
     shaidyRepo <- ngchm.env$tmpShaidy;
     shaid <- shaidyGetShaid (chm);
 
-    pdfpath <- shaidyRepo$blob.path ("viewer", shaid@value, chm@name, paste(chm@name," HeatMap.pdf",sep=""));
+    pdfpath <- shaidyRepo$blob.path ("viewer", shaid@value, chm@name, paste(chm@name,".pdf",sep=""));
     if (!file.exists(pdfpath)) {
         if (shaidyMapGen == "") stop ("shaidyMapGen required but not specified or set in environment");
         status <- system2(shaidyMapGenJava, c(shaidyMapGenArgs, "-jar", shaidyMapGen, shaidyRepo$basepath, shaid@value, shaid@value));
@@ -3346,7 +3346,7 @@ chmExportToPDF <- function(chm,filename,overwrite=FALSE,shaidyMapGen, shaidyMapG
         stop("export to pdf failed");
     }
     filename
-}
+};
 
 writeBinLines <- function(text, con) {
     openit <- is.character(con);
