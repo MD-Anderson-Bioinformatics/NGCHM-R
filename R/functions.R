@@ -3551,9 +3551,9 @@ chmAddUWOT <- function (hm, axis, uwot, pointIds, basename = "UMAP") {
 	return (hm);
 };
 
-#' Add SingleCellExperiment::reducedDim coordinates to an NG-CHM.
+#' Add Single Cell reduced dimension coordinates to an NG-CHM.
 #'
-#' Add SingleCellExperiment::reducedDim coordinates from a single cell experiment object sce
+#' Add SingleCellExperiment::reducedDim or Seurat reduced dimension coordinates from a single cell object sce
 #' as hidden covariate bars to an axis of an NG-CHM.  dimName specifies the name of the reduced
 #' dimension of interest in sce.  One hidden covariate bar is added for each coordinate.
 #' If specified, maxDim limits the maximum number of covariate bars added to the chm.
@@ -3568,10 +3568,11 @@ chmAddUWOT <- function (hm, axis, uwot, pointIds, basename = "UMAP") {
 #'
 #' @param hm The NGCHM to add the coordinates to.
 #' @param axis The NGCHM axis ("row" or "column") to add the coordinates to.
-#' @param sce A Single Cell Experiment object containing the reduced dimension.
+#' @param sce An object containing the reduced dimension.
 #' @param dimName The name of the reduced dimension to create covariate bars for.
 #' @param maxDim The maximum number of coordinates to add (default all).
 #' @param basename The prefix to use for the coordinate names (defaults to dimName).
+#' @param dimAxis The axis on the sce object containing the named dimension.
 #'
 #' @return The NGCHM with added coordinates.
 #' @seealso [chmAddPCA()]
@@ -3579,8 +3580,38 @@ chmAddUWOT <- function (hm, axis, uwot, pointIds, basename = "UMAP") {
 #' @seealso [chmAddUMAP()]
 #' @seealso [chmAddUWOT()]
 
-chmAddReducedDim <- function (hm, axis, sce, dimName, maxDim, basename) {
-    layout <- SingleCellExperiment::reducedDim (sce, dimName);
+chmAddReducedDim <- function (hm, axis, sce, dimName, maxDim, basename, dimAxis) {
+    layout <- NULL;
+    # Try hard to find an applicable reducedDim method
+    if (is (sce, "SingleCellExperiment")) {
+        layout <- SingleCellExperiment::reducedDim (sce, dimName);
+    } else if (is (sce, "Seurat")) {
+        layout <- sce@reductions[[dimName]]@cell.embeddings;
+    } else {
+	pkg <- attr(class(sce), 'package');
+	if (length(pkg) != 0) {
+	    ns <- tryCatch (loadNamespace(pkg), error = function(e) e);
+	    if (!is(ns, 'error') && exists('reducedDim',ns)) {
+		if (missing(dimAxis)) {
+		    layout <- get('reducedDim',ns) (sce, dimName);
+		} else {
+		    layout <- get('reducedDim',ns) (sce, dimName, axis=dimAxis);
+		}
+	    }
+	}
+    }
+    if (length(layout) == 0) {
+	# Last chance: try .GlobalEnv
+	if (exists ('reducedDim')) {
+	    if (missing(dimAxis)) {
+		layout <- get('reducedDim') (sce, dimName);
+	    } else {
+		layout <- get('reducedDim') (sce, dimName, axis=dimAxis);
+	    }
+	} else {
+	    stop ("Unable to get reduced dimension from single cell object");
+	}
+    }
     if (missing(maxDim)) maxDim <- ncol (layout);
     if (missing(basename)) basename <- dimName;
     for (idx in 1:maxDim) {

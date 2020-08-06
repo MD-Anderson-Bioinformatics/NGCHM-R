@@ -2,7 +2,7 @@
 % Please edit documentation in R/functions.R
 \name{chmAddReducedDim}
 \alias{chmAddReducedDim}
-\title{Add SingleCellExperiment::reducedDim coordinates to an NG-CHM.}
+\title{Add Single Cell reduced dimension coordinates to an NG-CHM.}
 \usage{
 chmAddReducedDim(hm, axis, sce, dimName, maxDim, basename)
 }
@@ -11,7 +11,7 @@ chmAddReducedDim(hm, axis, sce, dimName, maxDim, basename)
 
 \item{axis}{The NGCHM axis ("row" or "column") to add the coordinates to.}
 
-\item{sce}{A Single Cell Experiment object containing the reduced dimension.}
+\item{sce}{A SingleCellExperiment or Seurat object containing the reduced dimension.}
 
 \item{dimName}{The name of the reduced dimension to create covariate bars for.}
 
@@ -23,7 +23,7 @@ chmAddReducedDim(hm, axis, sce, dimName, maxDim, basename)
 The NGCHM with added coordinates.
 }
 \description{
-Add SingleCellExperiment::reducedDim coordinates from a single cell experiment object sce
+Add SingleCellExperiment::reducedDim or Seurat reduced dimension coordinates from a single cell object sce
 as hidden covariate bars to an axis of an NG-CHM.  dimName specifies the name of the reduced
 dimension of interest in sce.  One hidden covariate bar is added for each coordinate.
 If specified, maxDim limits the maximum number of covariate bars added to the chm.

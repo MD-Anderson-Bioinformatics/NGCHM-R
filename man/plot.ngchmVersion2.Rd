@@ -4,7 +4,7 @@
 \alias{plot.ngchmVersion2}
 \title{Open the NG-CHM on the specified server in the viewer.}
 \usage{
-plot.ngchmVersion2(x, server = NULL, viewer = NULL, ...)
+\method{plot}{ngchmVersion2}(x, server = NULL, viewer = NULL, ...)
 }
 \arguments{
 \item{x}{The NGCHM to view.}
