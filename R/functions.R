@@ -1643,7 +1643,7 @@ chmRegisterAxisFunction <- function (type, label, fn) {
         stop (sprintf ("chmRegisterAxisFunction: error registering axis function '%s'. Specified type is '%', not string.", label, classstr(type)));
     if (!is(label, "character"))
         stop (sprintf ("chmRegisterAxisFunction: error registering axis function. Type of specified label is '%', not string.", classstr(type)));
-    if (!is(fn, "character"))
+    if (is(fn, "character"))
         fn <- chmGetFunction (fn);
     af <- new ("ngchmAxisFunction", type=type, label=label, func=fn);
     matches <- which (vapply (ngchm.env$axisFunctions, function(af) (af@label == label) && (af@type == type), TRUE));
