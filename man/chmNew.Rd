@@ -82,4 +82,6 @@ mychm <- chmNew ("test_chm")
 \code{\link[=chmExportToFile]{chmExportToFile()}}
 
 \code{\link[=chmExportToPDF]{chmExportToPDF()}}
+
+\code{\link[=chmExportToHTML]{chmExportToHTML()}}
 }

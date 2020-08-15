@@ -146,6 +146,7 @@ ngchmGetEnv <- function () {
 #' @seealso [chmInstall()]
 #' @seealso [chmExportToFile()]
 #' @seealso [chmExportToPDF()]
+#' @seealso [chmExportToHTML()]
 
 chmNew <- function (name, ...,
                     rowOrder=chmDefaultRowOrder, rowDist="correlation", rowAgglom="ward.D2",
@@ -3309,7 +3310,7 @@ chmExportToFile <- function(chm,filename,overwrite=FALSE,shaidyMapGen, shaidyMap
 
     shaidyRepo <- ngchm.env$tmpShaidy;
     shaid <- shaidyGetShaid (chm);
-    status <- system2(shaidyMapGenJava, c(shaidyMapGenArgs, "-jar", shaidyMapGen, shaidyRepo$basepath, shaid@value, shaid@value));
+    status <- system2(shaidyMapGenJava, c(shaidyMapGenArgs, "-jar", shaidyMapGen, shaidyRepo$basepath, shaid@value, shaid@value, "NO_PDF"));
     if (status != 0) stop("export to ngchm failed");
     if (!file.copy (shaidyRepo$blob.path ("viewer", shaid@value, chm@name, paste(chm@name,"ngchm",sep=".")), filename, TRUE)) {
         stop("export to ngchm failed");
@@ -3357,6 +3358,57 @@ chmExportToPDF <- function(chm,filename,overwrite=FALSE,shaidyMapGen, shaidyMapG
 
     if (!file.copy (pdfpath, filename, TRUE)) {
         stop("export to pdf failed");
+    }
+    filename
+};
+
+#' Export a standalone HTML containing the NGCHM to a file.
+#'
+#' Create a standalone HTML containing the NGCHM in the specified file.
+#'
+#' @export
+#' @rdname chmExportToHTML-method
+#'
+#' @param chm The NGCHM to generate the PDF for
+#' @param filename The file in which to save the PDF
+#' @param overwrite Overwrite file iff true (default false)
+#' @param shaidyMapGen Path to shaidyMapGen jar file (default to value of environment variable SHAIDYMAPGEN)
+#' @param shaidyMapGenJava Path to java executable with which to run shaidyMapGen (default to value of environment variable SHAIDYMAPGENJAVA or java)
+#' @param shaidyMapGenArgs Additional arguments to pass to java when running shaidyMapGen (default to value of environment variable SHAIDYMAPGENARGS)
+#' @param ngchmWidgetPath Path to location of ngchm Widget (ngchmWidget-min.js). Defaults to environment variable NGCHMWIDGETPATH.
+#'
+#' @return filename
+chmExportToHTML <- function(chm,filename,overwrite=FALSE,shaidyMapGen, shaidyMapGenJava, shaidyMapGenArgs, ngchmWidgetPath) {
+    if( !overwrite && file.exists(filename) ) stop ("'filename' already exists");
+    if (missing(shaidyMapGen)) shaidyMapGen <- Sys.getenv("SHAIDYMAPGEN");
+    if (missing(shaidyMapGenJava)) shaidyMapGenJava <- Sys.getenv("SHAIDYMAPGENJAVA");
+    if (shaidyMapGenJava == "") shaidyMapGenJava <- "java";
+    if (missing(shaidyMapGenArgs)) shaidyMapGenArgs <- strsplit(Sys.getenv("SHAIDYMAPGENARGS"),",")[[1]];
+    if (missing(ngchmWidgetPath)) {
+        stopifnot (Sys.getenv("NGCHMWIDGETPATH") != "");
+    } else {
+	Sys.setenv(NGCHMWIDGETPATH=ngchmWidgetPath);
+    }
+
+
+    if (length(chmProperty(chm, "chm.info.build.time"))==0) {
+        chm@format <- "shaidy";
+        chmProperty (chm, "chm.info.build.time") <- format(Sys.time(), "%F %H:%M:%S");
+        chm <- chmMake (chm);
+    }
+
+    shaidyRepo <- ngchm.env$tmpShaidy;
+    shaid <- shaidyGetShaid (chm);
+
+    htmlpath <- shaidyRepo$blob.path ("viewer", shaid@value, chm@name, paste(chm@name,".html",sep=""));
+    if (!file.exists(htmlpath)) {
+        if (shaidyMapGen == "") stop ("shaidyMapGen required but not specified or set in environment");
+        status <- system2(shaidyMapGenJava, c(shaidyMapGenArgs, "-jar", shaidyMapGen, shaidyRepo$basepath, shaid@value, shaid@value, "NO_PDF", "-HTML"));
+        if (status != 0 || !file.exists(htmlpath)) stop("export to html failed");
+    }
+
+    if (!file.copy (htmlpath, filename, TRUE)) {
+        stop("export to html failed");
     }
     filename
 };
