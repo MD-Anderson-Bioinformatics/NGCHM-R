@@ -11,6 +11,18 @@ systemCheck <- function (command, ...) {
     }
 }
 
+# Returns TRUE if object has any of the specified classes.
+#
+isany <- function (object, classes) {
+    any (vapply (classes, function(cls) is(object, cls), TRUE))
+};
+
+# Returns the class(es) of object as a single string.
+#
+classstr <- function (object) {
+    paste (class (object), collapse=",")
+};
+
 #' Register an ngchmServer.
 #'
 #' This function registers an ngchmServer that can be used when
@@ -399,15 +411,14 @@ chmAddAxis <- function (chm, axis) {
     where <- match.arg (axis@axis, c("row", "column", "both"));
     chm <- chmFixVersion (chm);
     for (item in axis@objects) {
-	cc <- class (item);
-	if (cc == "ngchmAxisType") {
+	if (is(item, "ngchmAxisType")) {
             item@where <- where;
 	    chm@axisTypes <- append (chm@axisTypes, item);
 	    chm <- chmAddProperty (chm, paste('!axistype', where, sep='.'), item@type)
-        } else if (cc %in% c("ngchmBar", "ngchmCovariate")) {
+        } else if (isany (item, c("ngchmBar", "ngchmCovariate"))) {
 	    chm <- chmAddCovariateBar (chm, where, item);
 	} else {
-	    stop (sprintf ("Unable to add item of class '%s' to ngchm axis\n", cc));
+	    stop (sprintf ("Unable to add item of class '%s' to ngchm axis\n", classstr(item)));
 	}
     }
     chm
@@ -417,17 +428,16 @@ chmAddAxis <- function (chm, axis) {
 chmAddList <- function (chm, args) {
     #cat (sprintf ("chmAdd: %d items to add\n", length(args)), file=stderr());
     for (item in args) {
-	cc <- class (item);
-	if (cc == "ngchmLayer") { chm <- chmAddLayer (chm, item); }
-	else if ((cc == "matrix") && (mode(item) == "numeric")) { chm <- chmAddLayer (chm, item); }
-	else if (cc == "ngchmDataset") { chm <- chmAddDataset (chm, item); }
-	else if (cc == "ngchmColormap") { chm <- chmAddColormap (chm, item); }
-	else if (cc == "ngchmDialog") { chm <- chmAddDialog (chm, item); }
-	else if (cc == "ngchmProperty") { chmProperty(chm, item@label) <- item; }
-	else if (cc == "ngchmAxis") { chm <- chmAddAxis (chm, item); }
-        else if (cc == "list") { chm <- chmAddList (chm, item); }
+	if (is(item, "ngchmLayer")) { chm <- chmAddLayer (chm, item); }
+	else if (is(item, "matrix") && (mode(item) == "numeric")) { chm <- chmAddLayer (chm, item); }
+	else if (is(item, "ngchmDataset")) { chm <- chmAddDataset (chm, item); }
+	else if (is(item, "ngchmColormap")) { chm <- chmAddColormap (chm, item); }
+	else if (is(item, "ngchmDialog")) { chm <- chmAddDialog (chm, item); }
+	else if (is(item, "ngchmProperty")) { chmProperty(chm, item@label) <- item; }
+	else if (is(item, "ngchmAxis")) { chm <- chmAddAxis (chm, item); }
+        else if (is(item, "list")) { chm <- chmAddList (chm, item); }
 	else {
-	    stop (sprintf ("Unable to add item of class '%s' to ngchm\n", cc));
+	    stop (sprintf ("Unable to add item of class '%s' to ngchm\n", classstr(item)));
 	}
     }
     chm
@@ -570,7 +580,7 @@ chmLayer <- function (hm, label) {
 assign('chmLayer<-', function (x, label, colors, summarizationMethod, cuts_color, value) {
     stopifnot (!missing(x), is(x, "ngchm"));
     stopifnot (missing(label) || length(label) == 1);
-    stopifnot (!missing(value), is(value, "matrix") || is (value, "ngchmLayer"));
+    stopifnot (!missing(value), isany(value, c("matrix", "ngchmLayer")));
     hm <- NGCHM:::chmFixVersion (x);
     # Convert label into a numeric layeridx and a character label
     if (missing(label)) {
@@ -666,21 +676,23 @@ chmNewDataset <- function (name, description, data,
     }
     data <- ngchmSaveAsDatasetBlob (ngchm.env$tmpShaidy, 'tsv', data);
     if (length (row.covariates) > 0) {
-        if (class(row.covariates) == "ngchmCovariate") {
+        if (is(row.covariates, "ngchmCovariate")) {
 	    row.covariates <- list (row.covariates);
-	} else if (class(row.covariates) == "list") {
-	    stopifnot (all (vapply (row.covariates, function(cov)class(cov)=="ngchmCovariate", TRUE)));
+	} else if (is(row.covariates, "list")) {
+	    stopifnot (all (vapply (row.covariates, function(cov)is(cov,"ngchmCovariate"), TRUE)));
 	} else {
-	    stop (sprintf ("Parameter 'row.covariates' for dataset '%s' must be either a covariate or list of covariates, not a '%s'", name, class(row.covariates)));
+	    stop (sprintf ("Parameter 'row.covariates' for dataset '%s' must be either a covariate or list of covariates, not a '%s'",
+	                   name, classstr(row.covariates)));
 	}
     }
     if (length (column.covariates) > 0) {
-        if (class(column.covariates) == "ngchmCovariate") {
+        if (is(column.covariates, "ngchmCovariate")) {
 	    column.covariates <- list (column.covariates);
-	} else if (class(column.covariates) == "list") {
-	    stopifnot (all (vapply (column.covariates, function(cov)class(cov)=="ngchmCovariate", TRUE)));
+	} else if (is(column.covariates, "list")) {
+	    stopifnot (all (vapply (column.covariates, function(cov)is(cov,"ngchmCovariate"), TRUE)));
 	} else {
-	    stop (sprintf ("Parameter 'column.covariates' for dataset '%s' must be either a covariate or list of covariates, not a '%s'", name, class(column.covariates)));
+	    stop (sprintf ("Parameter 'column.covariates' for dataset '%s' must be either a covariate or list of covariates, not a '%s'",
+	                   name, classstr(column.covariates)));
 	}
     }
     new (Class="ngchmDataset", name=name, description=description, data=data,
@@ -739,8 +751,9 @@ chmNewCovariate <- function (fullname, values, value.properties=NULL, type=NULL,
 	}
     }
 
-    if ((length (value.properties) > 0) && (class(value.properties) != "ngchmColormap")) {
-	stop (sprintf ("value.properties for covariate '%s' must have class ngchmColormap, not '%s'", fullname, class(value.properties)));
+    if ((length (value.properties) > 0) && (!is(value.properties, "ngchmColormap"))) {
+	stop (sprintf ("value.properties for covariate '%s' must have class ngchmColormap, not '%s'",
+	               fullname, classstr(value.properties)));
     }
 
     if (type == "continuous") {
@@ -866,22 +879,22 @@ ngchmNewBar <- function (label, type, data, colors=NULL, display="visible", thic
         stop ("Parameter 'label' cannot be the empty string");
     }
     if (typeof (type) != "character") {
-        stop (sprintf ("Parameter 'type' for classbar '%s' must have type 'character', not '%s'", label, typeof(type)));
+        stop (sprintf ("Parameter 'type' for covariate bar '%s' must have type 'character', not '%s'", label, typeof(type)));
     }
     if (length (type) != 1) {
-        stop (sprintf ("Parameter 'type' for classbar '%s' must have a single value, not %d", label, length(type)));
+        stop (sprintf ("Parameter 'type' for covariate bar '%s' must have a single value, not %d", label, length(type)));
     }
     if (!(type %in% c("discrete", "continuous"))) {
-        stop (sprintf ("Parameter 'type' for classbar '%s' must be either 'discrete' or 'continuous', not '%s'", label, type));
+        stop (sprintf ("Parameter 'type' for covariate bar '%s' must be either 'discrete' or 'continuous', not '%s'", label, type));
     }
     if (typeof (display) != "character") {
-        stop (sprintf ("Parameter 'display' for classbar '%s' must have type 'character', not '%s'", label, typeof(display)));
+        stop (sprintf ("Parameter 'display' for covariate bar '%s' must have type 'character', not '%s'", label, typeof(display)));
     }
     if (length (display) != 1) {
-        stop (sprintf ("Parameter 'display' for classbar '%s' must have a single value, not %d", label, length(display)));
+        stop (sprintf ("Parameter 'display' for covariate bar '%s' must have a single value, not %d", label, length(display)));
     }
     if (!(display %in% c("visible", "hidden"))) {
-        stop (sprintf ("Parameter 'display' for classbar '%s' must be either 'visible' or 'hidden', not '%s'", label, display));
+        stop (sprintf ("Parameter 'display' for covariate bar '%s' must be either 'visible' or 'hidden', not '%s'", label, display));
     }
 
     if (is (data, "shaid")) {
@@ -905,13 +918,13 @@ ngchmNewBar <- function (label, type, data, colors=NULL, display="visible", thic
         merge <- "average";
     }
     if ((length(merge) != 1) || !(merge %in% c("average", "peakColor", "specialColor", "mostCommon")))
-        stop (sprintf ("Unknown classbar merge value '%s'. Must be 'average', 'peakColor', 'specialColor' or 'mostCommon'", merge));
+        stop (sprintf ("Unknown covariate bar merge value '%s'. Must be 'average', 'peakColor', 'specialColor' or 'mostCommon'", merge));
     if (length(shaid)==0) {
         if (length(names(data)) == 0)
-            stop (sprintf ("Parameter 'data' for classbar '%s' must have defined names that match those of the CHM axis to which it will be attached", label));
+            stop (sprintf ("Parameter 'data' for covariate bar '%s' must have defined names that match those of the CHM axis to which it will be attached", label));
         if (anyDuplicated(names(data)) != 0) {
             dups <- unique(names(data)[which(duplicated(names(data)))]);
-    	stop (sprintf ("Parameter 'data' for classbar '%s' has multiple entries for label(s) %s", label, paste (dups, collapse=', ')));
+	stop (sprintf ("Parameter 'data' for covariate bar '%s' has multiple entries for label(s) %s", label, paste (dups, collapse=', ')));
         }
         data <- data[order(names(data))];
         mat <- matrix (data, ncol=1, dimnames=list(names(data),'Value'));
@@ -1059,7 +1072,7 @@ chmNewColorMap <- function (values, colors=NULL, names=NULL, shapes=NULL, zs=NUL
     }
 
     # Validate 'values'.  Auto-pick values if appropriate.
-    if (is(values,'matrix')||is(values,'shaid')) {
+    if (isany(values,c('matrix','shaid'))) {
 	# User just supplied a data matrix.
 	if (NC == 0) NC <- 3;
         if (type == "quantile") {
@@ -1085,7 +1098,7 @@ chmNewColorMap <- function (values, colors=NULL, names=NULL, shapes=NULL, zs=NUL
 	} else {
 	    stop (sprintf ("chmNewColorMap: unable to derive color map breaks from matrix for map type '%s'", type));
 	}
-    } else if (class(values) %in% c('character', 'numeric', 'integer', 'logical')) {
+    } else if (isany(values, c('character', 'numeric', 'integer', 'logical'))) {
 	# User supplied a vector of values.
 	if (anyDuplicated(values) != 0) {
 	    stop ("chmNewColorMap: values contains duplicates");
@@ -1095,13 +1108,13 @@ chmNewColorMap <- function (values, colors=NULL, names=NULL, shapes=NULL, zs=NUL
 	}
 	if (length(values) != NC)
 	    stop (sprintf ("chmNewColorMap: number of values (%d) does not equal number of color (%d). It should.", length(values), NC));
-        if (class(values) %in% c('numeric','integer') && !all(is.finite(values))) {
+        if (isany(values, c('numeric','integer')) && !all(is.finite(values))) {
             stop('chmNewColorMap: values contains non-finite values');
         }
     } else {
 	# Don't know what the user provided.
         stop (sprintf ("chmNewColorMap: values vector has unknown class '%s'. It must be either a vector or a matrix.",
-	               class (values)));
+	               classstr (values)));
     }
     # values is now a length NC vector of cut points
     stopifnot (length(values) == NC);
@@ -1373,10 +1386,10 @@ chmProperties <- function (...) {
 #' @seealso [ngchm-class]
 #'
 chmLabel <- function (x) {
-    if (is (x, "ngchm") || is(x, "ngchmLayer") || is(x, "ngchmDataset")) {
+    if (isany (x, c("ngchm", "ngchmLayer", "ngchmDataset"))) {
 	return (x@name);
     }
-    if (is (x, "ngchmBar") || is(x, "ngchmCovariate")) {
+    if (isany (x, c("ngchmBar", "ngchmCovariate"))) {
 	return (x@label);
     }
     if (is (x, "ngchmColormap")) {
@@ -1400,12 +1413,12 @@ chmLabel <- function (x) {
 #' @seealso [chmLabel]
 #'
 "chmLabel<-" <- function (x, value) {
-    stopifnot (is (value, "character") || is(value, "numeric") || is(value, "logical"),
+    stopifnot (isany (value, c("character", "numeric", "logical")),
                length(value) == 1 || is(x,"ngchmColormap"));
     value <- as.character (value);
-    if (is (x, "ngchm") || is(x, "ngchmLayer") || is (x, "ngchmDataset")) {
+    if (isany (x, c("ngchm", "ngchmLayer", "ngchmDataset"))) {
 	x@name <- value;
-    } else if (is (x, "ngchmBar") || is(x, "ngchmCovariate")) {
+    } else if (isany (x, c("ngchmBar", "ngchmCovariate"))) {
 	x@label <- value;
     } else if (is (x, "ngchmColormap")) {
 	stopifnot (length(x@points) == length(value));
@@ -1434,7 +1447,7 @@ chmLabel <- function (x) {
 #' @seealso [chmNewColorMap]
 #'
 chmColorMap <- function (x) {
-    if (is(x, "ngchmLayer") || is(x, "ngchmBar")) {
+    if (isany(x, c("ngchmLayer", "ngchmBar"))) {
 	return (x@colors);
     }
     if (is(x, "ngchmCovariate")) {
@@ -1459,7 +1472,7 @@ chmColorMap <- function (x) {
 #'
 "chmColorMap<-" <- function (x, value) {
     stopifnot (is (value, "ngchmColormap"));
-    if (is(x, "ngchmLayer") || is (x, "ngchmBar")) {
+    if (isany(x, c("ngchmLayer", "ngchmBar"))) {
 	x@colors <- value;
     } else if (is(x, "ngchmCovariate")) {
 	x@series.properties <- value;
@@ -1625,11 +1638,11 @@ chmRegisterAxisFunction <- function (type, label, fn) {
 	    stop (sprintf ("Parameter 'type[%d]' for axis function '%s' cannot be the empty string", ii, label));
 	}
     }
-    if (class(type) != "character")
-        stop (sprintf ("chmRegisterAxisFunction: error registering axis function '%s'. Specified type is '%', not string.", label, class(type)));
-    if (class(label) != "character")
-        stop (sprintf ("chmRegisterAxisFunction: error registering axis function. Type of specified label is '%', not string.", class(type)));
-    if (class(fn) == "character")
+    if (!is(type, "character"))
+        stop (sprintf ("chmRegisterAxisFunction: error registering axis function '%s'. Specified type is '%', not string.", label, classstr(type)));
+    if (!is(label, "character"))
+        stop (sprintf ("chmRegisterAxisFunction: error registering axis function. Type of specified label is '%', not string.", classstr(type)));
+    if (!is(fn, "character"))
         fn <- chmGetFunction (fn);
     af <- new ("ngchmAxisFunction", type=type, label=label, func=fn);
     matches <- which (vapply (ngchm.env$axisFunctions, function(af) (af@label == label) && (af@type == type), TRUE));
@@ -1744,7 +1757,7 @@ chmRegisterMatrixFunction <- function (rowtype, columntype, label, fn) {
     if (length (columntype) < 1) {
         stop (sprintf ("Parameter 'columntype' for matrix function '%s' must have at least one value", label));
     }
-    if (class(fn) == "character")
+    if (is(fn, "character"))
         fn <- chmGetFunction (fn);
     newmf <- new ("ngchmMatrixFunction", rowtype=rowtype, columntype=columntype, label=label, func=fn);
     matches <- which (vapply (ngchm.env$matrixFunctions, function(mf) (mf@label == label) && (mf@rowtype == rowtype) && (mf@columntype == columntype), TRUE));
@@ -1920,22 +1933,22 @@ chmRegisterTypeMapper <- function (fromtype, totype, op, ...) {
     for (ii in 1:length(fromtype))
 	if (nchar(totype) >= nchar(fromtype[ii]))
 	    stop (sprintf ("chmRegisterTypeMapper: totype ('%s') must be shorter than fromtype ('%s').", totype, fromtype[ii]));
-    stopifnot (class(op) == "character" && length(op)==1);
+    stopifnot (is(op, "character") && length(op)==1);
 
     pp <- list (...);
     if (op == "field") {
         stopifnot ("separator" %in% names(pp));
-        stopifnot (class(pp$separator)=="character" && length(pp$separator)==1);
+        stopifnot (is(pp$separator,"character") && length(pp$separator)==1);
         if (!"num" %in% names(pp)) pp$num <- 0;
         params <- list(separator=pp$separator, num=pp$num);
     } else if (op == "expr") {
         stopifnot ("expr" %in% names(pp));
-        stopifnot (class(pp$expr)=="character" && length(pp$expr)==1);
+        stopifnot (is(pp$expr,"character") && length(pp$expr)==1);
         if (!"return" %in% names(pp)) pp$return <- 'scalar';
         params <- list(expr=pp$expr, return=pp$return);
     } else if (op == "javascript") {
         stopifnot ("fn" %in% names(pp));
-        if (class(pp$fn) == "character") {
+        if (is(pp$fn, "character")) {
             pp$fn <- chmGetFunction (pp$fn);
         }
         params <- list(fn=pp$fn);
@@ -1979,8 +1992,8 @@ chmRegisterTypeMapper <- function (fromtype, totype, op, ...) {
 #' @seealso [ngchmMatrixFunction-class]
 #'
 chmRegisterFunction <- function (fn) {
-    if (class(fn) != "ngchmJS") {
-        stop (sprintf ("Parameter 'fn' must have type 'ngchmJS', not '%s'", class(fn)));
+    if (!is(fn, "ngchmJS")) {
+        stop (sprintf ("Parameter 'fn' must have type 'ngchmJS', not '%s'", classstr(fn)));
     }
     matches <- which (vapply (ngchm.env$scripts, function(ss) (ss@name == fn@name), TRUE));
     if (length (matches) > 0) {
@@ -2148,8 +2161,8 @@ ngchmGetServerProtocol <- function (protocolName) {
 #' @param default The default value of the option (default NULL)
 
 ngchmGetProtoParam <- function (server, option, default=NULL) {
-    stopifnot ("ngchmServer" %in% class(server));
-    stopifnot ("character" %in% class(option));
+    stopifnot (is (server, "ngchmServer"));
+    stopifnot (is (option, "character"));
     stopifnot (length(option) == 1);
     if (is.null (server@protoOpts)) return (default);
     if (option %in% names(server@protoOpts)) return (server@protoOpts[[option]]);
@@ -2331,9 +2344,9 @@ chmRegisterToolboxFunction <- function (tbtype, menulabel, jsfn) {
     if (nchar (tbtype) == 0) {
         stop (sprintf ("Parameter 'tbtype' of toolbox function '%s' cannot be the empty string", menulabel));
     }
-    if (class(jsfn) != "ngchmJS") {
+    if (!is(jsfn, "ngchmJS")) {
         stop (sprintf ("a toolbox function must be of class ngchmJS (see chmNewFunction) not '%s'",
-	               class(jsfn)));
+	               classstr(jsfn)));
     }
     if (length(jsfn@extraParams) != 1) {
         stop (sprintf ("a toolbox function requires exactly 1 extra parameter (called 'dataset'), not %d",
@@ -2481,12 +2494,12 @@ shortnameslist <- function (names, maxnames=5)
 #' @seealso [chmAddDialog()]
 #'
 chmNewDialog <- function (id, title, fn) {
-    if (class(fn) == "character") {
+    if (is(fn, "character")) {
         fn <- chmGetFunction (fn);
     }
     dialog <- new (Class="ngchmDialog", id=id, title=title, fn=fn);
     dialog
-}
+};
 
 #' Create a new Axis for adding to an NG-CHM.
 #'
@@ -2551,7 +2564,7 @@ chmListServers <- function () {
 #' @export
 #'
 ngchmGetHandleHTTR <- function (server) {
-    ws <- if ("ngchmServer" %in% class(server)) server@serverURL else server;
+    ws <- if (is (server, "ngchmServer")) server@serverURL else server;
     if (!exists (ws, ngchm.env$handledb)) {
 	assign (ws, httr::handle(ws), ngchm.env$handledb);
     }
@@ -2571,7 +2584,7 @@ ngchmResponseJSON <- function (httrResponse) {
 }
 
 getServerVersion <- function (server) {
-    url <- if ("ngchmServer" %in% class(server)) server@serverURL else server;
+    url <- if (is (server, "ngchmServer")) server@serverURL else server;
     ws <- sprintf("%s/gdacws/servermetadata", url);
     res <- httr::GET (ws, handle=ngchmGetHandleHTTR (server));
     as.numeric(ngchmResponseJSON(res)$Build_Number)
@@ -2722,7 +2735,7 @@ chmCreateServer <- function (serverName,
 		    res <- httr::GET (ws, handle=ngchmGetHandleHTTR (serverSpec));
 		    if (res$status_code >= 200 && res$status_code < 300) {
 			content <- try(ngchmResponseJSON(res), silent=TRUE);
-			if ((class(content) != 'try-error') && (length(content) > 0)) {
+			if ((!is(content, 'try-error')) && (length(content) > 0)) {
 			    cfg$serverProtocol <- 'manager';
 			    cfg$deployServer <- sprintf ("%s/manager/rest", serverSpec);
 			    cfg$serviceName <- names(content)[1];
@@ -2735,7 +2748,7 @@ chmCreateServer <- function (serverName,
 			res <- httr::GET (ws, handle=ngchmGetHandleHTTR (serverSpec));
 			if (res$status_code >= 200 && res$status_code < 300) {
 			    content <- try(ngchmResponseJSON(res), silent=TRUE);
-			    if ((class(content) != 'try-error') && (length(content) > 0)) {
+			    if ((!is(content, 'try-error')) && (length(content) > 0)) {
 				cfg$serverProtocol <- 'shaidy';
 				cfg$basePath <- sprintf ("%s/api", serverSpec);
 				cfg$viewServer <- sprintf ("%s/NGCHM", serverSpec);
@@ -2924,12 +2937,12 @@ bindExtraParams <- function (funcs, params, props) {
 	    names(vals) <- extra;
 	    tmpname <- paste(c('f',sample(c(letters,toupper(letters),as.character(0:9)),15,replace=TRUE)), collapse="");
 	    chmBindFunction (tmpname, fn@func@name, as.list(vals));
-	    if (class(fn) == "ngchmAxisFunction")
+	    if (is(fn, "ngchmAxisFunction"))
 		newfn <- new(class(fn), type=fn@type, label=fn@label, func=chmGetFunction(tmpname))
-	    else if (class(fn) == "ngchmMatrixFunction")
+	    else if (is(fn, "ngchmMatrixFunction"))
 		newfn <- new(class(fn), rowtype=fn@rowtype, coltype=fn@coltype, label=fn@label, func=chmGetFunction(tmpname))
 	    else
-	        stop (sprintf ("Unknown function class '%s'", class(fn)));
+	        stop (sprintf ("Unknown function class '%s'", classstr(fn)));
 	    funcs <- append (funcs, newfn);
 	}
     }
@@ -3386,7 +3399,7 @@ writeBinLines <- function(text, con) {
 #' @seealso [chmAddReducedDim()]
 
 chmAddTSNE <- function (hm, axis, tsne, pointIds, basename = "TSNE") {
-	stopifnot (class(hm) == "ngchmVersion2");
+	stopifnot (is(hm, "ngchmVersion2"));
 	stopifnot (mode(axis) == "character" && length(axis) == 1);
 	stopifnot (axis == "row" || axis == "column");
 	stopifnot (mode(pointIds) == "character" && length(pointIds) == nrow(tsne$Y));
@@ -3433,7 +3446,7 @@ chmAddTSNE <- function (hm, axis, tsne, pointIds, basename = "TSNE") {
 #' @seealso [chmAddReducedDim()]
 
 chmAddPCA <- function (hm, axis, prc, basename = "PC", ndim=2) {
-	stopifnot (class(hm) == "ngchmVersion2");
+	stopifnot (is(hm, "ngchmVersion2"));
 	stopifnot (mode(axis) == "character" && length(axis) == 1);
 	stopifnot (axis == "row" || axis == "column");
 	stopifnot (mode(basename) == "character" && length(basename) == 1);
@@ -3480,7 +3493,7 @@ chmAddPCA <- function (hm, axis, prc, basename = "PC", ndim=2) {
 #' @seealso [chmAddReducedDim()]
 
 chmAddUMAP <- function (hm, axis, umap, basename = "UMAP") {
-	stopifnot (class(hm) == "ngchmVersion2");
+	stopifnot (is(hm, "ngchmVersion2"));
 	stopifnot (mode(axis) == "character" && length(axis) == 1);
 	stopifnot (axis == "row" || axis == "column");
 	stopifnot (mode(basename) == "character" && length(basename) == 1);
@@ -3531,7 +3544,7 @@ chmAddUMAP <- function (hm, axis, umap, basename = "UMAP") {
 #' @seealso [chmAddReducedDim()]
 
 chmAddUWOT <- function (hm, axis, uwot, pointIds, basename = "UMAP") {
-	stopifnot (class(hm) == "ngchmVersion2");
+	stopifnot (is(hm, "ngchmVersion2"));
 	stopifnot (mode(axis) == "character" && length(axis) == 1);
 	stopifnot (axis == "row" || axis == "column");
 	stopifnot (mode(pointIds) == "character" && length(pointIds) == nrow(uwot));

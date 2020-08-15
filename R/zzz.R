@@ -43,7 +43,7 @@ ngchm.env <- new.env(parent=emptyenv());
 #'
 #' @export
 chmSetDeployServerConfig <- function (server, config) {
-    if (class(server)=="character") server <- chmServer (server);
+    if (is(server,"character")) server <- chmServer (server);
     assign (server@deployServer, config, ngchm.env$deployServerConfigs);
     NULL
 }
@@ -54,7 +54,7 @@ chmSetDeployServerConfig <- function (server, config) {
 #'
 #' @export
 chmGetDeployServerConfig <- function (server) {
-    if (class(server)=="character") server <- chmServer (server);
+    if (is(server,"character")) server <- chmServer (server);
     if (exists (server@deployServer, ngchm.env$deployServerConfigs)) {
         get (server@deployServer, ngchm.env$deployServerConfigs)
     } else {

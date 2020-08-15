@@ -4,20 +4,22 @@
 \alias{chmAddReducedDim}
 \title{Add Single Cell reduced dimension coordinates to an NG-CHM.}
 \usage{
-chmAddReducedDim(hm, axis, sce, dimName, maxDim, basename)
+chmAddReducedDim(hm, axis, sce, dimName, maxDim, basename, dimAxis)
 }
 \arguments{
 \item{hm}{The NGCHM to add the coordinates to.}
 
 \item{axis}{The NGCHM axis ("row" or "column") to add the coordinates to.}
 
-\item{sce}{A SingleCellExperiment or Seurat object containing the reduced dimension.}
+\item{sce}{An object containing the reduced dimension.}
 
 \item{dimName}{The name of the reduced dimension to create covariate bars for.}
 
 \item{maxDim}{The maximum number of coordinates to add (default all).}
 
 \item{basename}{The prefix to use for the coordinate names (defaults to dimName).}
+
+\item{dimAxis}{The axis on the sce object containing the named dimension.}
 }
 \value{
 The NGCHM with added coordinates.
