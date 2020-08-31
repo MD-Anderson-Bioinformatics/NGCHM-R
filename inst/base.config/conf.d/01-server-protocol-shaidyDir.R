@@ -18,6 +18,7 @@
 	    for (uuid in collection$collections) {
 		shaid <- new ('shaid', type='collection', value=uuid);
 		labels <- repo$loadProperty(shaid, "labels");
+		if (length(labels) == 1 && is.list(labels)) labels <- labels[[1]];
                 if (any ((labels$Name==fields[1])&(labels$Value==fields[2]))) {
 		    if (length(parts) == 1) {
 			# Avoid unnecessary LoadCollection if this is last part.
