@@ -1705,9 +1705,8 @@ setMethod ("chmAddCovariateBar",
 #'
 setMethod ("chmAddCovariateBar",
     signature = c(chm="ngchm", where="character", covar="ngchmCovariate"),
-    definition = function (chm, where, covar,
-                           display="visible", thickness=as.integer(10), merge) {
-	bar <- chmNewCovariateBar (covar, display=display, thickness=thickness, merge=merge);
+    definition = function (chm, where, covar, ...) {
+	bar <- chmNewCovariateBar (covar, ...);
 	chmAddCovariateBar (chm, where, bar)
 });
 #' @rdname chmAddCovariateBar-method
@@ -1715,14 +1714,13 @@ setMethod ("chmAddCovariateBar",
 #'
 setMethod ("chmAddCovariateBar",
     signature = c(chm="ngchm", where="character", covar="list"),
-    definition = function (chm, where, covar,
-                           display="visible", thickness=as.integer(10), merge=NULL) {
+    definition = function (chm, where, covar, ...) {
         chm <- chmFixVersion (chm);
 	for (item in covar) {
 	    if (class(item) == "ngchmBar") {
 	        bar <- item;
 	    } else if (class(item) == "ngchmCovariate") {
-		bar <- chmNewCovariateBar (item, display=display, thickness=thickness, merge=merge);
+		bar <- chmNewCovariateBar (item, ...);
 	    } else {
 	        stop (sprintf ('adding unknown object of unknown class "%s"', class(item)));
 	    }

@@ -8,7 +8,12 @@ chmNewCovariateBar(
   covar,
   display = "visible",
   thickness = as.integer(10),
-  merge
+  merge,
+  barType,
+  loBound,
+  hiBound,
+  fgColor,
+  bgColor
 )
 }
 \arguments{
@@ -19,6 +24,16 @@ chmNewCovariateBar(
 \item{thickness}{The thickness of the covariate bar in pixels. (Default 10).}
 
 \item{merge}{Algorithm for merging covariates when necessary ("average", "peakColor", "specialColor", or "mostCommon").}
+
+\item{barType}{Type of covariate bar ("color_plot", "scatter_plot", "bar_plot"). Default "color_plot".}
+
+\item{loBound}{Low bound for bar and scatter plots. Default minimum data value.}
+
+\item{hiBound}{High bound for bar and scatter plots.  Default maximum data value.}
+
+\item{fgColor}{Foreground color for bar and scatter plots.  Default black.}
+
+\item{bgColor}{Background color for bar and scatter plots.  Default white.}
 }
 \value{
 An object of class ngchmBar

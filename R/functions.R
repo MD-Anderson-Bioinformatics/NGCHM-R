@@ -861,6 +861,11 @@ chmCovariate <- function (dataset, fullname, where) {
 #' @param display Whether the classification bar will be "hidden" or "visible" (default).
 #' @param thickness The thickness of the classification bar in pixels. (Default 10).
 #' @param merge Algorithm for merging classifications when necessary ("average", "peakColor", "specialColor", or "mostCommon").
+#' @param barType Type of covariate bar ("color_plot", "scatter_plot", "bar_plot"). Default "color_plot".
+#' @param loBound Low bound for bar and scatter plots. Default minimum data value.
+#' @param hiBound High bound for bar and scatter plots.  Default maximum data value.
+#' @param fgColor Foreground color for bar and scatter plots.  Default black.
+#' @param bgColor Background color for bar and scatter plots.  Default white.
 #'
 #' @return An object of class ngchmBar
 #'
@@ -869,7 +874,8 @@ chmCovariate <- function (dataset, fullname, where) {
 #' @seealso [chmNewCovariateBar()]
 #' @seealso [chmAddCovariateBar()]
 #'
-ngchmNewBar <- function (label, type, data, colors=NULL, display="visible", thickness=as.integer(10), merge) {
+ngchmNewBar <- function (label, type, data, colors=NULL, display="visible", thickness=as.integer(10), merge, barType,
+    loBound, hiBound, fgColor, bgColor) {
     if (typeof (label) != "character") {
         stop (sprintf ("Parameter 'label' must have type 'character', not '%s'", typeof(label)));
     }
@@ -896,6 +902,18 @@ ngchmNewBar <- function (label, type, data, colors=NULL, display="visible", thic
     }
     if (!(display %in% c("visible", "hidden"))) {
         stop (sprintf ("Parameter 'display' for covariate bar '%s' must be either 'visible' or 'hidden', not '%s'", label, display));
+    }
+    if (missing(barType)) {
+        barType <- "color_plot";
+    }
+    if (typeof (barType) != "character") {
+        stop (sprintf ("Parameter 'barType' for covariate bar '%s' must have type 'character', not '%s'", label, typeof(barType)));
+    }
+    if (length (barType) != 1) {
+        stop (sprintf ("Parameter 'barType' for covariate bar '%s' must have a single value, not %d", label, length(barType)));
+    }
+    if (!(barType %in% c("color_plot", "scatter_plot", "bar_plot"))) {
+        stop (sprintf ("Parameter 'barType' for covariate bar '%s' must be either 'visible' or 'hidden', not '%s'", label, barType));
     }
 
     if (is (data, "shaid")) {
@@ -931,7 +949,19 @@ ngchmNewBar <- function (label, type, data, colors=NULL, display="visible", thic
         mat <- matrix (data, ncol=1, dimnames=list(names(data),'Value'));
         shaid <- ngchmSaveAsDatasetBlob (ngchm.env$tmpShaidy, 'tsv', mat);
     }
-    new (Class="ngchmBar", label=label, type=type, data=shaid, thickness=thickness, colors=colors, display=display, merge=merge)
+    if (missing(loBound)) {
+        loBound <- if (type == "continuous") min(data,na.rm=TRUE) else 0;
+    }
+    if (missing(hiBound)) {
+        hiBound <- if (type == "continuous") max(data,na.rm=TRUE) else 1;
+    }
+    if (missing(fgColor)) {
+        fgColor <- "#000000";
+    }
+    if (missing(bgColor)) {
+        bgColor <- "#ffffff";
+    }
+    new (Class="ngchmBar", label=label, type=type, data=shaid, thickness=thickness, colors=colors, display=display, merge=merge, barType=barType, loBound=loBound, hiBound=hiBound, fgColor=fgColor, bgColor=bgColor)
 };
 
 
@@ -986,6 +1016,11 @@ chmCovariateBar <- function (hm, fullname, where) {
 #' @param display Whether the covariate bar will be "hidden" or "visible" (default).
 #' @param thickness The thickness of the covariate bar in pixels. (Default 10).
 #' @param merge Algorithm for merging covariates when necessary ("average", "peakColor", "specialColor", or "mostCommon").
+#' @param barType Type of covariate bar ("color_plot", "scatter_plot", "bar_plot"). Default "color_plot".
+#' @param loBound Low bound for bar and scatter plots. Default minimum data value.
+#' @param hiBound High bound for bar and scatter plots.  Default maximum data value.
+#' @param fgColor Foreground color for bar and scatter plots.  Default black.
+#' @param bgColor Background color for bar and scatter plots.  Default white.
 #'
 #' @return An object of class ngchmBar
 #'
@@ -1003,10 +1038,12 @@ chmCovariateBar <- function (hm, fullname, where) {
 #' @seealso [chmNewColorMap()]
 #' @seealso [chmAddCovariateBar()]
 #'
-chmNewCovariateBar <- function (covar, display="visible", thickness=as.integer(10), merge)
+chmNewCovariateBar <- function (covar, display="visible", thickness=as.integer(10), merge, barType,
+	loBound, hiBound, fgColor, bgColor)
 {
     ngchmNewBar (covar@fullname, covar@type, covar@label.series, covar@series.properties,
-		    display=display, thickness=thickness, merge=merge)
+		    display=display, thickness=thickness, merge=merge, barType=barType,
+		    loBound=loBound, hiBound=hiBound, fgColor=fgColor, bgColor=bgColor)
 }
 
 #' Create a new Color Map for use in constructing a NGCHM

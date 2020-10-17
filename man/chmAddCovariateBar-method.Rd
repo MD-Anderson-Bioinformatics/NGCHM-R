@@ -12,38 +12,18 @@ chmAddCovariateBar(chm, where, covar, ...)
 
 \S4method{chmAddCovariateBar}{ngchm,character,ngchmBar}(chm, where, covar)
 
-\S4method{chmAddCovariateBar}{ngchm,character,ngchmCovariate}(
-  chm,
-  where,
-  covar,
-  display = "visible",
-  thickness = as.integer(10),
-  merge
-)
+\S4method{chmAddCovariateBar}{ngchm,character,ngchmCovariate}(chm, where, covar, ...)
 
-\S4method{chmAddCovariateBar}{ngchm,character,list}(
-  chm,
-  where,
-  covar,
-  display = "visible",
-  thickness = as.integer(10),
-  merge = NULL
-)
+\S4method{chmAddCovariateBar}{ngchm,character,list}(chm, where, covar, ...)
 }
 \arguments{
 \item{chm}{The chm to add the covariate bar to.}
 
 \item{where}{The chm axis(axes) to add the covariate bar to. Must be one of "row", "column", or "both".}
 
-\item{covar}{The covariate or covariate bar to add to the chm.}
+\item{covar}{The covariate or covariate bar (or a list of them) to add to the chm.}
 
 \item{...}{Additional parameters passed to chmNewCovariateBar if covar is a covariate.}
-
-\item{display}{Whether the bar is displayed ("visible") or not ("hidden"). Defaults to "visible".}
-
-\item{thickness}{Initial thickness of bar in pixels. Defaults to 10.}
-
-\item{merge}{Algorithm for merging multiple items into a single pixel. Default.}
 }
 \value{
 The extended chm.

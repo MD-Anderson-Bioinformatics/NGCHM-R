@@ -360,11 +360,8 @@ setGeneric ("chmAddSpecificAxisTypeFunction", function (chm, where, type, label,
 #'
 #' @param chm The chm to add the covariate bar to.
 #' @param where The chm axis(axes) to add the covariate bar to. Must be one of "row", "column", or "both".
-#' @param covar The covariate or covariate bar to add to the chm.
+#' @param covar The covariate or covariate bar (or a list of them) to add to the chm.
 #' @param ... Additional parameters passed to chmNewCovariateBar if covar is a covariate.
-#' @param display Whether the bar is displayed ("visible") or not ("hidden"). Defaults to "visible".
-#' @param thickness Initial thickness of bar in pixels. Defaults to 10.
-#' @param merge Algorithm for merging multiple items into a single pixel. Default.
 #'
 #' @return The extended chm.
 #'

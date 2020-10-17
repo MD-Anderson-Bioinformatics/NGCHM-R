@@ -47,15 +47,24 @@ setIs ("logical", "numericOrCharacter");
 s4ToList <- function(x,...) {
     c(list(class=class(x)),mapply(function(s)slot(x,s),slotNames(class(x)),SIMPLIFY=FALSE))
 }
-listFix <- function (l, single, exclude, extra) {
+listFix <- function (l, single, exclude, extra, rename) {
     if (missing(single)) single <- NULL;
     if (missing(exclude)) exclude <- NULL;
     if (missing(extra)) extra <- NULL;
+    if (missing(rename)) rename <- NULL;
     # Add/replace elements in extra to l
     if (length(extra) > 0) {
         for (ii in 1:length(extra)) {
             l[[names(extra)[ii]]] <- extra[[ii]];
         }
+    }
+    # Rename elements in list rename: names are new names, values are old names.
+    for (nn in names(rename)) {
+        on <- rename[[nn]];
+        if (!identical(l[[on]],NULL)) {
+	    l[[nn]] <- l[[on]];
+	    l[[on]] <- NULL;
+	}
     }
     # Set class of single elements
     for (elem in single) {
@@ -484,7 +493,13 @@ setClass ("ngchmBar",
 			  merge="optCharacter",
 			  thickness="integer",
 			  axisTypes="optList",
-			  colors="optColormap"));
+			  barType="character",
+			  colors="optColormap",
+			  loBound="optNumeric",   # For barType = barplot, scatterplot
+			  hiBound="optNumeric",   # same
+			  fgColor="optCharacter", # same
+			  bgColor="optCharacter"  # same
+			  ));
 
 setMethod ('show',
            signature = c('ngchmBar'),
@@ -494,13 +509,14 @@ setMethod ('show',
 
 setMethod(jsonlite:::asJSON, signature=c("ngchmBar"), definition=function(x,...) {
     l <- s4ToList(x);
-    singleElements <- c("class", "type", "label", "display", "merge", "thickness");
+    rename <- list(bar_type="barType", fg_color="fgColor", bg_color="bgColor", low_bound="loBound", high_bound="hiBound");
+    singleElements <- c("class", "type", "label", "display", "merge", "thickness", names(rename) );
     idx <- which(vapply (ngchm.env$covariateRenderers, function(x)sameColormap(x,l$colors), TRUE));
     if (length(idx)==1) {
             l$renderer <- idx-1;
             singleElements <- c(singleElements, 'renderer');
     }
-    l <- listFix (l, single=singleElements, exclude='colors');
+    l <- listFix (l, rename=rename, single=singleElements, exclude='colors');
     toJSON(l)
 });
 
