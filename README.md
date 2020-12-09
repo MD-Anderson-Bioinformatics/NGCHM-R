@@ -1,8 +1,17 @@
 # NGCHMR
-An R package for creating [Next-Generation Clustered Heat Maps (NG-CHM)](https://bioinformatics.mdanderson.org/main/NG-CHM:Overview
-)
+An R package for creating [Next-Generation Clustered Heat Maps (NG-CHM)](https://bioinformatics.mdanderson.org/main/NG-CHM:Overview).
 
-A docker image containing RStudio with this package preinstalled is available.  Follow the [instructions for using rstudio](https://github.com/rocker-org/rocker/wiki/Using-the-RStudio-image), but substitute "MD-Anderson-Bioinformatics/rstudio-ngchm" for the name of the repository.
+## Testing/Using a Docker image
+
+An easy way to test the NG-CHM R package is use one of our docker images with the package preinstalled.  The docker containers are based on the [Rocker RStudio image](https://github.com/rocker-org/rocker).  Our Docker images are:
+
+* ngchm/rstudio-ngchm, which contains RStudio plus the NGCHM-R package,
+* ngchm/rstudio-ngchm-bioc, which also contains several Bioconductor packages,
+* ngchm/rstudio-ngchm-sc, which also contains several commonly used R packages for single-cell analysis.
+
+Our YouTube channel contains a [video playlist: NG-CHMs in R/R-Studio](https://link.ngchm.net/hpqAYMgpU), which includes several introductory videos that describe how to use the NG-CHM R package.
+
+For more detail, refer to the [instructions for using the Rocker RStudio image](https://github.com/rocker-org/rocker/wiki/Using-the-RStudio-image), but substitute one of the docker images listed above for the name of the image to use.
 
 ## Installing on Linux or Mac
 To install this package into your own R system:
