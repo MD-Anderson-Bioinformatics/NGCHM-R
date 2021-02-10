@@ -30,6 +30,11 @@ Collate:
     'zzz.R'
     'package.R'
 Suggests:
-    testthat
+    testthat,
+    knitr,
+    rmarkdown,
+    ShaidyMapGenJar,
+    NGCHMDemoData
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.1.1
+VignetteBuilder: knitr
