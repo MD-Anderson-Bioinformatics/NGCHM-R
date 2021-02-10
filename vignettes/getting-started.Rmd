@@ -26,7 +26,7 @@ save it as a file that can be opened in the [NGCHM Viewer](http://www.ngchm.net/
 
 This vignette requires two additional packages:
 
-1. [NGCHMDemoData](https://github.com/MD-Anderson-Bioinformatics/NGCHMDemoData), a package of demo data
+1. [NGCHMDemoData](https://github.com/MD-Anderson-Bioinformatics/NGCHMDemoData), a package of demo data, and 
 2. [ShaidyMapGenJar](https://github.com/MD-Anderson-Bioinformatics/ShaidyMapGenJar), a package containing a Java 
    .jar file needed for constructing the final NGCHM.
 
@@ -45,11 +45,10 @@ library(NGCHMDemoData)
 library(ShaidyMapGenJar)
 ```
 
-
 # Creating an NG-CHM
 
 The sample data loaded from [NGCHMDemoData](https://github.com/MD-Anderson-Bioinformatics/NGCHMDemoData) 
-includes a matrix, TCGA.GBM.Expression, of mRNA expression data for 3540 genes (rows) and 169 samples 
+includes a matrix of mRNA expression data, TCGA.GBM.Expression, for 3540 genes (rows) and 169 samples 
 (columns) from the Glioblastoma Multiforme TCGA data.
 
 An NGCHM, hm, of this data can be constructed with the chmNew() function:
@@ -70,26 +69,25 @@ This file can be opened in the [NGCHM Viewer](http://www.ngchm.net/Downloads/ngC
 
 # Adding Covariate Bars
 
-In this example, we add a covariate bar containing TP53 mutation state for each sample.
-This data is a vector, TCGA.GBM.TP53MutationData, and was also loaded as 
-part of the [NGCHMDemoData](https://github.com/MD-Anderson-Bioinformatics/NGCHMDemoData)
-package.
+The [NGCHMDemoData](https://github.com/MD-Anderson-Bioinformatics/NGCHMDemoData) package includes
+a vector of TP53 mutation data, TCGA.GBM.TP53MutationData, for the samples (columns) of the NGCHM constructed above.
 
-The names of this vector should be identical to the colnames of the matrix data. 
-In other words, the following should evaluate as TRUE for each entry:
+For a vector to be used as an NGCHM covariate bar, the names of the vector should be 
+identical to the colnames of the matrix data. In other words, for this example the following should 
+evaluate as TRUE for each entry:
 
 ```{r message=FALSE, results='hide'}
 names(TCGA.GBM.TP53MutationData) == colnames(TCGA.GBM.ExpressionData) 
 ```
 
-To create a covariate bar for the TP53 mutation data:
+The covariate bar can be created and added to the NGCHM with:
 
 ```{r}
 covariateBar <- chmNewCovariate('TP53 Mutation',TCGA.GBM.TP53MutationData)
 hm <- chmAddCovariateBar(hm, 'column', covariateBar)
 ```
 
-Save the NGCHM to a file, overwriting the file we created above.
+The NGCHM can be exported to a file, overwriting the file we created above with,
 
 ```{r message=FALSE, results='hide'}
 chmExportToFile(hm,'tcga-gbm.ngchm',overwrite=TRUE)
