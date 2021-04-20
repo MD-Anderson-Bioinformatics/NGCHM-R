@@ -1796,6 +1796,7 @@ setReplaceMethod ("chmRowOrder",
 	    value <- readLines (value);
 	    class(value) <- "fileContent";
 	}
+	validateNewAxisOrder (chm, "row", value);
 	chm@rowOrder <- value
 	chm@rowOrderMethod <- orderMethod(value);
         chmUU (chm)
@@ -1811,6 +1812,7 @@ setReplaceMethod ("chmColOrder",
 	    value <- readLines (value);
 	    class(value) <- "fileContent";
 	}
+	validateNewAxisOrder (chm, "column", value);
 	chm@colOrder <- value
 	chm@colOrderMethod <- orderMethod(value);
         chmUU (chm)

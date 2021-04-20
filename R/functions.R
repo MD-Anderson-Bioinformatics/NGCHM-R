@@ -2455,6 +2455,13 @@ validateNewLayer <- function (chm, layer)
 	        validateCovariateBar (chm, "Column", layername, newnames[[2]], chm@colCovariateBars[[ii]]);
 	    }
 	}
+        # Check names are compatible with row/column orders, if any.
+	if (!is(chm@rowOrder,"function")) {
+	    validateAxisOrder (chm, "Row", layername, newnames[[1]], chm@rowOrder);
+        }
+	if (!is(chm@colOrder,"function")) {
+	    validateAxisOrder (chm, "Column", layername, newnames[[1]], chm@colOrder);
+        }
     }
 }
 
@@ -2472,7 +2479,7 @@ validateNewCovariateBar <- function (chm, where, bar)
 	    validateCovariateBar (chm, "Column", layername, labels, bar);
 	}
     }
-}
+};
 
 validateCovariateBar <- function (chm, where, layername, labels, bar)
 {
@@ -2484,7 +2491,53 @@ validateCovariateBar <- function (chm, where, layername, labels, bar)
 	errs <- namesdifferror (layername, labels, sprintf ('covariate bar "%s"', bar@label), rownames(barData));
 	stop (paste (c (m, errs), collapse="\n"));
     }
-}
+};
+
+validateNewAxisOrder <- function (chm, where, order)
+{
+    if (length (chm@layers) > 0) {
+	layer <- chm@layers[[1]];
+	layername <- sprintf ('layer "%s"', layer@name);
+	if (where %in% c("row", "both")) {
+            labels <- ngchmGetLabelsStr (layer@data, "row");
+	    validateAxisOrder (chm, "Row", layername, labels, order);
+	}
+	if (where %in% c("column", "both")) {
+            labels <- ngchmGetLabelsStr (layer@data, "column");
+	    validateAxisOrder (chm, "Column", layername, labels, order);
+	}
+    }
+};
+
+validateAxisOrder <- function (chm, where, layername, labels, order)
+{
+    # NULL order allowed.
+    if (length(order) == 0) return;
+    # Convert other order types in a label vector.
+    if (is(order, "dendrogram")) {
+        order <- labels(order);
+    } else if (is(order,"hclust")) {
+        order <- labels(as.dendrogram(order));
+    } else {
+        stopifnot (mode(order) == "character")
+    }
+
+    # Order must be a permutation of labels.
+    # so lengths must match
+    if (length(labels) != length(order)) {
+	m <- sprintf ('Number of %s names of %s for CHM "%s" (%d) differs from number of labels in order (%d)',
+		       where, layername, chm@name, length(labels), length(order));
+	errs <- namesdifferror (layername, labels, 'order', order);
+	stop (paste (c (m, errs), collapse="\n"));
+    }
+    # and intersection must have the same length as well.
+    if (length (intersect (labels, order)) != length(labels)) {
+	m <- sprintf ('%s names of %s for CHM "%s" differ from those of the specified order',
+		       where, layername, chm@name);
+	errs <- namesdifferror (layername, labels, 'order', order);
+	stop (paste (c (m, errs), collapse="\n"));
+    }
+};
 
 namesdifferror <- function (desc1, names1, desc2, names2)
 {
