@@ -2460,7 +2460,7 @@ validateNewLayer <- function (chm, layer)
 	    validateAxisOrder (chm, "Row", layername, newnames[[1]], chm@rowOrder);
         }
 	if (!is(chm@colOrder,"function")) {
-	    validateAxisOrder (chm, "Column", layername, newnames[[1]], chm@colOrder);
+	    validateAxisOrder (chm, "Column", layername, newnames[[2]], chm@colOrder);
         }
     }
 }
