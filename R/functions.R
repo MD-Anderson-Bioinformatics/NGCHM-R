@@ -158,6 +158,8 @@ chmNew <- function (name, ...,
 		rowCutWidth=NULL,
 		colCutLocations=NULL,
 		colCutWidth=NULL,
+		rowTreeCuts=NULL,
+		colTreeCuts=NULL,
 		    overview=c()) {
     if (typeof (name) != "character") {
         stop (sprintf ("Parameter 'name' must have type 'character', not '%s'", typeof(name)));
@@ -182,7 +184,9 @@ chmNew <- function (name, ...,
 		rowCutLocations=rowCutLocations,
 		rowCutWidth=rowCutWidth,
 		colCutLocations=colCutLocations,
-		colCutWidth=colCutWidth
+		colCutWidth=colCutWidth,
+		rowTreeCuts=rowTreeCuts,
+		colTreeCuts=colTreeCuts
                 );
     chmRowOrder(chm) <- rowOrder;
     chmColOrder(chm) <- colOrder;
