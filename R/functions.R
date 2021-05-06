@@ -154,6 +154,10 @@ chmNew <- function (name, ...,
                     rowAxisType=NULL, colAxisType=NULL,
 		    rowCovariates=NULL, colCovariates=NULL,
                     format="original",
+		rowCutLocations=NULL,
+		rowCutWidth=NULL,
+		colCutLocations=NULL,
+		colCutWidth=NULL,
 		    overview=c()) {
     if (typeof (name) != "character") {
         stop (sprintf ("Parameter 'name' must have type 'character', not '%s'", typeof(name)));
@@ -174,12 +178,17 @@ chmNew <- function (name, ...,
                 colDist=colDist,
                 colAgglom=colAgglom,
                 rowOrderMethod="",
-                colOrderMethod=""
+                colOrderMethod="",
+		rowCutLocations=rowCutLocations,
+		rowCutWidth=rowCutWidth,
+		colCutLocations=colCutLocations,
+		colCutWidth=colCutWidth
                 );
     chmRowOrder(chm) <- rowOrder;
     chmColOrder(chm) <- colOrder;
     chm@uuid <- getuuid (name);
     chm <- chmAddCSS (chm, 'div.overlay { border: 2px solid yellow; }');
+		log_debug('mar4: about to fail?')
     chm <- chmAddList (chm, list(...));
     if (!is.null(rowAxisType)) chm <- chmAddAxisType (chm, 'row', rowAxisType);
     if (!is.null(colAxisType)) chm <- chmAddAxisType (chm, 'column', colAxisType);
