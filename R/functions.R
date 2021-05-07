@@ -154,6 +154,12 @@ chmNew <- function (name, ...,
                     rowAxisType=NULL, colAxisType=NULL,
 		    rowCovariates=NULL, colCovariates=NULL,
                     format="original",
+		rowGapLocations=NULL,
+		rowGapWidth=5,
+		colGapLocations=NULL,
+		colGapWidth=5,
+		rowTreeGaps=NULL,
+		colTreeGaps=NULL,
 		    overview=c()) {
     if (typeof (name) != "character") {
         stop (sprintf ("Parameter 'name' must have type 'character', not '%s'", typeof(name)));
@@ -164,6 +170,29 @@ chmNew <- function (name, ...,
     if (nchar (name) == 0) {
         stop ("Parameter 'name' cannot be the empty string");
     }
+		roundTolerance = 0.01
+		variablesToMakeInt = c("rowGapWidth","colGapWidth","rowTreeGaps","colTreeGaps")
+		for (var in variablesToMakeInt) {
+			if (!is.null(get(var))) {
+				if (abs(round(get(var)) - get(var)) > roundTolerance) {
+					stop(paste("Fatal error: '",var,"' parameter must be integer",sep=''))
+				} else {
+					assign(var,as.integer(round((get(var)))))
+				}
+			}
+		}
+		listsToMakeInts = c("rowGapLocations","colGapLocations")
+		for (l in listsToMakeInts) {
+			if (!is.null(get(l))) {
+				lapply(get(l), function(elem) {
+					if ((abs(round(elem) - elem)) > roundTolerance) {
+						stop(paste("Fatal error: '",l,"' parameter entries must be integers",sep=""))
+					}
+				})
+				assign(l,as.integer(round(get(l))))
+			}
+		}
+
     chm <- new (Class="ngchmVersion2",
                 name=name,
                 format=format,
@@ -174,12 +203,19 @@ chmNew <- function (name, ...,
                 colDist=colDist,
                 colAgglom=colAgglom,
                 rowOrderMethod="",
-                colOrderMethod=""
+                colOrderMethod="",
+		rowCutLocations=rowGapLocations,
+		rowCutWidth=rowGapWidth,
+		colCutLocations=colGapLocations,
+		colCutWidth=colGapWidth,
+		rowTreeCuts=rowTreeGaps,
+		colTreeCuts=colTreeGaps
                 );
     chmRowOrder(chm) <- rowOrder;
     chmColOrder(chm) <- colOrder;
     chm@uuid <- getuuid (name);
     chm <- chmAddCSS (chm, 'div.overlay { border: 2px solid yellow; }');
+
     chm <- chmAddList (chm, list(...));
     if (!is.null(rowAxisType)) chm <- chmAddAxisType (chm, 'row', rowAxisType);
     if (!is.null(colAxisType)) chm <- chmAddAxisType (chm, 'column', colAxisType);
