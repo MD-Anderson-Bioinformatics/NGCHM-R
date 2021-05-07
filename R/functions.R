@@ -154,12 +154,12 @@ chmNew <- function (name, ...,
                     rowAxisType=NULL, colAxisType=NULL,
 		    rowCovariates=NULL, colCovariates=NULL,
                     format="original",
-		rowCutLocations=NULL,
-		rowCutWidth=5,
-		colCutLocations=NULL,
-		colCutWidth=5,
-		rowTreeCuts=NULL,
-		colTreeCuts=NULL,
+		rowGapLocations=NULL,
+		rowGapWidth=5,
+		colGapLocations=NULL,
+		colGapWidth=5,
+		rowTreeGaps=NULL,
+		colTreeGaps=NULL,
 		    overview=c()) {
     if (typeof (name) != "character") {
         stop (sprintf ("Parameter 'name' must have type 'character', not '%s'", typeof(name)));
@@ -171,7 +171,7 @@ chmNew <- function (name, ...,
         stop ("Parameter 'name' cannot be the empty string");
     }
 		roundTolerance = 0.01
-		variablesToMakeInt = c("rowCutWidth","colCutWidth","rowTreeCuts","colTreeCuts")
+		variablesToMakeInt = c("rowGapWidth","colGapWidth","rowTreeGaps","colTreeGaps")
 		for (var in variablesToMakeInt) {
 			if (!is.null(get(var))) {
 				if (abs(round(get(var)) - get(var)) > roundTolerance) {
@@ -181,7 +181,7 @@ chmNew <- function (name, ...,
 				}
 			}
 		}
-		listsToMakeInts = c("rowCutLocations","colCutLocations")
+		listsToMakeInts = c("rowGapLocations","colGapLocations")
 		for (l in listsToMakeInts) {
 			if (!is.null(get(l))) {
 				lapply(get(l), function(elem) {
@@ -204,12 +204,12 @@ chmNew <- function (name, ...,
                 colAgglom=colAgglom,
                 rowOrderMethod="",
                 colOrderMethod="",
-		rowCutLocations=rowCutLocations,
-		rowCutWidth=rowCutWidth,
-		colCutLocations=colCutLocations,
-		colCutWidth=colCutWidth,
-		rowTreeCuts=rowTreeCuts,
-		colTreeCuts=colTreeCuts
+		rowCutLocations=rowGapLocations,
+		rowCutWidth=rowGapWidth,
+		colCutLocations=colGapLocations,
+		colCutWidth=colGapWidth,
+		rowTreeCuts=rowTreeGaps,
+		colTreeCuts=colTreeGaps
                 );
     chmRowOrder(chm) <- rowOrder;
     chmColOrder(chm) <- colOrder;
