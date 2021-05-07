@@ -215,7 +215,7 @@ chmNew <- function (name, ...,
     chmColOrder(chm) <- colOrder;
     chm@uuid <- getuuid (name);
     chm <- chmAddCSS (chm, 'div.overlay { border: 2px solid yellow; }');
-		log_debug('mar4: about to fail?')
+
     chm <- chmAddList (chm, list(...));
     if (!is.null(rowAxisType)) chm <- chmAddAxisType (chm, 'row', rowAxisType);
     if (!is.null(colAxisType)) chm <- chmAddAxisType (chm, 'column', colAxisType);
