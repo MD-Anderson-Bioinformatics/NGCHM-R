@@ -170,6 +170,29 @@ chmNew <- function (name, ...,
     if (nchar (name) == 0) {
         stop ("Parameter 'name' cannot be the empty string");
     }
+		roundTolerance = 0.01
+		variablesToMakeInt = c("rowCutWidth","colCutWidth","rowTreeCuts","colTreeCuts")
+		for (var in variablesToMakeInt) {
+			if (!is.null(get(var))) {
+				if (abs(round(get(var)) - get(var)) > roundTolerance) {
+					stop(paste("Fatal error: '",var,"' parameter must be integer",sep=''))
+				} else {
+					assign(var,as.integer(round((get(var)))))
+				}
+			}
+		}
+		listsToMakeInts = c("rowCutLocations","colCutLocations")
+		for (l in listsToMakeInts) {
+			if (!is.null(get(l))) {
+				lapply(get(l), function(elem) {
+					if ((abs(round(elem) - elem)) > roundTolerance) {
+						stop(paste("Fatal error: '",l,"' parameter entries must be integers",sep=""))
+					}
+				})
+				assign(l,as.integer(round(get(l))))
+			}
+		}
+
     chm <- new (Class="ngchmVersion2",
                 name=name,
                 format=format,
