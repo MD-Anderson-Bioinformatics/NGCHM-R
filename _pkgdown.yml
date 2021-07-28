@@ -1,0 +1,65 @@
+title: NGCHMR
+url: https://marohrdanz.github.io/NGCHM-R/
+template:
+  params:
+    bootswatch: journal
+toc:
+  depth: 2
+reference:
+  - title: "Creating and Saving a NG-CHM"
+    desc: "Creating an NG-CHM and saving to file"
+    contents:
+      - '`chmNew`'
+      - '`chmExportToHTML`'
+      - '`chmExportToFile`'
+  - title: "Covariate Bars"
+    desc: "Creating and adding covariate bars"
+    contents:
+      - '`chmNewCovariate`'
+      - '`chmAddCovariateBar`'
+  - title: "Color Maps and Data Layers"
+    desc: "Creating color maps and data layers"
+    contents:
+      - '`chmNewColorMap`'
+      - '`chmNewDataLayer`'
+  - title: 'Specifying Axis Type'
+    desc: 'For automatically adding linkouts'
+    contents:
+      - '`chmAddAxisType`'
+  - title: 'Alphabetical List'
+    desc: 'Alphabetical List of Functions'
+    contents:
+       - starts_with("")
+navbar:
+   title: "NGCHMR"
+   type: inverse
+   left:
+     - text: "Installation"
+       href: articles/Installation.html
+     - text: "Start Here!"
+       href: articles/create-a-ng-chm.html
+     - text: "Vignettes"
+       menu:
+         - text: 'Create a NG-CHM (Start Here!)'
+           href: articles/create-a-ng-chm.html
+         - text: 'Covariate Bars and Discrete Color Maps'
+           href: articles/covariate-bars-and-discrete-color-maps.html
+         - text: 'Continuous Color Maps and Data Layers'
+           href: articles/continuous-color-maps-and-data-layers.html
+         - text: 'Clustering and Column/Row Ordering'
+           href: articles/clustering-and-column-row-ordering.html
+         - text: 'Adding Linkouts'
+           href: articles/adding-linkouts.html
+     - text: 'Function Reference'
+       href: reference/index.html
+     - text: 'YouTube'
+       href: articles/YouTube.html
+   right:
+     - icon: fa-home
+       href: index.html
+     - icon: fa-github
+       href: https://github.com/marohrdanz/NGCHM-R
+
+
+  
+  
