@@ -1,0 +1,79 @@
+---
+title: "Adding Linkouts"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Adding Linkouts}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+This vignette demonstrates how to add linkouts to a NG-CHM. 
+Linkouts allow for a deeper exploration of the NG-CHM data, for example by providing direct 
+links to NCBI Databases, GeneCards, etc.
+
+The needed packages are loaded and a basic NG-CHM is constructed from the sample data.
+
+```{r, results='hide', message=FALSE, warning=FALSE}
+library(NGCHMDemoData)
+library(NGCHM)
+hm <- chmNew('tcga-gbm', TCGA.GBM.ExpressionData)
+```
+
+To add linkouts, the axis type is specified with `chmAddAxisType()`. For the demo data in this example, 
+row labels correspond to genes, and are specified as HUGO gene symbols:
+
+```{r, results='hide', message=FALSE, warning=FALSE}
+hm <- chmAddAxisType(hm, 'row', 'bio.gene.hugo')
+```
+
+The column labels in the demo data are full 28-character TCGA aliquot barcodes:
+
+```{r, results='hide', message=FALSE, warning=FALSE}
+hm <- chmAddAxisType(hm, 'column', 'bio.tcga.barcode.sample.vial.portion.analyte.aliquot')
+```
+
+## Resulting NG-CHM
+
+Here is the resulting NG-CHM:
+
+```{r, echo=FALSE, results='hide', message=FALSE, warning=FALSE}
+library(NGCHMSupportFiles)
+chmExportToHTML(hm,'tcga-gbm-with-linkouts.html')
+```
+
+```{r, warning=FALSE, message=FALSE, echo=FALSE}
+library('htmltools')
+filePath = paste(getwd(),'/tcga-gbm-with-linkouts.html',sep='')
+htmltools::includeHTML(filePath)
+```
+
+## Available Axis Label Types
+
+In the above example, the axis type was 'bio.gene.hugo'. The available axis types are:
+
+- **bio.gene.entrezid**: NCBI Entrez Gene Identifier
+- **bio.gene.hugo**: HUGO gene symbol
+- **bio.geo.acc**: GEO accession id
+- **bio.go**: Gene Ontology accession identifier
+- **bio.mdacc.pathwayid**: [PathwaysWeb](https://bioinformatics.mdanderson.org/public-software/pathwaysweb/) pathway identifier
+- **bio.mirna**: miRNA identifier
+- **bio.pathway.msigdb.name**: msig DB pathway name
+- **bio.protein.uniprotid**: Uniprot protein identifier
+- **bio.pubmed**: PubMed identifier
+- **bio.tcga.barcode.sample**: First 15 characters of TCGA aliquot barcode
+- **bio.tcga.barcode.sample.vial**: First 16 characters of TCGA aliquot barcode
+- **bio.tcga.barcode.sample.vial.portion**: First 19 characters of TCGA aliquot barcode
+- **bio.tcga.barcode.sample.vial.portion.analyte**: First 20 characters of a TCGA aliquot barcode
+- **bio.tcga.barcode.sample.vial.portion.analyte.aliquot**: Full 28 character TCGA aliquot barcode
+- **bio.transcript.ensembl**: Ensembl transcript identifier
+- **bio.transcriptid**: Entrez transcription identifier
+- **scholar**: Google Scholar search term
+- **search**: Generic search term
+
