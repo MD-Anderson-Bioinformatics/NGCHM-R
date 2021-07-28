@@ -3,12 +3,10 @@
 on:
   push:
     branches:
-      - main
-      - master
+      - vignettes-actions
   pull_request:
     branches:
-      - main
-      - master
+      - vignettes-actions
 
 name: R-CMD-check
 
