@@ -15,7 +15,7 @@ Imports:
     digest,
     httr,
     jsonlite,
-    bmbroom/tsvio
+    tsvio
 Description: Utilities for creating Next Generation Clustered Heat Maps.
 License: GPL-3
 Collate:
