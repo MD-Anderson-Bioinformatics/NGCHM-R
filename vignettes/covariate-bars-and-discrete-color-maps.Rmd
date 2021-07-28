@@ -86,6 +86,7 @@ As described in the [Create a NG-CHM](create-a-ng-chm.html) page, this NG-CHM
 can be exported to either a .ngchm or .html file.
 
 ```{r, results='hide', message=FALSE, warning=FALSE}
+library(NGCHMSupportFiles)
 chmExportToFile(hm,'tcga-gbm-covariates.ngchm')
 chmExportToHTML(hm,'tcga-gbm-covariates.html')
 ```
