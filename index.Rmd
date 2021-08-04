@@ -36,9 +36,11 @@ colorMap1 <- chmNewColorMap(c(-2,0,2), c('mediumblue','snow','firebrick'))
 dataLayer1 <- chmNewDataLayer('Color Map 1', TCGA.GBM.ExpressionData, colorMap1)
 colorMap2 <- chmNewColorMap(c(-2,0,2), c('#9933ff','#f0f0f0','#228B22'))
 dataLayer2 <- chmNewDataLayer('Color Map 2', TCGA.GBM.ExpressionData, colorMap2)
-hm <- chmNew('TCGA GBM', dataLayer1, dataLayer2)
+hm <- chmNew('NGCHM-R', dataLayer1, dataLayer2)
 covariateBar <- chmNewCovariate('TP53 Mutation',TCGA.GBM.TP53MutationData)
 hm <- chmAddCovariateBar(hm, 'column', covariateBar)
+hm <- chmAddAxisType(hm, 'row', 'bio.gene.hugo')
+hm <- chmAddAxisType(hm, 'column', 'bio.tcga.barcode.sample.vial.portion.analyte.aliquot')
 ```
 
 ```{r, message=FALSE, warning=FALSE, echo=FALSE, results='hide' }
