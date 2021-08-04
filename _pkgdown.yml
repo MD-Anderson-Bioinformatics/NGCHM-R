@@ -1,5 +1,5 @@
 title: NGCHMR
-url: https://marohrdanz.github.io/NGCHM-R/
+url: https://md-anderson-bioinformatics.github.io/NGCHM-R/
 template:
   params:
     bootswatch: journal
@@ -58,7 +58,7 @@ navbar:
      - icon: fa-home
        href: index.html
      - icon: fa-github
-       href: https://github.com/marohrdanz/NGCHM-R
+       href: https://github.com/MD-Anderson-Bioinformatics/NGCHM-R/
 
 
   
