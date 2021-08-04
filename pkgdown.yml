@@ -1,0 +1,16 @@
+pandoc: 2.7.3
+pkgdown: 1.6.1
+pkgdown_sha: ~
+articles:
+  Installation: Installation.html
+  YouTube: YouTube.html
+  adding-linkouts: adding-linkouts.html
+  clustering-and-column-row-ordering: clustering-and-column-row-ordering.html
+  continuous-color-maps-and-data-layers: continuous-color-maps-and-data-layers.html
+  covariate-bars-and-discrete-color-maps: covariate-bars-and-discrete-color-maps.html
+  create-a-ng-chm: create-a-ng-chm.html
+last_built: 2021-08-04T14:52Z
+urls:
+  reference: https://md-anderson-bioinformatics.github.io/NGCHM-R//reference
+  article: https://md-anderson-bioinformatics.github.io/NGCHM-R//articles
+
