@@ -1,0 +1,6 @@
+.Rproj*
+docs/*
+*.swp
+.Rhistory
+
+docs
