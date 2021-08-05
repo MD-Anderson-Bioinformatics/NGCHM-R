@@ -2,6 +2,40 @@
 #' @import utils
 NULL
 
+#' Function to initialize logging
+#'
+#' @param log_level One of 'TRACE', 'DEBUG', 'INFO', 'SUCCESS'
+#' @param log_file Desired path/name of log file
+#' @export
+#' @importFrom logger log_threshold
+#' @importFrom logger log_layout
+#' @importFrom logger log_debug
+#' @importFrom logger log_appender
+#' @importFrom logger appender_file
+#' @importFrom logger appender_console
+#' @importFrom logger layout_glue_generator
+#' @importFrom logger layout_glue
+initLogging <- function(log_level,log_file=NULL) {
+	log_threshold(log_level)
+	if (!is.null(log_file)) {
+		log_appender(appender_file(log_file))
+		log_layout(layout_glue_generator(format = paste(
+			'{level}',
+			'[{format(time, "%Y-%m-%d %H:%M:%S")}]',
+			'{fn}',
+			'{msg}')))
+		log_info('Writing log to file: ',log_file)
+	} else { 
+		log_appender(appender_console)
+		log_layout(layout_glue_generator(format = paste(
+			'{crayon::bold(colorize_by_log_level(level, levelr))}',
+			'[{crayon::italic(format(time, "%Y-%m-%d %H:%M:%S"))}]',
+			'{crayon::blue(fn)}',
+			'{grayscale_by_log_level(msg, levelr)}')))
+	}
+	log_debug('Set log level to ',log_level)
+}
+
 systemCheck <- function (command, ...) {
 		# Execute the specified command and halt execution with an error
 		# message if it fails.
@@ -128,6 +162,7 @@ ngchmGetEnv <- function () {
 #' @param colCovariates Covariate(Bar)(s) to add to the columns (default: None).
 #' @param format The format of NGCHM to produce (default: 'original').
 #' @param overview The format(s) of overview image(s) to create (default: None).
+#' @importFrom logger log_debug
 #'
 #' @return An object of class ngchm
 #'
@@ -160,7 +195,9 @@ chmNew <- function (name, ...,
 						colGapWidth=5,
 						rowTreeGaps=NULL,
 						colTreeGaps=NULL,
-						overview=c()) {
+						overview=c(),
+						logLevel='INFO', logFile=NULL) {
+	initLogging(logLevel, logFile)
 	if (typeof (name) != "character") {
 		stop (sprintf ("Parameter 'name' must have type 'character', not '%s'", typeof(name)));
 	}

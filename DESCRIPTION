@@ -15,7 +15,8 @@ Imports:
     tsvio,
     digest,
     httr,
-    jsonlite
+    jsonlite,
+    logger (>= 0.2.0)
 Description: Utilities for creating Next Generation Clustered Heat Maps.
 License: GPL-3
 Collate:
