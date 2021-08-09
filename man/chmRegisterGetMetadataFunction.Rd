@@ -13,7 +13,7 @@ chmRegisterGetMetadataFunction(functionName, metadataColumnName)
 }
 \description{
 This function defines and registers a Javascript function for obtaining a specific
-metadata value and returning it as a javascript list.  The function is suitable for
+metadata value and returning it as a javascript list.	The function is suitable for
 use as an axis type accessor function.
 }
 \seealso{

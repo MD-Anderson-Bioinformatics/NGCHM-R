@@ -679,7 +679,7 @@ setClass ("ngchmVersion1",
 setIs ("ngchmVersion1", "ngchm");
 
 setClass ("ngchmVersion2",
-	representation (name="character",
+	slots = list(name="character",
 		version="integer",
 		format="character",
 		uuid="character",
@@ -721,45 +721,161 @@ setClass ("ngchmVersion2",
 		relatedGroups="optList",
 		templates="optList",
 		width="integer",
-		height="integer"),
-	prototype = prototype(name=character(0),
-		version=as.integer(2),
-		format="original",
-		uuid="",
-		baggage=NULL,
-		inpDir="",
-		outDir="",
-		saveDir=".",
-		propFile="chm.properties",
-		layers=c(),
-		colormaps=NULL,
-		rowOrder=NULL, rowDist="correlation", rowAgglom="ward.D2",
-		colOrder=NULL, colDist="correlation", colAgglom="ward.D2",
-		rowOrderMethod="User", colOrderMethod="User",
-		rowCutLocations=NULL, rowCutWidth=NULL, rowTreeCuts=NULL,
-		rowTopItems=NULL, rowDisplayLength=NULL, rowDisplayAbbreviation=NULL,
-		colCutLocations=NULL, colCutWidth=NULL, colTreeCuts=NULL,
-		colTopItems=NULL, colDisplayLength=NULL, colDisplayAbbreviation=NULL,
-		rowMeta=NULL,
-		colMeta=NULL,
-		axisTypes=NULL,
-		datasets=NULL,
-		dialogs=NULL,
-		tags=c(),
-		css=c(),
-		rowTypeFunctions=NULL,
-		colTypeFunctions=NULL,
-		elementTypeFunctions=NULL,
-		extrafiles=c(),
-		extrascripts=c(),
-		properties=c(),
-		overviews=NULL,
-		relatedLinks=NULL,
-		relatedGroups=NULL,
-		templates=NULL,
-		width=as.integer(500),
-		height=as.integer(500))
+		height="integer")
 );
+
+#' Helper function to cast variables as integers.
+#'
+#' If variable value is far from integer, print error message and stop.
+#'
+#' @param variableToCast Variable to cast as integer
+#' @return integer value of variableToCast
+castAsInteger <- function(variableToCast) {
+	roundTolerance = 0.01
+	if (abs(round(variableToCast) - variableToCast) > roundTolerance) {
+		log_error("Variable '",deparse(substitute(variableToCast)),"' must be integer")
+		stop("Variable '",deparse(substitute(variableToCast)),"' must be integer")
+	} else {
+		return (as.integer(round(variableToCast)))
+	}
+}
+
+#' Helper function to cast list as integer
+#'
+#' If variable value is far from integer, print error message and stop.
+#'
+#' @param listToCast List to cast as integer
+#' @return list with members cast to integers
+castListAsInteger <- function(listToCast) {
+	roundTolerance = 0.01
+	lapply(listToCast, function(elem) {
+		if ((abs(round(elem) - elem)) > roundTolerance) {
+			log_error("Entries of '",deparse(substitute(listToCast)),"' must be integer")
+			stop("Entries of '",deparse(substitute(listToCast)),"' must be integer")
+		}
+	}) 
+	return (as.integer(round(listToCast)))
+}
+
+#' Helper function to verify if variable is numeric.
+#'
+#' If not numeric, print error message and stop.
+#'
+#' @param listToCast List to cast as integer
+#' @return list with members cast to integers
+verifyNumeric <- function(variableToCheck) {
+	if (!is.numeric(variableToCheck)) {
+		log_error("Variable '",deparse(substitute(variableToCheck)),"' must be numeric.")
+		stop("Variable '",deparse(substitute(variableToCheck)),"' must be numeric.")
+	} else {
+		return (TRUE)
+	}
+}
+
+setMethod("initialize", "ngchmVersion2",
+	function(.Object, name, version, format, baggage, inpDir, outDir, saveDir, propFile,
+		layers, colormaps, rowOrder, rowDist, rowAgglom, colOrder, colDist, colAgglom, rowOrderMethod, colOrderMethod, 
+		rowCutLocations, rowCutWidth, rowTreeCuts, rowTopItems, rowDisplayLength, rowDisplayAbbreviation,
+		colCutLocations, colCutWidth, colTreeCuts, colTopItems, colDisplayLength, colDisplayAbbreviation,
+		rowMeta, colMeta, axisTypes, datasets, dialogs, tags, css,
+		rowTypeFunctions, colTypeFunctions, elementTypeFunctions, extrafiles,
+		extrascripts, properties, overviews, relatedLinks, relatedGroups,
+		templates, width, height) {
+			if (!missing(name)) { 
+				if (typeof(name) != "character") { stop (sprintf ("Parameter 'name' must have type 'character', not '%s'", typeof(name))); }
+				if (length(name) != 1) {stop (sprintf ("Parameter 'name' must have a single value, not %d", length(name)));}
+				if (nchar(name) == 0) { stop ("Parameter 'name' cannot be the empty string"); }
+				.Object@name <- name 
+			} else { 
+				.Object@name <- "ngchm" 
+			} 
+			if (missing(version)) { .Object@version <- as.integer(2) } else { .Object@version <- as.integer(version) }
+			.Object@uuid <- getuuid(.Object@name)
+			if (!missing(format)) { .Object@format <- format } else { .Object@format <- "original" }
+			if (!missing(baggage)) { .Object@baggage <- baggage } else { .Object@baggage <- NULL }
+			if (!missing(inpDir)) { .Object@inpDir <- inpDir } else { .Object@inpDir <- "" }
+			if (!missing(outDir)) { .Object@outDir <- outDir } else { .Object@outDir <- "" }
+			if (!missing(saveDir)) { .Object@saveDir <- saveDir } else { .Object@saveDir <- "." }
+			if (!missing(propFile)) { .Object@propFile <- propFile} else { .Object@propFile <- "chm.properties" }
+			if (!missing(layers)) { .Object@layers <- layers} else { .Object@layers <- c() }
+			if (!missing(colormaps)) { .Object@colormaps <- colormaps} else { .Object@colormaps <- NULL }
+			if (!missing(rowOrder)) { .Object@rowOrder <- rowOrder } else { .Object@rowOrder <- NULL }
+			if (!missing(rowDist)) { .Object@rowDist <- rowDist } else { .Object@rowDist <- "correlation" }
+			if (!missing(rowAgglom)) { .Object@rowAgglom <- rowAgglom } else { .Object@rowAgglom <- "ward.D2" }
+			if (!missing(colOrder)) { .Object@colOrder <- colOrder } else { .Object@colOrder <- NULL }
+			if (!missing(colDist)) { .Object@colDist <- colDist } else { .Object@colDist <- "correlation" }
+			if (!missing(colAgglom)) { .Object@colAgglom <- colAgglom } else { .Object@colAgglom <- "ward.D2" }
+			if (!missing(rowOrderMethod)) { .Object@rowOrderMethod <- rowOrderMethod } else { .Object@rowOrderMethod <- "User" }
+			if (!missing(colOrderMethod)) { .Object@colOrderMethod <- colOrderMethod } else { .Object@colOrderMethod <- "User" }
+			if (!missing(rowCutLocations) & !is.null(rowCutLocations)) { 
+				verifyNumeric(rowCutLocations); 
+				.Object@rowCutLocations <- castListAsInteger(rowCutLocations) 
+			} else { 
+				.Object@rowCutLocations <- NULL 
+			}
+			if (!missing(rowCutWidth) & !is.null(rowCutWidth)) { 
+				verifyNumeric(rowCutWidth); 
+				.Object@rowCutWidth <- castAsInteger(rowCutWidth) 
+			} else { 
+				.Object@rowCutWidth <- 5 
+			}
+			if (!missing(rowTreeCuts) & !is.null(rowTreeCuts)) { 
+				verifyNumeric(rowTreeCuts); 
+				.Object@rowTreeCuts <- castAsInteger(rowTreeCuts) 
+			} else  { 
+				.Object@rowTreeCuts <- NULL 
+			}
+			if (!missing(rowTopItems)) { .Object@rowTopItems <- rowTopItems } else { .Object@rowTopItems <- NULL }
+			if (!missing(rowDisplayLength)) { .Object@rowDisplayLength <- rowDisplayLength } else { .Object@rowDisplayLength <- NULL }
+			if (!missing(rowDisplayAbbreviation)) { .Object@rowDisplayAbbreviation <- rowDisplayAbbreviation } else { .Object@rowDisplayAbbreviation<- NULL }
+			if (!missing(colCutLocations)) { .Object@colCutLocations <- colCutLocations } else { .Object@colCutLocations <- NULL }
+			if (!missing(colCutWidth) & !is.null(colCutWidth)) { 
+				verifyNumeric(colCutWidth)
+				.Object@colCutWidth <- castAsInteger(colCutWidth) 
+			} else { 
+				.Object@colCutWidth <- 5 
+			}
+			if (!missing(colTreeCuts)) { 
+				verifyNumeric(colTreeCuts)
+				.Object@colTreeCuts <- castAsInteger(colTreeCuts) 
+			} else  { 
+				.Object@roeTreeCuts <- NULL 
+			}
+			if (!missing(colTopItems)) { .Object@colTopItems <- colTopItems } else { .Object@colTopItems <- NULL }
+			if (!missing(colDisplayLength)) { .Object@colDisplayLength <- colDisplayLength } else { .Object@colDisplayLength <- NULL }
+			if (!missing(colDisplayAbbreviation)) { .Object@colDisplayAbbreviation <- colDisplayAbbreviation } else { .Object@colDisplayAbbreviation<- NULL }
+			if (!missing(rowMeta)) { .Object@rowMeta <- rowMeta } else { .Object@rowMeta <- NULL }
+			if (!missing(colMeta)) { .Object@colMeta <- colMeta } else { .Object@colMeta <- NULL }
+			if (!missing(axisTypes)) { .Object@axisType <- axisTypes } else { .Object@axisTypes <- NULL }
+			if (!missing(datasets)) { .Object@datasets <- datasets } else { .Object@datasets <- NULL }
+			if (!missing(dialogs)) { .Object@dialogs <- dialogs } else { .Object@dialogs <- NULL }
+			if (!missing(tags)) { .Object@tags <- tags } else { .Object@tags <- c() }
+			if (!missing(css)) { .Object@css <- css } else { .Object@css <- c() }
+			if (!missing(rowTypeFunctions)) { .Object@rowTypeFunctions <- rowTypFunctions } else { .Object@rowTypeFunctions <- NULL }
+			if (!missing(colTypeFunctions)) { .Object@colTypeFunctions <- colTypFunctions } else { .Object@colTypeFunctions <- NULL }
+			if (!missing(elementTypeFunctions)) { .Object@elementTypeFunctions <- elementTypFunctions } else { .Object@elementTypeFunctions <- NULL }
+			if (!missing(extrafiles)) { .Object@extrafiles <- extrafiles } else { .Object@extrafiles <- c() }
+			if (!missing(extrascripts)) { .Object@extrascripts <- extrascripts } else { .Object@extrascripts <- c() }
+			if (!missing(properties)) { .Object@properties <- properties } else { .Object@properties <- c() }
+			if (!missing(overviews)) { .Object@overviews <- overviews } else { .Object@overviews <- NULL }
+			if (!missing(relatedLinks)) { .Object@relatedLinks <- relatedLinks } else { .Object@relatedLinks <- NULL }
+			if (!missing(relatedGroups)) { .Object@relatedGroups <- relatedGroups } else { .Object@relatedGroups <- NULL }
+			if (!missing(templates)) { .Object@templates <- templates } else { .Object@templates <- NULL }
+			if (!missing(width)) { 
+				verifyNumeric(width)
+				.Object@width <- castAsInteger(width)
+			} else { 
+				.Object@width <- as.integer(500)
+			}
+			if (!missing(height)) { 
+				verifyNumeric(height)
+				.Object@height <- castAsInteger(height)
+			} else { 
+				.Object@height <- as.integer(500)
+			}
+			return(.Object)
+		}
+)
 setIs ("ngchmVersion2", "ngchm");
 
 setMethod ('show',

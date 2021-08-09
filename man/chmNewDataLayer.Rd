@@ -11,10 +11,10 @@ chmNewDataLayer(label, data, colors, summarizationMethod, cuts_color)
 
 \item{data}{A matrix containing the data to display. Must have rownames and colnames.}
 
-\item{colors}{A color map specifying how the data should be rendered.  If omitted or NULL,
+\item{colors}{A color map specifying how the data should be rendered.    If omitted or NULL,
 a default green-black-red color map will be estimated from the data.}
 
-\item{summarizationMethod}{The method to use when summarizing multiple data points per pixel.  Possible values are average (default), sample, and mode.}
+\item{summarizationMethod}{The method to use when summarizing multiple data points per pixel.    Possible values are average (default), sample, and mode.}
 
 \item{cuts_color}{color of cuts}
 }
@@ -29,7 +29,7 @@ noise <- matrix (runif(1000) + runif(1000*1000), nrow=1000)
 rownames(noise) <- sprintf ("Row\%d", 1:nrow(noise))
 colnames(noise) <- sprintf ("Col\%d", 1:ncol(noise))
 noise.colors <- chmNewColorMap (c(0,1,2),
-                                c("green", "black", "red"), missing.color="yellow")
+															 c("green", "black", "red"), missing.color="yellow")
 layer <- chmNewDataLayer ("Noisy Data", noise, noise.colors)
 
 }

@@ -26,8 +26,8 @@ The NGCHM with added coordinates.
 }
 \description{
 Add SingleCellExperiment::reducedDim or Seurat reduced dimension coordinates from a single cell object sce
-as hidden covariate bars to an axis of an NG-CHM.  dimName specifies the name of the reduced
-dimension of interest in sce.  One hidden covariate bar is added for each coordinate.
+as hidden covariate bars to an axis of an NG-CHM.	dimName specifies the name of the reduced
+dimension of interest in sce.	One hidden covariate bar is added for each coordinate.
 If specified, maxDim limits the maximum number of covariate bars added to the chm.
 Coordinates have names 'BASENAME.coordinate.N', where BASENAME is specified by the parameter
 basename (defaults to dimName if omitted) and N ranges from 1 to the number of added covariate bars.

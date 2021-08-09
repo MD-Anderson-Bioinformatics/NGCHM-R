@@ -14,7 +14,7 @@ chmGetOverview(chm, format = NULL, idx = NULL)
 \item{idx}{The index of the overview image desired (defaults to first image of the specified format).}
 }
 \description{
-This function returns the file path to the specified overview image of the CHM.  The CHM must be
+This function returns the file path to the specified overview image of the CHM.	The CHM must be
 made before the file can be accessed.
 If idx is specified, format if given must equal that of the overview image, and the path to that overview image is returned.
 If idx is not specified, the file path to the first overview of the given format (default 'png') is returned.

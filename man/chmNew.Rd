@@ -18,7 +18,15 @@ chmNew(
   rowCovariates = NULL,
   colCovariates = NULL,
   format = "original",
-  overview = c()
+  rowGapLocations = NULL,
+  rowGapWidth = 5,
+  colGapLocations = NULL,
+  colGapWidth = 5,
+  rowTreeGaps = NULL,
+  colTreeGaps = NULL,
+  overview = c(),
+  logLevel = "INFO",
+  logFile = NULL
 )
 }
 \arguments{

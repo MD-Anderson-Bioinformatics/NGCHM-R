@@ -9,7 +9,7 @@
 \arguments{
 \item{x}{The NGCHM to view.}
 
-\item{server}{The server containing the NG-CHM.  Defaults to option "NGCHM.Server" or the first server.}
+\item{server}{The server containing the NG-CHM.    Defaults to option "NGCHM.Server" or the first server.}
 
 \item{viewer}{The viewer to use. Defaults to option "viewer" or browseURL.}
 

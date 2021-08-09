@@ -19,7 +19,7 @@ chmNewCovariate(
 
 \item{value.properties}{An ngchmColormap mapping values to properties.}
 
-\item{type}{The string "discrete" or the string "continuous".  (Defaults to continuous for numeric values, to discrete otherwise.)}
+\item{type}{The string "discrete" or the string "continuous".    (Defaults to continuous for numeric values, to discrete otherwise.)}
 
 \item{covabbv}{The short R-compatible identifier used to identify the covariate (derived from fullname if not specified).}
 }

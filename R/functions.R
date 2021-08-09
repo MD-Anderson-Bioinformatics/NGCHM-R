@@ -10,6 +10,7 @@ NULL
 #' @importFrom logger log_threshold
 #' @importFrom logger log_layout
 #' @importFrom logger log_debug
+#' @importFrom logger log_error
 #' @importFrom logger log_appender
 #' @importFrom logger appender_file
 #' @importFrom logger appender_console
@@ -163,6 +164,7 @@ ngchmGetEnv <- function () {
 #' @param format The format of NGCHM to produce (default: 'original').
 #' @param overview The format(s) of overview image(s) to create (default: None).
 #' @importFrom logger log_debug
+#' @importFrom logger log_error
 #'
 #' @return An object of class ngchm
 #'
@@ -198,37 +200,6 @@ chmNew <- function (name, ...,
 						overview=c(),
 						logLevel='INFO', logFile=NULL) {
 	initLogging(logLevel, logFile)
-	if (typeof (name) != "character") {
-		stop (sprintf ("Parameter 'name' must have type 'character', not '%s'", typeof(name)));
-	}
-	if (length (name) != 1) {
-		stop (sprintf ("Parameter 'name' must have a single value, not %d", length(name)));
-	}
-	if (nchar (name) == 0) {
-		stop ("Parameter 'name' cannot be the empty string");
-	}
-	roundTolerance = 0.01
-	variablesToMakeInt = c("rowGapWidth","colGapWidth","rowTreeGaps","colTreeGaps")
-	for (var in variablesToMakeInt) {
-		if (!is.null(get(var))) {
-			if (abs(round(get(var)) - get(var)) > roundTolerance) {
-				stop(paste("Fatal error: '",var,"' parameter must be integer",sep=''))
-			} else {
-				assign(var,as.integer(round((get(var)))))
-			}
-		}
-	}
-	listsToMakeInts = c("rowGapLocations","colGapLocations")
-	for (l in listsToMakeInts) {
-		if (!is.null(get(l))) {
-			lapply(get(l), function(elem) {
-				if ((abs(round(elem) - elem)) > roundTolerance) {
-					stop(paste("Fatal error: '",l,"' parameter entries must be integers",sep=""))
-				}
-			})
-			assign(l,as.integer(round(get(l))))
-		}
-	}
 
 	chm <- new (Class="ngchmVersion2",
 		name=name,
@@ -250,7 +221,6 @@ chmNew <- function (name, ...,
 	);
 	chmRowOrder(chm) <- rowOrder;
 	chmColOrder(chm) <- colOrder;
-	chm@uuid <- getuuid (name);
 	chm <- chmAddCSS (chm, 'div.overlay { border: 2px solid yellow; }');
 	chm <- chmAddList (chm, list(...));
 	if (!is.null(rowAxisType)) chm <- chmAddAxisType (chm, 'row', rowAxisType);

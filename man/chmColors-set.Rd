@@ -9,7 +9,7 @@ chmColors(x) <- value
 \arguments{
 \item{x}{The NG-CHM object on which to set the colors.}
 
-\item{value}{A character string vector of colors.  The vector length must equal
+\item{value}{A character string vector of colors.    The vector length must equal
 the number of data points in the color map.}
 }
 \value{

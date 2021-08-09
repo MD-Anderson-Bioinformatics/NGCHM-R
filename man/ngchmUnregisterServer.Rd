@@ -9,7 +9,7 @@ ngchmUnregisterServer(uuid, name = NULL)
 \arguments{
 \item{uuid}{A string that identifies the server namespace.}
 
-\item{name}{The names(s) of the ngchmServer(s) to unregister.  If not specified, all ngchmServers in the
+\item{name}{The names(s) of the ngchmServer(s) to unregister.    If not specified, all ngchmServers in the
 namespace are unregistered.}
 }
 \description{
