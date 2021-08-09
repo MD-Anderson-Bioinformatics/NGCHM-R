@@ -195,8 +195,6 @@ chmNew <- function (name, ...,
 						rowGapWidth=5,
 						colGapLocations=NULL,
 						colGapWidth=5,
-						rowTreeGaps=NULL,
-						colTreeGaps=NULL,
 						overview=c(),
 						logLevel='INFO', logFile=NULL) {
 	initLogging(logLevel, logFile)
@@ -215,9 +213,7 @@ chmNew <- function (name, ...,
 		rowCutLocations=rowGapLocations,
 		rowCutWidth=rowGapWidth,
 		colCutLocations=colGapLocations,
-		colCutWidth=colGapWidth,
-		rowTreeCuts=rowTreeGaps,
-		colTreeCuts=colTreeGaps
+		colCutWidth=colGapWidth
 	);
 	chmRowOrder(chm) <- rowOrder;
 	chmColOrder(chm) <- colOrder;
@@ -469,21 +465,22 @@ chmAddAxis <- function (chm, axis) {
 
 # Function used by chmNew and chmAdd:
 chmAddList <- function (chm, args) {
-		#cat (sprintf ("chmAdd: %d items to add\n", length(args)), file=stderr());
-		for (item in args) {
-	if (is(item, "ngchmLayer")) { chm <- chmAddLayer (chm, item); }
-	else if (is(item, "matrix") && (mode(item) == "numeric")) { chm <- chmAddLayer (chm, item); }
-	else if (is(item, "ngchmDataset")) { chm <- chmAddDataset (chm, item); }
-	else if (is(item, "ngchmColormap")) { chm <- chmAddColormap (chm, item); }
-	else if (is(item, "ngchmDialog")) { chm <- chmAddDialog (chm, item); }
-	else if (is(item, "ngchmProperty")) { chmProperty(chm, item@label) <- item; }
-	else if (is(item, "ngchmAxis")) { chm <- chmAddAxis (chm, item); }
-				else if (is(item, "list")) { chm <- chmAddList (chm, item); }
-	else {
+	#cat (sprintf ("chmAdd: %d items to add\n", length(args)), file=stderr());
+	for (item in args) {
+		if (is(item, "ngchmLayer")) { chm <- chmAddLayer (chm, item); }
+		else if (is(item, "matrix") && (mode(item) == "numeric")) { chm <- chmAddLayer (chm, item); }
+		else if (is(item, "ngchmDataset")) { chm <- chmAddDataset (chm, item); }
+		else if (is(item, "ngchmColormap")) { chm <- chmAddColormap (chm, item); }
+		else if (is(item, "ngchmDialog")) { chm <- chmAddDialog (chm, item); }
+		else if (is(item, "ngchmProperty")) { chmProperty(chm, item@label) <- item; }
+		else if (is(item, "ngchmAxis")) { chm <- chmAddAxis (chm, item); }
+		else if (is(item, "list")) { chm <- chmAddList (chm, item); }
+		else {
+			log_error("Cannot add item '",item,"' of class '",classstr(item),"' to ngchm")
 			stop (sprintf ("Unable to add item of class '%s' to ngchm\n", classstr(item)));
-	}
 		}
-		chm
+	}
+	chm
 }
 
 #' Create a new Data Layer for a NGCHM.

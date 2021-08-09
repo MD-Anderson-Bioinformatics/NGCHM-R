@@ -22,8 +22,6 @@ chmNew(
   rowGapWidth = 5,
   colGapLocations = NULL,
   colGapWidth = 5,
-  rowTreeGaps = NULL,
-  colTreeGaps = NULL,
   overview = c(),
   logLevel = "INFO",
   logFile = NULL

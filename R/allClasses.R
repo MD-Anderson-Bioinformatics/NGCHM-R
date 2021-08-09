@@ -772,11 +772,32 @@ verifyNumeric <- function(variableToCheck) {
 	}
 }
 
+
+#' Helper class for setting row/col gap locations as cuts
+#'
+#' @slot numberOfCuts Integer number of cuts
+setClass(Class = "treeCuts", slots = list(numberOfCuts = "optInteger"))
+setMethod("initialize", "treeCuts",
+	function(.Object, numberOfCuts) {
+		.Object@numberOfCuts = as.integer(numberOfCuts)
+		return(.Object)
+	}
+)
+
+#' Constructor function for treeCuts class
+#'
+#' This allows users to use chmNew like the following:
+#'     chmNew('ngchm', rowGapLocations=chmTreeCuts(5))
+#'
+chmTreeCuts <- function(numberOfCuts) {
+	return (new (Class="treeCuts", numberOfCuts=as.integer(numberOfCuts)))
+}
+
 setMethod("initialize", "ngchmVersion2",
 	function(.Object, name, version, format, baggage, inpDir, outDir, saveDir, propFile,
 		layers, colormaps, rowOrder, rowDist, rowAgglom, colOrder, colDist, colAgglom, rowOrderMethod, colOrderMethod, 
-		rowCutLocations, rowCutWidth, rowTreeCuts, rowTopItems, rowDisplayLength, rowDisplayAbbreviation,
-		colCutLocations, colCutWidth, colTreeCuts, colTopItems, colDisplayLength, colDisplayAbbreviation,
+		rowCutLocations, rowCutWidth, rowTopItems, rowDisplayLength, rowDisplayAbbreviation,
+		colCutLocations, colCutWidth, colTopItems, colDisplayLength, colDisplayAbbreviation,
 		rowMeta, colMeta, axisTypes, datasets, dialogs, tags, css,
 		rowTypeFunctions, colTypeFunctions, elementTypeFunctions, extrafiles,
 		extrascripts, properties, overviews, relatedLinks, relatedGroups,
@@ -808,10 +829,17 @@ setMethod("initialize", "ngchmVersion2",
 			if (!missing(rowOrderMethod)) { .Object@rowOrderMethod <- rowOrderMethod } else { .Object@rowOrderMethod <- "User" }
 			if (!missing(colOrderMethod)) { .Object@colOrderMethod <- colOrderMethod } else { .Object@colOrderMethod <- "User" }
 			if (!missing(rowCutLocations) & !is.null(rowCutLocations)) { 
-				verifyNumeric(rowCutLocations); 
-				.Object@rowCutLocations <- castListAsInteger(rowCutLocations) 
+				if (class(rowCutLocations) == "treeCuts") {
+					.Object@rowTreeCuts <- rowCutLocations@numberOfCuts
+					.Object@rowCutLocations <- NULL
+				} else {
+					verifyNumeric(rowCutLocations); 
+					.Object@rowCutLocations <- castListAsInteger(rowCutLocations) 
+					.Object@rowTreeCuts <- NULL
+				}
 			} else { 
 				.Object@rowCutLocations <- NULL 
+				.Object@rowTreeCuts <- NULL
 			}
 			if (!missing(rowCutWidth) & !is.null(rowCutWidth)) { 
 				verifyNumeric(rowCutWidth); 
@@ -819,27 +847,27 @@ setMethod("initialize", "ngchmVersion2",
 			} else { 
 				.Object@rowCutWidth <- 5 
 			}
-			if (!missing(rowTreeCuts) & !is.null(rowTreeCuts)) { 
-				verifyNumeric(rowTreeCuts); 
-				.Object@rowTreeCuts <- castAsInteger(rowTreeCuts) 
-			} else  { 
-				.Object@rowTreeCuts <- NULL 
-			}
 			if (!missing(rowTopItems)) { .Object@rowTopItems <- rowTopItems } else { .Object@rowTopItems <- NULL }
 			if (!missing(rowDisplayLength)) { .Object@rowDisplayLength <- rowDisplayLength } else { .Object@rowDisplayLength <- NULL }
 			if (!missing(rowDisplayAbbreviation)) { .Object@rowDisplayAbbreviation <- rowDisplayAbbreviation } else { .Object@rowDisplayAbbreviation<- NULL }
-			if (!missing(colCutLocations)) { .Object@colCutLocations <- colCutLocations } else { .Object@colCutLocations <- NULL }
+			if (!missing(colCutLocations) & !is.null(colCutLocations)) { 
+				if (class(colCutLocations) == "treeCuts") {
+					.Object@colTreeCuts <- colCutLocations@numberOfCuts
+					.Object@colCutLocations <- NULL
+				} else {
+					verifyNumeric(colCutLocations); 
+					.Object@colCutLocations <- castListAsInteger(colCutLocations) 
+					.Object@colTreeCuts <- NULL
+				}
+			} else { 
+				.Object@colCutLocations <- NULL 
+				.Object@colTreeCuts <- NULL
+			}
 			if (!missing(colCutWidth) & !is.null(colCutWidth)) { 
 				verifyNumeric(colCutWidth)
 				.Object@colCutWidth <- castAsInteger(colCutWidth) 
 			} else { 
 				.Object@colCutWidth <- 5 
-			}
-			if (!missing(colTreeCuts)) { 
-				verifyNumeric(colTreeCuts)
-				.Object@colTreeCuts <- castAsInteger(colTreeCuts) 
-			} else  { 
-				.Object@roeTreeCuts <- NULL 
 			}
 			if (!missing(colTopItems)) { .Object@colTopItems <- colTopItems } else { .Object@colTopItems <- NULL }
 			if (!missing(colDisplayLength)) { .Object@colDisplayLength <- colDisplayLength } else { .Object@colDisplayLength <- NULL }
