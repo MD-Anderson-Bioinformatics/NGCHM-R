@@ -15,11 +15,18 @@ reference:
   - title: "Covariate Bars"
     desc: "Creating and adding covariate bars"
     contents:
-      - '`chmNewCovariate`'
+      - '`chmAddCovariate`'
       - '`chmAddCovariateBar`'
+      - '`chmCovariate`'
+      - '`chmCovariateBar`'
+      - '`chmNewCovariate`'
+      - '`chmNewCovariateBar`'
   - title: "Color Maps and Data Layers"
     desc: "Creating color maps and data layers"
     contents:
+      - '`chmAddLayer`'
+      - '`chmColorMap`'
+      - '`chmLayer`'
       - '`chmNewColorMap`'
       - '`chmNewDataLayer`'
   - title: 'Specifying Axis Type'
