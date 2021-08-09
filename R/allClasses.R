@@ -787,9 +787,9 @@ setMethod("initialize", "treeCuts",
 #' Constructor function for treeCuts class
 #'
 #' This allows users to use chmNew like the following:
-#'     chmNew('ngchm', rowGapLocations=chmTreeCuts(5))
+#'     chmNew('ngchm', rowGapLocations=chmTreeGaps(5))
 #'
-chmTreeCuts <- function(numberOfCuts) {
+chmTreeGaps <- function(numberOfCuts) {
 	return (new (Class="treeCuts", numberOfCuts=as.integer(numberOfCuts)))
 }
 
