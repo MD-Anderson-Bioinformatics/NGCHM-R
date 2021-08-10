@@ -25,7 +25,7 @@ knitr::opts_chunk$set(
   - Mac: Xcode
   - Linux: gcc
   - Windows: Rtools or Rtools40 (Windows 10)
-- R package [bmbroom/tsvio](https://github.com/bmbroom/tsvio)
+- R package [tsvio](https://github.com/MD-Anderson-Bioinformatics/tsvio)
   - This package requires a C compiler
 - R package [NGCHMSupportFiles](https://github.com/MD-Anderson-Bioinformatics/NGCHMSupportFiles)
   - This package requires Java to use
@@ -38,7 +38,7 @@ The above-mentioned R packages can be installed from GitHub with
 [remotes](https://cran.r-project.org/web/packages/remotes/index.html):
 
 ```{r, results='hide', message=FALSE, warning=FALSE, eval=FALSE}
-remotes::install_github('bmbroom/tsvio')
+remotes::install_github('MD-Anderson-Bioinformatics/tsvio')
 remotes::install_github('MD-Anderson-Bioinformatics/NGCHMSupportFiles', ref='main')
 remotes::install_github('MD-Anderson-Bioinformatics/NGCHM-R')
 ```
