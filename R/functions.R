@@ -3821,3 +3821,51 @@ chmAddReducedDim <- function (hm, axis, sce, dimName, maxDim, basename, dimAxis)
 		return (hm);
 };
 
+#' Helper function to cast variables as integers.
+#'
+#' If variable value is far from integer, print error message and stop.
+#'
+#' @param variableToCast Variable to cast as integer
+#' @return integer value of variableToCast
+castAsInteger <- function(variableToCast) {
+	roundTolerance = 0.01
+	if (abs(round(variableToCast) - variableToCast) > roundTolerance) {
+		log_error("Variable '",deparse(substitute(variableToCast)),"' must be integer")
+		stop("Variable '",deparse(substitute(variableToCast)),"' must be integer")
+	} else {
+		return (as.integer(round(variableToCast)))
+	}
+}
+
+#' Helper function to cast list as integer
+#'
+#' If variable value is far from integer, print error message and stop.
+#'
+#' @param listToCast List to cast as integer
+#' @return list with members cast to integers
+castListAsInteger <- function(listToCast) {
+	roundTolerance = 0.01
+	lapply(listToCast, function(elem) {
+		if ((abs(round(elem) - elem)) > roundTolerance) {
+			log_error("Entries of '",deparse(substitute(listToCast)),"' must be integer")
+			stop("Entries of '",deparse(substitute(listToCast)),"' must be integer")
+		}
+	}) 
+	return (as.integer(round(listToCast)))
+}
+
+#' Helper function to verify if variable is numeric.
+#'
+#' If not numeric, print error message and stop.
+#'
+#' @param listToCast List to cast as integer
+#' @return list with members cast to integers
+verifyNumeric <- function(variableToCheck) {
+	if (!is.numeric(variableToCheck)) {
+		log_error("Variable '",deparse(substitute(variableToCheck)),"' must be numeric.")
+		stop("Variable '",deparse(substitute(variableToCheck)),"' must be numeric.")
+	} else {
+		return (TRUE)
+	}
+}
+
