@@ -1,0 +1,56 @@
+---
+output: github_document
+---
+
+<!-- README.md is generated from README.Rmd. Please edit that file -->
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.path = "man/figures/README-",
+  out.width = "100%"
+)
+```
+
+# NGCHM R package
+
+<!-- badges: start -->
+<!-- badges: end -->
+
+NGCHM is an R package for creating [Next-Generation Clustered Heat Maps](https://bioinformatics.mdanderson.org/public-software/ngchm/).
+Next-Generation Clustered Heat Maps (NG-CHMs) allow for a dynamic exploration of heat map data in a web browser. 
+
+Our [YouTube Video](https://www.youtube.com/watch?v=DuObpGNpDhw) presents a brief overview of NGCHM usage and functionality.
+
+Click [Start Here!](articles/create-a-ng-chm.html) in the main menu to learn how to create an NG-CHM like the one below.
+
+
+### NG-CHM of Glioblastoma Multiform (GBM) Data from The Cancer Genome Atlas (TCGA)
+
+```{r, message=FALSE, warning=FALSE, echo=FALSE }
+library(NGCHMDemoData)
+library(NGCHMSupportFiles)
+library(NGCHM)
+colorMap1 <- chmNewColorMap(c(-2,0,2), c('mediumblue','snow','firebrick'))
+dataLayer1 <- chmNewDataLayer('Color Map 1', TCGA.GBM.ExpressionData, colorMap1)
+colorMap2 <- chmNewColorMap(c(-2,0,2), c('#9933ff','#f0f0f0','#228B22'))
+dataLayer2 <- chmNewDataLayer('Color Map 2', TCGA.GBM.ExpressionData, colorMap2)
+hm <- chmNew('NGCHM-R', dataLayer1, dataLayer2)
+covariateBar <- chmNewCovariate('TP53 Mutation',TCGA.GBM.TP53MutationData)
+hm <- chmAddCovariateBar(hm, 'column', covariateBar)
+hm <- chmAddAxisType(hm, 'row', 'bio.gene.hugo')
+hm <- chmAddAxisType(hm, 'column', 'bio.tcga.barcode.sample.vial.portion.analyte.aliquot')
+```
+
+```{r, message=FALSE, warning=FALSE, echo=FALSE, results='hide' }
+chmExportToHTML(hm,'tcga-gbm-intro.html',overwrite=TRUE)
+```
+
+```{r, message=FALSE, warning=FALSE, echo=FALSE }
+library('htmltools')
+filePath = paste(getwd(),'/tcga-gbm-intro.html',sep='')
+htmltools::includeHTML(filePath)
+```
+
+

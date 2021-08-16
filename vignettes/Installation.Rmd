@@ -1,0 +1,55 @@
+---
+title: "Installation"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Installation}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+## System Requirements
+
+- R >= 3.5
+- Java >= 8
+- git, tar, scp, ssh
+  - Mac/Linux: typically installed by default
+  - Windows: Cygwin or Windows Subsystem for Linux (Windows 10)
+- C compiler
+  - Mac: Xcode
+  - Linux: gcc
+  - Windows: Rtools or Rtools40 (Windows 10)
+- R package [tsvio](https://github.com/MD-Anderson-Bioinformatics/tsvio)
+  - This package requires a C compiler
+- R package [NGCHMSupportFiles](https://github.com/MD-Anderson-Bioinformatics/NGCHMSupportFiles)
+  - This package requires Java to use
+  - This package contains a compiled .jar file and minified JavaScript file
+
+
+## Install from GitHub
+
+The above-mentioned R packages can be installed from GitHub with
+[remotes](https://cran.r-project.org/web/packages/remotes/index.html):
+
+```{r, results='hide', message=FALSE, warning=FALSE, eval=FALSE}
+remotes::install_github('MD-Anderson-Bioinformatics/tsvio')
+remotes::install_github('MD-Anderson-Bioinformatics/NGCHMSupportFiles', ref='main')
+remotes::install_github('MD-Anderson-Bioinformatics/NGCHM-R')
+```
+
+## Using the Docker Image
+
+There is also a Docker image, [ngchm/rstudio-ngchm](https://hub.docker.com/r/ngchm/rstudio-ngchm), 
+containing RStudio, the NGCHM-R package, and all needed dependencies 
+available on Docker Hub.
+
+The YouTube Video, [How to Create Next-Generation Clustered Heat Map in R Studio](https://www.youtube.com/watch?v=O42w5P3A1_8)
+details usage of the Docker image. Further installation and usage information is available 
+in this the [RStudio NGCHM GitHub](https://github.com/MD-Anderson-Bioinformatics/rstudio-ngchm) project.
+

@@ -1,0 +1,26 @@
+
+---
+title: "YouTube"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{YouTube}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+Please check out the [NG-CHM YouTube Channel](https://www.youtube.com/channel/UCADGir2q8IaI9cGQuzjSL9w) for a growing list of tutorials.
+
+Videos of particular interest to R users:
+
+1. [How to create Next-Generation Clustered Heat Maps in R-Studio](https://www.youtube.com/watch?v=O42w5P3A1_8&list=PLIBaINv-Qmd0v2qD4AMbGf85Xd-T_yzEh&index=1)
+2. [How to Use Any Label Order or Clustering Method with Next-Generation Clustered Heat Maps](https://www.youtube.com/watch?v=847breSor1I&list=PLIBaINv-Qmd0v2qD4AMbGf85Xd-T_yzEh&index=2)
+3. [How to Create a Single-Cell Next-Generation Clustered Heat Map in R](https://www.youtube.com/watch?v=K8PuHDQYk-g&list=PLIBaINv-Qmd0v2qD4AMbGf85Xd-T_yzEh&index=3)
+4. [Run NG-CHM RStudio container in Windows 10 Docker Desktop](https://www.youtube.com/watch?v=iu0ptg9SBqM&list=PLIBaINv-Qmd0v2qD4AMbGf85Xd-T_yzEh&index=4)
+
