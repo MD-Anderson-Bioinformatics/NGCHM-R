@@ -20,7 +20,7 @@ a Next Generation Clustered Heat Map.
 }
 \examples{
 prop <- chmNewProperty ("chm.info.caption",
-													"This is a nifty new CHM.")
+                           "This is a nifty new CHM.")
 
 }
 \seealso{

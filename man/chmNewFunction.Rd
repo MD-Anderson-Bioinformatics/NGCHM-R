@@ -19,7 +19,7 @@ chmNewFunction(
 \item{description}{A short description of the Javascript function}
 
 \item{implementation}{A string containing the javascript code required to define the function. When called the function
-is passed a list of selected values (e.g. labels).    Additional parameters can be declared before the values
+is passed a list of selected values (e.g. labels).  Additional parameters can be declared before the values
 parameter and must be resolved through currying (binding) before the function is used in menus.}
 
 \item{extraParams}{An optional list of extra parameters. (Default NULL.)}
@@ -37,10 +37,10 @@ a Next Generation Clustered Heat Map menu.
 }
 \examples{
 alertFn <- chmNewFunction ("showAlert", "Display the parameter in an alert box",
-													"function showAlert(label) { alert(label); }", global=TRUE)
+                           "function showAlert(label) { alert(label); }", global=TRUE)
 dbLookup <- chmNewFunction ("dbLookup", "Lookup the parameter in a database",
-													 "function showAlert(database, label) { alert(database[label]); }",
-													 c("database"))
+                            "function showAlert(database, label) { alert(database[label]); }",
+                            c("database"))
 
 }
 \seealso{

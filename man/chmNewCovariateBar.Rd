@@ -45,7 +45,7 @@ This function creates a new covariate bar suitable for adding to a Next Generati
 bar.data <- ifelse (rnorm(1000) < 0, "negative", "non-negative")
 names(bar.data) <- sprintf ("Sample\%d", 1:length(bar.data))
 bar.colors <- chmNewColorMap (c("negative", "non-negative"),
-														 c("white", "black"), missing.color='red')
+                              c("white", "black"), missing.color='red')
 covar <- chmNewCovariate ("Group", bar.data, bar.colors, "discrete")
 bar <- chmNewCovariateBar (covar)
 

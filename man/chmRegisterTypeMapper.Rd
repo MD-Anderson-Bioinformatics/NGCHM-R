@@ -10,7 +10,7 @@ chmRegisterTypeMapper(fromtype, totype, op, ...)
 \arguments{
 \item{fromtype}{The type of values the function expects as input.}
 
-\item{totype}{The type of values the function will produce.    The length of
+\item{totype}{The type of values the function will produce.  The length of
 totype must be shorter than fromtype.}
 
 \item{op}{The operation code for performing the conversion}

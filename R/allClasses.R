@@ -678,7 +678,67 @@ setClass ("ngchmVersion1",
 				height=as.integer(500)));
 setIs ("ngchmVersion1", "ngchm");
 
-setClass ("ngchmVersion2",
+#' Class representing ngchmVersion2 object
+#'
+#' @name ngchmVersion2-class
+#' @rdname ngchmVersion2-class
+#' @slot name The name under which the NGCHM will be saved to the NGCHM server.
+#' @slot version Integer version number (default: 2)
+#' @slot format (default: "original")
+#' @slot uuid character
+#' @slot baggage optCharacter
+#' @slot inpDir character
+#' @slot outDir character
+#' @slot saveDir (default: ".")
+#' @slot propFile (default: "chm.properties")
+#' @slot layers List of data layers  
+#' @slot colormaps Color map
+#' @slot rowMenu optList
+#' @slot colMenu optList
+#' @slot datasets optList
+#' @slot dialogs optList
+#' @slot tags optCharacter
+#' @slot elementMenu optList
+#' @slot rowTypeFunctions optList
+#' @slot colTypeFunctions optList
+#' @slot elementTypeFunctions optList
+#' @slot axisTypes optList
+#' @slot css optList
+#' @slot extrafiles optCharacter
+#' @slot extrascripts optCharacter
+#' @slot properties optList
+#' @slot overviews optList
+#' @slot javascript optList
+#' @slot rowOrder A vector, dendrogram, or function specifying the CHM row order
+#' @slot rowDist Distance method to use by default RowOrder. (default: "correlation", which is 1 minus the Pearson correlation among the rows.)
+#' @slot rowAgglom Agglomeration method to use by default RowOrder. Choices are those from stats::hclust. (default: "ward.D2")
+#' @slot colOrder A vector, dendrogram, or function specifying the CHM column order.
+#' @slot colDist Distance method to use by default ColOrder. (default: "correlation", which is 1 minus the Pearson correlation among the cols.)
+#' @slot colAgglom Agglomeration method to use by default ColOrder. Choices are those from stats::hclust. (default: "ward.D2")
+#' @slot rowOrderMethod character (default: "User")
+#' @slot colOrderMethod character (default: "User")
+#' @slot rowCutLocations Explicit list of row cut locations. If specified, rowTreeCuts is set to NULL.
+#' @slot rowTreeCuts Number of tree cuts for row. If specified, rowCutLocations is set to NULL.
+#' @slot rowCutWidth Width of row cuts (default: 5 rows)
+#' @slot rowTopItems optCharacter
+#' @slot rowDisplayLength optInteger
+#' @slot rowDisplayAbbreviation optCharacter
+#' @slot colCutLocations Explicit list of col cut locations. If specified, colTreeCuts is set to NULL. 
+#' @slot colTreeCuts Number of tree cuts for col. If specified, colCutLocations is set to NULL.
+#' @slot colCutWidth Width of col cuts (defautl: 5 columns)
+#' @slot colTopItems optCharacter
+#' @slot colDisplayLength optInteger
+#' @slot colDisplayAbbreviation optCharacter
+#' @slot rowMeta optList
+#' @slot colMeta optList
+#' @slot rowCovariateBars optList
+#' @slot colCovariateBars optList
+#' @slot relatedLinks optList
+#' @slot relatedGroups optList
+#' @slot templates optList
+#' @slot width default: 500
+#' @slot height default: 500
+setClass(Class = "ngchmVersion2",
 	slots = list(name="character",
 			  version="integer",
                           format="character",
@@ -724,25 +784,6 @@ setClass ("ngchmVersion2",
 			  height="integer"),
 );
 
-#' Helper class for setting row/col gap locations as cuts
-#'
-#' @slot numberOfCuts Integer number of cuts
-setClass(Class = "treeCuts", slots = list(numberOfCuts = "optInteger"))
-setMethod("initialize", "treeCuts",
-	function(.Object, numberOfCuts) {
-		.Object@numberOfCuts = as.integer(numberOfCuts)
-		return(.Object)
-	}
-)
-
-#' Constructor function for treeCuts class
-#'
-#' This allows users to use chmNew like the following:
-#'     chmNew('ngchm', rowGapLocations=chmTreeGaps(5))
-#'
-chmTreeGaps <- function(numberOfCuts) {
-	return (new (Class="treeCuts", numberOfCuts=as.integer(numberOfCuts)))
-}
 
 setMethod("initialize", "ngchmVersion2",
 	function(.Object, name, version, format, baggage, inpDir, outDir, saveDir, propFile,
@@ -856,6 +897,25 @@ setMethod("initialize", "ngchmVersion2",
 		}
 )
 setIs ("ngchmVersion2", "ngchm");
+
+#' Helper class for setting row/col gap locations as tree cuts
+#'
+#' This class is to facilitate specification of row/col gaps in [chmNew()].
+#' Note: user-facing function use the term 'gap', while internal functions that
+#' interact with java programs in the NGCHM viewer project use the term 'cut'.
+#'
+#' @name treeCuts-class
+#' @rdname treeCuts-class
+#' @slot numberOfCuts Integer number of cuts
+#' @seealso [chmNew()]
+#' @seealso [chmTreeGaps()]
+setClass(Class = "treeCuts", slots = list(numberOfCuts = "optInteger"))
+setMethod("initialize", "treeCuts",
+	function(.Object, numberOfCuts) {
+		.Object@numberOfCuts = as.integer(numberOfCuts)
+		return(.Object)
+	}
+)
 
 setMethod ('show',
            signature = c('ngchm'),

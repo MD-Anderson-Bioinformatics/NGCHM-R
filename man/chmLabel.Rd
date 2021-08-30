@@ -7,7 +7,7 @@
 chmLabel(x)
 }
 \arguments{
-\item{hm}{The NG-CHM object to get the label/name of.    Can be:
+\item{hm}{The NG-CHM object to get the label/name of.  Can be:
 \itemize{
 \item An object of class ngchm
 \item An object of class ngchmLayer

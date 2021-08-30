@@ -3,9 +3,11 @@
 \docType{class}
 \name{treeCuts-class}
 \alias{treeCuts-class}
-\title{Helper class for setting row/col gap locations as cuts}
+\title{Helper class for setting row/col gap locations as tree cuts}
 \description{
-Helper class for setting row/col gap locations as cuts
+This class is to facilitate specification of row/col gaps in \code{\link[=chmNew]{chmNew()}}.
+Note: user-facing function use the term 'gap', while internal functions that
+interact with java programs in the NGCHM viewer project use the term 'cut'.
 }
 \section{Slots}{
 
@@ -13,3 +15,8 @@ Helper class for setting row/col gap locations as cuts
 \item{\code{numberOfCuts}}{Integer number of cuts}
 }}
 
+\seealso{
+\code{\link[=chmNew]{chmNew()}}
+
+\code{\link[=chmTreeGaps]{chmTreeGaps()}}
+}

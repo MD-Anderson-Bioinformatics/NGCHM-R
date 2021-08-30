@@ -162,6 +162,10 @@ ngchmGetEnv <- function () {
 #' @param rowCovariates Covariate(Bar)(s) to add to the rows (default: None).
 #' @param colCovariates Covariate(Bar)(s) to add to the columns (default: None).
 #' @param format The format of NGCHM to produce (default: 'original').
+#' @param rowGapLocations Locations for row gaps. Specify as a list of integers or [chmTreeGaps()] function.
+#' @param colGapLocations Locations for col gaps. Specify as a list of integers or [chmTreeGaps()] function.
+#' @param rowGapWidth Width of row gaps (default: 5 rows)
+#' @param colGapWidth Width of col gaps (default: 5 cols)
 #' @param overview The format(s) of overview image(s) to create (default: None).
 #' @importFrom logger log_debug
 #' @importFrom logger log_error
@@ -172,6 +176,9 @@ ngchmGetEnv <- function () {
 #'
 #' @examples
 #' mychm <- chmNew ("test_chm")
+#' mychm <- chmNew("test_chm", rowGapLocations=c(3,5))
+#' mychm <- chmNew("test_chm", rowGapLocations=chmTreeGaps(4))
+#' mychm <- chmNew("test_chm", rowGapWidth=3)
 #'
 #' @seealso [ngchm-class]
 #' @seealso [ngchmServer-class]
@@ -3870,3 +3877,17 @@ verifyNumeric <- function(variableToCheck) {
 	}
 }
 
+#' Creates new treeCuts object
+#'
+#' This function was designed to facilitate setting rowGapLocations and colGapLocations in the
+#' [chmNew()] function. See examples section.
+#'
+#' @param numberOfCuts Number of tree cuts
+#' @return [treeCuts-class] object with specified number of tree cuts
+#' @export
+#'
+#' @examples 
+#' mychm <- chmNew("test_chm", rowGapLocations=chmTreeGaps(5))
+chmTreeGaps <- function(numberOfCuts) {
+	return (new (Class="treeCuts", numberOfCuts=as.integer(numberOfCuts)))
+}

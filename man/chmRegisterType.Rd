@@ -15,7 +15,7 @@ chmRegisterType(typename, description)
 This function registers a type name used for determining row and column
 linkouts.
 This function is intended to be used by NGCHM system developers to record
-basic information about the semantic interpretation of a type name.	Registration
+basic information about the semantic interpretation of a type name.  Registration
 of a typename is (currently) not required in order to use it.
 }
 \seealso{

@@ -10,7 +10,7 @@ chmLayer(hm, label)
 \item{hm}{The NG-CHM object to get the data layer from.}
 
 \item{label}{The name or index of the data layer to get.  If a name, return the layer with
-that name.    If no layer with that name exists or if the index is out of range,
+that name.  If no layer with that name exists or if the index is out of range,
 return NULL.}
 }
 \value{

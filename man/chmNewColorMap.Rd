@@ -37,8 +37,8 @@ An object of class ngchmColormap
 }
 \description{
 This function creates a new Color Map suitable for use in constructing Data Layers and Covariates
-in Next Generation Clustered Heat Maps.	Color maps can be used in both discrete and continuous
-contents.	In a discrete context, values specifies the properties of series.  In a continuous context,
+in Next Generation Clustered Heat Maps.  Color maps can be used in both discrete and continuous
+contents.  In a discrete context, values specifies the properties of series.  In a continuous context,
 values specifies the break points.
 }
 \details{
@@ -49,11 +49,11 @@ of the row maxima. If the low and high values have different signs, the values w
 }
 \examples{
 noise.colors <- chmNewColorMap (c(0,1,2),
-															 c("green", "black", "red"),
-															 missing.color="yellow")
+                                c("green", "black", "red"),
+                                missing.color="yellow")
 bar.colors <- chmNewColorMap (c("small", "big"),
-														 c("#00FFFF", "#FF00FF"),
-														 type="quantile")
+                              c("#00FFFF", "#FF00FF"),
+                              type="quantile")
 
 }
 \seealso{
