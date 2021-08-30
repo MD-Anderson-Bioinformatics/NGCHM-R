@@ -15,8 +15,6 @@ knitr::opts_chunk$set(
 
 # NGCHM R package
 
-(testing change to see if we need index.md in repo)
-
 <!-- badges: start -->
 <!-- badges: end -->
 
