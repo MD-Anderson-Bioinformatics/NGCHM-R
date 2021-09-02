@@ -27,7 +27,7 @@ The following command produces a NG-CHM with rows sorted alphabetically and colu
 ```{r, results='hide', message=FALSE, warning=FALSE, eval=FALSE}
 library(NGCHM)
 library(NGCHMDemoData)
-hm <- chmNew('tcga-gbm', TCGA.GBM.ExpressionData, rowOrder=sort(rownames(TCGA.GBM.ExpressionData)), colOrder=colnames(TCGA.GBM.ExpressionData)[ sample.int(length(colnames(TCGA.GBM.ExpressionData))) ])
+hm <- chmNew('tcga-brca', TCGA.BRCA.ExpressionData, rowOrder=sort(rownames(TCGA.BRCA.ExpressionData)), colOrder=colnames(TCGA.BRCA.ExpressionData)[ sample.int(length(colnames(TCGA.BRCA.ExpressionData))) ])
 ```
 
 ## Hierarchical Clustering Options
@@ -46,7 +46,7 @@ This example specifies a NG-CHM with hierarchical clustering using the Euclidean
 metric and complete linkage clustering algorithm for both rows and columns:
 
 ```{r, results='hide', message=FALSE, warning=FALSE, eval=FALSE}
-hm <- chmNew('tcga-gbm', TCGA.GBM.ExpressionData, rowDist='euclidean', colDist='euclidean', rowAgglom='complete', colAgglom='complete')
+hm <- chmNew('tcga-brca', TCGA.BRCA.ExpressionData, rowDist='euclidean', colDist='euclidean', rowAgglom='complete', colAgglom='complete')
 ```
 
 ## Explicit Clustering
@@ -57,9 +57,9 @@ expression data, for both the rows and columns,
 and uses those clustering results to construct an NG-CHM.
 
 ```{r, results='hide', message=FALSE, warning=FALSE, eval=FALSE}
-rowClust <- stats::hclust(dist(TCGA.GBM.ExpressionData))
-colClust <- stats::hclust(dist(t(TCGA.GBM.ExpressionData)))
-hm <- chmNew('tcga-gbm', TCGA.GBM.ExpressionData, rowOrder=rowClust, colOrder=colClust)
+rowClust <- stats::hclust(dist(TCGA.BRCA.ExpressionData))
+colClust <- stats::hclust(dist(t(TCGA.BRCA.ExpressionData)))
+hm <- chmNew('tcga-brca', TCGA.BRCA.ExpressionData, rowOrder=rowClust, colOrder=colClust)
 ```
 
 Similarly, an hclust object can be transformed into a dendrogram and used for the row and/or column
@@ -68,6 +68,6 @@ ordering. The example below uses the clutering results from above as dedrograms:
 ```{r, results='hide', message=FALSE, warning=FALSE, eval=FALSE}
 rowDendrogram <- as.dendrogram(rowClust)
 colDendrogram <- as.dendrogram(colClust)
-hm <- chmNew('tcga-gbm', TCGA.GBM.ExpressionData, rowOrder=rowDendrogram, colOrder=colDendrogram)
+hm <- chmNew('tcga-brca', TCGA.BRCA.ExpressionData, rowOrder=rowDendrogram, colOrder=colDendrogram)
 ```
 

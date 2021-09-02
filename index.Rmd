@@ -26,30 +26,30 @@ Our [YouTube Video](https://www.youtube.com/watch?v=DuObpGNpDhw) presents a brie
 Click [Start Here!](articles/create-a-ng-chm.html) in the main menu to learn how to create an NG-CHM like the one below.
 
 
-### NG-CHM of Glioblastoma Multiform (GBM) Data from The Cancer Genome Atlas (TCGA)
+### NG-CHM of Breast Cancer (BRCA) Data from The Cancer Genome Atlas (TCGA)
 
 ```{r, message=FALSE, warning=FALSE, echo=FALSE }
 library(NGCHMDemoData)
 library(NGCHMSupportFiles)
 library(NGCHM)
 colorMap1 <- chmNewColorMap(c(-2,0,2), c('mediumblue','snow','firebrick'))
-dataLayer1 <- chmNewDataLayer('Color Map 1', TCGA.GBM.ExpressionData, colorMap1)
+dataLayer1 <- chmNewDataLayer('Color Map 1', TCGA.BRCA.ExpressionData, colorMap1)
 colorMap2 <- chmNewColorMap(c(-2,0,2), c('#9933ff','#f0f0f0','#228B22'))
-dataLayer2 <- chmNewDataLayer('Color Map 2', TCGA.GBM.ExpressionData, colorMap2)
+dataLayer2 <- chmNewDataLayer('Color Map 2', TCGA.BRCA.ExpressionData, colorMap2)
 hm <- chmNew('NGCHM-R', dataLayer1, dataLayer2)
-covariateBar <- chmNewCovariate('TP53 Mutation',TCGA.GBM.TP53MutationData)
+covariateBar <- chmNewCovariate('TP53 Mutation',TCGA.BRCA.TP53MutationData)
 hm <- chmAddCovariateBar(hm, 'column', covariateBar)
 hm <- chmAddAxisType(hm, 'row', 'bio.gene.hugo')
 hm <- chmAddAxisType(hm, 'column', 'bio.tcga.barcode.sample.vial.portion.analyte.aliquot')
 ```
 
 ```{r, message=FALSE, warning=FALSE, echo=FALSE, results='hide' }
-chmExportToHTML(hm,'tcga-gbm-intro.html',overwrite=TRUE)
+chmExportToHTML(hm,'tcga-brca-intro.html',overwrite=TRUE)
 ```
 
 ```{r, message=FALSE, warning=FALSE, echo=FALSE }
 library('htmltools')
-filePath = paste(getwd(),'/tcga-gbm-intro.html',sep='')
+filePath = paste(getwd(),'/tcga-brca-intro.html',sep='')
 htmltools::includeHTML(filePath)
 ```
 

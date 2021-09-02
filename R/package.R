@@ -29,10 +29,10 @@
 #' @aliases NGCHM-package
 #'
 #' @examples
-#' data(TCGA.GBM.EXPR)
-#' chm1 <- chmNew('gbm', TCGA.GBM.EXPR[1:50,1:50], rowAxisType='bio.gene.hugo', colAxisType='bio.tcga.barcode.sample.vial.portion.analyte.aliquot');
-#'\dontrun{chmExportToFile(chm1, 'gbm.ngchm');
-#' chmExportToPDF(chm1, 'gbm.pdf');
+#' data(TCGA.BRCA.ExpressionData)
+#' chm1 <- chmNew('brca', TCGA.BRCA.ExpressionData[1:50,1:50], rowAxisType='bio.gene.hugo', colAxisType='bio.tcga.barcode.sample.vial.portion.analyte.aliquot');
+#'\dontrun{chmExportToFile(chm1, 'brca.ngchm');
+#' chmExportToPDF(chm1, 'brca.pdf');
 #'}
 #'
 #' mat <- matrix(rnorm(100),nrow=10)
@@ -47,14 +47,14 @@ NULL
 #' Sample dataset containing RNA expression data from Affymetrix U133A chips
 #' for TCGA Glioblastoma Multiforme samples.
 #'
-#' @name TCGA.GBM.EXPR
+#' @name TCGA.BRCA.ExpressionData
 #' @docType data
 #' @keywords data
 #'
 #' @examples
-#' data(TCGA.GBM.EXPR)
+#' data(TCGA.BRCA.ExpressionData)
 #' sample.type <- 'bio.tcga.barcode.sample.vial.portion.analyte.aliquot'
-#' chm <- chmNew ('my-gbm-chm', TCGA.GBM.EXPR, rowAxisType='bio.gene.hugo',
+#' chm <- chmNew ('my-brca-chm', TCGA.BRCA.ExpressionData, rowAxisType='bio.gene.hugo',
 #'                 colAxisType=sample.type)
 #'\dontrun{
 #' chmMake ('my-server', chm)

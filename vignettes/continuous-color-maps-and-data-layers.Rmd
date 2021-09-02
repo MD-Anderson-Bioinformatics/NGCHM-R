@@ -22,7 +22,7 @@ NG-CHM from 2 data layers, each with its own custom color maps.
 ## Color Map (Continuous)
 
 Color maps are created with `chmNewColorMap()`. The first argument to this function
-is a list of breakpoints. For the demo data in TCGA.GBM.ExpressionData, most values are between
+is a list of breakpoints. For the demo data in TCGA.BRCA.ExpressionData, most values are between
 -2 and 2, so we set breakpoints at -2, 0, and 2. The second argument is a corresponding list of
 colors for those breakpoints. The colors can be specified by name for standard colors, or by hexadecimal code:
 
@@ -39,8 +39,8 @@ of the data layer. The second argument is the matrix of data, and the third argu
 
 ```{r, results='hide', message=FALSE, warning=FALSE}
 library(NGCHMDemoData)
-dataLayer1 <- chmNewDataLayer('Color Map 1', TCGA.GBM.ExpressionData, colorMap1)
-dataLayer2 <- chmNewDataLayer('Color Map 2', TCGA.GBM.ExpressionData, colorMap2)
+dataLayer1 <- chmNewDataLayer('Color Map 1', TCGA.BRCA.ExpressionData, colorMap1)
+dataLayer2 <- chmNewDataLayer('Color Map 2', TCGA.BRCA.ExpressionData, colorMap2)
 ```
 
 ## Creating the NG-CHM
@@ -55,8 +55,8 @@ and export to a .ngchm or .html file:
 
 ```{r, results='hide', message=FALSE, warning=FALSE}
 library(NGCHMSupportFiles)
-chmExportToFile(hm,'tcga-gbm-color-map.ngchm')
-chmExportToHTML(hm,'tcga-gbm-color-map.html')
+chmExportToFile(hm,'tcga-brca-color-map.ngchm')
+chmExportToHTML(hm,'tcga-brca-color-map.html')
 ```
 
 ## Resulting NG-CHM
@@ -66,7 +66,7 @@ between them.
 
 ```{r, message=FALSE}
 library('htmltools')
-filePath = paste(getwd(),'/tcga-gbm-color-map.html',sep='')
+filePath = paste(getwd(),'/tcga-brca-color-map.html',sep='')
 htmltools::includeHTML(filePath)
 ```
 

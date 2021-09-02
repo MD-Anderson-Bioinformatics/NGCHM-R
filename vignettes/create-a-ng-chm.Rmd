@@ -31,14 +31,14 @@ and loaded into the current environment:
 library(NGCHMDemoData)
 ```
 
-The sample data includes a matrix of mRNA expression data, TCGA.GBM.Expression, containing 3540 genes (rows) and 169 samples 
-(columns) of Glioblastoma Multiforme data from The Cancer Genome Atlas (TCGA). **IMPORTANT: In order to be used as the basis for an NG-CHM, a matrix should have both
+The sample data includes a matrix of gene expression data, TCGA.BRCA.Expression, containing 3437 genes (rows) and 200 samples 
+(columns) of breast cancer data from The Cancer Genome Atlas (TCGA). **IMPORTANT: In order to be used as the basis for an NG-CHM, a matrix should have both
 rownames and colnames.** Here the rownames are genes and the colnames are TCGA sample identifiers:
 
-**GBM Expression Data Matrix:**
+**BRCA Expression Data Matrix:**
 
 ```{r}
-TCGA.GBM.ExpressionData[1:4,1:2]
+TCGA.BRCA.ExpressionData[1:4,1:2]
 ```
 
 The sample data also includes a vector of TP35 mutation status for the TCGA samples in the matrix. This 
@@ -50,7 +50,7 @@ a vector should have at least one name in common with the colnames of the matrix
 **TP53 Mutation Data Vector:**
 
 ```{r}
-TCGA.GBM.TP53MutationData[1:2]
+TCGA.BRCA.TP53MutationData[1:2]
 ```
 
 ## Creating a NG-CHM
@@ -59,13 +59,13 @@ Using the data loaded above, the `chmNew()` function can be used to create an NG
 
 ```{r, results='hide', message=FALSE, warning=FALSE }
 library(NGCHM)
-hm <- chmNew('tcga-gbm', TCGA.GBM.ExpressionData)
+hm <- chmNew('tcga-brca', TCGA.BRCA.ExpressionData)
 ```
 
 A covariate bar of the TP53 mutation status can be added with:
 
 ```{r, results='hide', message=FALSE, warning=FALSE}
-covariateBar <- chmNewCovariate('TP53 Mutation',TCGA.GBM.TP53MutationData)
+covariateBar <- chmNewCovariate('TP53 Mutation',TCGA.BRCA.TP53MutationData)
 hm <- chmAddCovariateBar(hm, 'column', covariateBar)
 ```
 
@@ -90,19 +90,19 @@ The NG-CHM can be exported as a stand-alone HTML file with the `chmExportToHTML(
 The first argument is the NG-CHM created above. The second argument is the desired filename.
 
 ```{r, results='hide', message=FALSE, warning=FALSE }
-chmExportToHTML(hm,'tcga-gbm.html')
+chmExportToHTML(hm,'tcga-brca.html')
 ```
 
-The file 'tcga-gbm.html' can be shared with collaborators and opened in a standard web browser.
+The file 'tcga-brca.html' can be shared with collaborators and opened in a standard web browser.
 
 Alternatively, .ngchm file can be created with the `chmExportToFile()` function.
 
 
 ```{r, eval=FALSE}
-chmExportToFile(hm,'tcga-gbm.ngchm')
+chmExportToFile(hm,'tcga-brca.ngchm')
 ```
 
-The file 'tcga-gbm.ngchm' can be opened in the [NG-CHM Viewer](https://www.ngchm.net/Downloads/ngChmApp.html). 
+The file 'tcga-brca.ngchm' can be opened in the [NG-CHM Viewer](https://www.ngchm.net/Downloads/ngChmApp.html). 
 **IMPORTANT: The filename must end with '.ngchm' to open in the NG-CHM Viewer**. 
 
 
@@ -112,7 +112,7 @@ The .html file can be embedded into RMarkdown via `htmltools::includeHTML()`:
 
 ```{r}
 library('htmltools')
-filePath = paste(getwd(),'/tcga-gbm.html',sep='')
+filePath = paste(getwd(),'/tcga-brca.html',sep='')
 htmltools::includeHTML(filePath)
 ```
 

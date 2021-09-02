@@ -25,7 +25,7 @@ an initial NGCHM of the [demo expression data](create-a-ng-chm.html#sample-ng-ch
 ```{r, results='hide', message=FALSE, warning=FALSE}
 library(NGCHMDemoData)
 library(NGCHM)
-hm <- chmNew('tcga-gbm', TCGA.GBM.ExpressionData)
+hm <- chmNew('tcga-brca', TCGA.BRCA.ExpressionData)
 ```
 
 A covariate bar can be created from the TP53 mutation vector using the `chmNewCovariate()` function.
@@ -33,7 +33,7 @@ The first argument is the desired name of the covariate bar, and the second is t
 of TP53 mutation demo data.
 
 ```{r, results='hide', message=FALSE, warning=FALSE}
-covariateBar <- chmNewCovariate('TP53 Mutation',TCGA.GBM.TP53MutationData)
+covariateBar <- chmNewCovariate('TP53 Mutation',TCGA.BRCA.TP53MutationData)
 ```
 
 This covariate bar is then added to the NG-CHM created above with `chmAddCovariateBar()`:
@@ -46,8 +46,8 @@ This NG-CHM can be exported to either a .ngchm or .html file.
 
 ```{r, results='hide', message=FALSE, warning=FALSE, eval=FALSE}
 library(NGCHMSupportFiles)
-chmExportToFile(hm,'tcga-gbm-covariates.ngchm')
-chmExportToHTML(hm,'tcga-gbm-covariates.html')
+chmExportToFile(hm,'tcga-brca-covariates.ngchm')
+chmExportToHTML(hm,'tcga-brca-covariates.html')
 ```
 
 ## Specify Covariate Bar Color Map
@@ -73,7 +73,7 @@ mutationColorMap <- chmNewColorMap(c("WT","MUT"),c("#6495ED","#f08080"))
 In the `chmNewCovariate()` function (also used above), an optional third argument is a color map:
 
 ```{r, results='hide', message=FALSE, warning=FALSE}
-covariateBar <- chmNewCovariate('TP53 Mutation (other colors)',TCGA.GBM.TP53MutationData,mutationColorMap)
+covariateBar <- chmNewCovariate('TP53 Mutation (other colors)',TCGA.BRCA.TP53MutationData,mutationColorMap)
 ```
 
 Finally, this covariate bar can be added to the NG-CHM created above,
@@ -87,8 +87,8 @@ can be exported to either a .ngchm or .html file.
 
 ```{r, results='hide', message=FALSE, warning=FALSE}
 library(NGCHMSupportFiles)
-chmExportToFile(hm,'tcga-gbm-covariates.ngchm')
-chmExportToHTML(hm,'tcga-gbm-covariates.html')
+chmExportToFile(hm,'tcga-brca-covariates.ngchm')
+chmExportToHTML(hm,'tcga-brca-covariates.html')
 ```
 
 
@@ -99,7 +99,7 @@ with the cornflowerblue and lightcoral color map:
 
 ```{r, echo = FALSE}
 library('htmltools')
-filePath = paste(getwd(),'/tcga-gbm-covariates.html',sep='')
+filePath = paste(getwd(),'/tcga-brca-covariates.html',sep='')
 htmltools::includeHTML(filePath)
 ```
 

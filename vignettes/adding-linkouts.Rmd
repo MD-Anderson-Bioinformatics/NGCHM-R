@@ -23,7 +23,7 @@ The needed packages are loaded and a basic NG-CHM is constructed from the sample
 ```{r, results='hide', message=FALSE, warning=FALSE}
 library(NGCHMDemoData)
 library(NGCHM)
-hm <- chmNew('tcga-gbm', TCGA.GBM.ExpressionData)
+hm <- chmNew('tcga-brca', TCGA.BRCA.ExpressionData)
 ```
 
 To add linkouts, the axis type is specified with `chmAddAxisType()`. For the demo data in this example, 
@@ -45,12 +45,12 @@ Here is the resulting NG-CHM:
 
 ```{r, echo=FALSE, results='hide', message=FALSE, warning=FALSE}
 library(NGCHMSupportFiles)
-chmExportToHTML(hm,'tcga-gbm-with-linkouts.html')
+chmExportToHTML(hm,'tcga-brca-with-linkouts.html')
 ```
 
 ```{r, warning=FALSE, message=FALSE, echo=FALSE}
 library('htmltools')
-filePath = paste(getwd(),'/tcga-gbm-with-linkouts.html',sep='')
+filePath = paste(getwd(),'/tcga-brca-with-linkouts.html',sep='')
 htmltools::includeHTML(filePath)
 ```
 
