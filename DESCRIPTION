@@ -15,6 +15,7 @@ Imports:
     digest,
     httr,
     jsonlite,
+    logger (>= 0.2.0),
     tsvio,
     NGCHMSupportFiles,
     NGCHMDemoData

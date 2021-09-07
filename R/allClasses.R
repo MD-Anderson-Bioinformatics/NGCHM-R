@@ -678,8 +678,68 @@ setClass ("ngchmVersion1",
 				height=as.integer(500)));
 setIs ("ngchmVersion1", "ngchm");
 
-setClass ("ngchmVersion2",
-          representation (name="character",
+#' Class representing ngchmVersion2 object
+#'
+#' @name ngchmVersion2-class
+#' @rdname ngchmVersion2-class
+#' @slot name The name under which the NGCHM will be saved to the NGCHM server.
+#' @slot version Integer version number (default: 2)
+#' @slot format (default: "original")
+#' @slot uuid character
+#' @slot baggage optCharacter
+#' @slot inpDir character
+#' @slot outDir character
+#' @slot saveDir (default: ".")
+#' @slot propFile (default: "chm.properties")
+#' @slot layers List of data layers  
+#' @slot colormaps Color map
+#' @slot rowMenu optList
+#' @slot colMenu optList
+#' @slot datasets optList
+#' @slot dialogs optList
+#' @slot tags optCharacter
+#' @slot elementMenu optList
+#' @slot rowTypeFunctions optList
+#' @slot colTypeFunctions optList
+#' @slot elementTypeFunctions optList
+#' @slot axisTypes optList
+#' @slot css optList
+#' @slot extrafiles optCharacter
+#' @slot extrascripts optCharacter
+#' @slot properties optList
+#' @slot overviews optList
+#' @slot javascript optList
+#' @slot rowOrder A vector, dendrogram, or function specifying the CHM row order
+#' @slot rowDist Distance method to use by default RowOrder. (default: "correlation", which is 1 minus the Pearson correlation among the rows.)
+#' @slot rowAgglom Agglomeration method to use by default RowOrder. Choices are those from stats::hclust. (default: "ward.D2")
+#' @slot colOrder A vector, dendrogram, or function specifying the CHM column order.
+#' @slot colDist Distance method to use by default ColOrder. (default: "correlation", which is 1 minus the Pearson correlation among the cols.)
+#' @slot colAgglom Agglomeration method to use by default ColOrder. Choices are those from stats::hclust. (default: "ward.D2")
+#' @slot rowOrderMethod character (default: "User")
+#' @slot colOrderMethod character (default: "User")
+#' @slot rowCutLocations Explicit list of row cut locations. If specified, rowTreeCuts is set to NULL.
+#' @slot rowTreeCuts Number of tree cuts for row. If specified, rowCutLocations is set to NULL.
+#' @slot rowCutWidth Width of row cuts (default: 5 rows)
+#' @slot rowTopItems optCharacter
+#' @slot rowDisplayLength optInteger
+#' @slot rowDisplayAbbreviation optCharacter
+#' @slot colCutLocations Explicit list of col cut locations. If specified, colTreeCuts is set to NULL. 
+#' @slot colTreeCuts Number of tree cuts for col. If specified, colCutLocations is set to NULL.
+#' @slot colCutWidth Width of col cuts (defautl: 5 columns)
+#' @slot colTopItems optCharacter
+#' @slot colDisplayLength optInteger
+#' @slot colDisplayAbbreviation optCharacter
+#' @slot rowMeta optList
+#' @slot colMeta optList
+#' @slot rowCovariateBars optList
+#' @slot colCovariateBars optList
+#' @slot relatedLinks optList
+#' @slot relatedGroups optList
+#' @slot templates optList
+#' @slot width default: 500
+#' @slot height default: 500
+setClass(Class = "ngchmVersion2",
+	slots = list(name="character",
 			  version="integer",
                           format="character",
 			  uuid="character",
@@ -722,44 +782,140 @@ setClass ("ngchmVersion2",
 			  templates="optList",
 			  width="integer",
 			  height="integer"),
-	  prototype = prototype(name=character(0),
-				version=as.integer(2),
-                                format="original",
-				uuid="",
-				baggage=NULL,
-	                        inpDir="",
-				outDir="",
-				saveDir=".",
-				propFile="chm.properties",
-				layers=c(),
-				colormaps=NULL,
-				rowOrder=NULL, rowDist="correlation", rowAgglom="ward.D2",
-				colOrder=NULL, colDist="correlation", colAgglom="ward.D2",
-                                rowOrderMethod="User", colOrderMethod="User",
-                                rowCutLocations=NULL, rowCutWidth=NULL, rowTreeCuts=NULL,
-                                rowTopItems=NULL, rowDisplayLength=NULL, rowDisplayAbbreviation=NULL,
-                                colCutLocations=NULL, colCutWidth=NULL, colTreeCuts=NULL,
-                                colTopItems=NULL, colDisplayLength=NULL, colDisplayAbbreviation=NULL,
-				rowMeta=NULL,
-				colMeta=NULL,
-				axisTypes=NULL,
-				datasets=NULL,
-				dialogs=NULL,
-				tags=c(),
-				css=c(),
-			        rowTypeFunctions=NULL,
-			        colTypeFunctions=NULL,
-			        elementTypeFunctions=NULL,
-				extrafiles=c(),
-				extrascripts=c(),
-				properties=c(),
-				overviews=NULL,
-				relatedLinks=NULL,
-				relatedGroups=NULL,
-				templates=NULL,
-				width=as.integer(500),
-				height=as.integer(500)));
+);
+
+
+setMethod("initialize", "ngchmVersion2",
+	function(.Object, name, version, format, baggage, inpDir, outDir, saveDir, propFile,
+		layers, colormaps, rowOrder, rowDist, rowAgglom, colOrder, colDist, colAgglom, rowOrderMethod, colOrderMethod, 
+		rowCutLocations, rowCutWidth, rowTopItems, rowDisplayLength, rowDisplayAbbreviation,
+		colCutLocations, colCutWidth, colTopItems, colDisplayLength, colDisplayAbbreviation,
+		rowMeta, colMeta, axisTypes, datasets, dialogs, tags, css,
+		rowTypeFunctions, colTypeFunctions, elementTypeFunctions, extrafiles,
+		extrascripts, properties, overviews, relatedLinks, relatedGroups,
+		templates, width, height) {
+			if (!missing(name)) { 
+				if (typeof(name) != "character") { stop (sprintf ("Parameter 'name' must have type 'character', not '%s'", typeof(name))); }
+				if (length(name) != 1) {stop (sprintf ("Parameter 'name' must have a single value, not %d", length(name)));}
+				if (nchar(name) == 0) { stop ("Parameter 'name' cannot be the empty string"); }
+				.Object@name <- name 
+			} else { 
+				.Object@name <- "ngchm" 
+			} 
+			if (missing(version)) { .Object@version <- as.integer(2) } else { .Object@version <- as.integer(version) }
+			.Object@uuid <- getuuid(.Object@name)
+			if (!missing(format)) { .Object@format <- format } else { .Object@format <- "original" }
+			if (!missing(baggage)) { .Object@baggage <- baggage } else { .Object@baggage <- NULL }
+			if (!missing(inpDir)) { .Object@inpDir <- inpDir } else { .Object@inpDir <- "" }
+			if (!missing(outDir)) { .Object@outDir <- outDir } else { .Object@outDir <- "" }
+			if (!missing(saveDir)) { .Object@saveDir <- saveDir } else { .Object@saveDir <- "." }
+			if (!missing(propFile)) { .Object@propFile <- propFile} else { .Object@propFile <- "chm.properties" }
+			if (!missing(layers)) { .Object@layers <- layers} else { .Object@layers <- c() }
+			if (!missing(colormaps)) { .Object@colormaps <- colormaps} else { .Object@colormaps <- NULL }
+			if (!missing(rowOrder)) { .Object@rowOrder <- rowOrder } else { .Object@rowOrder <- NULL }
+			if (!missing(rowDist)) { .Object@rowDist <- rowDist } else { .Object@rowDist <- "correlation" }
+			if (!missing(rowAgglom)) { .Object@rowAgglom <- rowAgglom } else { .Object@rowAgglom <- "ward.D2" }
+			if (!missing(colOrder)) { .Object@colOrder <- colOrder } else { .Object@colOrder <- NULL }
+			if (!missing(colDist)) { .Object@colDist <- colDist } else { .Object@colDist <- "correlation" }
+			if (!missing(colAgglom)) { .Object@colAgglom <- colAgglom } else { .Object@colAgglom <- "ward.D2" }
+			if (!missing(rowOrderMethod)) { .Object@rowOrderMethod <- rowOrderMethod } else { .Object@rowOrderMethod <- "User" }
+			if (!missing(colOrderMethod)) { .Object@colOrderMethod <- colOrderMethod } else { .Object@colOrderMethod <- "User" }
+			if (!missing(rowCutLocations) & !is.null(rowCutLocations)) { 
+				if (class(rowCutLocations) == "treeCuts") {
+					.Object@rowTreeCuts <- rowCutLocations@numberOfCuts
+					.Object@rowCutLocations <- NULL
+				} else {
+					verifyNumeric(rowCutLocations); 
+					.Object@rowCutLocations <- castListAsInteger(rowCutLocations) 
+					.Object@rowTreeCuts <- NULL
+				}
+			} else { 
+				.Object@rowCutLocations <- NULL 
+				.Object@rowTreeCuts <- NULL
+			}
+			if (!missing(rowCutWidth) & !is.null(rowCutWidth)) { 
+				verifyNumeric(rowCutWidth); 
+				.Object@rowCutWidth <- castAsInteger(rowCutWidth) 
+			} else { 
+				.Object@rowCutWidth <- 5 
+			}
+			if (!missing(rowTopItems)) { .Object@rowTopItems <- rowTopItems } else { .Object@rowTopItems <- NULL }
+			if (!missing(rowDisplayLength)) { .Object@rowDisplayLength <- rowDisplayLength } else { .Object@rowDisplayLength <- NULL }
+			if (!missing(rowDisplayAbbreviation)) { .Object@rowDisplayAbbreviation <- rowDisplayAbbreviation } else { .Object@rowDisplayAbbreviation<- NULL }
+			if (!missing(colCutLocations) & !is.null(colCutLocations)) { 
+				if (class(colCutLocations) == "treeCuts") {
+					.Object@colTreeCuts <- colCutLocations@numberOfCuts
+					.Object@colCutLocations <- NULL
+				} else {
+					verifyNumeric(colCutLocations); 
+					.Object@colCutLocations <- castListAsInteger(colCutLocations) 
+					.Object@colTreeCuts <- NULL
+				}
+			} else { 
+				.Object@colCutLocations <- NULL 
+				.Object@colTreeCuts <- NULL
+			}
+			if (!missing(colCutWidth) & !is.null(colCutWidth)) { 
+				verifyNumeric(colCutWidth)
+				.Object@colCutWidth <- castAsInteger(colCutWidth) 
+			} else { 
+				.Object@colCutWidth <- 5 
+			}
+			if (!missing(colTopItems)) { .Object@colTopItems <- colTopItems } else { .Object@colTopItems <- NULL }
+			if (!missing(colDisplayLength)) { .Object@colDisplayLength <- colDisplayLength } else { .Object@colDisplayLength <- NULL }
+			if (!missing(colDisplayAbbreviation)) { .Object@colDisplayAbbreviation <- colDisplayAbbreviation } else { .Object@colDisplayAbbreviation<- NULL }
+			if (!missing(rowMeta)) { .Object@rowMeta <- rowMeta } else { .Object@rowMeta <- NULL }
+			if (!missing(colMeta)) { .Object@colMeta <- colMeta } else { .Object@colMeta <- NULL }
+			if (!missing(axisTypes)) { .Object@axisType <- axisTypes } else { .Object@axisTypes <- NULL }
+			if (!missing(datasets)) { .Object@datasets <- datasets } else { .Object@datasets <- NULL }
+			if (!missing(dialogs)) { .Object@dialogs <- dialogs } else { .Object@dialogs <- NULL }
+			if (!missing(tags)) { .Object@tags <- tags } else { .Object@tags <- c() }
+			if (!missing(css)) { .Object@css <- css } else { .Object@css <- c() }
+			if (!missing(rowTypeFunctions)) { .Object@rowTypeFunctions <- rowTypFunctions } else { .Object@rowTypeFunctions <- NULL }
+			if (!missing(colTypeFunctions)) { .Object@colTypeFunctions <- colTypFunctions } else { .Object@colTypeFunctions <- NULL }
+			if (!missing(elementTypeFunctions)) { .Object@elementTypeFunctions <- elementTypFunctions } else { .Object@elementTypeFunctions <- NULL }
+			if (!missing(extrafiles)) { .Object@extrafiles <- extrafiles } else { .Object@extrafiles <- c() }
+			if (!missing(extrascripts)) { .Object@extrascripts <- extrascripts } else { .Object@extrascripts <- c() }
+			if (!missing(properties)) { .Object@properties <- properties } else { .Object@properties <- c() }
+			if (!missing(overviews)) { .Object@overviews <- overviews } else { .Object@overviews <- NULL }
+			if (!missing(relatedLinks)) { .Object@relatedLinks <- relatedLinks } else { .Object@relatedLinks <- NULL }
+			if (!missing(relatedGroups)) { .Object@relatedGroups <- relatedGroups } else { .Object@relatedGroups <- NULL }
+			if (!missing(templates)) { .Object@templates <- templates } else { .Object@templates <- NULL }
+			if (!missing(width)) { 
+				verifyNumeric(width)
+				.Object@width <- castAsInteger(width)
+			} else { 
+				.Object@width <- as.integer(500)
+			}
+			if (!missing(height)) { 
+				verifyNumeric(height)
+				.Object@height <- castAsInteger(height)
+			} else { 
+				.Object@height <- as.integer(500)
+			}
+			return(.Object)
+		}
+)
 setIs ("ngchmVersion2", "ngchm");
+
+#' Helper class for setting row/col gap locations as tree cuts
+#'
+#' This class is to facilitate specification of row/col gaps in [chmNew()].
+#' Note: user-facing function use the term 'gap', while internal functions that
+#' interact with java programs in the NGCHM viewer project use the term 'cut'.
+#'
+#' @name treeCuts-class
+#' @rdname treeCuts-class
+#' @slot numberOfCuts Integer number of cuts
+#' @seealso [chmNew()]
+#' @seealso [chmTreeGaps()]
+setClass(Class = "treeCuts", slots = list(numberOfCuts = "optInteger"))
+setMethod("initialize", "treeCuts",
+	function(.Object, numberOfCuts) {
+		.Object@numberOfCuts = as.integer(numberOfCuts)
+		return(.Object)
+	}
+)
 
 setMethod ('show',
            signature = c('ngchm'),

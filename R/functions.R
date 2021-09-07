@@ -2,6 +2,41 @@
 #' @import utils
 NULL
 
+#' Function to initialize logging
+#'
+#' @param log_level One of 'TRACE', 'DEBUG', 'INFO', 'SUCCESS'
+#' @param log_file Desired path/name of log file
+#' @export
+#' @importFrom logger log_threshold
+#' @importFrom logger log_layout
+#' @importFrom logger log_debug
+#' @importFrom logger log_error
+#' @importFrom logger log_appender
+#' @importFrom logger appender_file
+#' @importFrom logger appender_console
+#' @importFrom logger layout_glue_generator
+#' @importFrom logger layout_glue
+initLogging <- function(log_level,log_file=NULL) {
+	log_threshold(log_level)
+	if (!is.null(log_file)) {
+		log_appender(appender_file(log_file))
+		log_layout(layout_glue_generator(format = paste(
+			'{level}',
+			'[{format(time, "%Y-%m-%d %H:%M:%S")}]',
+			'{fn}',
+			'{msg}')))
+		log_info('Writing log to file: ',log_file)
+	} else { 
+		log_appender(appender_console)
+		log_layout(layout_glue_generator(format = paste(
+			'{crayon::bold(colorize_by_log_level(level, levelr))}',
+			'[{crayon::italic(format(time, "%Y-%m-%d %H:%M:%S"))}]',
+			'{crayon::blue(fn)}',
+			'{grayscale_by_log_level(msg, levelr)}')))
+	}
+	log_debug('Set log level to ',log_level)
+}
+
 systemCheck <- function (command, ...) {
     # Execute the specified command and halt execution with an error
     # message if it fails.
@@ -127,7 +162,13 @@ ngchmGetEnv <- function () {
 #' @param rowCovariates Covariate(Bar)(s) to add to the rows (default: None).
 #' @param colCovariates Covariate(Bar)(s) to add to the columns (default: None).
 #' @param format The format of NGCHM to produce (default: 'original').
+#' @param rowGapLocations Locations for row gaps. Specify as a list of integers or [chmTreeGaps()] function.
+#' @param colGapLocations Locations for col gaps. Specify as a list of integers or [chmTreeGaps()] function.
+#' @param rowGapWidth Width of row gaps (default: 5 rows)
+#' @param colGapWidth Width of col gaps (default: 5 cols)
 #' @param overview The format(s) of overview image(s) to create (default: None).
+#' @importFrom logger log_debug
+#' @importFrom logger log_error
 #'
 #' @return An object of class ngchm
 #'
@@ -135,6 +176,9 @@ ngchmGetEnv <- function () {
 #'
 #' @examples
 #' mychm <- chmNew ("test_chm")
+#' mychm <- chmNew("test_chm", rowGapLocations=c(3,5))
+#' mychm <- chmNew("test_chm", rowGapLocations=chmTreeGaps(4))
+#' mychm <- chmNew("test_chm", rowGapWidth=3)
 #'
 #' @seealso [ngchm-class]
 #' @seealso [ngchmServer-class]
@@ -154,16 +198,14 @@ chmNew <- function (name, ...,
                     rowAxisType=NULL, colAxisType=NULL,
 		    rowCovariates=NULL, colCovariates=NULL,
                     format="original",
-		    overview=c()) {
-    if (typeof (name) != "character") {
-        stop (sprintf ("Parameter 'name' must have type 'character', not '%s'", typeof(name)));
-    }
-    if (length (name) != 1) {
-        stop (sprintf ("Parameter 'name' must have a single value, not %d", length(name)));
-    }
-    if (nchar (name) == 0) {
-        stop ("Parameter 'name' cannot be the empty string");
-    }
+		rowGapLocations=NULL,
+		rowGapWidth=5,
+		colGapLocations=NULL,
+		colGapWidth=5,
+		    overview=c(),
+		logLevel='INFO', logFile=NULL) {
+	initLogging(logLevel, logFile)
+
     chm <- new (Class="ngchmVersion2",
                 name=name,
                 format=format,
@@ -174,12 +216,17 @@ chmNew <- function (name, ...,
                 colDist=colDist,
                 colAgglom=colAgglom,
                 rowOrderMethod="",
-                colOrderMethod=""
-                );
+                colOrderMethod="",
+		rowCutLocations=rowGapLocations,
+		rowCutWidth=rowGapWidth,
+		colCutLocations=colGapLocations,
+		colCutWidth=colGapWidth
+	);
     chmRowOrder(chm) <- rowOrder;
     chmColOrder(chm) <- colOrder;
     chm@uuid <- getuuid (name);
     chm <- chmAddCSS (chm, 'div.overlay { border: 2px solid yellow; }');
+
     chm <- chmAddList (chm, list(...));
     if (!is.null(rowAxisType)) chm <- chmAddAxisType (chm, 'row', rowAxisType);
     if (!is.null(colAxisType)) chm <- chmAddAxisType (chm, 'column', colAxisType);
@@ -3782,3 +3829,65 @@ chmAddReducedDim <- function (hm, axis, sce, dimName, maxDim, basename, dimAxis)
     return (hm);
 };
 
+#' Helper function to cast variables as integers.
+#'
+#' If variable value is far from integer, print error message and stop.
+#'
+#' @param variableToCast Variable to cast as integer
+#' @return integer value of variableToCast
+castAsInteger <- function(variableToCast) {
+	roundTolerance = 0.01
+	if (abs(round(variableToCast) - variableToCast) > roundTolerance) {
+		log_error("Variable '",deparse(substitute(variableToCast)),"' must be integer")
+		stop("Variable '",deparse(substitute(variableToCast)),"' must be integer")
+	} else {
+		return (as.integer(round(variableToCast)))
+	}
+}
+
+#' Helper function to cast list as integer
+#'
+#' If variable value is far from integer, print error message and stop.
+#'
+#' @param listToCast List to cast as integer
+#' @return list with members cast to integers
+castListAsInteger <- function(listToCast) {
+	roundTolerance = 0.01
+	lapply(listToCast, function(elem) {
+		if ((abs(round(elem) - elem)) > roundTolerance) {
+			log_error("Entries of '",deparse(substitute(listToCast)),"' must be integer")
+			stop("Entries of '",deparse(substitute(listToCast)),"' must be integer")
+		}
+	}) 
+	return (as.integer(round(listToCast)))
+}
+
+#' Helper function to verify if variable is numeric.
+#'
+#' If not numeric, print error message and stop.
+#'
+#' @param listToCast List to cast as integer
+#' @return list with members cast to integers
+verifyNumeric <- function(variableToCheck) {
+	if (!is.numeric(variableToCheck)) {
+		log_error("Variable '",deparse(substitute(variableToCheck)),"' must be numeric.")
+		stop("Variable '",deparse(substitute(variableToCheck)),"' must be numeric.")
+	} else {
+		return (TRUE)
+	}
+}
+
+#' Creates new treeCuts object
+#'
+#' This function was designed to facilitate setting rowGapLocations and colGapLocations in the
+#' [chmNew()] function. See examples section.
+#'
+#' @param numberOfCuts Number of tree cuts
+#' @return [treeCuts-class] object with specified number of tree cuts
+#' @export
+#'
+#' @examples 
+#' mychm <- chmNew("test_chm", rowGapLocations=chmTreeGaps(5))
+chmTreeGaps <- function(numberOfCuts) {
+	return (new (Class="treeCuts", numberOfCuts=as.integer(numberOfCuts)))
+}

@@ -18,7 +18,13 @@ chmNew(
   rowCovariates = NULL,
   colCovariates = NULL,
   format = "original",
-  overview = c()
+  rowGapLocations = NULL,
+  rowGapWidth = 5,
+  colGapLocations = NULL,
+  colGapWidth = 5,
+  overview = c(),
+  logLevel = "INFO",
+  logFile = NULL
 )
 }
 \arguments{
@@ -48,6 +54,14 @@ chmNew(
 
 \item{format}{The format of NGCHM to produce (default: 'original').}
 
+\item{rowGapLocations}{Locations for row gaps. Specify as a list of integers or \code{\link[=chmTreeGaps]{chmTreeGaps()}} function.}
+
+\item{rowGapWidth}{Width of row gaps (default: 5 rows)}
+
+\item{colGapLocations}{Locations for col gaps. Specify as a list of integers or \code{\link[=chmTreeGaps]{chmTreeGaps()}} function.}
+
+\item{colGapWidth}{Width of col gaps (default: 5 cols)}
+
 \item{overview}{The format(s) of overview image(s) to create (default: None).}
 }
 \value{
@@ -60,6 +74,9 @@ The bare NGCHM needs at least one data layer added to it before it can be compil
 }
 \examples{
 mychm <- chmNew ("test_chm")
+mychm <- chmNew("test_chm", rowGapLocations=c(3,5))
+mychm <- chmNew("test_chm", rowGapLocations=chmTreeGaps(4))
+mychm <- chmNew("test_chm", rowGapWidth=3)
 
 }
 \seealso{
