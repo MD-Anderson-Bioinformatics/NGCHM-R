@@ -1,5 +1,6 @@
 ---
 output: github_document
+title: "NGCHM R package"
 ---
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
@@ -32,11 +33,12 @@ Click [Start Here!](articles/create-a-ng-chm.html) in the main menu to learn how
 library(NGCHMDemoData)
 library(NGCHMSupportFiles)
 library(NGCHM)
-colorMap1 <- chmNewColorMap(c(-2,0,2), c('mediumblue','snow','firebrick'))
-dataLayer1 <- chmNewDataLayer('Color Map 1', TCGA.BRCA.ExpressionData, colorMap1)
-colorMap2 <- chmNewColorMap(c(-2,0,2), c('#9933ff','#f0f0f0','#228B22'))
-dataLayer2 <- chmNewDataLayer('Color Map 2', TCGA.BRCA.ExpressionData, colorMap2)
-hm <- chmNew('NGCHM-R', dataLayer1, dataLayer2)
+unadjustedColorMap <- chmNewColorMap(c(6.4,10,14), c('mediumblue','snow','firebrick'))
+rowCenteredColorMap <- chmNewColorMap(c(-2,0,2), c('#9933ff','#f0f0f0','#228B22'))
+unadjustedLayer <- chmNewDataLayer('Unadjusted', TCGA.BRCA.ExpressionData, unadjustedColorMap)
+rowCenteredData <- t(scale(t(TCGA.BRCA.ExpressionData)))
+rowCenteredLayer <- chmNewDataLayer('Row-Centered', rowCenteredData, rowCenteredColorMap)
+hm <- chmNew('TCGA BRCA Expression', unadjustedLayer, rowCenteredLayer)
 covariateBar <- chmNewCovariate('TP53 Mutation',TCGA.BRCA.TP53MutationData)
 hm <- chmAddCovariateBar(hm, 'column', covariateBar)
 hm <- chmAddAxisType(hm, 'row', 'bio.gene.hugo')
