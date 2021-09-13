@@ -1,621 +1,645 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-    <loc>https://md-anderson-bioinformatics.github.io/NGCHM-R//index.html</loc>
+    <loc>https://marohrdanz.github.io/NGCHM-R//index.html</loc>
   </url>
   <url>
-    <loc>https://md-anderson-bioinformatics.github.io/NGCHM-R//reference/NGCHM-functions.html</loc>
+    <loc>https://marohrdanz.github.io/NGCHM-R//reference/NGCHM-functions.html</loc>
   </url>
   <url>
-    <loc>https://md-anderson-bioinformatics.github.io/NGCHM-R//reference/NGCHM-initialization.html</loc>
+    <loc>https://marohrdanz.github.io/NGCHM-R//reference/NGCHM-initialization.html</loc>
   </url>
   <url>
-    <loc>https://md-anderson-bioinformatics.github.io/NGCHM-R//reference/NGCHM-package.html</loc>
+    <loc>https://marohrdanz.github.io/NGCHM-R//reference/NGCHM-package.html</loc>
   </url>
   <url>
-    <loc>https://md-anderson-bioinformatics.github.io/NGCHM-R//reference/TCGA.GBM.EXPR.html</loc>
+    <loc>https://marohrdanz.github.io/NGCHM-R//reference/TCGA.GBM.EXPR.html</loc>
   </url>
   <url>
-    <loc>https://md-anderson-bioinformatics.github.io/NGCHM-R//reference/cash-.shaidyRepo.html</loc>
+    <loc>https://marohrdanz.github.io/NGCHM-R//reference/cash-.shaidyRepo.html</loc>
   </url>
   <url>
-    <loc>https://md-anderson-bioinformatics.github.io/NGCHM-R//reference/chmAdd-method.html</loc>
+    <loc>https://marohrdanz.github.io/NGCHM-R//reference/castAsInteger.html</loc>
   </url>
   <url>
-    <loc>https://md-anderson-bioinformatics.github.io/NGCHM-R//reference/chmAddAxisType-method.html</loc>
+    <loc>https://marohrdanz.github.io/NGCHM-R//reference/castListAsInteger.html</loc>
   </url>
   <url>
-    <loc>https://md-anderson-bioinformatics.github.io/NGCHM-R//reference/chmAddCSS-method.html</loc>
+    <loc>https://marohrdanz.github.io/NGCHM-R//reference/chmAdd-method.html</loc>
   </url>
   <url>
-    <loc>https://md-anderson-bioinformatics.github.io/NGCHM-R//reference/chmAddColormap-method.html</loc>
+    <loc>https://marohrdanz.github.io/NGCHM-R//reference/chmAddAxisType-method.html</loc>
   </url>
   <url>
-    <loc>https://md-anderson-bioinformatics.github.io/NGCHM-R//reference/chmAddCovariate-method.html</loc>
+    <loc>https://marohrdanz.github.io/NGCHM-R//reference/chmAddCSS-method.html</loc>
   </url>
   <url>
-    <loc>https://md-anderson-bioinformatics.github.io/NGCHM-R//reference/chmAddCovariateBar-method.html</loc>
+    <loc>https://marohrdanz.github.io/NGCHM-R//reference/chmAddColormap-method.html</loc>
   </url>
   <url>
-    <loc>https://md-anderson-bioinformatics.github.io/NGCHM-R//reference/chmAddDataset-method.html</loc>
+    <loc>https://marohrdanz.github.io/NGCHM-R//reference/chmAddCovariate-method.html</loc>
   </url>
   <url>
-    <loc>https://md-anderson-bioinformatics.github.io/NGCHM-R//reference/chmAddDialog-method.html</loc>
+    <loc>https://marohrdanz.github.io/NGCHM-R//reference/chmAddCovariateBar-method.html</loc>
   </url>
   <url>
-    <loc>https://md-anderson-bioinformatics.github.io/NGCHM-R//reference/chmAddLayer-method.html</loc>
+    <loc>https://marohrdanz.github.io/NGCHM-R//reference/chmAddDataset-method.html</loc>
   </url>
   <url>
-    <loc>https://md-anderson-bioinformatics.github.io/NGCHM-R//reference/chmAddMenuItem-method.html</loc>
+    <loc>https://marohrdanz.github.io/NGCHM-R//reference/chmAddDialog-method.html</loc>
   </url>
   <url>
-    <loc>https://md-anderson-bioinformatics.github.io/NGCHM-R//reference/chmAddMetaData-method.html</loc>
+    <loc>https://marohrdanz.github.io/NGCHM-R//reference/chmAddLayer-method.html</loc>
   </url>
   <url>
-    <loc>https://md-anderson-bioinformatics.github.io/NGCHM-R//reference/chmAddOverview-method.html</loc>
+    <loc>https://marohrdanz.github.io/NGCHM-R//reference/chmAddMenuItem-method.html</loc>
   </url>
   <url>
-    <loc>https://md-anderson-bioinformatics.github.io/NGCHM-R//reference/chmAddPCA.html</loc>
+    <loc>https://marohrdanz.github.io/NGCHM-R//reference/chmAddMetaData-method.html</loc>
   </url>
   <url>
-    <loc>https://md-anderson-bioinformatics.github.io/NGCHM-R//reference/chmAddProperty-method.html</loc>
+    <loc>https://marohrdanz.github.io/NGCHM-R//reference/chmAddOverview-method.html</loc>
   </url>
   <url>
-    <loc>https://md-anderson-bioinformatics.github.io/NGCHM-R//reference/chmAddReducedDim.html</loc>
+    <loc>https://marohrdanz.github.io/NGCHM-R//reference/chmAddPCA.html</loc>
   </url>
   <url>
-    <loc>https://md-anderson-bioinformatics.github.io/NGCHM-R//reference/chmAddRelated-method.html</loc>
+    <loc>https://marohrdanz.github.io/NGCHM-R//reference/chmAddProperty-method.html</loc>
   </url>
   <url>
-    <loc>https://md-anderson-bioinformatics.github.io/NGCHM-R//reference/chmAddRelatedGroup-method.html</loc>
+    <loc>https://marohrdanz.github.io/NGCHM-R//reference/chmAddReducedDim.html</loc>
   </url>
   <url>
-    <loc>https://md-anderson-bioinformatics.github.io/NGCHM-R//reference/chmAddSpecificAxisTypeFunction-method.html</loc>
+    <loc>https://marohrdanz.github.io/NGCHM-R//reference/chmAddRelated-method.html</loc>
   </url>
   <url>
-    <loc>https://md-anderson-bioinformatics.github.io/NGCHM-R//reference/chmAddTSNE.html</loc>
+    <loc>https://marohrdanz.github.io/NGCHM-R//reference/chmAddRelatedGroup-method.html</loc>
   </url>
   <url>
-    <loc>https://md-anderson-bioinformatics.github.io/NGCHM-R//reference/chmAddTag-method.html</loc>
+    <loc>https://marohrdanz.github.io/NGCHM-R//reference/chmAddSpecificAxisTypeFunction-method.html</loc>
   </url>
   <url>
-    <loc>https://md-anderson-bioinformatics.github.io/NGCHM-R//reference/chmAddTemplate-method.html</loc>
+    <loc>https://marohrdanz.github.io/NGCHM-R//reference/chmAddTSNE.html</loc>
   </url>
   <url>
-    <loc>https://md-anderson-bioinformatics.github.io/NGCHM-R//reference/chmAddToolboxR-method.html</loc>
+    <loc>https://marohrdanz.github.io/NGCHM-R//reference/chmAddTag-method.html</loc>
   </url>
   <url>
-    <loc>https://md-anderson-bioinformatics.github.io/NGCHM-R//reference/chmAddToolboxR2-method.html</loc>
+    <loc>https://marohrdanz.github.io/NGCHM-R//reference/chmAddTemplate-method.html</loc>
   </url>
   <url>
-    <loc>https://md-anderson-bioinformatics.github.io/NGCHM-R//reference/chmAddToolboxRC-method.html</loc>
+    <loc>https://marohrdanz.github.io/NGCHM-R//reference/chmAddToolboxR-method.html</loc>
   </url>
   <url>
-    <loc>https://md-anderson-bioinformatics.github.io/NGCHM-R//reference/chmAddUMAP.html</loc>
+    <loc>https://marohrdanz.github.io/NGCHM-R//reference/chmAddToolboxR2-method.html</loc>
   </url>
   <url>
-    <loc>https://md-anderson-bioinformatics.github.io/NGCHM-R//reference/chmAddUWOT.html</loc>
+    <loc>https://marohrdanz.github.io/NGCHM-R//reference/chmAddToolboxRC-method.html</loc>
   </url>
   <url>
-    <loc>https://md-anderson-bioinformatics.github.io/NGCHM-R//reference/chmAxis.html</loc>
+    <loc>https://marohrdanz.github.io/NGCHM-R//reference/chmAddUMAP.html</loc>
   </url>
   <url>
-    <loc>https://md-anderson-bioinformatics.github.io/NGCHM-R//reference/chmAxisType.html</loc>
+    <loc>https://marohrdanz.github.io/NGCHM-R//reference/chmAddUWOT.html</loc>
   </url>
   <url>
-    <loc>https://md-anderson-bioinformatics.github.io/NGCHM-R//reference/chmBindFunction-method.html</loc>
+    <loc>https://marohrdanz.github.io/NGCHM-R//reference/chmAxis.html</loc>
   </url>
   <url>
-    <loc>https://md-anderson-bioinformatics.github.io/NGCHM-R//reference/chmBrowse.html</loc>
+    <loc>https://marohrdanz.github.io/NGCHM-R//reference/chmAxisType.html</loc>
   </url>
   <url>
-    <loc>https://md-anderson-bioinformatics.github.io/NGCHM-R//reference/chmColOrder-method.html</loc>
+    <loc>https://marohrdanz.github.io/NGCHM-R//reference/chmBindFunction-method.html</loc>
   </url>
   <url>
-    <loc>https://md-anderson-bioinformatics.github.io/NGCHM-R//reference/chmColorMap-set.html</loc>
+    <loc>https://marohrdanz.github.io/NGCHM-R//reference/chmBrowse.html</loc>
   </url>
   <url>
-    <loc>https://md-anderson-bioinformatics.github.io/NGCHM-R//reference/chmColorMap.html</loc>
+    <loc>https://marohrdanz.github.io/NGCHM-R//reference/chmColOrder-method.html</loc>
   </url>
   <url>
-    <loc>https://md-anderson-bioinformatics.github.io/NGCHM-R//reference/chmColors-set.html</loc>
+    <loc>https://marohrdanz.github.io/NGCHM-R//reference/chmColorMap-set.html</loc>
   </url>
   <url>
-    <loc>https://md-anderson-bioinformatics.github.io/NGCHM-R//reference/chmColors.html</loc>
+    <loc>https://marohrdanz.github.io/NGCHM-R//reference/chmColorMap.html</loc>
   </url>
   <url>
-    <loc>https://md-anderson-bioinformatics.github.io/NGCHM-R//reference/chmCovariate.html</loc>
+    <loc>https://marohrdanz.github.io/NGCHM-R//reference/chmColors-set.html</loc>
   </url>
   <url>
-    <loc>https://md-anderson-bioinformatics.github.io/NGCHM-R//reference/chmCovariateBar.html</loc>
+    <loc>https://marohrdanz.github.io/NGCHM-R//reference/chmColors.html</loc>
   </url>
   <url>
-    <loc>https://md-anderson-bioinformatics.github.io/NGCHM-R//reference/chmCreateCollection.html</loc>
+    <loc>https://marohrdanz.github.io/NGCHM-R//reference/chmCovariate.html</loc>
   </url>
   <url>
-    <loc>https://md-anderson-bioinformatics.github.io/NGCHM-R//reference/chmCreateManagedServer.html</loc>
+    <loc>https://marohrdanz.github.io/NGCHM-R//reference/chmCovariateBar.html</loc>
   </url>
   <url>
-    <loc>https://md-anderson-bioinformatics.github.io/NGCHM-R//reference/chmCreateServer.html</loc>
+    <loc>https://marohrdanz.github.io/NGCHM-R//reference/chmCreateCollection.html</loc>
   </url>
   <url>
-    <loc>https://md-anderson-bioinformatics.github.io/NGCHM-R//reference/chmCurrentCollection.html</loc>
+    <loc>https://marohrdanz.github.io/NGCHM-R//reference/chmCreateManagedServer.html</loc>
   </url>
   <url>
-    <loc>https://md-anderson-bioinformatics.github.io/NGCHM-R//reference/chmCurrentServer.html</loc>
+    <loc>https://marohrdanz.github.io/NGCHM-R//reference/chmCreateServer.html</loc>
   </url>
   <url>
-    <loc>https://md-anderson-bioinformatics.github.io/NGCHM-R//reference/chmDefaultColOrder.html</loc>
+    <loc>https://marohrdanz.github.io/NGCHM-R//reference/chmCurrentCollection.html</loc>
   </url>
   <url>
-    <loc>https://md-anderson-bioinformatics.github.io/NGCHM-R//reference/chmDefaultRowOrder.html</loc>
+    <loc>https://marohrdanz.github.io/NGCHM-R//reference/chmCurrentServer.html</loc>
   </url>
   <url>
-    <loc>https://md-anderson-bioinformatics.github.io/NGCHM-R//reference/chmDeployServer-method.html</loc>
+    <loc>https://marohrdanz.github.io/NGCHM-R//reference/chmDefaultColOrder.html</loc>
   </url>
   <url>
-    <loc>https://md-anderson-bioinformatics.github.io/NGCHM-R//reference/chmExportToFile-method.html</loc>
+    <loc>https://marohrdanz.github.io/NGCHM-R//reference/chmDefaultRowOrder.html</loc>
   </url>
   <url>
-    <loc>https://md-anderson-bioinformatics.github.io/NGCHM-R//reference/chmExportToPDF-method.html</loc>
+    <loc>https://marohrdanz.github.io/NGCHM-R//reference/chmDeployServer-method.html</loc>
   </url>
   <url>
-    <loc>https://md-anderson-bioinformatics.github.io/NGCHM-R//reference/chmFieldAccessFunction.html</loc>
+    <loc>https://marohrdanz.github.io/NGCHM-R//reference/chmExportToFile-method.html</loc>
   </url>
   <url>
-    <loc>https://md-anderson-bioinformatics.github.io/NGCHM-R//reference/chmGetDataset-method.html</loc>
+    <loc>https://marohrdanz.github.io/NGCHM-R//reference/chmExportToHTML-method.html</loc>
   </url>
   <url>
-    <loc>https://md-anderson-bioinformatics.github.io/NGCHM-R//reference/chmGetDeployServerConfig.html</loc>
+    <loc>https://marohrdanz.github.io/NGCHM-R//reference/chmExportToPDF-method.html</loc>
   </url>
   <url>
-    <loc>https://md-anderson-bioinformatics.github.io/NGCHM-R//reference/chmGetFunction.html</loc>
+    <loc>https://marohrdanz.github.io/NGCHM-R//reference/chmFieldAccessFunction.html</loc>
   </url>
   <url>
-    <loc>https://md-anderson-bioinformatics.github.io/NGCHM-R//reference/chmGetOverview.html</loc>
+    <loc>https://marohrdanz.github.io/NGCHM-R//reference/chmGetDataset-method.html</loc>
   </url>
   <url>
-    <loc>https://md-anderson-bioinformatics.github.io/NGCHM-R//reference/chmGetProperty-method.html</loc>
+    <loc>https://marohrdanz.github.io/NGCHM-R//reference/chmGetDeployServerConfig.html</loc>
   </url>
   <url>
-    <loc>https://md-anderson-bioinformatics.github.io/NGCHM-R//reference/chmGetTypeInfo.html</loc>
+    <loc>https://marohrdanz.github.io/NGCHM-R//reference/chmGetFunction.html</loc>
   </url>
   <url>
-    <loc>https://md-anderson-bioinformatics.github.io/NGCHM-R//reference/chmGetURL-method.html</loc>
+    <loc>https://marohrdanz.github.io/NGCHM-R//reference/chmGetOverview.html</loc>
   </url>
   <url>
-    <loc>https://md-anderson-bioinformatics.github.io/NGCHM-R//reference/chmHasProperty-method.html</loc>
+    <loc>https://marohrdanz.github.io/NGCHM-R//reference/chmGetProperty-method.html</loc>
   </url>
   <url>
-    <loc>https://md-anderson-bioinformatics.github.io/NGCHM-R//reference/chmInstall-method.html</loc>
+    <loc>https://marohrdanz.github.io/NGCHM-R//reference/chmGetTypeInfo.html</loc>
   </url>
   <url>
-    <loc>https://md-anderson-bioinformatics.github.io/NGCHM-R//reference/chmLabel-set.html</loc>
+    <loc>https://marohrdanz.github.io/NGCHM-R//reference/chmGetURL-method.html</loc>
   </url>
   <url>
-    <loc>https://md-anderson-bioinformatics.github.io/NGCHM-R//reference/chmLabel.html</loc>
+    <loc>https://marohrdanz.github.io/NGCHM-R//reference/chmHasProperty-method.html</loc>
   </url>
   <url>
-    <loc>https://md-anderson-bioinformatics.github.io/NGCHM-R//reference/chmLayer.html</loc>
+    <loc>https://marohrdanz.github.io/NGCHM-R//reference/chmInstall-method.html</loc>
   </url>
   <url>
-    <loc>https://md-anderson-bioinformatics.github.io/NGCHM-R//reference/chmListFunctions.html</loc>
+    <loc>https://marohrdanz.github.io/NGCHM-R//reference/chmLabel-set.html</loc>
   </url>
   <url>
-    <loc>https://md-anderson-bioinformatics.github.io/NGCHM-R//reference/chmListServers.html</loc>
+    <loc>https://marohrdanz.github.io/NGCHM-R//reference/chmLabel.html</loc>
   </url>
   <url>
-    <loc>https://md-anderson-bioinformatics.github.io/NGCHM-R//reference/chmListTypes.html</loc>
+    <loc>https://marohrdanz.github.io/NGCHM-R//reference/chmLayer.html</loc>
   </url>
   <url>
-    <loc>https://md-anderson-bioinformatics.github.io/NGCHM-R//reference/chmLoadCHM-method.html</loc>
+    <loc>https://marohrdanz.github.io/NGCHM-R//reference/chmListFunctions.html</loc>
   </url>
   <url>
-    <loc>https://md-anderson-bioinformatics.github.io/NGCHM-R//reference/chmLoadShaidyCHM.html</loc>
+    <loc>https://marohrdanz.github.io/NGCHM-R//reference/chmListServers.html</loc>
   </url>
   <url>
-    <loc>https://md-anderson-bioinformatics.github.io/NGCHM-R//reference/chmMake-method.html</loc>
+    <loc>https://marohrdanz.github.io/NGCHM-R//reference/chmListTypes.html</loc>
   </url>
   <url>
-    <loc>https://md-anderson-bioinformatics.github.io/NGCHM-R//reference/chmMakePrivate-method.html</loc>
+    <loc>https://marohrdanz.github.io/NGCHM-R//reference/chmLoadCHM-method.html</loc>
   </url>
   <url>
-    <loc>https://md-anderson-bioinformatics.github.io/NGCHM-R//reference/chmMakePublic-method.html</loc>
+    <loc>https://marohrdanz.github.io/NGCHM-R//reference/chmLoadShaidyCHM.html</loc>
   </url>
   <url>
-    <loc>https://md-anderson-bioinformatics.github.io/NGCHM-R//reference/chmManager.html</loc>
+    <loc>https://marohrdanz.github.io/NGCHM-R//reference/chmMake-method.html</loc>
   </url>
   <url>
-    <loc>https://md-anderson-bioinformatics.github.io/NGCHM-R//reference/chmName-method.html</loc>
+    <loc>https://marohrdanz.github.io/NGCHM-R//reference/chmMakePrivate-method.html</loc>
   </url>
   <url>
-    <loc>https://md-anderson-bioinformatics.github.io/NGCHM-R//reference/chmNew.html</loc>
+    <loc>https://marohrdanz.github.io/NGCHM-R//reference/chmMakePublic-method.html</loc>
   </url>
   <url>
-    <loc>https://md-anderson-bioinformatics.github.io/NGCHM-R//reference/chmNewColorMap.html</loc>
+    <loc>https://marohrdanz.github.io/NGCHM-R//reference/chmManager.html</loc>
   </url>
   <url>
-    <loc>https://md-anderson-bioinformatics.github.io/NGCHM-R//reference/chmNewCovariate.html</loc>
+    <loc>https://marohrdanz.github.io/NGCHM-R//reference/chmName-method.html</loc>
   </url>
   <url>
-    <loc>https://md-anderson-bioinformatics.github.io/NGCHM-R//reference/chmNewCovariateBar.html</loc>
+    <loc>https://marohrdanz.github.io/NGCHM-R//reference/chmNew.html</loc>
   </url>
   <url>
-    <loc>https://md-anderson-bioinformatics.github.io/NGCHM-R//reference/chmNewDataLayer.html</loc>
+    <loc>https://marohrdanz.github.io/NGCHM-R//reference/chmNewColorMap.html</loc>
   </url>
   <url>
-    <loc>https://md-anderson-bioinformatics.github.io/NGCHM-R//reference/chmNewDataset.html</loc>
+    <loc>https://marohrdanz.github.io/NGCHM-R//reference/chmNewCovariate.html</loc>
   </url>
   <url>
-    <loc>https://md-anderson-bioinformatics.github.io/NGCHM-R//reference/chmNewDialog.html</loc>
+    <loc>https://marohrdanz.github.io/NGCHM-R//reference/chmNewCovariateBar.html</loc>
   </url>
   <url>
-    <loc>https://md-anderson-bioinformatics.github.io/NGCHM-R//reference/chmNewFunction.html</loc>
+    <loc>https://marohrdanz.github.io/NGCHM-R//reference/chmNewDataLayer.html</loc>
   </url>
   <url>
-    <loc>https://md-anderson-bioinformatics.github.io/NGCHM-R//reference/chmNewProperty.html</loc>
+    <loc>https://marohrdanz.github.io/NGCHM-R//reference/chmNewDataset.html</loc>
   </url>
   <url>
-    <loc>https://md-anderson-bioinformatics.github.io/NGCHM-R//reference/chmNewServer.html</loc>
+    <loc>https://marohrdanz.github.io/NGCHM-R//reference/chmNewDialog.html</loc>
   </url>
   <url>
-    <loc>https://md-anderson-bioinformatics.github.io/NGCHM-R//reference/chmOriginalColOrder.html</loc>
+    <loc>https://marohrdanz.github.io/NGCHM-R//reference/chmNewFunction.html</loc>
   </url>
   <url>
-    <loc>https://md-anderson-bioinformatics.github.io/NGCHM-R//reference/chmOriginalRowOrder.html</loc>
+    <loc>https://marohrdanz.github.io/NGCHM-R//reference/chmNewProperty.html</loc>
   </url>
   <url>
-    <loc>https://md-anderson-bioinformatics.github.io/NGCHM-R//reference/chmProperties.html</loc>
+    <loc>https://marohrdanz.github.io/NGCHM-R//reference/chmNewServer.html</loc>
   </url>
   <url>
-    <loc>https://md-anderson-bioinformatics.github.io/NGCHM-R//reference/chmProperty-set.html</loc>
+    <loc>https://marohrdanz.github.io/NGCHM-R//reference/chmOriginalColOrder.html</loc>
   </url>
   <url>
-    <loc>https://md-anderson-bioinformatics.github.io/NGCHM-R//reference/chmProperty.html</loc>
+    <loc>https://marohrdanz.github.io/NGCHM-R//reference/chmOriginalRowOrder.html</loc>
   </url>
   <url>
-    <loc>https://md-anderson-bioinformatics.github.io/NGCHM-R//reference/chmRandomColOrder.html</loc>
+    <loc>https://marohrdanz.github.io/NGCHM-R//reference/chmProperties.html</loc>
   </url>
   <url>
-    <loc>https://md-anderson-bioinformatics.github.io/NGCHM-R//reference/chmRandomRowOrder.html</loc>
+    <loc>https://marohrdanz.github.io/NGCHM-R//reference/chmProperty-set.html</loc>
   </url>
   <url>
-    <loc>https://md-anderson-bioinformatics.github.io/NGCHM-R//reference/chmRegisterAxisFunction.html</loc>
+    <loc>https://marohrdanz.github.io/NGCHM-R//reference/chmProperty.html</loc>
   </url>
   <url>
-    <loc>https://md-anderson-bioinformatics.github.io/NGCHM-R//reference/chmRegisterFunction.html</loc>
+    <loc>https://marohrdanz.github.io/NGCHM-R//reference/chmRandomColOrder.html</loc>
   </url>
   <url>
-    <loc>https://md-anderson-bioinformatics.github.io/NGCHM-R//reference/chmRegisterGetMetadataFunction.html</loc>
+    <loc>https://marohrdanz.github.io/NGCHM-R//reference/chmRandomRowOrder.html</loc>
   </url>
   <url>
-    <loc>https://md-anderson-bioinformatics.github.io/NGCHM-R//reference/chmRegisterMatrixFunction.html</loc>
+    <loc>https://marohrdanz.github.io/NGCHM-R//reference/chmRegisterAxisFunction.html</loc>
   </url>
   <url>
-    <loc>https://md-anderson-bioinformatics.github.io/NGCHM-R//reference/chmRegisterToolboxFunction.html</loc>
+    <loc>https://marohrdanz.github.io/NGCHM-R//reference/chmRegisterFunction.html</loc>
   </url>
   <url>
-    <loc>https://md-anderson-bioinformatics.github.io/NGCHM-R//reference/chmRegisterType.html</loc>
+    <loc>https://marohrdanz.github.io/NGCHM-R//reference/chmRegisterGetMetadataFunction.html</loc>
   </url>
   <url>
-    <loc>https://md-anderson-bioinformatics.github.io/NGCHM-R//reference/chmRegisterTypeMapper.html</loc>
+    <loc>https://marohrdanz.github.io/NGCHM-R//reference/chmRegisterMatrixFunction.html</loc>
   </url>
   <url>
-    <loc>https://md-anderson-bioinformatics.github.io/NGCHM-R//reference/chmRegisterTypeSplitter.html</loc>
+    <loc>https://marohrdanz.github.io/NGCHM-R//reference/chmRegisterToolboxFunction.html</loc>
   </url>
   <url>
-    <loc>https://md-anderson-bioinformatics.github.io/NGCHM-R//reference/chmRowOrder-method.html</loc>
+    <loc>https://marohrdanz.github.io/NGCHM-R//reference/chmRegisterType.html</loc>
   </url>
   <url>
-    <loc>https://md-anderson-bioinformatics.github.io/NGCHM-R//reference/chmServer.html</loc>
+    <loc>https://marohrdanz.github.io/NGCHM-R//reference/chmRegisterTypeMapper.html</loc>
   </url>
   <url>
-    <loc>https://md-anderson-bioinformatics.github.io/NGCHM-R//reference/chmSetCollection.html</loc>
+    <loc>https://marohrdanz.github.io/NGCHM-R//reference/chmRegisterTypeSplitter.html</loc>
   </url>
   <url>
-    <loc>https://md-anderson-bioinformatics.github.io/NGCHM-R//reference/chmSetCredentials-method.html</loc>
+    <loc>https://marohrdanz.github.io/NGCHM-R//reference/chmRowOrder-method.html</loc>
   </url>
   <url>
-    <loc>https://md-anderson-bioinformatics.github.io/NGCHM-R//reference/chmSetDeployServerConfig.html</loc>
+    <loc>https://marohrdanz.github.io/NGCHM-R//reference/chmServer.html</loc>
   </url>
   <url>
-    <loc>https://md-anderson-bioinformatics.github.io/NGCHM-R//reference/chmStringopFunction.html</loc>
+    <loc>https://marohrdanz.github.io/NGCHM-R//reference/chmSetCollection.html</loc>
   </url>
   <url>
-    <loc>https://md-anderson-bioinformatics.github.io/NGCHM-R//reference/chmUninstall-method.html</loc>
+    <loc>https://marohrdanz.github.io/NGCHM-R//reference/chmSetCredentials-method.html</loc>
   </url>
   <url>
-    <loc>https://md-anderson-bioinformatics.github.io/NGCHM-R//reference/chmUrlBase-method.html</loc>
+    <loc>https://marohrdanz.github.io/NGCHM-R//reference/chmSetDeployServerConfig.html</loc>
   </url>
   <url>
-    <loc>https://md-anderson-bioinformatics.github.io/NGCHM-R//reference/chmUserDendrogramToShaid.html</loc>
+    <loc>https://marohrdanz.github.io/NGCHM-R//reference/chmStringopFunction.html</loc>
   </url>
   <url>
-    <loc>https://md-anderson-bioinformatics.github.io/NGCHM-R//reference/chmUserLabelsToShaid.html</loc>
+    <loc>https://marohrdanz.github.io/NGCHM-R//reference/chmTreeGaps.html</loc>
   </url>
   <url>
-    <loc>https://md-anderson-bioinformatics.github.io/NGCHM-R//reference/chmWriteCustomJS.html</loc>
+    <loc>https://marohrdanz.github.io/NGCHM-R//reference/chmUninstall-method.html</loc>
   </url>
   <url>
-    <loc>https://md-anderson-bioinformatics.github.io/NGCHM-R//reference/cos.dist1.html</loc>
+    <loc>https://marohrdanz.github.io/NGCHM-R//reference/chmUrlBase-method.html</loc>
   </url>
   <url>
-    <loc>https://md-anderson-bioinformatics.github.io/NGCHM-R//reference/gitHashObject.html</loc>
+    <loc>https://marohrdanz.github.io/NGCHM-R//reference/chmUserDendrogramToShaid.html</loc>
   </url>
   <url>
-    <loc>https://md-anderson-bioinformatics.github.io/NGCHM-R//reference/ngchm-class.html</loc>
+    <loc>https://marohrdanz.github.io/NGCHM-R//reference/chmUserLabelsToShaid.html</loc>
   </url>
   <url>
-    <loc>https://md-anderson-bioinformatics.github.io/NGCHM-R//reference/ngchmAddDatasetBlob.html</loc>
+    <loc>https://marohrdanz.github.io/NGCHM-R//reference/chmWriteCustomJS.html</loc>
   </url>
   <url>
-    <loc>https://md-anderson-bioinformatics.github.io/NGCHM-R//reference/ngchmAddMatrixToCollection.html</loc>
+    <loc>https://marohrdanz.github.io/NGCHM-R//reference/cos.dist1.html</loc>
   </url>
   <url>
-    <loc>https://md-anderson-bioinformatics.github.io/NGCHM-R//reference/ngchmAddObjectToCollection.html</loc>
+    <loc>https://marohrdanz.github.io/NGCHM-R//reference/gitHashObject.html</loc>
   </url>
   <url>
-    <loc>https://md-anderson-bioinformatics.github.io/NGCHM-R//reference/ngchmAxis-class.html</loc>
+    <loc>https://marohrdanz.github.io/NGCHM-R//reference/initLogging.html</loc>
   </url>
   <url>
-    <loc>https://md-anderson-bioinformatics.github.io/NGCHM-R//reference/ngchmAxisFunction-class.html</loc>
+    <loc>https://marohrdanz.github.io/NGCHM-R//reference/ngchm-class.html</loc>
   </url>
   <url>
-    <loc>https://md-anderson-bioinformatics.github.io/NGCHM-R//reference/ngchmAxisType-class.html</loc>
+    <loc>https://marohrdanz.github.io/NGCHM-R//reference/ngchmAddDatasetBlob.html</loc>
   </url>
   <url>
-    <loc>https://md-anderson-bioinformatics.github.io/NGCHM-R//reference/ngchmBar-class.html</loc>
+    <loc>https://marohrdanz.github.io/NGCHM-R//reference/ngchmAddMatrixToCollection.html</loc>
   </url>
   <url>
-    <loc>https://md-anderson-bioinformatics.github.io/NGCHM-R//reference/ngchmCSS-class.html</loc>
+    <loc>https://marohrdanz.github.io/NGCHM-R//reference/ngchmAddObjectToCollection.html</loc>
   </url>
   <url>
-    <loc>https://md-anderson-bioinformatics.github.io/NGCHM-R//reference/ngchmCollectionInCollection.html</loc>
+    <loc>https://marohrdanz.github.io/NGCHM-R//reference/ngchmAxis-class.html</loc>
   </url>
   <url>
-    <loc>https://md-anderson-bioinformatics.github.io/NGCHM-R//reference/ngchmCollectionTree.html</loc>
+    <loc>https://marohrdanz.github.io/NGCHM-R//reference/ngchmAxisFunction-class.html</loc>
   </url>
   <url>
-    <loc>https://md-anderson-bioinformatics.github.io/NGCHM-R//reference/ngchmColormap-class.html</loc>
+    <loc>https://marohrdanz.github.io/NGCHM-R//reference/ngchmAxisType-class.html</loc>
   </url>
   <url>
-    <loc>https://md-anderson-bioinformatics.github.io/NGCHM-R//reference/ngchmCovariate-class.html</loc>
+    <loc>https://marohrdanz.github.io/NGCHM-R//reference/ngchmBar-class.html</loc>
   </url>
   <url>
-    <loc>https://md-anderson-bioinformatics.github.io/NGCHM-R//reference/ngchmCreateServerProtocol.html</loc>
+    <loc>https://marohrdanz.github.io/NGCHM-R//reference/ngchmCSS-class.html</loc>
   </url>
   <url>
-    <loc>https://md-anderson-bioinformatics.github.io/NGCHM-R//reference/ngchmDataset-class.html</loc>
+    <loc>https://marohrdanz.github.io/NGCHM-R//reference/ngchmCollectionInCollection.html</loc>
   </url>
   <url>
-    <loc>https://md-anderson-bioinformatics.github.io/NGCHM-R//reference/ngchmDialog-class.html</loc>
+    <loc>https://marohrdanz.github.io/NGCHM-R//reference/ngchmCollectionTree.html</loc>
   </url>
   <url>
-    <loc>https://md-anderson-bioinformatics.github.io/NGCHM-R//reference/ngchmFindRepo.html</loc>
+    <loc>https://marohrdanz.github.io/NGCHM-R//reference/ngchmColormap-class.html</loc>
   </url>
   <url>
-    <loc>https://md-anderson-bioinformatics.github.io/NGCHM-R//reference/ngchmGetDataFileShaid.html</loc>
+    <loc>https://marohrdanz.github.io/NGCHM-R//reference/ngchmCovariate-class.html</loc>
   </url>
   <url>
-    <loc>https://md-anderson-bioinformatics.github.io/NGCHM-R//reference/ngchmGetEnv.html</loc>
+    <loc>https://marohrdanz.github.io/NGCHM-R//reference/ngchmCreateServerProtocol.html</loc>
   </url>
   <url>
-    <loc>https://md-anderson-bioinformatics.github.io/NGCHM-R//reference/ngchmGetHandleHTTR.html</loc>
+    <loc>https://marohrdanz.github.io/NGCHM-R//reference/ngchmDataset-class.html</loc>
   </url>
   <url>
-    <loc>https://md-anderson-bioinformatics.github.io/NGCHM-R//reference/ngchmGetLabels.html</loc>
+    <loc>https://marohrdanz.github.io/NGCHM-R//reference/ngchmDialog-class.html</loc>
   </url>
   <url>
-    <loc>https://md-anderson-bioinformatics.github.io/NGCHM-R//reference/ngchmGetLabelsStr.html</loc>
+    <loc>https://marohrdanz.github.io/NGCHM-R//reference/ngchmFindRepo.html</loc>
   </url>
   <url>
-    <loc>https://md-anderson-bioinformatics.github.io/NGCHM-R//reference/ngchmGetProtoParam.html</loc>
+    <loc>https://marohrdanz.github.io/NGCHM-R//reference/ngchmGetDataFileShaid.html</loc>
   </url>
   <url>
-    <loc>https://md-anderson-bioinformatics.github.io/NGCHM-R//reference/ngchmGetServerProtocol.html</loc>
+    <loc>https://marohrdanz.github.io/NGCHM-R//reference/ngchmGetEnv.html</loc>
   </url>
   <url>
-    <loc>https://md-anderson-bioinformatics.github.io/NGCHM-R//reference/ngchmInitShaidyRepository.html</loc>
+    <loc>https://marohrdanz.github.io/NGCHM-R//reference/ngchmGetHandleHTTR.html</loc>
   </url>
   <url>
-    <loc>https://md-anderson-bioinformatics.github.io/NGCHM-R//reference/ngchmJS-class.html</loc>
+    <loc>https://marohrdanz.github.io/NGCHM-R//reference/ngchmGetLabels.html</loc>
   </url>
   <url>
-    <loc>https://md-anderson-bioinformatics.github.io/NGCHM-R//reference/ngchmLayer-class.html</loc>
+    <loc>https://marohrdanz.github.io/NGCHM-R//reference/ngchmGetLabelsStr.html</loc>
   </url>
   <url>
-    <loc>https://md-anderson-bioinformatics.github.io/NGCHM-R//reference/ngchmListServerProtocols.html</loc>
+    <loc>https://marohrdanz.github.io/NGCHM-R//reference/ngchmGetProtoParam.html</loc>
   </url>
   <url>
-    <loc>https://md-anderson-bioinformatics.github.io/NGCHM-R//reference/ngchmLoadDatasetBlob.html</loc>
+    <loc>https://marohrdanz.github.io/NGCHM-R//reference/ngchmGetServerProtocol.html</loc>
   </url>
   <url>
-    <loc>https://md-anderson-bioinformatics.github.io/NGCHM-R//reference/ngchmMakeFormat.original.html</loc>
+    <loc>https://marohrdanz.github.io/NGCHM-R//reference/ngchmInitShaidyRepository.html</loc>
   </url>
   <url>
-    <loc>https://md-anderson-bioinformatics.github.io/NGCHM-R//reference/ngchmMakeFormat.shaidy.html</loc>
+    <loc>https://marohrdanz.github.io/NGCHM-R//reference/ngchmJS-class.html</loc>
   </url>
   <url>
-    <loc>https://md-anderson-bioinformatics.github.io/NGCHM-R//reference/ngchmMatrixFunction-class.html</loc>
+    <loc>https://marohrdanz.github.io/NGCHM-R//reference/ngchmLayer-class.html</loc>
   </url>
   <url>
-    <loc>https://md-anderson-bioinformatics.github.io/NGCHM-R//reference/ngchmMenuItem-class.html</loc>
+    <loc>https://marohrdanz.github.io/NGCHM-R//reference/ngchmListServerProtocols.html</loc>
   </url>
   <url>
-    <loc>https://md-anderson-bioinformatics.github.io/NGCHM-R//reference/ngchmMetaData-class.html</loc>
+    <loc>https://marohrdanz.github.io/NGCHM-R//reference/ngchmLoadDatasetBlob.html</loc>
   </url>
   <url>
-    <loc>https://md-anderson-bioinformatics.github.io/NGCHM-R//reference/ngchmNewBar.html</loc>
+    <loc>https://marohrdanz.github.io/NGCHM-R//reference/ngchmMakeFormat.original.html</loc>
   </url>
   <url>
-    <loc>https://md-anderson-bioinformatics.github.io/NGCHM-R//reference/ngchmNewCollection.html</loc>
+    <loc>https://marohrdanz.github.io/NGCHM-R//reference/ngchmMakeFormat.shaidy.html</loc>
   </url>
   <url>
-    <loc>https://md-anderson-bioinformatics.github.io/NGCHM-R//reference/ngchmOverview-class.html</loc>
+    <loc>https://marohrdanz.github.io/NGCHM-R//reference/ngchmMatrixFunction-class.html</loc>
   </url>
   <url>
-    <loc>https://md-anderson-bioinformatics.github.io/NGCHM-R//reference/ngchmProperty-class.html</loc>
+    <loc>https://marohrdanz.github.io/NGCHM-R//reference/ngchmMenuItem-class.html</loc>
   </url>
   <url>
-    <loc>https://md-anderson-bioinformatics.github.io/NGCHM-R//reference/ngchmProtoParamCheck.html</loc>
+    <loc>https://marohrdanz.github.io/NGCHM-R//reference/ngchmMetaData-class.html</loc>
   </url>
   <url>
-    <loc>https://md-anderson-bioinformatics.github.io/NGCHM-R//reference/ngchmPushSourceRepository.html</loc>
+    <loc>https://marohrdanz.github.io/NGCHM-R//reference/ngchmNewBar.html</loc>
   </url>
   <url>
-    <loc>https://md-anderson-bioinformatics.github.io/NGCHM-R//reference/ngchmPushSourceServer.html</loc>
+    <loc>https://marohrdanz.github.io/NGCHM-R//reference/ngchmNewCollection.html</loc>
   </url>
   <url>
-    <loc>https://md-anderson-bioinformatics.github.io/NGCHM-R//reference/ngchmPushTempRepository.html</loc>
+    <loc>https://marohrdanz.github.io/NGCHM-R//reference/ngchmOverview-class.html</loc>
   </url>
   <url>
-    <loc>https://md-anderson-bioinformatics.github.io/NGCHM-R//reference/ngchmRegisterServer.html</loc>
+    <loc>https://marohrdanz.github.io/NGCHM-R//reference/ngchmProperty-class.html</loc>
   </url>
   <url>
-    <loc>https://md-anderson-bioinformatics.github.io/NGCHM-R//reference/ngchmRelated-class.html</loc>
+    <loc>https://marohrdanz.github.io/NGCHM-R//reference/ngchmProtoParamCheck.html</loc>
   </url>
   <url>
-    <loc>https://md-anderson-bioinformatics.github.io/NGCHM-R//reference/ngchmRelatedGroup-class.html</loc>
+    <loc>https://marohrdanz.github.io/NGCHM-R//reference/ngchmPushSourceRepository.html</loc>
   </url>
   <url>
-    <loc>https://md-anderson-bioinformatics.github.io/NGCHM-R//reference/ngchmRenderChm.html</loc>
+    <loc>https://marohrdanz.github.io/NGCHM-R//reference/ngchmPushSourceServer.html</loc>
   </url>
   <url>
-    <loc>https://md-anderson-bioinformatics.github.io/NGCHM-R//reference/ngchmResponseJSON.html</loc>
+    <loc>https://marohrdanz.github.io/NGCHM-R//reference/ngchmPushTempRepository.html</loc>
   </url>
   <url>
-    <loc>https://md-anderson-bioinformatics.github.io/NGCHM-R//reference/ngchmRowCenter.html</loc>
+    <loc>https://marohrdanz.github.io/NGCHM-R//reference/ngchmRegisterServer.html</loc>
   </url>
   <url>
-    <loc>https://md-anderson-bioinformatics.github.io/NGCHM-R//reference/ngchmSaveAsDatasetBlob.html</loc>
+    <loc>https://marohrdanz.github.io/NGCHM-R//reference/ngchmRelated-class.html</loc>
   </url>
   <url>
-    <loc>https://md-anderson-bioinformatics.github.io/NGCHM-R//reference/ngchmSaveAsDendrogramBlob.html</loc>
+    <loc>https://marohrdanz.github.io/NGCHM-R//reference/ngchmRelatedGroup-class.html</loc>
   </url>
   <url>
-    <loc>https://md-anderson-bioinformatics.github.io/NGCHM-R//reference/ngchmSaveChmAsBlob.html</loc>
+    <loc>https://marohrdanz.github.io/NGCHM-R//reference/ngchmRenderChm.html</loc>
   </url>
   <url>
-    <loc>https://md-anderson-bioinformatics.github.io/NGCHM-R//reference/ngchmServer-class.html</loc>
+    <loc>https://marohrdanz.github.io/NGCHM-R//reference/ngchmResponseJSON.html</loc>
   </url>
   <url>
-    <loc>https://md-anderson-bioinformatics.github.io/NGCHM-R//reference/ngchmServerProtocol-class.html</loc>
+    <loc>https://marohrdanz.github.io/NGCHM-R//reference/ngchmRowCenter.html</loc>
   </url>
   <url>
-    <loc>https://md-anderson-bioinformatics.github.io/NGCHM-R//reference/ngchmShaidyInit.html</loc>
+    <loc>https://marohrdanz.github.io/NGCHM-R//reference/ngchmSaveAsDatasetBlob.html</loc>
   </url>
   <url>
-    <loc>https://md-anderson-bioinformatics.github.io/NGCHM-R//reference/ngchmTemplate-class.html</loc>
+    <loc>https://marohrdanz.github.io/NGCHM-R//reference/ngchmSaveAsDendrogramBlob.html</loc>
   </url>
   <url>
-    <loc>https://md-anderson-bioinformatics.github.io/NGCHM-R//reference/ngchmTileDataset.html</loc>
+    <loc>https://marohrdanz.github.io/NGCHM-R//reference/ngchmSaveChmAsBlob.html</loc>
   </url>
   <url>
-    <loc>https://md-anderson-bioinformatics.github.io/NGCHM-R//reference/ngchmTypeMapper-class.html</loc>
+    <loc>https://marohrdanz.github.io/NGCHM-R//reference/ngchmServer-class.html</loc>
   </url>
   <url>
-    <loc>https://md-anderson-bioinformatics.github.io/NGCHM-R//reference/ngchmUnregisterServer.html</loc>
+    <loc>https://marohrdanz.github.io/NGCHM-R//reference/ngchmServerProtocol-class.html</loc>
   </url>
   <url>
-    <loc>https://md-anderson-bioinformatics.github.io/NGCHM-R//reference/ngchmValueProp-class.html</loc>
+    <loc>https://marohrdanz.github.io/NGCHM-R//reference/ngchmShaidyInit.html</loc>
   </url>
   <url>
-    <loc>https://md-anderson-bioinformatics.github.io/NGCHM-R//reference/optDendrogram-class.html</loc>
+    <loc>https://marohrdanz.github.io/NGCHM-R//reference/ngchmTemplate-class.html</loc>
   </url>
   <url>
-    <loc>https://md-anderson-bioinformatics.github.io/NGCHM-R//reference/plot.ngchmVersion2.html</loc>
+    <loc>https://marohrdanz.github.io/NGCHM-R//reference/ngchmTileDataset.html</loc>
   </url>
   <url>
-    <loc>https://md-anderson-bioinformatics.github.io/NGCHM-R//reference/print.ngchm.type.info.html</loc>
+    <loc>https://marohrdanz.github.io/NGCHM-R//reference/ngchmTypeMapper-class.html</loc>
   </url>
   <url>
-    <loc>https://md-anderson-bioinformatics.github.io/NGCHM-R//reference/print.shaidyRepo.html</loc>
+    <loc>https://marohrdanz.github.io/NGCHM-R//reference/ngchmUnregisterServer.html</loc>
   </url>
   <url>
-    <loc>https://md-anderson-bioinformatics.github.io/NGCHM-R//reference/readTile.html</loc>
+    <loc>https://marohrdanz.github.io/NGCHM-R//reference/ngchmValueProp-class.html</loc>
   </url>
   <url>
-    <loc>https://md-anderson-bioinformatics.github.io/NGCHM-R//reference/shaid-class.html</loc>
+    <loc>https://marohrdanz.github.io/NGCHM-R//reference/ngchmVersion2-class.html</loc>
   </url>
   <url>
-    <loc>https://md-anderson-bioinformatics.github.io/NGCHM-R//reference/shaidyAddFileBlob.html</loc>
+    <loc>https://marohrdanz.github.io/NGCHM-R//reference/optDendrogram-class.html</loc>
   </url>
   <url>
-    <loc>https://md-anderson-bioinformatics.github.io/NGCHM-R//reference/shaidyBlobExists.html</loc>
+    <loc>https://marohrdanz.github.io/NGCHM-R//reference/plot.ngchmVersion2.html</loc>
   </url>
   <url>
-    <loc>https://md-anderson-bioinformatics.github.io/NGCHM-R//reference/shaidyCopyBlob.html</loc>
+    <loc>https://marohrdanz.github.io/NGCHM-R//reference/print.ngchm.type.info.html</loc>
   </url>
   <url>
-    <loc>https://md-anderson-bioinformatics.github.io/NGCHM-R//reference/shaidyCreateProtoBlob.html</loc>
+    <loc>https://marohrdanz.github.io/NGCHM-R//reference/print.shaidyRepo.html</loc>
   </url>
   <url>
-    <loc>https://md-anderson-bioinformatics.github.io/NGCHM-R//reference/shaidyFinalizeProtoBlob.html</loc>
+    <loc>https://marohrdanz.github.io/NGCHM-R//reference/readTile.html</loc>
   </url>
   <url>
-    <loc>https://md-anderson-bioinformatics.github.io/NGCHM-R//reference/shaidyFindRepo.html</loc>
+    <loc>https://marohrdanz.github.io/NGCHM-R//reference/shaid-class.html</loc>
   </url>
   <url>
-    <loc>https://md-anderson-bioinformatics.github.io/NGCHM-R//reference/shaidyGetComponents-method.html</loc>
+    <loc>https://marohrdanz.github.io/NGCHM-R//reference/shaidyAddFileBlob.html</loc>
   </url>
   <url>
-    <loc>https://md-anderson-bioinformatics.github.io/NGCHM-R//reference/shaidyGetShaid-method.html</loc>
+    <loc>https://marohrdanz.github.io/NGCHM-R//reference/shaidyBlobExists.html</loc>
   </url>
   <url>
-    <loc>https://md-anderson-bioinformatics.github.io/NGCHM-R//reference/shaidyHashProtoBlob.html</loc>
+    <loc>https://marohrdanz.github.io/NGCHM-R//reference/shaidyCopyBlob.html</loc>
   </url>
   <url>
-    <loc>https://md-anderson-bioinformatics.github.io/NGCHM-R//reference/shaidyInit.html</loc>
+    <loc>https://marohrdanz.github.io/NGCHM-R//reference/shaidyCreateProtoBlob.html</loc>
   </url>
   <url>
-    <loc>https://md-anderson-bioinformatics.github.io/NGCHM-R//reference/shaidyInitRepository.html</loc>
+    <loc>https://marohrdanz.github.io/NGCHM-R//reference/shaidyFinalizeProtoBlob.html</loc>
   </url>
   <url>
-    <loc>https://md-anderson-bioinformatics.github.io/NGCHM-R//reference/shaidyLoadProvenanceDB.html</loc>
+    <loc>https://marohrdanz.github.io/NGCHM-R//reference/shaidyFindRepo.html</loc>
   </url>
   <url>
-    <loc>https://md-anderson-bioinformatics.github.io/NGCHM-R//reference/shaidyLoadProvidDB.html</loc>
+    <loc>https://marohrdanz.github.io/NGCHM-R//reference/shaidyGetComponents-method.html</loc>
   </url>
   <url>
-    <loc>https://md-anderson-bioinformatics.github.io/NGCHM-R//reference/shaidyLoadRepository.html</loc>
+    <loc>https://marohrdanz.github.io/NGCHM-R//reference/shaidyGetShaid-method.html</loc>
   </url>
   <url>
-    <loc>https://md-anderson-bioinformatics.github.io/NGCHM-R//reference/shaidyNewCache.html</loc>
+    <loc>https://marohrdanz.github.io/NGCHM-R//reference/shaidyHashProtoBlob.html</loc>
   </url>
   <url>
-    <loc>https://md-anderson-bioinformatics.github.io/NGCHM-R//reference/shaidyProvenance.html</loc>
+    <loc>https://marohrdanz.github.io/NGCHM-R//reference/shaidyInit.html</loc>
   </url>
   <url>
-    <loc>https://md-anderson-bioinformatics.github.io/NGCHM-R//reference/shaidyRegisterRepoAPI.html</loc>
+    <loc>https://marohrdanz.github.io/NGCHM-R//reference/shaidyInitRepository.html</loc>
   </url>
   <url>
-    <loc>https://md-anderson-bioinformatics.github.io/NGCHM-R//reference/shaidyRepoAPI.html</loc>
+    <loc>https://marohrdanz.github.io/NGCHM-R//reference/shaidyLoadProvenanceDB.html</loc>
   </url>
   <url>
-    <loc>https://md-anderson-bioinformatics.github.io/NGCHM-R//reference/validateNewLayer.html</loc>
+    <loc>https://marohrdanz.github.io/NGCHM-R//reference/shaidyLoadProvidDB.html</loc>
   </url>
   <url>
-    <loc>https://md-anderson-bioinformatics.github.io/NGCHM-R//reference/writeTile.html</loc>
+    <loc>https://marohrdanz.github.io/NGCHM-R//reference/shaidyLoadRepository.html</loc>
   </url>
   <url>
-    <loc>https://md-anderson-bioinformatics.github.io/NGCHM-R//articles/Installation.html</loc>
+    <loc>https://marohrdanz.github.io/NGCHM-R//reference/shaidyNewCache.html</loc>
   </url>
   <url>
-    <loc>https://md-anderson-bioinformatics.github.io/NGCHM-R//articles/YouTube.html</loc>
+    <loc>https://marohrdanz.github.io/NGCHM-R//reference/shaidyProvenance.html</loc>
   </url>
   <url>
-    <loc>https://md-anderson-bioinformatics.github.io/NGCHM-R//articles/adding-linkouts.html</loc>
+    <loc>https://marohrdanz.github.io/NGCHM-R//reference/shaidyRegisterRepoAPI.html</loc>
   </url>
   <url>
-    <loc>https://md-anderson-bioinformatics.github.io/NGCHM-R//articles/clustering-and-column-row-ordering.html</loc>
+    <loc>https://marohrdanz.github.io/NGCHM-R//reference/shaidyRepoAPI.html</loc>
   </url>
   <url>
-    <loc>https://md-anderson-bioinformatics.github.io/NGCHM-R//articles/continuous-color-maps-and-data-layers.html</loc>
+    <loc>https://marohrdanz.github.io/NGCHM-R//reference/treeCuts-class.html</loc>
   </url>
   <url>
-    <loc>https://md-anderson-bioinformatics.github.io/NGCHM-R//articles/covariate-bars-and-discrete-color-maps.html</loc>
+    <loc>https://marohrdanz.github.io/NGCHM-R//reference/validateNewLayer.html</loc>
   </url>
   <url>
-    <loc>https://md-anderson-bioinformatics.github.io/NGCHM-R//articles/create-a-ng-chm.html</loc>
+    <loc>https://marohrdanz.github.io/NGCHM-R//reference/verifyNumeric.html</loc>
+  </url>
+  <url>
+    <loc>https://marohrdanz.github.io/NGCHM-R//reference/writeTile.html</loc>
+  </url>
+  <url>
+    <loc>https://marohrdanz.github.io/NGCHM-R//articles/Installation.html</loc>
+  </url>
+  <url>
+    <loc>https://marohrdanz.github.io/NGCHM-R//articles/YouTube.html</loc>
+  </url>
+  <url>
+    <loc>https://marohrdanz.github.io/NGCHM-R//articles/adding-linkouts.html</loc>
+  </url>
+  <url>
+    <loc>https://marohrdanz.github.io/NGCHM-R//articles/clustering-and-column-row-ordering.html</loc>
+  </url>
+  <url>
+    <loc>https://marohrdanz.github.io/NGCHM-R//articles/continuous-color-maps-and-data-layers.html</loc>
+  </url>
+  <url>
+    <loc>https://marohrdanz.github.io/NGCHM-R//articles/covariate-bars-and-discrete-color-maps.html</loc>
+  </url>
+  <url>
+    <loc>https://marohrdanz.github.io/NGCHM-R//articles/create-a-ng-chm.html</loc>
   </url>
 </urlset>

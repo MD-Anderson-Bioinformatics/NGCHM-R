@@ -132,7 +132,7 @@ The bare NGCHM needs at least one data layer added to it before it can be compil
   </a>
 </li>
 <li>
-  <a href="https://github.com/MD-Anderson-Bioinformatics/NGCHM-R/">
+  <a href="https://github.com/marohrdanz.github.io/NGCHM-R/">
     <span class="fa fa-github"></span>
      
   </a>
@@ -175,7 +175,13 @@ The bare NGCHM needs at least one data layer added to it before it can be compil
   rowCovariates <span class='op'>=</span> <span class='cn'>NULL</span>,
   colCovariates <span class='op'>=</span> <span class='cn'>NULL</span>,
   format <span class='op'>=</span> <span class='st'>"original"</span>,
-  overview <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='op'>)</span>
+  rowGapLocations <span class='op'>=</span> <span class='cn'>NULL</span>,
+  rowGapWidth <span class='op'>=</span> <span class='fl'>5</span>,
+  colGapLocations <span class='op'>=</span> <span class='cn'>NULL</span>,
+  colGapWidth <span class='op'>=</span> <span class='fl'>5</span>,
+  overview <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='op'>)</span>,
+  logLevel <span class='op'>=</span> <span class='st'>"INFO"</span>,
+  logFile <span class='op'>=</span> <span class='cn'>NULL</span>
 <span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
@@ -234,6 +240,22 @@ The bare NGCHM needs at least one data layer added to it before it can be compil
       <td><p>The format of NGCHM to produce (default: 'original').</p></td>
     </tr>
     <tr>
+      <th>rowGapLocations</th>
+      <td><p>Locations for row gaps. Specify as a list of integers or <code><a href='chmTreeGaps.html'>chmTreeGaps()</a></code> function.</p></td>
+    </tr>
+    <tr>
+      <th>rowGapWidth</th>
+      <td><p>Width of row gaps (default: 5 rows)</p></td>
+    </tr>
+    <tr>
+      <th>colGapLocations</th>
+      <td><p>Locations for col gaps. Specify as a list of integers or <code><a href='chmTreeGaps.html'>chmTreeGaps()</a></code> function.</p></td>
+    </tr>
+    <tr>
+      <th>colGapWidth</th>
+      <td><p>Width of col gaps (default: 5 cols)</p></td>
+    </tr>
+    <tr>
       <th>overview</th>
       <td><p>The format(s) of overview image(s) to create (default: None).</p></td>
     </tr>
@@ -254,10 +276,13 @@ The bare NGCHM needs at least one data layer added to it before it can be compil
 <p><code><a href='chmInstall.html'>chmInstall()</a></code></p>
 <p><code><a href='chmExportToFile.html'>chmExportToFile()</a></code></p>
 <p><code><a href='chmExportToPDF.html'>chmExportToPDF()</a></code></p>
-<p><code>chmExportToHTML()</code></p></div>
+<p><code><a href='chmExportToHTML.html'>chmExportToHTML()</a></code></p></div>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='va'>mychm</span> <span class='op'>&lt;-</span> <span class='fu'>chmNew</span> <span class='op'>(</span><span class='st'>"test_chm"</span><span class='op'>)</span>
+<span class='va'>mychm</span> <span class='op'>&lt;-</span> <span class='fu'>chmNew</span><span class='op'>(</span><span class='st'>"test_chm"</span>, rowGapLocations<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>3</span>,<span class='fl'>5</span><span class='op'>)</span><span class='op'>)</span>
+<span class='va'>mychm</span> <span class='op'>&lt;-</span> <span class='fu'>chmNew</span><span class='op'>(</span><span class='st'>"test_chm"</span>, rowGapLocations<span class='op'>=</span><span class='fu'><a href='chmTreeGaps.html'>chmTreeGaps</a></span><span class='op'>(</span><span class='fl'>4</span><span class='op'>)</span><span class='op'>)</span>
+<span class='va'>mychm</span> <span class='op'>&lt;-</span> <span class='fu'>chmNew</span><span class='op'>(</span><span class='st'>"test_chm"</span>, rowGapWidth<span class='op'>=</span><span class='fl'>3</span><span class='op'>)</span>
 
 </div></pre>
   </div>
