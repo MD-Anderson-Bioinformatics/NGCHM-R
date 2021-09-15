@@ -1348,7 +1348,7 @@ checkPropertyValue <- function (label, value) {
 #' @export
 #'
 #' @examples
-#' prop <- chmNewProperty ("chm.info.caption",
+#' prop <- chmNewProperty ("chm.info.description",
 #'                            "This is a nifty new CHM.")
 #'
 #' @seealso [ngchm-class]
@@ -1368,7 +1368,7 @@ chmNewProperty <- function (label, value) {
 #'
 #'        Well-known property labels used by the NG-CHM system include:
 #'
-#'        * "chm.info.caption"  A paragraph describing the NG-CHM's contents (set by user).
+#'        * "chm.info.description"  A paragraph describing the NG-CHM's contents (set by user).
 #'	  * "chm.info.built.time"  The date and time the NG-CHM was saved (set by system).
 #'
 #' @return A property value or NULL.
@@ -1376,7 +1376,7 @@ chmNewProperty <- function (label, value) {
 #' @export
 #'
 #' @examples
-#' chmProperty (hm, "chm.info.caption")
+#' chmProperty (hm, "chm.info.description")
 #'
 #' @seealso [ngchm-class]
 #'
@@ -1402,7 +1402,7 @@ chmProperty <- function (hm, label) {
 #' @export
 #'
 #' @examples
-#' chmProperty (hm, "chm.info.caption") <- "Nothing to see here";
+#' chmProperty (hm, "chm.info.description") <- "Nothing to see here";
 #'
 #' @seealso [ngchm-class]
 #'

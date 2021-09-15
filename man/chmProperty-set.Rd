@@ -21,7 +21,7 @@ The modified NG-CHM object.
 Set the value of an NG-CHM property.
 }
 \examples{
-chmProperty (hm, "chm.info.caption") <- "Nothing to see here";
+chmProperty (hm, "chm.info.description") <- "Nothing to see here";
 
 }
 \seealso{

@@ -12,7 +12,7 @@ chmProperty(hm, label)
 \item{label}{The name of the property to get.
 If no property with that name exists, return NULL.\preformatted{   Well-known property labels used by the NG-CHM system include:
 
-   * "chm.info.caption"  A paragraph describing the NG-CHM's contents (set by user).
+   * "chm.info.description"  A paragraph describing the NG-CHM's contents (set by user).
 }
 \itemize{
 \item "chm.info.built.time"  The date and time the NG-CHM was saved (set by system).
@@ -25,7 +25,7 @@ A property value or NULL.
 Get the value of an NG-CHM property.
 }
 \examples{
-chmProperty (hm, "chm.info.caption")
+chmProperty (hm, "chm.info.description")
 
 }
 \seealso{
