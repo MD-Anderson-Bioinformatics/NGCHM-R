@@ -24,6 +24,7 @@ The needed packages are loaded and a basic NG-CHM is constructed from the sample
 library(NGCHMDemoData)
 library(NGCHM)
 hm <- chmNew('tcga-brca', TCGA.BRCA.ExpressionData)
+chmProperty(hm, 'chm.info.description') <- 'This NGCHM was created to demonstrate how to add linkouts.'
 ```
 
 To add linkouts, the axis type is specified with `chmAddAxisType()`. For the demo data in this example, 

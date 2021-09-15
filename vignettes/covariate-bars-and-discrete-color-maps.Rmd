@@ -40,6 +40,7 @@ This covariate bar is then added to the NG-CHM created above with `chmAddCovaria
 
 ```{r, results='hide', message=FALSE, warning=FALSE}
 hm <- chmAddCovariateBar(hm, 'column', covariateBar)
+chmProperty(hm, 'chm.info.description') <- 'This NGCHM was created to demonstrate how to add covariate bars.'
 ```
 
 This NG-CHM can be exported to either a .ngchm or .html file.

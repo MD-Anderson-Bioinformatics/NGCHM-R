@@ -44,6 +44,7 @@ hm <- chmAddAxisType(hm, 'column', 'bio.tcga.barcode.sample.vial.portion.analyte
 ```
 
 ```{r, message=FALSE, warning=FALSE, echo=FALSE, results='hide' }
+chmProperty(hm, 'chm.info.description') <- 'TCGA BRCA expression data.<br><br>This data is from the NGCHM Demo Data R package, for use in NGCHM vignettes and examples.'
 chmExportToHTML(hm,'tcga-brca-intro.html',overwrite=TRUE)
 ```
 

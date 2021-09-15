@@ -69,6 +69,13 @@ covariateBar <- chmNewCovariate('TP53 Mutation',TCGA.BRCA.TP53MutationData)
 hm <- chmAddCovariateBar(hm, 'column', covariateBar)
 ```
 
+A description of the NGCHM can be added with:
+
+```{r, results='hide', message=FALSE, warning=FALSE}
+chmProperty(hm, 'chm.info.description') <- 'TCGA BRCA expression data.<br><br>This data is from the NGCHM Demo Data R package, for use in NGCHM vignettes and examples.' 
+```
+
+This description can be viewed on the NGCHM by hovering the cursor over the 'Map Name' label.
 
 ## Export to File
 

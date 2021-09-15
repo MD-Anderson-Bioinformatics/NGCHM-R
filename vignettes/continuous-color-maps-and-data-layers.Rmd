@@ -60,6 +60,7 @@ We explicitly provide the two data layers created above to the `chmNew()` functi
 
 ```{r, results='hide', message=FALSE, warning=FALSE}
 hm <- chmNew('TCGA BRCA Expression', unadjustedLayer, rowCenteredLayer)
+chmProperty(hm, 'chm.info.description') <- 'This NGCHM was created to demostrate how to add multiple data layers and color maps.'
 ```
 
 and export to a .ngchm or .html file:
