@@ -46,11 +46,11 @@ jobs:
           install.packages("pkgdown", type = "binary")
         shell: Rscript {0}
 
-      - name: Render index.Rmd (landing page for website)
-        run: Rscript -e 'rmarkdown::render("index.Rmd", "md_document")'
-
       - name: Install package
         run: R CMD INSTALL .
+
+      - name: Render index.Rmd (landing page for website)
+        run: Rscript -e 'rmarkdown::render("index.Rmd", "md_document")'
 
       - name: Deploy package
         run: |
