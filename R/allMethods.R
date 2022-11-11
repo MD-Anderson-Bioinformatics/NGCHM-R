@@ -428,7 +428,7 @@ writeJS <- function (js, chan, writeGlobals) {
 }
 
 sameColormap <- function (cmap1, cmap2) {
-    if ((class(cmap1) != "ngchmColormap") || (class(cmap2) != "ngchmColormap"))
+    if (!is(cmap1, "ngchmColormap") || !is(cmap2, "ngchmColormap"))
         stop ("Internal error detected: cmap1 or cmap2 is not a colormap.  Please report.")
     if (cmap1@type != cmap2@type)
         return (FALSE);
@@ -633,7 +633,7 @@ addDefaultCovariateProperties <- function (props, missing.color, default.missing
 
 getSeriesProps <- function (label, props)
 {
-    if (class (props) == "ngchmColormap") {
+    if (is (props, "ngchmColormap")) {
         pts <- addDefaultCovariateProperties (props@points, props@missing, "black");
 	list (Covariate=vapply(pts,function(pt)label,""),
 	      Series=vapply(pts,function(pt)as.character(pt@value),""),
@@ -647,7 +647,7 @@ getSeriesProps <- function (label, props)
 }
 
 writeTemplate <- function (source.path, dest.path, substitutions, outDir) {
-    if ((class(source.path)=="character") && (length(substitutions) == 0)) {
+    if ((is(source.path, "character")) && (length(substitutions) == 0)) {
 	if (!file.copy (source.path, file.path (outDir, dest.path))) {
 	    stop (sprintf ("Unable to copy template file '%s' to '%s'", source.path,
 	                   file.path (outDir, dest.path)));
@@ -656,7 +656,7 @@ writeTemplate <- function (source.path, dest.path, substitutions, outDir) {
 	#                       shQuote (source.path),
 	#		       shQuote (file.path (outDir, dest.path))));
     } else {
-	if (class(source.path)=="character") {
+	if (is(source.path, "character")) {
 	    data <- readLines (source.path);
 	} else {
 	    data <- source.path ();
@@ -725,7 +725,7 @@ getValueExpr <- function (tflist, type, where) {
     if (length (idx) == 0)
         stop (sprintf ("chmMake: internal error detected: unable to find value expression for type '%s'. Please report.", type));
     b <- tflist$builders[[idx[1]]];
-    if (class(b) == "ngchmAxisType") {
+    if (is(b, "ngchmAxisType")) {
 	if (where == "axis") {
 	    return (sprintf ("_chm_e(s,a,%s)", b@func@name));
 	}
@@ -738,7 +738,7 @@ getValueExpr <- function (tflist, type, where) {
 	else {
 	    stop (sprintf ("chmMake: internal error detected: unknown getValueExpr location '%s'. Please report.", where));
 	}
-    } else if (class(b) == "ngchmTypeMapper") {
+    } else if (is (b, "ngchmTypeMapper")) {
         if (b@op == "expr") {
             return (sprintf ("%s.%s", getValueExpr(tflist, b@fromtype, where), b@params$expr));
         } else if (b@op == "field") {
@@ -758,7 +758,7 @@ getFnsRqrd <- function (tflist, type) {
     if (length (idx) == 0)
         stop (sprintf ("chmMake: internal error detected: unable to find value expression for type '%s'. Please report.", type));
     b <- tflist$builders[[idx[1]]];
-    if (class(b) == "ngchmTypeMapper") {
+    if (is(b, "ngchmTypeMapper")) {
         return (c (idx, getFnsRqrd(tflist, b@fromtype)));
     } else {
         return (idx);
@@ -938,28 +938,28 @@ writeOrder <- function (inpDir, type, ord) {
         } else {
             stop ('Unexpected shaid type: ', ord@type);
         }
-    } else if (class (ord) == "character") {
+    } else if (is (ord, "character")) {
 	filename <- file.path (inpDir, sprintf ("%s.txt", type));
         write.table (ord, filename, quote=FALSE, row.names=FALSE, col.names=FALSE, eol='\n')
-    } else if ((class (ord) == "dendrogram") || (class (ord) == "hclust")) {
+    } else if (is (ord, "dendrogram") || is (ord, "hclust")) {
 	sink (file.path (inpDir, sprintf ("dendro_%s.str", type)))
-	if (class (ord) == "hclust")
+	if (is (ord, "hclust"))
 	    ord <- stats::as.dendrogram (ord);
 	nr.str.dendrogram (ord);
 	sink (NULL);
-    } else if (class (ord) == "fileContent") {
+    } else if (is (ord, "fileContent")) {
 	filename <- (paste (inpDir, sprintf ("dendro_%s.str", type), sep="/"));
 	ff <- file (filename, "wb");
 	writeBinLines (ord, ff);
 	close (ff);
-    } else if (class (ord) == "file") {
+    } else if (is (ord, "file")) {
 	stop ("Internal error detected: axis order type file should not be here. Please report.");
 	filename <- (paste (inpDir, sprintf ("dendro_%s.str", type), sep="/"));
 	content <- readLines (ord);
 	ff <- file (filename, "wb");
 	writeBinLines (content, ff);
 	close (ff);
-    } else if (class (ord) == "NULL") {
+    } else if (is (ord, "NULL")) {
         # Do nothing.
     } else {
         stop (sprintf ("chmWriteOrder: unknown class of %s order: '%s'", type, class(ord)));
@@ -1158,7 +1158,7 @@ setMethod ("chmMake",
 
     chm <- chmFixVersion (chm);
     # Compute row and column orders if required.
-    while ((length(chm@rowOrder) > 0) && (class(chm@rowOrder) == "function")) {
+    while ((length(chm@rowOrder) > 0) && (is(chm@rowOrder, "function"))) {
 	genSpecFeedback (0, "determining row order");
         chm@rowOrder <- chm@rowOrder (chm);
     }
@@ -1171,7 +1171,7 @@ setMethod ("chmMake",
     } else if (is(chm@rowOrder,"character")) {
         chm@rowOrder <- chmUserLabelsToShaid (chm@rowOrder);
     }
-    while ((length(chm@colOrder) > 0) && (class(chm@colOrder) == "function")) {
+    while ((length(chm@colOrder) > 0) && (is(chm@colOrder, "function"))) {
 	genSpecFeedback (10, "determining column order");
         chm@colOrder <- chm@colOrder (chm);
     }
@@ -1717,9 +1717,9 @@ setMethod ("chmAddCovariateBar",
     definition = function (chm, where, covar, ...) {
         chm <- chmFixVersion (chm);
 	for (item in covar) {
-	    if (class(item) == "ngchmBar") {
+	    if (is(item, "ngchmBar")) {
 	        bar <- item;
-	    } else if (class(item) == "ngchmCovariate") {
+	    } else if (is(item, "ngchmCovariate")) {
 		bar <- chmNewCovariateBar (item, ...);
 	    } else {
 	        stop (sprintf ('adding unknown object of unknown class "%s"', class(item)));
@@ -1792,7 +1792,7 @@ setReplaceMethod ("chmRowOrder",
     signature = c(chm="ngchm", value="optDendrogram"),
     definition = function (chm, value) {
         chm <- chmFixVersion (chm);
-	if (class(value) == "file") {
+	if (is(value, "file")) {
 	    value <- readLines (value);
 	    class(value) <- "fileContent";
 	}
@@ -1808,7 +1808,7 @@ setReplaceMethod ("chmColOrder",
     signature = c(chm="ngchm", value="optDendrogram"),
     definition = function (chm, value) {
         chm <- chmFixVersion (chm);
-	if (class(value) == "file") {
+	if (is(value, "file")) {
 	    value <- readLines (value);
 	    class(value) <- "fileContent";
 	}

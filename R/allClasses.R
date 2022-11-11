@@ -821,7 +821,7 @@ setMethod("initialize", "ngchmVersion2",
 			if (!missing(rowOrderMethod)) { .Object@rowOrderMethod <- rowOrderMethod } else { .Object@rowOrderMethod <- "User" }
 			if (!missing(colOrderMethod)) { .Object@colOrderMethod <- colOrderMethod } else { .Object@colOrderMethod <- "User" }
 			if (!missing(rowCutLocations) & !is.null(rowCutLocations)) { 
-				if (class(rowCutLocations) == "treeCuts") {
+				if (is(rowCutLocations, "treeCuts")) {
 					.Object@rowTreeCuts <- rowCutLocations@numberOfCuts
 					.Object@rowCutLocations <- NULL
 				} else {
@@ -843,7 +843,7 @@ setMethod("initialize", "ngchmVersion2",
 			if (!missing(rowDisplayLength)) { .Object@rowDisplayLength <- rowDisplayLength } else { .Object@rowDisplayLength <- NULL }
 			if (!missing(rowDisplayAbbreviation)) { .Object@rowDisplayAbbreviation <- rowDisplayAbbreviation } else { .Object@rowDisplayAbbreviation<- NULL }
 			if (!missing(colCutLocations) & !is.null(colCutLocations)) { 
-				if (class(colCutLocations) == "treeCuts") {
+				if (is(colCutLocations, "treeCuts")) {
 					.Object@colTreeCuts <- colCutLocations@numberOfCuts
 					.Object@colCutLocations <- NULL
 				} else {

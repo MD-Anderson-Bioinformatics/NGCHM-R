@@ -52,7 +52,7 @@ covariateBarsFromJSON <- function (hm, cvr, js) {
     	stopifnot (jj$class == "ngchmBar");
 	typeProto <- if (jj$type == "discrete") "a" else 1;
 	values <- as.matrix(new("shaid", type=jj$data$type, value=jj$data$value), typeProto=typeProto);
-	if (class(values) == "matrix") values <- values[,1];
+	if (is(values, "matrix")) values <- values[,1];
 	cv <- chmNewCovariate (fullname=jj$label, values=values, value.properties=cvr[[jj$renderer+1]], type=jj$type);
 	chmNewCovariateBar (cv, display=jj$display, thickness=jj$thickness, merge=jj$merge)
     })
