@@ -25,6 +25,7 @@ where BASENAME is specified by the parameter basename (default UMAP) and N range
 added covariate bars.
 }
 \examples{
+data(TCGA.GBM.EXPR, package='NGCHMDemoData');
 umc <- umap::umap(t(TCGA.GBM.EXPR));
 hm <- chmNew ("gbm", TCGA.GBM.EXPR);
 hm <- chmAddUMAP(hm, "column", umc);

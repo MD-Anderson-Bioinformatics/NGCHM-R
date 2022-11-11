@@ -32,6 +32,7 @@ Their values must match those on that axis of the NGCHM, but their order must ma
 matrix passed to \code{\link[uwot:umap]{uwot::umap()}}.
 }
 \examples{
+data(TCGA.GBM.EXPR, package='NGCHMDemoData');
 umc <- uwot::umap(t(TCGA.GBM.EXPR));
 hm <- chmNew ("gbm", TCGA.GBM.EXPR);
 hm <- chmAddUWOT(hm, "column", umc, colnames(TCGA.GBM.EXPR));

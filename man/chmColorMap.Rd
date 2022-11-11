@@ -21,7 +21,8 @@ An ngchmColormap
 Get the color map of an NG-CHM object.
 }
 \examples{
-chmColorMap (chmNewDataLayer('New layer', TCGA.GBM.EXPR[1:3,1:3))
+data(TCGA.GBM.EXPR, package='NGCHMDemoData');
+chmColorMap (chmNewDataLayer('New layer', TCGA.GBM.EXPR[1:3,1:3]))
 
 }
 \seealso{

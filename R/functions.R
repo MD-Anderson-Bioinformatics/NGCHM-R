@@ -1528,7 +1528,8 @@ chmLabel <- function (x) {
 #' @export
 #'
 #' @examples
-#' chmColorMap (chmNewDataLayer('New layer', TCGA.BRCA.ExpressionData[1:3,1:3]))
+#' data(TCGA.GBM.EXPR, package='NGCHMDemoData');
+#' chmColorMap (chmNewDataLayer('New layer', TCGA.GBM.EXPR[1:3,1:3]))
 #'
 #' @seealso [chmNewColorMap]
 #'
@@ -1552,7 +1553,8 @@ chmColorMap <- function (x) {
 #' @export
 #'
 #' @examples
-#' chmColorMap (chmNewDataLayer('New layer', TCGA.BRCA.ExpressionData[1:3,1:3]), chmNewColormap (c(2,14));
+#' data(TCGA.GBM.EXPR, package='NGCHMDemoData');
+#' chmColorMap (chmNewDataLayer('New layer', TCGA.GBM.EXPR[1:3,1:3]), chmNewColormap (c(2,14));
 #'
 #' @seealso [chmColorMap]
 #'
@@ -1577,7 +1579,8 @@ chmColorMap <- function (x) {
 #' @export
 #'
 #' @examples
-#' chmColors (chmNewDataLayer('New Layer', TCGA.BRCA.ExpressionData[1:50,1:50))
+#' data(TCGA.GBM.EXPR, package='NGCHMDemoData');
+#' chmColors (chmNewDataLayer('New Layer', TCGA.GBM.EXPR[1:50,1:50))
 #'
 #' @seealso [ngchm-class]
 #'
@@ -3570,9 +3573,10 @@ writeBinLines <- function(text, con) {
 #' matrix passed to [Rtsne::Rtsne()].
 #'
 #' @examples
-#' rtc <- Rtsne::Rtsne(t(TCGA.BRCA.ExpressionData));
-#' hm <- chmNew ("brca", TCGA.BRCA.ExpressionData);
-#' hm <- chmAddTSNE(hm, "column", rtc, colnames(TCGA.BRCA.ExpressionData));
+#' data(TCGA.GBM.EXPR, package='NGCHMDemoData');
+#' rtc <- Rtsne::Rtsne(t(TCGA.GBM.EXPR));
+#' hm <- chmNew ("gbm", TCGA.GBM.EXPR);
+#' hm <- chmAddTSNE(hm, "column", rtc, colnames(TCGA.GBM.EXPR));
 #'
 #' @export
 #'
@@ -3617,8 +3621,9 @@ chmAddTSNE <- function (hm, axis, tsne, pointIds, basename = "TSNE") {
 #' parameter basename (default "PC") and N ranges from 1 to the number of added covariate bars.
 #'
 #' @examples
-#' prc <- prcomp(TCGA.BRCA.ExpressionData);
-#' hm <- chmNew ("brca", TCGA.BRCA.ExpressionData);
+#' data(TCGA.GBM.EXPR, package='NGCHMDemoData');
+#' prc <- prcomp(TCGA.GBM.EXPR);
+#' hm <- chmNew ("gbm", TCGA.GBM.EXPR);
 #' hm <- chmAddPCA(hm, "column", prc);
 #'
 #' @export
@@ -3665,8 +3670,9 @@ chmAddPCA <- function (hm, axis, prc, basename = "PC", ndim=2) {
 #' added covariate bars.
 #'
 #' @examples
-#' umc <- umap::umap(t(TCGA.BRCA.ExpressionData));
-#' hm <- chmNew ("brca", TCGA.BRCA.ExpressionData);
+#' data(TCGA.GBM.EXPR, package='NGCHMDemoData');
+#' umc <- umap::umap(t(TCGA.GBM.EXPR));
+#' hm <- chmNew ("gbm", TCGA.GBM.EXPR);
 #' hm <- chmAddUMAP(hm, "column", umc);
 #'
 #' @export
@@ -3715,9 +3721,10 @@ chmAddUMAP <- function (hm, axis, umap, basename = "UMAP") {
 #' matrix passed to [uwot::umap()].
 #'
 #' @examples
-#' umc <- uwot::umap(t(TCGA.BRCA.ExpressionData));
-#' hm <- chmNew ("brca", TCGA.BRCA.ExpressionData);
-#' hm <- chmAddUWOT(hm, "column", umc, colnames(TCGA.BRCA.ExpressionData));
+#' data(TCGA.GBM.EXPR, package='NGCHMDemoData');
+#' umc <- uwot::umap(t(TCGA.GBM.EXPR));
+#' hm <- chmNew ("gbm", TCGA.GBM.EXPR);
+#' hm <- chmAddUWOT(hm, "column", umc, colnames(TCGA.GBM.EXPR));
 #'
 #' @export
 #'

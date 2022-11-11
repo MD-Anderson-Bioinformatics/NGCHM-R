@@ -16,6 +16,7 @@ A character string vector of the map colors.
 Get the colors of an ngchmColormap, ngchmLayer, ngchmBar, or ngchmCovariate.
 }
 \examples{
+data(TCGA.GBM.EXPR, package='NGCHMDemoData');
 chmColors (chmNewDataLayer('New Layer', TCGA.GBM.EXPR[1:50,1:50))
 
 }

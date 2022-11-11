@@ -32,6 +32,7 @@ Their values must match those on that axis of the NGCHM, but their order must ma
 matrix passed to \code{\link[Rtsne:Rtsne]{Rtsne::Rtsne()}}.
 }
 \examples{
+data(TCGA.GBM.EXPR, package='NGCHMDemoData');
 rtc <- Rtsne::Rtsne(t(TCGA.GBM.EXPR));
 hm <- chmNew ("gbm", TCGA.GBM.EXPR);
 hm <- chmAddTSNE(hm, "column", rtc, colnames(TCGA.GBM.EXPR));

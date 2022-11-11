@@ -27,6 +27,7 @@ Coordinates are given names 'BASENAME.coordinate.N', where BASENAME is specified
 parameter basename (default "PC") and N ranges from 1 to the number of added covariate bars.
 }
 \examples{
+data(TCGA.GBM.EXPR, package='NGCHMDemoData');
 prc <- prcomp(TCGA.GBM.EXPR);
 hm <- chmNew ("gbm", TCGA.GBM.EXPR);
 hm <- chmAddPCA(hm, "column", prc);
