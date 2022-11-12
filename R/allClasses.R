@@ -871,9 +871,9 @@ setMethod("initialize", "ngchmVersion2",
 			if (!missing(dialogs)) { .Object@dialogs <- dialogs } else { .Object@dialogs <- NULL }
 			if (!missing(tags)) { .Object@tags <- tags } else { .Object@tags <- c() }
 			if (!missing(css)) { .Object@css <- css } else { .Object@css <- c() }
-			if (!missing(rowTypeFunctions)) { .Object@rowTypeFunctions <- rowTypFunctions } else { .Object@rowTypeFunctions <- NULL }
-			if (!missing(colTypeFunctions)) { .Object@colTypeFunctions <- colTypFunctions } else { .Object@colTypeFunctions <- NULL }
-			if (!missing(elementTypeFunctions)) { .Object@elementTypeFunctions <- elementTypFunctions } else { .Object@elementTypeFunctions <- NULL }
+			if (!missing(rowTypeFunctions)) { .Object@rowTypeFunctions <- rowTypeFunctions } else { .Object@rowTypeFunctions <- NULL }
+			if (!missing(colTypeFunctions)) { .Object@colTypeFunctions <- colTypeFunctions } else { .Object@colTypeFunctions <- NULL }
+			if (!missing(elementTypeFunctions)) { .Object@elementTypeFunctions <- elementTypeFunctions } else { .Object@elementTypeFunctions <- NULL }
 			if (!missing(extrafiles)) { .Object@extrafiles <- extrafiles } else { .Object@extrafiles <- c() }
 			if (!missing(extrascripts)) { .Object@extrascripts <- extrascripts } else { .Object@extrascripts <- c() }
 			if (!missing(properties)) { .Object@properties <- properties } else { .Object@properties <- c() }

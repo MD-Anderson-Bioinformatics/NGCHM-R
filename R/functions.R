@@ -630,7 +630,7 @@ assign('chmLayer<-', function (x, label, colors, summarizationMethod, cuts_color
     stopifnot (!missing(x), is(x, "ngchm"));
     stopifnot (missing(label) || length(label) == 1);
     stopifnot (!missing(value), isany(value, c("matrix", "ngchmLayer")));
-    hm <- NGCHM:::chmFixVersion (x);
+    hm <- chmFixVersion (x);
     # Convert label into a numeric layeridx and a character label
     if (missing(label)) {
 	layeridx <- length(hm@layers)+1;
@@ -671,7 +671,7 @@ assign('chmLayer<-', function (x, label, colors, summarizationMethod, cuts_color
 	if (!missing(summarizationMethod)) newlayer@summarizationMethod <- summarizationMethod;
 	if (!missing(cuts_color)) newlayer@cuts_color <- cuts_color;
     }
-    NGCHM:::validateNewLayer (hm, newlayer);
+    validateNewLayer (hm, newlayer);
     if (layeridx == 0) {
 	hm@layers <- c (newlayer, hm@layers);
     } else {
@@ -2560,7 +2560,7 @@ validateNewAxisOrder <- function (chm, where, order)
 validateAxisOrder <- function (chm, where, layername, labels, order)
 {
     # NULL order allowed.
-    if (length(order) == 0) return;
+    if (length(order) == 0) return();
     # Convert other order types in a label vector.
     if (is(order, "dendrogram")) {
         order <- labels(order);

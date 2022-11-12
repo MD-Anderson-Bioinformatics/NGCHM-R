@@ -9,7 +9,7 @@ as.matrix.ngchmBar <- function (x, ...) {
 
 as.matrix.shaid <- function (x, ..., typeProto=1, debug=FALSE) {
     stopifnot (is(x,"shaid"), x@type=='dataset');
-    repo <- NGCHM:::ngchmFindRepo (x, FALSE);
+    repo <- ngchmFindRepo (x, FALSE);
     if (length(repo) == 0) {
         stop("Unable to locate data matrix on a connected shaidy server");
     }
@@ -17,9 +17,9 @@ as.matrix.shaid <- function (x, ..., typeProto=1, debug=FALSE) {
 	localrepo <- repo;
 	scb <- NULL;
     } else {
-        scb <- shaidyCopyBlob (repo, x, NGCHM:::ngchm.env$tmpShaidy);
+        scb <- shaidyCopyBlob (repo, x, ngchm.env$tmpShaidy);
         if (length(scb) == 0) stop("Unable to locate data matrix on a connected shaidy server");
-	localrepo <- NGCHM:::ngchm.env$tmpShaidy;
+	localrepo <- ngchm.env$tmpShaidy;
     }
     mat <- tsvio::tsvGetData (localrepo$blob.path (x, 'matrix.tsv'), localrepo$blob.path (x, 'index.tsv'), NULL, NULL, typeProto);
     if (debug) list (x=x, repo=repo, scb=scb, localrepo=localrepo, mat=mat) else mat
