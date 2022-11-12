@@ -1,12 +1,16 @@
 Package: NGCHM
 Type: Package
 Title: Utilities for Creating Next Generation Clustered Heat Maps
-Version: 0.13.0
-Date: 2021-04-21
-Author: Bradley Broom
-Maintainer: Bradley Broom <bmbroom@mdanderson.org>
+Version: 0.13.1
+Date: 2022-11-12
+Authors@R:
+  c(person(given=c("Bradley", "M"), family="Broom", role=c("aut","cre"), email="bmbroom@mdanderson.org", comment=c(ORCID="0000-0002-0915-3164")),
+    person(given=c("Mary", "A"), family="Rohrdanz", role=c("aut"), email="marohrdanz@mdanderson.org"),
+    person(given="Chris", family="Wakefield", role=c("ctb"), email="cwakefield@mdanderson.org"),
+    person(given="James", family="Melott", role=c("ctb"), email="jmmelott@mdanderson.org"),
+    person(given="MD Anderson Cancer Center", role=c("cph")))
 Depends:
-    R (>= 3.2.0)
+    R (>= 3.4.0)
 Imports:
     methods,
     utils,
@@ -16,9 +20,7 @@ Imports:
     httr,
     jsonlite,
     logger (>= 0.2.0),
-    tsvio,
-    NGCHMSupportFiles,
-    NGCHMDemoData
+    tsvio
 Description: Utilities for creating Next Generation Clustered Heat Maps.
 License: GPL-3
 Collate:
@@ -35,10 +37,9 @@ Collate:
 Suggests:
     testthat,
     knitr,
-    rmarkdown
-Remotes:
-    bmbroom/tsvio,
-    MD-Anderson-Bioinformatics/NGCHMSupportFiles,
-    MD-Anderson-Bioinformatics/NGCHMDemoData
+    rmarkdown,
+    NGCHMSupportFiles,
+    NGCHMDemoData
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.1.1
+RoxygenNote: 7.2.1
+Encoding: UTF-8
