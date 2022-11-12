@@ -1,6 +1,9 @@
-^.git$
+^\.git$
+^\.gitignore$
 ^\.github$
 ^_pkgdown\.yml$
 ^docs$
 ^pkgdown$
 ^index.md$
+^index.Rmd$
+^NGCHM-R.git.Rproj$
