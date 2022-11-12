@@ -3753,68 +3753,110 @@ chmAddUWOT <- function (hm, axis, uwot, pointIds, basename = "UMAP") {
 	return (hm);
 };
 
-#' Add Single Cell reduced dimension coordinates to an NG-CHM.
+#' Generic method to get a dimensions matrix from obj.
 #'
-#' Add SingleCellExperiment::reducedDim or Seurat reduced dimension coordinates from a single cell object sce
-#' as hidden covariate bars to an axis of an NG-CHM.  dimName specifies the name of the reduced
-#' dimension of interest in sce.  One hidden covariate bar is added for each coordinate.
+#' The return value must be NULL or a numeric matrix, each column of which is a (reduced) dimension.
+#' The rows of the returned matrix must be named.
+#'
+#' @name getDimensions
+#' @rdname getDimensions-method
+#' @param obj The object from which to obtain the dimension(s).
+#' @param ... Additional class-specific parameters for specifying the desired dimension.
+#' @return A matrix with one dimension per column and one named row per observation in obj.
+#' @export
+#'
+#' @seealso [chmAddReducedDim()]
+#'
+getDimensions <- function (obj, ...) {
+    UseMethod ("getDimensions", obj);
+};
+
+getDimensions.default <- function (obj, ...) {
+    return (NULL);
+};
+
+#' Add reduced dimension coordinates to an NG-CHM.
+#'
+#' Add (reduced) dimension coordinates from an object obj
+#' as hidden covariate bars to an axis of an NG-CHM.  Depending on the object type, dimName and dimAxis
+#' can be used to specify the name of the dimension of interest in obj.
+#'
+#' One hidden covariate bar is added for each coordinate obtained from `obj`.
 #' If specified, maxDim limits the maximum number of covariate bars added to the chm.
+#'
 #' Coordinates have names 'BASENAME.coordinate.N', where BASENAME is specified by the parameter
 #' basename (defaults to dimName if omitted) and N ranges from 1 to the number of added covariate bars.
 #'
+#' `obj` can be a numeric matrix, each column of which is a (reduced) dimension.  In this case, dimName and dimAxis
+#' are not used for obtaining the reduced dimension.  The number of rows of the matrix must equal the size of the specified
+#' NGCHM axis and each row of the matrix must be uniquely named using the names from that axis of the NG-CHM.
+#'
+#' `obj` can also be an instance of class className if there exists an S3 method getDimensions.className.
+#' The method takes the object as its first parameter and up to two optional parameters, dimName and dimAxis,
+#' that can be used to specify the desired dimension.  The method's return value is a matrix similar to
+#' the one described in the preceding paragraph.  This package defines methods for classes `prcomp` and `umap`.
+#'
 #' @examples
-#' hm <- chmAddReducedDim(hm, "column", sce, "PCA", 3, "PC");
-#' hm <- chmAddReducedDim(hm, "column", sce, "TSNE");
+#' hm <- chmAddReducedDim(hm, "column", obj, "PCA", 3, "PC");
+#' hm <- chmAddReducedDim(hm, "column", obj, "TSNE");
 #'
 #' @export
 #'
 #' @param hm The NGCHM to add the coordinates to.
 #' @param axis The NGCHM axis ("row" or "column") to add the coordinates to.
-#' @param sce An object containing the reduced dimension.
-#' @param dimName The name of the reduced dimension to create covariate bars for.
+#' @param obj An object containing the (reduced) dimension.
+#' @param dimName The name of the (reduced) dimension to create covariate bars for.
 #' @param maxDim The maximum number of coordinates to add (default all).
 #' @param basename The prefix to use for the coordinate names (defaults to dimName).
-#' @param dimAxis The axis on the sce object containing the named dimension.
+#' @param dimAxis The axis on obj containing the named dimension, if applicable.
 #'
 #' @return The NGCHM with added coordinates.
 #' @seealso [chmAddPCA()]
 #' @seealso [chmAddTSNE()]
 #' @seealso [chmAddUMAP()]
 #' @seealso [chmAddUWOT()]
+#' @seealso [getDimensions()]
 
-chmAddReducedDim <- function (hm, axis, sce, dimName, maxDim, basename, dimAxis) {
-    layout <- NULL;
+chmAddReducedDim <- function (hm, axis, obj, dimName, maxDim, basename, dimAxis) {
+    stopifnot (is (hm, "ngchmVersion2"));
+    stopifnot (is (axis, "character") && length(axis) == 1);
+
+    # Initially try to use generic getDimension method.
+    layout <- getDimensions (obj, dimName, dimAxis);
     # Try hard to find an applicable reducedDim method
-    if (is (sce, "SingleCellExperiment")) {
-        layout <- SingleCellExperiment::reducedDim (sce, dimName);
-    } else if (is (sce, "Seurat")) {
-        layout <- sce@reductions[[dimName]]@cell.embeddings;
-    } else {
-	pkg <- attr(class(sce), 'package');
+    if (is.null(layout)) {
+	pkg <- attr(class(obj), 'package');
 	if (length(pkg) != 0) {
 	    ns <- tryCatch (loadNamespace(pkg), error = function(e) e);
 	    if (!is(ns, 'error') && exists('reducedDim',ns)) {
 		if (missing(dimAxis)) {
-		    layout <- get('reducedDim',ns) (sce, dimName);
+		    layout <- get('reducedDim',ns) (obj, dimName);
 		} else {
-		    layout <- get('reducedDim',ns) (sce, dimName, axis=dimAxis);
+		    layout <- get('reducedDim',ns) (obj, dimName, axis=dimAxis);
 		}
 	    }
 	}
     }
-    if (length(layout) == 0) {
+    if (is.null(layout)) {
 	# Last chance: try .GlobalEnv
 	if (exists ('reducedDim')) {
 	    if (missing(dimAxis)) {
-		layout <- get('reducedDim') (sce, dimName);
+		layout <- get('reducedDim') (obj, dimName);
 	    } else {
-		layout <- get('reducedDim') (sce, dimName, axis=dimAxis);
+		layout <- get('reducedDim') (obj, dimName, axis=dimAxis);
 	    }
+	} else if (is (obj, "matrix")) {
+	    layout <- obj;
 	} else {
-	    stop ("Unable to get reduced dimension from single cell object");
+	    stop ("Unable to get reduced dimension from object");
 	}
     }
-    if (missing(maxDim)) maxDim <- ncol (layout);
+    stopifnot (is (layout, "matrix"));
+    if (missing(maxDim)) {
+	maxDim <- ncol (layout);
+    } else {
+	stopifnot (maxDim <= ncol(layout));
+    }
     if (missing(basename)) basename <- dimName;
     for (idx in 1:maxDim) {
         coordname <- sprintf ("%s.coordinate.%d", basename, idx);
@@ -3827,6 +3869,25 @@ chmAddReducedDim <- function (hm, axis, sce, dimName, maxDim, basename, dimAxis)
 	hm <- chmAddCovariateBar (hm, axis, cv, display="hidden");
     }
     return (hm);
+};
+
+#' @rdname getDimensions-method
+#' @aliases getDimensions,prcomp
+getDimensions.prcomp = function (obj, ...) {
+    return (obj$rotation);
+};
+
+#' @rdname getDimensions-method
+#' @aliases getDimensions,umap
+getDimensions.umap = function (obj, ...) {
+    return (obj$layout);
+};
+
+#' @rdname getDimensions-method
+#' @aliases getDimensions,Seurat
+#' @param dimName The name of the dimension matrix to obtain.
+getDimensions.Seurat = function (obj, dimName, ...) {
+    return (obj@reductions[[dimName]]@cell.embeddings);
 };
 
 #' Helper function to cast variables as integers.
