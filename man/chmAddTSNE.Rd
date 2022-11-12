@@ -15,7 +15,7 @@ chmAddTSNE(hm, axis, tsne, pointIds, basename = "TSNE")
 
 \item{pointIds}{The NGCHM names for the data points in tsne}
 
-\item{baseName}{The prefix to use for the coordinate names.}
+\item{basename}{The prefix to use for the coordinate names.}
 }
 \value{
 The NGCHM with added coordinates.

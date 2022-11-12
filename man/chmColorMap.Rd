@@ -7,7 +7,7 @@
 chmColorMap(x)
 }
 \arguments{
-\item{hm}{The NG-CHM object to get the color map of.  Can be:
+\item{x}{The NG-CHM object to get the color map of.  Can be:
 \itemize{
 \item An object of class ngchmLayer
 \item An object of class ngchmBar

@@ -13,7 +13,7 @@ chmAddUMAP(hm, axis, umap, basename = "UMAP")
 
 \item{umap}{TSNE coordinates (output of \code{\link[umap:umap]{umap::umap()}}) for the specified NGCHM axis.}
 
-\item{baseName}{The prefix to use for the coordinate names.}
+\item{basename}{The prefix to use for the coordinate names.}
 }
 \value{
 The NGCHM with added coordinates.

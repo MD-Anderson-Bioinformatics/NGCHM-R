@@ -13,9 +13,9 @@ chmAddPCA(hm, axis, prc, basename = "PC", ndim = 2)
 
 \item{prc}{Principal component coordinates (output of \code{\link[stats:prcomp]{stats::prcomp()}}) for the specified NGCHM axis.}
 
-\item{ndim}{The maximum number of coordinates to add.}
+\item{basename}{The prefix to use for the coordinate names.}
 
-\item{baseName}{The prefix to use for the coordinate names.}
+\item{ndim}{The maximum number of coordinates to add.}
 }
 \value{
 The NGCHM with added coordinates.

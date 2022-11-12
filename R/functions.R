@@ -167,6 +167,8 @@ ngchmGetEnv <- function () {
 #' @param rowGapWidth Width of row gaps (default: 5 rows)
 #' @param colGapWidth Width of col gaps (default: 5 cols)
 #' @param overview The format(s) of overview image(s) to create (default: None).
+#' @param logLevel The level of logs to output
+#' @param logFile The file to which logs should be output
 #' @importFrom logger log_debug
 #' @importFrom logger log_error
 #'
@@ -1453,7 +1455,7 @@ chmProperties <- function (...) {
 
 #' Get the label/name of an NG-CHM object.
 #'
-#' @param hm The NG-CHM object to get the label/name of.  Can be:
+#' @param x The NG-CHM object to get the label/name of.  Can be:
 #'
 #' * An object of class ngchm
 #' * An object of class ngchmLayer
@@ -1517,7 +1519,7 @@ chmLabel <- function (x) {
 
 #' Get the color map of an NG-CHM object.
 #'
-#' @param hm The NG-CHM object to get the color map of.  Can be:
+#' @param x The NG-CHM object to get the color map of.  Can be:
 #'
 #' * An object of class ngchmLayer
 #' * An object of class ngchmBar
@@ -3584,7 +3586,7 @@ writeBinLines <- function(text, con) {
 #' @param axis The NGCHM axis ("row" or "column") to add the coordinates to
 #' @param tsne TSNE coordinates (output of [Rtsne::Rtsne()]) for the specified NGCHM axis
 #' @param pointIds The NGCHM names for the data points in tsne
-#' @param baseName The prefix to use for the coordinate names.
+#' @param basename The prefix to use for the coordinate names.
 #'
 #' @return The NGCHM with added coordinates.
 #' @seealso [chmAddPCA()]
@@ -3631,7 +3633,7 @@ chmAddTSNE <- function (hm, axis, tsne, pointIds, basename = "TSNE") {
 #' @param hm The NGCHM to add the coordinates to.
 #' @param axis The NGCHM axis ("row" or "column") to add the coordinates to.
 #' @param prc Principal component coordinates (output of [stats::prcomp()]) for the specified NGCHM axis.
-#' @param baseName The prefix to use for the coordinate names.
+#' @param basename The prefix to use for the coordinate names.
 #' @param ndim The maximum number of coordinates to add.
 #'
 #' @return The NGCHM with added coordinates.
@@ -3680,7 +3682,7 @@ chmAddPCA <- function (hm, axis, prc, basename = "PC", ndim=2) {
 #' @param hm The NGCHM to add the coordinates to.
 #' @param axis The NGCHM axis ("row" or "column") to add the coordinates to.
 #' @param umap TSNE coordinates (output of [umap::umap()]) for the specified NGCHM axis.
-#' @param baseName The prefix to use for the coordinate names.
+#' @param basename The prefix to use for the coordinate names.
 #'
 #' @return The NGCHM with added coordinates.
 #' @seealso [chmAddPCA()]
@@ -3935,8 +3937,8 @@ castListAsInteger <- function(listToCast) {
 #'
 #' If not numeric, print error message and stop.
 #'
-#' @param listToCast List to cast as integer
-#' @return list with members cast to integers
+#' @param variableToCheck The variable to check for being numeric.
+#' @return TRUE
 verifyNumeric <- function(variableToCheck) {
 	if (!is.numeric(variableToCheck)) {
 		log_error("Variable '",deparse(substitute(variableToCheck)),"' must be numeric.")
