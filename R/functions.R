@@ -616,6 +616,7 @@ chmLayer <- function (hm, label) {
 #'
 #' @return An object of class ngchm.
 #'
+#' @name chmLayer<-
 #' @export
 #'
 #' @examples
