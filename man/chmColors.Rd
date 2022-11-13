@@ -17,7 +17,7 @@ Get the colors of an ngchmColormap, ngchmLayer, ngchmBar, or ngchmCovariate.
 }
 \examples{
 data(TCGA.GBM.EXPR, package='NGCHMDemoData');
-chmColors (chmNewDataLayer('New Layer', TCGA.GBM.EXPR[1:50,1:50))
+chmColors (chmNewDataLayer('New Layer', TCGA.GBM.EXPR[1:50,1:50]))
 
 }
 \seealso{

@@ -18,6 +18,7 @@ The modified NG-CHM object.
 Set the label/name of an NG-CHM object
 }
 \examples{
+hm <- chmNew ("Old name");
 chmLabel (hm) <- "A new name";
 
 }

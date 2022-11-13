@@ -31,6 +31,7 @@
 #' @import htmltools
 #'
 #' @examples
+#' library(NGCHMSupportFiles)
 #' data(TCGA.GBM.EXPR, package='NGCHMDemoData');
 #' chm1 <- chmNew('gbm', TCGA.GBM.EXPR[1:50,1:50],
 #'    rowAxisType='bio.gene.hugo',

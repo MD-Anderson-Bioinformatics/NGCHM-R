@@ -36,8 +36,11 @@ An object of class ngchm.
 This function sets a Data Layer in a Next Generation Clustered Heat Map.
 }
 \examples{
+data(TCGA.GBM.Demo, package='NGCHMDemoData');
+matrix <- TCGA.GBM.ExpressionData[1:50,1:50];
+hm <- chmNew ('New Heat Map');
 chmLayer (hm, "Layer 1") <- matrix;
-chmLayer (hm, 1, cuts_color = "#fefefe") <- chmNewDataLayer ("New data layer", matrix);
+chmLayer (hm, 1, cuts_color = "#fefefe") <- chmNewDataLayer ("New data layer", matrix+1);
 
 }
 \seealso{

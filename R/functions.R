@@ -549,7 +549,7 @@ chmNewDataLayer <- function (label, data, colors, summarizationMethod, cuts_colo
     summarizationMethod = match.arg (summarizationMethod, c("average", "sample", "mode"));
     data <- ngchmSaveAsDatasetBlob (ngchm.env$tmpShaidy, 'tsv', data);
     if (length(colors) == 0)
-	colors <- chmNewColorMap (data, c("#0010a0", "#f0f0f0", "#a01000"), missing='#ff00ff'); # Blue, Off-white, Red. Missing=bright magenta.
+	colors <- chmNewColorMap (data, c("#0010a0", "#f0f0f0", "#a01000"), missing.color='#ff00ff'); # Blue, Off-white, Red. Missing=bright magenta.
     new (Class="ngchmLayer", name=label, data=data, colors=colors, summarizationMethod=summarizationMethod, cuts_color=cuts_color)
 };
 
@@ -567,8 +567,11 @@ chmNewDataLayer <- function (label, data, colors, summarizationMethod, cuts_colo
 #' @export
 #'
 #' @examples
-#' layer <- chmLayer (hm, "Layer 1")
-#' layer <- chmLayer (hm, 1)
+#' data(TCGA.GBM.Demo, package='NGCHMDemoData');
+#' matrix <- TCGA.GBM.ExpressionData[1:50,1:50];
+#' hm <- chmNew ('New Heat Map') + chmNewDataLayer ('Layer 1', matrix);
+#' layer <- chmLayer (hm, "Layer 1");
+#' layercopy <- chmLayer (hm, 1);
 #'
 #' @seealso [ngchmLayer-class]
 #'
@@ -623,8 +626,11 @@ chmLayer <- function (hm, label) {
 #' @export
 #'
 #' @examples
+#' data(TCGA.GBM.Demo, package='NGCHMDemoData');
+#' matrix <- TCGA.GBM.ExpressionData[1:50,1:50];
+#' hm <- chmNew ('New Heat Map');
 #' chmLayer (hm, "Layer 1") <- matrix;
-#' chmLayer (hm, 1, cuts_color = "#fefefe") <- chmNewDataLayer ("New data layer", matrix);
+#' chmLayer (hm, 1, cuts_color = "#fefefe") <- chmNewDataLayer ("New data layer", matrix+1);
 #'
 #' @seealso [ngchmLayer-class]
 #' @seealso chmNewDataLayer
@@ -870,7 +876,11 @@ chmNewCovariate <- function (fullname, values, value.properties=NULL, type=NULL,
 #' @export
 #'
 #' @examples
-#' chmCovariate (dataset, "Age")
+#' data(TCGA.GBM.Demo, package='NGCHMDemoData');
+#' dataset <- chmNewDataset ("gbmexpr", "TCGA GBM Expression Data", TCGA.GBM.ExpressionData);
+#' dataset <- chmAddCovariate (dataset, "column",
+#'                chmNewCovariate("TP53 Mutation", TCGA.GBM.TP53MutationData));
+#' chmCovariate (dataset, "TP53 Mutation");
 #'
 #' @seealso [ngchmCovariate-class]
 #' @seealso chmNewCovariate
@@ -1028,7 +1038,11 @@ ngchmNewBar <- function (label, type, data, colors=NULL, display="visible", thic
 #' @export
 #'
 #' @examples
-#' chmCovariateBar (hm, "Age")
+#' data(TCGA.GBM.Demo, package='NGCHMDemoData');
+#' hm <- chmNew ("gbmexpr", TCGA.GBM.ExpressionData[1:50,1:50]);
+#' hm <- chmAddCovariateBar (hm, "column",
+#'                chmNewCovariate("TP53 Mutation", TCGA.GBM.TP53MutationData[1:50]));
+#' chmCovariateBar (hm, "TP53 Mutation");
 #'
 #' @seealso [ngchmBar-class]
 #' @seealso chmNewCovariateBar
@@ -1380,6 +1394,7 @@ chmNewProperty <- function (label, value) {
 #' @export
 #'
 #' @examples
+#' hm <- chmNew ("Empty");
 #' chmProperty (hm, "chm.info.caption")
 #'
 #' @seealso [ngchm-class]
@@ -1406,6 +1421,7 @@ chmProperty <- function (hm, label) {
 #' @export
 #'
 #' @examples
+#' hm <- chmNew("Empty");
 #' chmProperty (hm, "chm.info.caption") <- "Nothing to see here";
 #'
 #' @seealso [ngchm-class]
@@ -1497,6 +1513,7 @@ chmLabel <- function (x) {
 #' @export
 #'
 #' @examples
+#' hm <- chmNew ("Old name");
 #' chmLabel (hm) <- "A new name";
 #'
 #' @seealso [chmLabel]
@@ -1557,7 +1574,8 @@ chmColorMap <- function (x) {
 #'
 #' @examples
 #' data(TCGA.GBM.EXPR, package='NGCHMDemoData');
-#' chmColorMap (chmNewDataLayer('New layer', TCGA.GBM.EXPR[1:3,1:3]), chmNewColormap (c(2,14));
+#' dataLayer <- chmNewDataLayer('GBM layer', TCGA.GBM.EXPR[1:30,1:30]);
+#' chmColorMap (dataLayer) <- chmNewColorMap (c(2,14));
 #'
 #' @seealso [chmColorMap]
 #'
@@ -1583,7 +1601,7 @@ chmColorMap <- function (x) {
 #'
 #' @examples
 #' data(TCGA.GBM.EXPR, package='NGCHMDemoData');
-#' chmColors (chmNewDataLayer('New Layer', TCGA.GBM.EXPR[1:50,1:50))
+#' chmColors (chmNewDataLayer('New Layer', TCGA.GBM.EXPR[1:50,1:50]))
 #'
 #' @seealso [ngchm-class]
 #'
@@ -1603,6 +1621,8 @@ chmColors <- function (x) {
 #' @export
 #'
 #' @examples
+#' data(TCGA.GBM.EXPR, package='NGCHMDemoData');
+#' layer <- chmNewDataLayer('GBM Layer', TCGA.GBM.EXPR[1:50,1:50])
 #' chmColors (layer) <- c("blue", "white", "red")
 #'
 #' @seealso [chmColors]
@@ -3577,9 +3597,10 @@ writeBinLines <- function(text, con) {
 #'
 #' @examples
 #' data(TCGA.GBM.EXPR, package='NGCHMDemoData');
-#' rtc <- Rtsne::Rtsne(t(TCGA.GBM.EXPR));
-#' hm <- chmNew ("gbm", TCGA.GBM.EXPR);
-#' hm <- chmAddTSNE(hm, "column", rtc, colnames(TCGA.GBM.EXPR));
+#' mat <- TCGA.GBM.EXPR[1:50,1:500];
+#' rtc <- Rtsne::Rtsne(t(mat));
+#' hm <- chmNew ("gbm", mat);
+#' hm <- chmAddTSNE(hm, "column", rtc, colnames(mat));
 #'
 #' @export
 #'
@@ -3674,8 +3695,9 @@ chmAddPCA <- function (hm, axis, prc, basename = "PC", ndim=2) {
 #'
 #' @examples
 #' data(TCGA.GBM.EXPR, package='NGCHMDemoData');
-#' umc <- umap::umap(t(TCGA.GBM.EXPR));
-#' hm <- chmNew ("gbm", TCGA.GBM.EXPR);
+#' mat <- TCGA.GBM.EXPR[1:50,1:50];
+#' umc <- umap::umap(t(mat));
+#' hm <- chmNew ("gbm", mat);
 #' hm <- chmAddUMAP(hm, "column", umc);
 #'
 #' @export
@@ -3808,8 +3830,14 @@ getDimensions.default <- function (obj, ...) {
 #' the one described in the preceding paragraph.  This package defines methods for classes `prcomp` and `umap`.
 #'
 #' @examples
-#' hm <- chmAddReducedDim(hm, "column", obj, "PCA", 3, "PC");
-#' hm <- chmAddReducedDim(hm, "column", obj, "TSNE");
+#' data(TCGA.GBM.EXPR, package='NGCHMDemoData');
+#' mat <- TCGA.GBM.EXPR[1:50,1:50];
+#' prc <- prcomp(mat);
+#' hm <- chmNew('mat', mat);
+#' hm <- chmAddReducedDim(hm, "column", prc, "PCA", 3, "PC");
+#'
+#' umc <- umap::umap (t(mat));
+#' hm <- chmAddReducedDim(hm, "column", umc, "UMAP");
 #'
 #' @export
 #'

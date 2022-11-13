@@ -25,12 +25,13 @@ See NGCHM-initialization for details.
 }
 
 \examples{
+library(NGCHMSupportFiles)
 data(TCGA.GBM.EXPR, package='NGCHMDemoData');
 chm1 <- chmNew('gbm', TCGA.GBM.EXPR[1:50,1:50],
    rowAxisType='bio.gene.hugo',
    colAxisType='bio.tcga.barcode.sample.vial.portion.analyte.aliquot');
-chmExportToFile(chm1, tempfile('gbm', fileext='.ngchm');
-chmExportToPDF(chm1, tempfile('gbm', fileext='.pdf');
+chmExportToFile(chm1, tempfile('gbm', fileext='.ngchm'));
+chmExportToPDF(chm1, tempfile('gbm', fileext='.pdf'));
 
 mat <- matrix(rnorm(100),nrow=10)
 rownames(mat) <- sprintf ("ABCA\%d", 1:10)

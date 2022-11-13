@@ -26,8 +26,9 @@ added covariate bars.
 }
 \examples{
 data(TCGA.GBM.EXPR, package='NGCHMDemoData');
-umc <- umap::umap(t(TCGA.GBM.EXPR));
-hm <- chmNew ("gbm", TCGA.GBM.EXPR);
+mat <- TCGA.GBM.EXPR[1:50,1:50];
+umc <- umap::umap(t(mat));
+hm <- chmNew ("gbm", mat);
 hm <- chmAddUMAP(hm, "column", umc);
 
 }

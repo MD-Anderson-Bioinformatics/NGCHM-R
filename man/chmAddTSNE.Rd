@@ -33,9 +33,10 @@ matrix passed to \code{\link[Rtsne:Rtsne]{Rtsne::Rtsne()}}.
 }
 \examples{
 data(TCGA.GBM.EXPR, package='NGCHMDemoData');
-rtc <- Rtsne::Rtsne(t(TCGA.GBM.EXPR));
-hm <- chmNew ("gbm", TCGA.GBM.EXPR);
-hm <- chmAddTSNE(hm, "column", rtc, colnames(TCGA.GBM.EXPR));
+mat <- TCGA.GBM.EXPR[1:50,1:500];
+rtc <- Rtsne::Rtsne(t(mat));
+hm <- chmNew ("gbm", mat);
+hm <- chmAddTSNE(hm, "column", rtc, colnames(mat));
 
 }
 \seealso{
