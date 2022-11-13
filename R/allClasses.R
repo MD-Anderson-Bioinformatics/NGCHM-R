@@ -595,8 +595,8 @@ setMethod ('show',
 #' @keywords classes
 #'
 #' @seealso [chmNew()]
-#' @seealso [chmRowOrder()]
-#' @seealso [chmColOrder()]
+#' @seealso [chmRowOrder<-()]
+#' @seealso [chmColOrder<-()]
 #' @seealso [chmAdd()]
 #' @seealso [chmAddLayer()]
 #' @seealso [chmAddCovariateBar()]

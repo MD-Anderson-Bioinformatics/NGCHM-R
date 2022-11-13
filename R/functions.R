@@ -8,6 +8,7 @@ NULL
 #' @param log_file Desired path/name of log file
 #' @export
 #' @importFrom logger log_threshold
+#' @importFrom logger log_info
 #' @importFrom logger log_layout
 #' @importFrom logger log_debug
 #' @importFrom logger log_error

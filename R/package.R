@@ -28,6 +28,8 @@
 #' @rdname NGCHM-package
 #' @aliases NGCHM-package
 #'
+#' @import htmltools
+#'
 #' @examples
 #' data(TCGA.GBM.EXPR, package='NGCHMDemoData');
 #' chm1 <- chmNew('gbm', TCGA.GBM.EXPR[1:50,1:50],

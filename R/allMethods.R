@@ -1192,7 +1192,7 @@ setMethod ("chmMake",
 #'
 #' @param chm The original format CHM to compile.
 #' @param server The server for which to compile the NGCHM.
-#'        Default getOption("NGCHM.Server",chmListServers()[1]).
+#'        Default `getOption("NGCHM.Server",chmListServers()[1])`.
 #'        Required iff useJar is not defined.
 #' @param deleteOld If TRUE, delete any old CHM of this name before beginning build. (Default is TRUE.)
 #' @param useJAR If defined, the location (filename) of the chmbuilder jar file. The package will not download
@@ -1299,7 +1299,16 @@ chmOperatorAdd <- function (left, right) {
     }
 }
 
-#' @method + ngchmVersion2,ngchmAxis
+#' Add an ngchmAxis to an NG-CHM
+#'
+#' Returns the NG-CHM (e1) augmented with the specified NG-CHM axis (e2).
+#'
+#' @name +
+#' @docType methods
+#' @rdname addition-methods
+#' @aliases +,ngchmVersion2,ngchmAxis-method
+#' @param e1 An NG-CHM.
+#' @param e2 An NG-CHM Axis.
 #' @export
 setMethod ("+",
            signature=c(e1="ngchmVersion2", e2="ngchmAxis"),

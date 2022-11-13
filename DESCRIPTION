@@ -19,6 +19,7 @@ Imports:
     digest,
     httr,
     jsonlite,
+    htmltools,
     logger (>= 0.2.0),
     tsvio
 Description: Utilities for creating Next Generation Clustered Heat Maps.
@@ -39,7 +40,11 @@ Suggests:
     knitr,
     rmarkdown,
     NGCHMSupportFiles,
-    NGCHMDemoData
+    NGCHMDemoData,
+    umap,
+    uwot,
+    Rtsne
+VignetteBuilder: knitr
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.2.1
 Encoding: UTF-8
