@@ -21,7 +21,11 @@ An ngchmBar or NULL.
 Get a covariate bar attached to an NG-CHM.
 }
 \examples{
-chmCovariateBar (hm, "Age")
+data(TCGA.GBM.Demo, package='NGCHMDemoData');
+hm <- chmNew ("gbmexpr", TCGA.GBM.ExpressionData[1:50,1:50]);
+hm <- chmAddCovariateBar (hm, "column",
+               chmNewCovariate("TP53 Mutation", TCGA.GBM.TP53MutationData[1:50]));
+chmCovariateBar (hm, "TP53 Mutation");
 
 }
 \seealso{

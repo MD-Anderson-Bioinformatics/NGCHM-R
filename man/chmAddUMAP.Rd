@@ -13,7 +13,7 @@ chmAddUMAP(hm, axis, umap, basename = "UMAP")
 
 \item{umap}{TSNE coordinates (output of \code{\link[umap:umap]{umap::umap()}}) for the specified NGCHM axis.}
 
-\item{baseName}{The prefix to use for the coordinate names.}
+\item{basename}{The prefix to use for the coordinate names.}
 }
 \value{
 The NGCHM with added coordinates.
@@ -25,8 +25,10 @@ where BASENAME is specified by the parameter basename (default UMAP) and N range
 added covariate bars.
 }
 \examples{
-umc <- umap::umap(t(TCGA.GBM.EXPR));
-hm <- chmNew ("gbm", TCGA.GBM.EXPR);
+data(TCGA.GBM.EXPR, package='NGCHMDemoData');
+mat <- TCGA.GBM.EXPR[1:50,1:50];
+umc <- umap::umap(t(mat));
+hm <- chmNew ("gbm", mat);
 hm <- chmAddUMAP(hm, "column", umc);
 
 }

@@ -12,9 +12,9 @@ either saving it to a server using \code{\link[=chmInstall]{chmInstall()}} or sa
 \seealso{
 \code{\link[=chmNew]{chmNew()}}
 
-\code{\link[=chmRowOrder]{chmRowOrder()}}
+\code{\link[=chmRowOrder<-]{chmRowOrder<-()}}
 
-\code{\link[=chmColOrder]{chmColOrder()}}
+\code{\link[=chmColOrder<-]{chmColOrder<-()}}
 
 \code{\link[=chmAdd]{chmAdd()}}
 

@@ -464,7 +464,7 @@ shaidyBlobExists <- function(repo, shaids) {
 #' @export
 shaidyCopyBlob <- function (src, shaid, dst) {
     stopifnot(shaidyBlobExists(src, shaid));
-    if (shaidyBlobExists (dst, shaid)) return;
+    if (shaidyBlobExists (dst, shaid)) return(shaid);
 
     if (dst$isLocal()) {
 	dstblob <- shaidyCreateProtoBlob (dst, shaid@type);
@@ -483,4 +483,5 @@ shaidyCopyBlob <- function (src, shaid, dst) {
 	}
 	shaidyCopyBlob (tmp, shaid, dst);
     }
+    return (shaid);
 };

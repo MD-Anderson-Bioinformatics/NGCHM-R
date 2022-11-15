@@ -7,10 +7,10 @@
 verifyNumeric(variableToCheck)
 }
 \arguments{
-\item{listToCast}{List to cast as integer}
+\item{variableToCheck}{The variable to check for being numeric.}
 }
 \value{
-list with members cast to integers
+TRUE
 }
 \description{
 If not numeric, print error message and stop.

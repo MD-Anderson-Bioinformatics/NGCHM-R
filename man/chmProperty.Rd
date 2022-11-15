@@ -10,10 +10,12 @@ chmProperty(hm, label)
 \item{hm}{The NG-CHM object to get the property value from.}
 
 \item{label}{The name of the property to get.
-If no property with that name exists, return NULL.\preformatted{   Well-known property labels used by the NG-CHM system include:
+If no property with that name exists, return NULL.
+
+\if{html}{\out{<div class="sourceCode">}}\preformatted{   Well-known property labels used by the NG-CHM system include:
 
    * "chm.info.caption"  A paragraph describing the NG-CHM's contents (set by user).
-}
+}\if{html}{\out{</div>}}
 \itemize{
 \item "chm.info.built.time"  The date and time the NG-CHM was saved (set by system).
 }}
@@ -25,6 +27,7 @@ A property value or NULL.
 Get the value of an NG-CHM property.
 }
 \examples{
+hm <- chmNew ("Empty");
 chmProperty (hm, "chm.info.caption")
 
 }

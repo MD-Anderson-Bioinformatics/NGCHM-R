@@ -9,7 +9,7 @@ as.matrix.ngchmBar <- function (x, ...) {
 
 as.matrix.shaid <- function (x, ..., typeProto=1, debug=FALSE) {
     stopifnot (is(x,"shaid"), x@type=='dataset');
-    repo <- NGCHM:::ngchmFindRepo (x, FALSE);
+    repo <- ngchmFindRepo (x, FALSE);
     if (length(repo) == 0) {
         stop("Unable to locate data matrix on a connected shaidy server");
     }
@@ -17,9 +17,9 @@ as.matrix.shaid <- function (x, ..., typeProto=1, debug=FALSE) {
 	localrepo <- repo;
 	scb <- NULL;
     } else {
-        scb <- shaidyCopyBlob (repo, x, NGCHM:::ngchm.env$tmpShaidy);
+        scb <- shaidyCopyBlob (repo, x, ngchm.env$tmpShaidy);
         if (length(scb) == 0) stop("Unable to locate data matrix on a connected shaidy server");
-	localrepo <- NGCHM:::ngchm.env$tmpShaidy;
+	localrepo <- ngchm.env$tmpShaidy;
     }
     mat <- tsvio::tsvGetData (localrepo$blob.path (x, 'matrix.tsv'), localrepo$blob.path (x, 'index.tsv'), NULL, NULL, typeProto);
     if (debug) list (x=x, repo=repo, scb=scb, localrepo=localrepo, mat=mat) else mat
@@ -52,7 +52,7 @@ covariateBarsFromJSON <- function (hm, cvr, js) {
     	stopifnot (jj$class == "ngchmBar");
 	typeProto <- if (jj$type == "discrete") "a" else 1;
 	values <- as.matrix(new("shaid", type=jj$data$type, value=jj$data$value), typeProto=typeProto);
-	if (class(values) == "matrix") values <- values[,1];
+	if (is(values, "matrix")) values <- values[,1];
 	cv <- chmNewCovariate (fullname=jj$label, values=values, value.properties=cvr[[jj$renderer+1]], type=jj$type);
 	chmNewCovariateBar (cv, display=jj$display, thickness=jj$thickness, merge=jj$merge)
     })

@@ -8,6 +8,7 @@ NULL
 #' @param log_file Desired path/name of log file
 #' @export
 #' @importFrom logger log_threshold
+#' @importFrom logger log_info
 #' @importFrom logger log_layout
 #' @importFrom logger log_debug
 #' @importFrom logger log_error
@@ -167,6 +168,8 @@ ngchmGetEnv <- function () {
 #' @param rowGapWidth Width of row gaps (default: 5 rows)
 #' @param colGapWidth Width of col gaps (default: 5 cols)
 #' @param overview The format(s) of overview image(s) to create (default: None).
+#' @param logLevel The level of logs to output
+#' @param logFile The file to which logs should be output
 #' @importFrom logger log_debug
 #' @importFrom logger log_error
 #'
@@ -546,7 +549,7 @@ chmNewDataLayer <- function (label, data, colors, summarizationMethod, cuts_colo
     summarizationMethod = match.arg (summarizationMethod, c("average", "sample", "mode"));
     data <- ngchmSaveAsDatasetBlob (ngchm.env$tmpShaidy, 'tsv', data);
     if (length(colors) == 0)
-	colors <- chmNewColorMap (data, c("#0010a0", "#f0f0f0", "#a01000"), missing='#ff00ff'); # Blue, Off-white, Red. Missing=bright magenta.
+	colors <- chmNewColorMap (data, c("#0010a0", "#f0f0f0", "#a01000"), missing.color='#ff00ff'); # Blue, Off-white, Red. Missing=bright magenta.
     new (Class="ngchmLayer", name=label, data=data, colors=colors, summarizationMethod=summarizationMethod, cuts_color=cuts_color)
 };
 
@@ -564,8 +567,11 @@ chmNewDataLayer <- function (label, data, colors, summarizationMethod, cuts_colo
 #' @export
 #'
 #' @examples
-#' layer <- chmLayer (hm, "Layer 1")
-#' layer <- chmLayer (hm, 1)
+#' data(TCGA.GBM.Demo, package='NGCHMDemoData');
+#' matrix <- TCGA.GBM.ExpressionData[1:50,1:50];
+#' hm <- chmNew ('New Heat Map') + chmNewDataLayer ('Layer 1', matrix);
+#' layer <- chmLayer (hm, "Layer 1");
+#' layercopy <- chmLayer (hm, 1);
 #'
 #' @seealso [ngchmLayer-class]
 #'
@@ -616,11 +622,15 @@ chmLayer <- function (hm, label) {
 #'
 #' @return An object of class ngchm.
 #'
+#' @name chmLayer<-
 #' @export
 #'
 #' @examples
+#' data(TCGA.GBM.Demo, package='NGCHMDemoData');
+#' matrix <- TCGA.GBM.ExpressionData[1:50,1:50];
+#' hm <- chmNew ('New Heat Map');
 #' chmLayer (hm, "Layer 1") <- matrix;
-#' chmLayer (hm, 1, cuts_color = "#fefefe") <- chmNewDataLayer ("New data layer", matrix);
+#' chmLayer (hm, 1, cuts_color = "#fefefe") <- chmNewDataLayer ("New data layer", matrix+1);
 #'
 #' @seealso [ngchmLayer-class]
 #' @seealso chmNewDataLayer
@@ -629,7 +639,7 @@ assign('chmLayer<-', function (x, label, colors, summarizationMethod, cuts_color
     stopifnot (!missing(x), is(x, "ngchm"));
     stopifnot (missing(label) || length(label) == 1);
     stopifnot (!missing(value), isany(value, c("matrix", "ngchmLayer")));
-    hm <- NGCHM:::chmFixVersion (x);
+    hm <- chmFixVersion (x);
     # Convert label into a numeric layeridx and a character label
     if (missing(label)) {
 	layeridx <- length(hm@layers)+1;
@@ -670,7 +680,7 @@ assign('chmLayer<-', function (x, label, colors, summarizationMethod, cuts_color
 	if (!missing(summarizationMethod)) newlayer@summarizationMethod <- summarizationMethod;
 	if (!missing(cuts_color)) newlayer@cuts_color <- cuts_color;
     }
-    NGCHM:::validateNewLayer (hm, newlayer);
+    validateNewLayer (hm, newlayer);
     if (layeridx == 0) {
 	hm@layers <- c (newlayer, hm@layers);
     } else {
@@ -866,7 +876,11 @@ chmNewCovariate <- function (fullname, values, value.properties=NULL, type=NULL,
 #' @export
 #'
 #' @examples
-#' chmCovariate (dataset, "Age")
+#' data(TCGA.GBM.Demo, package='NGCHMDemoData');
+#' dataset <- chmNewDataset ("gbmexpr", "TCGA GBM Expression Data", TCGA.GBM.ExpressionData);
+#' dataset <- chmAddCovariate (dataset, "column",
+#'                chmNewCovariate("TP53 Mutation", TCGA.GBM.TP53MutationData));
+#' chmCovariate (dataset, "TP53 Mutation");
 #'
 #' @seealso [ngchmCovariate-class]
 #' @seealso chmNewCovariate
@@ -1024,7 +1038,11 @@ ngchmNewBar <- function (label, type, data, colors=NULL, display="visible", thic
 #' @export
 #'
 #' @examples
-#' chmCovariateBar (hm, "Age")
+#' data(TCGA.GBM.Demo, package='NGCHMDemoData');
+#' hm <- chmNew ("gbmexpr", TCGA.GBM.ExpressionData[1:50,1:50]);
+#' hm <- chmAddCovariateBar (hm, "column",
+#'                chmNewCovariate("TP53 Mutation", TCGA.GBM.TP53MutationData[1:50]));
+#' chmCovariateBar (hm, "TP53 Mutation");
 #'
 #' @seealso [ngchmBar-class]
 #' @seealso chmNewCovariateBar
@@ -1376,6 +1394,7 @@ chmNewProperty <- function (label, value) {
 #' @export
 #'
 #' @examples
+#' hm <- chmNew ("Empty");
 #' chmProperty (hm, "chm.info.caption")
 #'
 #' @seealso [ngchm-class]
@@ -1402,6 +1421,7 @@ chmProperty <- function (hm, label) {
 #' @export
 #'
 #' @examples
+#' hm <- chmNew("Empty");
 #' chmProperty (hm, "chm.info.caption") <- "Nothing to see here";
 #'
 #' @seealso [ngchm-class]
@@ -1452,7 +1472,7 @@ chmProperties <- function (...) {
 
 #' Get the label/name of an NG-CHM object.
 #'
-#' @param hm The NG-CHM object to get the label/name of.  Can be:
+#' @param x The NG-CHM object to get the label/name of.  Can be:
 #'
 #' * An object of class ngchm
 #' * An object of class ngchmLayer
@@ -1493,6 +1513,7 @@ chmLabel <- function (x) {
 #' @export
 #'
 #' @examples
+#' hm <- chmNew ("Old name");
 #' chmLabel (hm) <- "A new name";
 #'
 #' @seealso [chmLabel]
@@ -1516,7 +1537,7 @@ chmLabel <- function (x) {
 
 #' Get the color map of an NG-CHM object.
 #'
-#' @param hm The NG-CHM object to get the color map of.  Can be:
+#' @param x The NG-CHM object to get the color map of.  Can be:
 #'
 #' * An object of class ngchmLayer
 #' * An object of class ngchmBar
@@ -1527,7 +1548,8 @@ chmLabel <- function (x) {
 #' @export
 #'
 #' @examples
-#' chmColorMap (chmNewDataLayer('New layer', TCGA.BRCA.ExpressionData[1:3,1:3]))
+#' data(TCGA.GBM.EXPR, package='NGCHMDemoData');
+#' chmColorMap (chmNewDataLayer('New layer', TCGA.GBM.EXPR[1:3,1:3]))
 #'
 #' @seealso [chmNewColorMap]
 #'
@@ -1551,7 +1573,9 @@ chmColorMap <- function (x) {
 #' @export
 #'
 #' @examples
-#' chmColorMap (chmNewDataLayer('New layer', TCGA.BRCA.ExpressionData[1:3,1:3]), chmNewColormap (c(2,14));
+#' data(TCGA.GBM.EXPR, package='NGCHMDemoData');
+#' dataLayer <- chmNewDataLayer('GBM layer', TCGA.GBM.EXPR[1:30,1:30]);
+#' chmColorMap (dataLayer) <- chmNewColorMap (c(2,14));
 #'
 #' @seealso [chmColorMap]
 #'
@@ -1576,7 +1600,8 @@ chmColorMap <- function (x) {
 #' @export
 #'
 #' @examples
-#' chmColors (chmNewDataLayer('New Layer', TCGA.BRCA.ExpressionData[1:50,1:50))
+#' data(TCGA.GBM.EXPR, package='NGCHMDemoData');
+#' chmColors (chmNewDataLayer('New Layer', TCGA.GBM.EXPR[1:50,1:50]))
 #'
 #' @seealso [ngchm-class]
 #'
@@ -1596,6 +1621,8 @@ chmColors <- function (x) {
 #' @export
 #'
 #' @examples
+#' data(TCGA.GBM.EXPR, package='NGCHMDemoData');
+#' layer <- chmNewDataLayer('GBM Layer', TCGA.GBM.EXPR[1:50,1:50])
 #' chmColors (layer) <- c("blue", "white", "red")
 #'
 #' @seealso [chmColors]
@@ -2559,7 +2586,7 @@ validateNewAxisOrder <- function (chm, where, order)
 validateAxisOrder <- function (chm, where, layername, labels, order)
 {
     # NULL order allowed.
-    if (length(order) == 0) return;
+    if (length(order) == 0) return();
     # Convert other order types in a label vector.
     if (is(order, "dendrogram")) {
         order <- labels(order);
@@ -3569,9 +3596,11 @@ writeBinLines <- function(text, con) {
 #' matrix passed to [Rtsne::Rtsne()].
 #'
 #' @examples
-#' rtc <- Rtsne::Rtsne(t(TCGA.BRCA.ExpressionData));
-#' hm <- chmNew ("brca", TCGA.BRCA.ExpressionData);
-#' hm <- chmAddTSNE(hm, "column", rtc, colnames(TCGA.BRCA.ExpressionData));
+#' data(TCGA.GBM.EXPR, package='NGCHMDemoData');
+#' mat <- TCGA.GBM.EXPR[1:50,1:500];
+#' rtc <- Rtsne::Rtsne(t(mat));
+#' hm <- chmNew ("gbm", mat);
+#' hm <- chmAddTSNE(hm, "column", rtc, colnames(mat));
 #'
 #' @export
 #'
@@ -3579,7 +3608,7 @@ writeBinLines <- function(text, con) {
 #' @param axis The NGCHM axis ("row" or "column") to add the coordinates to
 #' @param tsne TSNE coordinates (output of [Rtsne::Rtsne()]) for the specified NGCHM axis
 #' @param pointIds The NGCHM names for the data points in tsne
-#' @param baseName The prefix to use for the coordinate names.
+#' @param basename The prefix to use for the coordinate names.
 #'
 #' @return The NGCHM with added coordinates.
 #' @seealso [chmAddPCA()]
@@ -3616,8 +3645,9 @@ chmAddTSNE <- function (hm, axis, tsne, pointIds, basename = "TSNE") {
 #' parameter basename (default "PC") and N ranges from 1 to the number of added covariate bars.
 #'
 #' @examples
-#' prc <- prcomp(TCGA.BRCA.ExpressionData);
-#' hm <- chmNew ("brca", TCGA.BRCA.ExpressionData);
+#' data(TCGA.GBM.EXPR, package='NGCHMDemoData');
+#' prc <- prcomp(TCGA.GBM.EXPR);
+#' hm <- chmNew ("gbm", TCGA.GBM.EXPR);
 #' hm <- chmAddPCA(hm, "column", prc);
 #'
 #' @export
@@ -3625,7 +3655,7 @@ chmAddTSNE <- function (hm, axis, tsne, pointIds, basename = "TSNE") {
 #' @param hm The NGCHM to add the coordinates to.
 #' @param axis The NGCHM axis ("row" or "column") to add the coordinates to.
 #' @param prc Principal component coordinates (output of [stats::prcomp()]) for the specified NGCHM axis.
-#' @param baseName The prefix to use for the coordinate names.
+#' @param basename The prefix to use for the coordinate names.
 #' @param ndim The maximum number of coordinates to add.
 #'
 #' @return The NGCHM with added coordinates.
@@ -3664,8 +3694,10 @@ chmAddPCA <- function (hm, axis, prc, basename = "PC", ndim=2) {
 #' added covariate bars.
 #'
 #' @examples
-#' umc <- umap::umap(t(TCGA.BRCA.ExpressionData));
-#' hm <- chmNew ("brca", TCGA.BRCA.ExpressionData);
+#' data(TCGA.GBM.EXPR, package='NGCHMDemoData');
+#' mat <- TCGA.GBM.EXPR[1:50,1:50];
+#' umc <- umap::umap(t(mat));
+#' hm <- chmNew ("gbm", mat);
 #' hm <- chmAddUMAP(hm, "column", umc);
 #'
 #' @export
@@ -3673,7 +3705,7 @@ chmAddPCA <- function (hm, axis, prc, basename = "PC", ndim=2) {
 #' @param hm The NGCHM to add the coordinates to.
 #' @param axis The NGCHM axis ("row" or "column") to add the coordinates to.
 #' @param umap TSNE coordinates (output of [umap::umap()]) for the specified NGCHM axis.
-#' @param baseName The prefix to use for the coordinate names.
+#' @param basename The prefix to use for the coordinate names.
 #'
 #' @return The NGCHM with added coordinates.
 #' @seealso [chmAddPCA()]
@@ -3714,9 +3746,10 @@ chmAddUMAP <- function (hm, axis, umap, basename = "UMAP") {
 #' matrix passed to [uwot::umap()].
 #'
 #' @examples
-#' umc <- uwot::umap(t(TCGA.BRCA.ExpressionData));
-#' hm <- chmNew ("brca", TCGA.BRCA.ExpressionData);
-#' hm <- chmAddUWOT(hm, "column", umc, colnames(TCGA.BRCA.ExpressionData));
+#' data(TCGA.GBM.EXPR, package='NGCHMDemoData');
+#' umc <- uwot::umap(t(TCGA.GBM.EXPR));
+#' hm <- chmNew ("gbm", TCGA.GBM.EXPR);
+#' hm <- chmAddUWOT(hm, "column", umc, colnames(TCGA.GBM.EXPR));
 #'
 #' @export
 #'
@@ -3753,68 +3786,116 @@ chmAddUWOT <- function (hm, axis, uwot, pointIds, basename = "UMAP") {
 	return (hm);
 };
 
-#' Add Single Cell reduced dimension coordinates to an NG-CHM.
+#' Generic method to get a dimensions matrix from obj.
 #'
-#' Add SingleCellExperiment::reducedDim or Seurat reduced dimension coordinates from a single cell object sce
-#' as hidden covariate bars to an axis of an NG-CHM.  dimName specifies the name of the reduced
-#' dimension of interest in sce.  One hidden covariate bar is added for each coordinate.
+#' The return value must be NULL or a numeric matrix, each column of which is a (reduced) dimension.
+#' The rows of the returned matrix must be named.
+#'
+#' @name getDimensions
+#' @rdname getDimensions-method
+#' @param obj The object from which to obtain the dimension(s).
+#' @param ... Additional class-specific parameters for specifying the desired dimension.
+#' @return A matrix with one dimension per column and one named row per observation in obj.
+#' @export
+#'
+#' @seealso [chmAddReducedDim()]
+#'
+getDimensions <- function (obj, ...) {
+    UseMethod ("getDimensions", obj);
+};
+
+getDimensions.default <- function (obj, ...) {
+    return (NULL);
+};
+
+#' Add reduced dimension coordinates to an NG-CHM.
+#'
+#' Add (reduced) dimension coordinates from an object obj
+#' as hidden covariate bars to an axis of an NG-CHM.  Depending on the object type, dimName and dimAxis
+#' can be used to specify the name of the dimension of interest in obj.
+#'
+#' One hidden covariate bar is added for each coordinate obtained from `obj`.
 #' If specified, maxDim limits the maximum number of covariate bars added to the chm.
+#'
 #' Coordinates have names 'BASENAME.coordinate.N', where BASENAME is specified by the parameter
 #' basename (defaults to dimName if omitted) and N ranges from 1 to the number of added covariate bars.
 #'
+#' `obj` can be a numeric matrix, each column of which is a (reduced) dimension.  In this case, dimName and dimAxis
+#' are not used for obtaining the reduced dimension.  The number of rows of the matrix must equal the size of the specified
+#' NGCHM axis and each row of the matrix must be uniquely named using the names from that axis of the NG-CHM.
+#'
+#' `obj` can also be an instance of class className if there exists an S3 method getDimensions.className.
+#' The method takes the object as its first parameter and up to two optional parameters, dimName and dimAxis,
+#' that can be used to specify the desired dimension.  The method's return value is a matrix similar to
+#' the one described in the preceding paragraph.  This package defines methods for classes `prcomp` and `umap`.
+#'
 #' @examples
-#' hm <- chmAddReducedDim(hm, "column", sce, "PCA", 3, "PC");
-#' hm <- chmAddReducedDim(hm, "column", sce, "TSNE");
+#' data(TCGA.GBM.EXPR, package='NGCHMDemoData');
+#' mat <- TCGA.GBM.EXPR[1:50,1:50];
+#' prc <- prcomp(mat);
+#' hm <- chmNew('mat', mat);
+#' hm <- chmAddReducedDim(hm, "column", prc, "PCA", 3, "PC");
+#'
+#' umc <- umap::umap (t(mat));
+#' hm <- chmAddReducedDim(hm, "column", umc, "UMAP");
 #'
 #' @export
 #'
 #' @param hm The NGCHM to add the coordinates to.
 #' @param axis The NGCHM axis ("row" or "column") to add the coordinates to.
-#' @param sce An object containing the reduced dimension.
-#' @param dimName The name of the reduced dimension to create covariate bars for.
+#' @param obj An object containing the (reduced) dimension.
+#' @param dimName The name of the (reduced) dimension to create covariate bars for.
 #' @param maxDim The maximum number of coordinates to add (default all).
 #' @param basename The prefix to use for the coordinate names (defaults to dimName).
-#' @param dimAxis The axis on the sce object containing the named dimension.
+#' @param dimAxis The axis on obj containing the named dimension, if applicable.
 #'
 #' @return The NGCHM with added coordinates.
 #' @seealso [chmAddPCA()]
 #' @seealso [chmAddTSNE()]
 #' @seealso [chmAddUMAP()]
 #' @seealso [chmAddUWOT()]
+#' @seealso [getDimensions()]
 
-chmAddReducedDim <- function (hm, axis, sce, dimName, maxDim, basename, dimAxis) {
-    layout <- NULL;
+chmAddReducedDim <- function (hm, axis, obj, dimName, maxDim, basename, dimAxis) {
+    stopifnot (is (hm, "ngchmVersion2"));
+    stopifnot (is (axis, "character") && length(axis) == 1);
+
+    # Initially try to use generic getDimension method.
+    layout <- getDimensions (obj, dimName, dimAxis);
     # Try hard to find an applicable reducedDim method
-    if (is (sce, "SingleCellExperiment")) {
-        layout <- SingleCellExperiment::reducedDim (sce, dimName);
-    } else if (is (sce, "Seurat")) {
-        layout <- sce@reductions[[dimName]]@cell.embeddings;
-    } else {
-	pkg <- attr(class(sce), 'package');
+    if (is.null(layout)) {
+	pkg <- attr(class(obj), 'package');
 	if (length(pkg) != 0) {
 	    ns <- tryCatch (loadNamespace(pkg), error = function(e) e);
 	    if (!is(ns, 'error') && exists('reducedDim',ns)) {
 		if (missing(dimAxis)) {
-		    layout <- get('reducedDim',ns) (sce, dimName);
+		    layout <- get('reducedDim',ns) (obj, dimName);
 		} else {
-		    layout <- get('reducedDim',ns) (sce, dimName, axis=dimAxis);
+		    layout <- get('reducedDim',ns) (obj, dimName, axis=dimAxis);
 		}
 	    }
 	}
     }
-    if (length(layout) == 0) {
+    if (is.null(layout)) {
 	# Last chance: try .GlobalEnv
 	if (exists ('reducedDim')) {
 	    if (missing(dimAxis)) {
-		layout <- get('reducedDim') (sce, dimName);
+		layout <- get('reducedDim') (obj, dimName);
 	    } else {
-		layout <- get('reducedDim') (sce, dimName, axis=dimAxis);
+		layout <- get('reducedDim') (obj, dimName, axis=dimAxis);
 	    }
+	} else if (is (obj, "matrix")) {
+	    layout <- obj;
 	} else {
-	    stop ("Unable to get reduced dimension from single cell object");
+	    stop ("Unable to get reduced dimension from object");
 	}
     }
-    if (missing(maxDim)) maxDim <- ncol (layout);
+    stopifnot (is (layout, "matrix"));
+    if (missing(maxDim)) {
+	maxDim <- ncol (layout);
+    } else {
+	stopifnot (maxDim <= ncol(layout));
+    }
     if (missing(basename)) basename <- dimName;
     for (idx in 1:maxDim) {
         coordname <- sprintf ("%s.coordinate.%d", basename, idx);
@@ -3827,6 +3908,25 @@ chmAddReducedDim <- function (hm, axis, sce, dimName, maxDim, basename, dimAxis)
 	hm <- chmAddCovariateBar (hm, axis, cv, display="hidden");
     }
     return (hm);
+};
+
+#' @rdname getDimensions-method
+#' @aliases getDimensions,prcomp
+getDimensions.prcomp = function (obj, ...) {
+    return (obj$rotation);
+};
+
+#' @rdname getDimensions-method
+#' @aliases getDimensions,umap
+getDimensions.umap = function (obj, ...) {
+    return (obj$layout);
+};
+
+#' @rdname getDimensions-method
+#' @aliases getDimensions,Seurat
+#' @param dimName The name of the dimension matrix to obtain.
+getDimensions.Seurat = function (obj, dimName, ...) {
+    return (obj@reductions[[dimName]]@cell.embeddings);
 };
 
 #' Helper function to cast variables as integers.
@@ -3866,8 +3966,8 @@ castListAsInteger <- function(listToCast) {
 #'
 #' If not numeric, print error message and stop.
 #'
-#' @param listToCast List to cast as integer
-#' @return list with members cast to integers
+#' @param variableToCheck The variable to check for being numeric.
+#' @return TRUE
 verifyNumeric <- function(variableToCheck) {
 	if (!is.numeric(variableToCheck)) {
 		log_error("Variable '",deparse(substitute(variableToCheck)),"' must be numeric.")

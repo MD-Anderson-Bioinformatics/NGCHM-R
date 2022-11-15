@@ -15,7 +15,7 @@ chmAddTSNE(hm, axis, tsne, pointIds, basename = "TSNE")
 
 \item{pointIds}{The NGCHM names for the data points in tsne}
 
-\item{baseName}{The prefix to use for the coordinate names.}
+\item{basename}{The prefix to use for the coordinate names.}
 }
 \value{
 The NGCHM with added coordinates.
@@ -32,9 +32,11 @@ Their values must match those on that axis of the NGCHM, but their order must ma
 matrix passed to \code{\link[Rtsne:Rtsne]{Rtsne::Rtsne()}}.
 }
 \examples{
-rtc <- Rtsne::Rtsne(t(TCGA.GBM.EXPR));
-hm <- chmNew ("gbm", TCGA.GBM.EXPR);
-hm <- chmAddTSNE(hm, "column", rtc, colnames(TCGA.GBM.EXPR));
+data(TCGA.GBM.EXPR, package='NGCHMDemoData');
+mat <- TCGA.GBM.EXPR[1:50,1:500];
+rtc <- Rtsne::Rtsne(t(mat));
+hm <- chmNew ("gbm", mat);
+hm <- chmAddTSNE(hm, "column", rtc, colnames(mat));
 
 }
 \seealso{

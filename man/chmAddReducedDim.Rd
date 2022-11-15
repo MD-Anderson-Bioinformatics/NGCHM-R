@@ -2,39 +2,58 @@
 % Please edit documentation in R/functions.R
 \name{chmAddReducedDim}
 \alias{chmAddReducedDim}
-\title{Add Single Cell reduced dimension coordinates to an NG-CHM.}
+\title{Add reduced dimension coordinates to an NG-CHM.}
 \usage{
-chmAddReducedDim(hm, axis, sce, dimName, maxDim, basename, dimAxis)
+chmAddReducedDim(hm, axis, obj, dimName, maxDim, basename, dimAxis)
 }
 \arguments{
 \item{hm}{The NGCHM to add the coordinates to.}
 
 \item{axis}{The NGCHM axis ("row" or "column") to add the coordinates to.}
 
-\item{sce}{An object containing the reduced dimension.}
+\item{obj}{An object containing the (reduced) dimension.}
 
-\item{dimName}{The name of the reduced dimension to create covariate bars for.}
+\item{dimName}{The name of the (reduced) dimension to create covariate bars for.}
 
 \item{maxDim}{The maximum number of coordinates to add (default all).}
 
 \item{basename}{The prefix to use for the coordinate names (defaults to dimName).}
 
-\item{dimAxis}{The axis on the sce object containing the named dimension.}
+\item{dimAxis}{The axis on obj containing the named dimension, if applicable.}
 }
 \value{
 The NGCHM with added coordinates.
 }
 \description{
-Add SingleCellExperiment::reducedDim or Seurat reduced dimension coordinates from a single cell object sce
-as hidden covariate bars to an axis of an NG-CHM.  dimName specifies the name of the reduced
-dimension of interest in sce.  One hidden covariate bar is added for each coordinate.
+Add (reduced) dimension coordinates from an object obj
+as hidden covariate bars to an axis of an NG-CHM.  Depending on the object type, dimName and dimAxis
+can be used to specify the name of the dimension of interest in obj.
+}
+\details{
+One hidden covariate bar is added for each coordinate obtained from \code{obj}.
 If specified, maxDim limits the maximum number of covariate bars added to the chm.
+
 Coordinates have names 'BASENAME.coordinate.N', where BASENAME is specified by the parameter
 basename (defaults to dimName if omitted) and N ranges from 1 to the number of added covariate bars.
+
+\code{obj} can be a numeric matrix, each column of which is a (reduced) dimension.  In this case, dimName and dimAxis
+are not used for obtaining the reduced dimension.  The number of rows of the matrix must equal the size of the specified
+NGCHM axis and each row of the matrix must be uniquely named using the names from that axis of the NG-CHM.
+
+\code{obj} can also be an instance of class className if there exists an S3 method getDimensions.className.
+The method takes the object as its first parameter and up to two optional parameters, dimName and dimAxis,
+that can be used to specify the desired dimension.  The method's return value is a matrix similar to
+the one described in the preceding paragraph.  This package defines methods for classes \code{prcomp} and \code{umap}.
 }
 \examples{
-hm <- chmAddReducedDim(hm, "column", sce, "PCA", 3, "PC");
-hm <- chmAddReducedDim(hm, "column", sce, "TSNE");
+data(TCGA.GBM.EXPR, package='NGCHMDemoData');
+mat <- TCGA.GBM.EXPR[1:50,1:50];
+prc <- prcomp(mat);
+hm <- chmNew('mat', mat);
+hm <- chmAddReducedDim(hm, "column", prc, "PCA", 3, "PC");
+
+umc <- umap::umap (t(mat));
+hm <- chmAddReducedDim(hm, "column", umc, "UMAP");
 
 }
 \seealso{
@@ -45,4 +64,6 @@ hm <- chmAddReducedDim(hm, "column", sce, "TSNE");
 \code{\link[=chmAddUMAP]{chmAddUMAP()}}
 
 \code{\link[=chmAddUWOT]{chmAddUWOT()}}
+
+\code{\link[=getDimensions]{getDimensions()}}
 }

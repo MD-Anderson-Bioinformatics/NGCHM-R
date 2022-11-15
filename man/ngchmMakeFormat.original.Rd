@@ -18,7 +18,7 @@ ngchmMakeFormat.original(
 \item{chm}{The original format CHM to compile.}
 
 \item{server}{The server for which to compile the NGCHM.
-Default getOption("NGCHM.Server",chmListServers()\link{1}).
+Default \code{getOption("NGCHM.Server",chmListServers()[1])}.
 Required iff useJar is not defined.}
 
 \item{deleteOld}{If TRUE, delete any old CHM of this name before beginning build. (Default is TRUE.)}

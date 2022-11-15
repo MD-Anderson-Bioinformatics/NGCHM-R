@@ -35,7 +35,7 @@ knitr::opts_chunk$set(
 ## Install from GitHub
 
 The above-mentioned R packages can be installed from GitHub with
-[remotes](https://cran.r-project.org/web/packages/remotes/index.html):
+[remotes](https://cran.r-project.org/package=remotes):
 
 ```{r, results='hide', message=FALSE, warning=FALSE, eval=FALSE}
 remotes::install_github('MD-Anderson-Bioinformatics/tsvio')

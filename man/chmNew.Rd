@@ -63,6 +63,10 @@ chmNew(
 \item{colGapWidth}{Width of col gaps (default: 5 cols)}
 
 \item{overview}{The format(s) of overview image(s) to create (default: None).}
+
+\item{logLevel}{The level of logs to output}
+
+\item{logFile}{The file to which logs should be output}
 }
 \value{
 An object of class ngchm

@@ -595,8 +595,8 @@ setMethod ('show',
 #' @keywords classes
 #'
 #' @seealso [chmNew()]
-#' @seealso [chmRowOrder()]
-#' @seealso [chmColOrder()]
+#' @seealso [chmRowOrder<-()]
+#' @seealso [chmColOrder<-()]
 #' @seealso [chmAdd()]
 #' @seealso [chmAddLayer()]
 #' @seealso [chmAddCovariateBar()]
@@ -821,7 +821,7 @@ setMethod("initialize", "ngchmVersion2",
 			if (!missing(rowOrderMethod)) { .Object@rowOrderMethod <- rowOrderMethod } else { .Object@rowOrderMethod <- "User" }
 			if (!missing(colOrderMethod)) { .Object@colOrderMethod <- colOrderMethod } else { .Object@colOrderMethod <- "User" }
 			if (!missing(rowCutLocations) & !is.null(rowCutLocations)) { 
-				if (class(rowCutLocations) == "treeCuts") {
+				if (is(rowCutLocations, "treeCuts")) {
 					.Object@rowTreeCuts <- rowCutLocations@numberOfCuts
 					.Object@rowCutLocations <- NULL
 				} else {
@@ -843,7 +843,7 @@ setMethod("initialize", "ngchmVersion2",
 			if (!missing(rowDisplayLength)) { .Object@rowDisplayLength <- rowDisplayLength } else { .Object@rowDisplayLength <- NULL }
 			if (!missing(rowDisplayAbbreviation)) { .Object@rowDisplayAbbreviation <- rowDisplayAbbreviation } else { .Object@rowDisplayAbbreviation<- NULL }
 			if (!missing(colCutLocations) & !is.null(colCutLocations)) { 
-				if (class(colCutLocations) == "treeCuts") {
+				if (is(colCutLocations, "treeCuts")) {
 					.Object@colTreeCuts <- colCutLocations@numberOfCuts
 					.Object@colCutLocations <- NULL
 				} else {
@@ -871,9 +871,9 @@ setMethod("initialize", "ngchmVersion2",
 			if (!missing(dialogs)) { .Object@dialogs <- dialogs } else { .Object@dialogs <- NULL }
 			if (!missing(tags)) { .Object@tags <- tags } else { .Object@tags <- c() }
 			if (!missing(css)) { .Object@css <- css } else { .Object@css <- c() }
-			if (!missing(rowTypeFunctions)) { .Object@rowTypeFunctions <- rowTypFunctions } else { .Object@rowTypeFunctions <- NULL }
-			if (!missing(colTypeFunctions)) { .Object@colTypeFunctions <- colTypFunctions } else { .Object@colTypeFunctions <- NULL }
-			if (!missing(elementTypeFunctions)) { .Object@elementTypeFunctions <- elementTypFunctions } else { .Object@elementTypeFunctions <- NULL }
+			if (!missing(rowTypeFunctions)) { .Object@rowTypeFunctions <- rowTypeFunctions } else { .Object@rowTypeFunctions <- NULL }
+			if (!missing(colTypeFunctions)) { .Object@colTypeFunctions <- colTypeFunctions } else { .Object@colTypeFunctions <- NULL }
+			if (!missing(elementTypeFunctions)) { .Object@elementTypeFunctions <- elementTypeFunctions } else { .Object@elementTypeFunctions <- NULL }
 			if (!missing(extrafiles)) { .Object@extrafiles <- extrafiles } else { .Object@extrafiles <- c() }
 			if (!missing(extrascripts)) { .Object@extrascripts <- extrascripts } else { .Object@extrascripts <- c() }
 			if (!missing(properties)) { .Object@properties <- properties } else { .Object@properties <- c() }
