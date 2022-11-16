@@ -18,7 +18,7 @@ and for compiling and installing it on a NGCHM server."><!-- mathjax --><script 
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">NGCHMR</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.13.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.13.1</span>
       </span>
     </div>
 
@@ -119,12 +119,17 @@ See NGCHM-initialization for details.</p>
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">TCGA.GBM.EXPR</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="va">chm1</span> <span class="op">&lt;-</span> <span class="fu"><a href="chmNew.html">chmNew</a></span><span class="op">(</span><span class="st">'gbm'</span>, <span class="va">TCGA.GBM.EXPR</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">50</span>,<span class="fl">1</span><span class="op">:</span><span class="fl">50</span><span class="op">]</span>, rowAxisType<span class="op">=</span><span class="st">'bio.gene.hugo'</span>, colAxisType<span class="op">=</span><span class="st">'bio.tcga.barcode.sample.vial.portion.analyte.aliquot'</span><span class="op">)</span>;</span></span>
-<span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="fu"><a href="chmExportToFile-method.html">chmExportToFile</a></span><span class="op">(</span><span class="va">chm1</span>, <span class="st">'gbm.ngchm'</span><span class="op">)</span>;</span></span>
-<span class="r-in"><span><span class="fu"><a href="chmExportToPDF-method.html">chmExportToPDF</a></span><span class="op">(</span><span class="va">chm1</span>, <span class="st">'gbm.pdf'</span><span class="op">)</span>;</span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in chmExportToPDF(chm1, "gbm.pdf"):</span> shaidyMapGen required but not specified or set in environment</span>
-<span class="r-in"><span></span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">NGCHMSupportFiles</span><span class="op">)</span></span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Set environment variable SHAIDYMAPGEN to /Users/runner/work/_temp/Library/NGCHMSupportFiles/java/ShaidyMapGen.jar</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Set environment variable NGCHMWIDGETPATH to /Users/runner/work/_temp/Library/NGCHMSupportFiles/js/ngchmWidget-min.js</span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">TCGA.GBM.EXPR</span>, package<span class="op">=</span><span class="st">'NGCHMDemoData'</span><span class="op">)</span>;</span></span>
+<span class="r-in"><span><span class="va">chm1</span> <span class="op">&lt;-</span> <span class="fu"><a href="chmNew.html">chmNew</a></span><span class="op">(</span><span class="st">'gbm'</span>, <span class="va">TCGA.GBM.EXPR</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">50</span>,<span class="fl">1</span><span class="op">:</span><span class="fl">50</span><span class="op">]</span>,</span></span>
+<span class="r-in"><span>   rowAxisType<span class="op">=</span><span class="st">'bio.gene.hugo'</span>,</span></span>
+<span class="r-in"><span>   colAxisType<span class="op">=</span><span class="st">'bio.tcga.barcode.sample.vial.portion.analyte.aliquot'</span><span class="op">)</span>;</span></span>
+<span class="r-in"><span><span class="fu"><a href="chmExportToFile-method.html">chmExportToFile</a></span><span class="op">(</span><span class="va">chm1</span>, <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempfile</a></span><span class="op">(</span><span class="st">'gbm'</span>, fileext<span class="op">=</span><span class="st">'.ngchm'</span><span class="op">)</span><span class="op">)</span>;</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ngchm gbm (1 layers)</span>
+<span class="r-in"><span><span class="fu"><a href="chmExportToPDF-method.html">chmExportToPDF</a></span><span class="op">(</span><span class="va">chm1</span>, <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempfile</a></span><span class="op">(</span><span class="st">'gbm'</span>, fileext<span class="op">=</span><span class="st">'.pdf'</span><span class="op">)</span><span class="op">)</span>;</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "/var/folders/24/8k48jl6d249_n_qfxwsl6xvm0000gn/T//RtmpcZbfbG/gbm3b9d6db5f838.pdf"</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">mat</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="fl">100</span><span class="op">)</span>,nrow<span class="op">=</span><span class="fl">10</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">rownames</a></span><span class="op">(</span><span class="va">mat</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sprintf.html" class="external-link">sprintf</a></span> <span class="op">(</span><span class="st">"ABCA%d"</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">10</span><span class="op">)</span></span></span>
@@ -144,7 +149,7 @@ See NGCHM-initialization for details.</p>
 
 
       <footer><div class="copyright">
-  <p></p><p>Developed by Bradley Broom.</p>
+  <p></p><p>Developed by Bradley M Broom, Mary A Rohrdanz.</p>
 </div>
 
 <div class="pkgdown">

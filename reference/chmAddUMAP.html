@@ -20,7 +20,7 @@ added covariate bars."><!-- mathjax --><script src="https://cdnjs.cloudflare.com
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">NGCHMR</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.13.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.13.1</span>
       </span>
     </div>
 
@@ -107,10 +107,10 @@ added covariate bars.</p>
 
 
 <dt>umap</dt>
-<dd><p>TSNE coordinates (output of <code>umap::umap()</code>) for the specified NGCHM axis.</p></dd>
+<dd><p>TSNE coordinates (output of <code><a href="https://rdrr.io/pkg/umap/man/umap.html" class="external-link">umap::umap()</a></code>) for the specified NGCHM axis.</p></dd>
 
 
-<dt>baseName</dt>
+<dt>basename</dt>
 <dd><p>The prefix to use for the coordinate names.</p></dd>
 
 </dl></div>
@@ -130,11 +130,11 @@ added covariate bars.</p>
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">umc</span> <span class="op">&lt;-</span> <span class="fu">umap</span><span class="fu">::</span><span class="fu">umap</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/t.html" class="external-link">t</a></span><span class="op">(</span><span class="va">TCGA.GBM.EXPR</span><span class="op">)</span><span class="op">)</span>;</span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in loadNamespace(x):</span> there is no package called ‘umap’</span>
-<span class="r-in"><span><span class="va">hm</span> <span class="op">&lt;-</span> <span class="fu"><a href="chmNew.html">chmNew</a></span> <span class="op">(</span><span class="st">"gbm"</span>, <span class="va">TCGA.GBM.EXPR</span><span class="op">)</span>;</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">TCGA.GBM.EXPR</span>, package<span class="op">=</span><span class="st">'NGCHMDemoData'</span><span class="op">)</span>;</span></span>
+<span class="r-in"><span><span class="va">mat</span> <span class="op">&lt;-</span> <span class="va">TCGA.GBM.EXPR</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">50</span>,<span class="fl">1</span><span class="op">:</span><span class="fl">50</span><span class="op">]</span>;</span></span>
+<span class="r-in"><span><span class="va">umc</span> <span class="op">&lt;-</span> <span class="fu">umap</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/umap/man/umap.html" class="external-link">umap</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/t.html" class="external-link">t</a></span><span class="op">(</span><span class="va">mat</span><span class="op">)</span><span class="op">)</span>;</span></span>
+<span class="r-in"><span><span class="va">hm</span> <span class="op">&lt;-</span> <span class="fu"><a href="chmNew.html">chmNew</a></span> <span class="op">(</span><span class="st">"gbm"</span>, <span class="va">mat</span><span class="op">)</span>;</span></span>
 <span class="r-in"><span><span class="va">hm</span> <span class="op">&lt;-</span> <span class="fu">chmAddUMAP</span><span class="op">(</span><span class="va">hm</span>, <span class="st">"column"</span>, <span class="va">umc</span><span class="op">)</span>;</span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in rownames(umap$layout):</span> object 'umc' not found</span>
 <span class="r-in"><span></span></span>
 </code></pre></div>
     </div>
@@ -146,7 +146,7 @@ added covariate bars.</p>
 
 
       <footer><div class="copyright">
-  <p></p><p>Developed by Bradley Broom.</p>
+  <p></p><p>Developed by Bradley M Broom, Mary A Rohrdanz.</p>
 </div>
 
 <div class="pkgdown">

@@ -55,7 +55,7 @@
     <loc>https://md-anderson-bioinformatics.github.io/NGCHM-R/reference/NGCHM-package.html</loc>
   </url>
   <url>
-    <loc>https://md-anderson-bioinformatics.github.io/NGCHM-R/reference/TCGA.GBM.EXPR.html</loc>
+    <loc>https://md-anderson-bioinformatics.github.io/NGCHM-R/reference/addition-methods.html</loc>
   </url>
   <url>
     <loc>https://md-anderson-bioinformatics.github.io/NGCHM-R/reference/cash-.shaidyRepo.html</loc>
@@ -247,6 +247,9 @@
     <loc>https://md-anderson-bioinformatics.github.io/NGCHM-R/reference/chmLabel.html</loc>
   </url>
   <url>
+    <loc>https://md-anderson-bioinformatics.github.io/NGCHM-R/reference/chmLayer-set.html</loc>
+  </url>
+  <url>
     <loc>https://md-anderson-bioinformatics.github.io/NGCHM-R/reference/chmLayer.html</loc>
   </url>
   <url>
@@ -392,6 +395,9 @@
   </url>
   <url>
     <loc>https://md-anderson-bioinformatics.github.io/NGCHM-R/reference/cos.dist1.html</loc>
+  </url>
+  <url>
+    <loc>https://md-anderson-bioinformatics.github.io/NGCHM-R/reference/getDimensions-method.html</loc>
   </url>
   <url>
     <loc>https://md-anderson-bioinformatics.github.io/NGCHM-R/reference/gitHashObject.html</loc>

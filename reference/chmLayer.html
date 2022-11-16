@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">NGCHMR</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.13.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.13.1</span>
       </span>
     </div>
 
@@ -115,10 +115,11 @@ return NULL.</p></dd>
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">layer</span> <span class="op">&lt;-</span> <span class="fu">chmLayer</span> <span class="op">(</span><span class="va">hm</span>, <span class="st">"Layer 1"</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in is(hm, "ngchm"):</span> object 'hm' not found</span>
-<span class="r-in"><span><span class="va">layer</span> <span class="op">&lt;-</span> <span class="fu">chmLayer</span> <span class="op">(</span><span class="va">hm</span>, <span class="fl">1</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in is(hm, "ngchm"):</span> object 'hm' not found</span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">TCGA.GBM.Demo</span>, package<span class="op">=</span><span class="st">'NGCHMDemoData'</span><span class="op">)</span>;</span></span>
+<span class="r-in"><span><span class="va">matrix</span> <span class="op">&lt;-</span> <span class="va">TCGA.GBM.ExpressionData</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">50</span>,<span class="fl">1</span><span class="op">:</span><span class="fl">50</span><span class="op">]</span>;</span></span>
+<span class="r-in"><span><span class="va">hm</span> <span class="op">&lt;-</span> <span class="fu"><a href="chmNew.html">chmNew</a></span> <span class="op">(</span><span class="st">'New Heat Map'</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="chmNewDataLayer.html">chmNewDataLayer</a></span> <span class="op">(</span><span class="st">'Layer 1'</span>, <span class="va">matrix</span><span class="op">)</span>;</span></span>
+<span class="r-in"><span><span class="va">layer</span> <span class="op">&lt;-</span> <span class="fu">chmLayer</span> <span class="op">(</span><span class="va">hm</span>, <span class="st">"Layer 1"</span><span class="op">)</span>;</span></span>
+<span class="r-in"><span><span class="va">layercopy</span> <span class="op">&lt;-</span> <span class="fu">chmLayer</span> <span class="op">(</span><span class="va">hm</span>, <span class="fl">1</span><span class="op">)</span>;</span></span>
 <span class="r-in"><span></span></span>
 </code></pre></div>
     </div>
@@ -130,7 +131,7 @@ return NULL.</p></dd>
 
 
       <footer><div class="copyright">
-  <p></p><p>Developed by Bradley Broom.</p>
+  <p></p><p>Developed by Bradley M Broom, Mary A Rohrdanz.</p>
 </div>
 
 <div class="pkgdown">

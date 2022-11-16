@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">NGCHMR</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.13.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.13.1</span>
       </span>
     </div>
 
@@ -98,11 +98,10 @@
 
 <dt>label</dt>
 <dd><p>The name of the property to get.
-If no property with that name exists, return NULL.</p><div class="sourceCode"><pre><code>   Well-known property labels used by the NG-CHM system include:
-
-   * "chm.info.caption"  A paragraph describing the NG-CHM's contents (set by user).
-</code></pre></div>
-<ul><li><p>"chm.info.built.time"  The date and time the NG-CHM was saved (set by system).</p></li>
+If no property with that name exists, return NULL.</p>
+<p></p><div class="sourceCode"><pre><code><span id="cb1-1"><a href="#cb1-1"></a>   Well<span class="op">-</span>known property labels used by the NG<span class="op">-</span>CHM system include<span class="op">:</span></span>
+<span id="cb1-2"><a href="#cb1-2"></a></span>
+<span id="cb1-3"><a href="#cb1-3"></a><span class="st">   </span><span class="er">*</span><span class="st"> "chm.info.caption"</span>  A paragraph describing the NG<span class="op">-</span>CHM<span class="st">'s contents (set by user).</span></span></code></pre><p></p></div><ul><li><p>"chm.info.built.time"  The date and time the NG-CHM was saved (set by system).</p></li>
 </ul></dd>
 
 </dl></div>
@@ -119,8 +118,9 @@ If no property with that name exists, return NULL.</p><div class="sourceCode"><p
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu">chmProperty</span> <span class="op">(</span><span class="va">hm</span>, <span class="st">"chm.info.caption"</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in is(hm, "ngchm"):</span> object 'hm' not found</span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">hm</span> <span class="op">&lt;-</span> <span class="fu"><a href="chmNew.html">chmNew</a></span> <span class="op">(</span><span class="st">"Empty"</span><span class="op">)</span>;</span></span>
+<span class="r-in"><span><span class="fu">chmProperty</span> <span class="op">(</span><span class="va">hm</span>, <span class="st">"chm.info.caption"</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> NULL</span>
 <span class="r-in"><span></span></span>
 </code></pre></div>
     </div>
@@ -132,7 +132,7 @@ If no property with that name exists, return NULL.</p><div class="sourceCode"><p
 
 
       <footer><div class="copyright">
-  <p></p><p>Developed by Bradley Broom.</p>
+  <p></p><p>Developed by Bradley M Broom, Mary A Rohrdanz.</p>
 </div>
 
 <div class="pkgdown">

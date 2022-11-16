@@ -20,7 +20,7 @@ parameter basename (default &quot;PC&quot;) and N ranges from 1 to the number of
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">NGCHMR</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.13.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.13.1</span>
       </span>
     </div>
 
@@ -110,12 +110,12 @@ parameter basename (default "PC") and N ranges from 1 to the number of added cov
 <dd><p>Principal component coordinates (output of <code><a href="https://rdrr.io/r/stats/prcomp.html" class="external-link">stats::prcomp()</a></code>) for the specified NGCHM axis.</p></dd>
 
 
+<dt>basename</dt>
+<dd><p>The prefix to use for the coordinate names.</p></dd>
+
+
 <dt>ndim</dt>
 <dd><p>The maximum number of coordinates to add.</p></dd>
-
-
-<dt>baseName</dt>
-<dd><p>The prefix to use for the coordinate names.</p></dd>
 
 </dl></div>
     <div id="value">
@@ -134,7 +134,8 @@ parameter basename (default "PC") and N ranges from 1 to the number of added cov
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">prc</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/prcomp.html" class="external-link">prcomp</a></span><span class="op">(</span><span class="va">TCGA.GBM.EXPR</span><span class="op">)</span>;</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">TCGA.GBM.EXPR</span>, package<span class="op">=</span><span class="st">'NGCHMDemoData'</span><span class="op">)</span>;</span></span>
+<span class="r-in"><span><span class="va">prc</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/prcomp.html" class="external-link">prcomp</a></span><span class="op">(</span><span class="va">TCGA.GBM.EXPR</span><span class="op">)</span>;</span></span>
 <span class="r-in"><span><span class="va">hm</span> <span class="op">&lt;-</span> <span class="fu"><a href="chmNew.html">chmNew</a></span> <span class="op">(</span><span class="st">"gbm"</span>, <span class="va">TCGA.GBM.EXPR</span><span class="op">)</span>;</span></span>
 <span class="r-in"><span><span class="va">hm</span> <span class="op">&lt;-</span> <span class="fu">chmAddPCA</span><span class="op">(</span><span class="va">hm</span>, <span class="st">"column"</span>, <span class="va">prc</span><span class="op">)</span>;</span></span>
 <span class="r-in"><span></span></span>
@@ -148,7 +149,7 @@ parameter basename (default "PC") and N ranges from 1 to the number of added cov
 
 
       <footer><div class="copyright">
-  <p></p><p>Developed by Bradley Broom.</p>
+  <p></p><p>Developed by Bradley M Broom, Mary A Rohrdanz.</p>
 </div>
 
 <div class="pkgdown">
