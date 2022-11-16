@@ -44,6 +44,10 @@ Suggests:
     umap,
     uwot,
     Rtsne
+Remotes:
+    MD-Anderson-Bioinformatics/tsvio,
+    MD-Anderson-Bioinformatics/NGCHMSupportFiles,
+    MD-Anderson-Bioinformatics/NGCHMDemoData
 VignetteBuilder: knitr
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.2.1
