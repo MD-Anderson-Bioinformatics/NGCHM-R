@@ -965,7 +965,7 @@ getAxisData <- function (l, axis) {
 }
 setMethod(jsonlite:::asJSON, signature=c("singleElement"), definition=function(x,...) {
         stopifnot(length(x)==1);
-        toJSON (unbox (x[1]))
+        toJSON (unbox (x[1]), digits = I(7))
 });
 setMethod(jsonlite:::asJSON, signature=c("ngchmVersion2"), definition=function(x,...) {
     l <- s4ToList(x);
