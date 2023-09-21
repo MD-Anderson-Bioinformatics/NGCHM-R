@@ -4,8 +4,8 @@ Title: Utilities for Creating Next Generation Clustered Heat Maps
 Version: 0.13.1
 Date: 2022-11-12
 Authors@R:
-  c(person(given=c("Bradley", "M"), family="Broom", role=c("aut","cre"), email="bmbroom@mdanderson.org", comment=c(ORCID="0000-0002-0915-3164")),
-    person(given=c("Mary", "A"), family="Rohrdanz", role=c("aut"), email="marohrdanz@mdanderson.org"),
+  c(person(given=c("Bradley", "M"), family="Broom", role=c("aut"), email="bmbroom@mdanderson.org", comment=c(ORCID="0000-0002-0915-3164")),
+    person(given=c("Mary", "A"), family="Rohrdanz", role=c("aut","cre"), email="marohrdanz@mdanderson.org"),
     person(given="Chris", family="Wakefield", role=c("ctb"), email="cwakefield@mdanderson.org"),
     person(given="James", family="Melott", role=c("ctb"), email="jmmelott@mdanderson.org"),
     person(given="MD Anderson Cancer Center", role=c("cph")))
