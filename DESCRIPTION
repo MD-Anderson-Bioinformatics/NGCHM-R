@@ -2,7 +2,6 @@ Package: NGCHM
 Type: Package
 Title: Utilities for Creating Next Generation Clustered Heat Maps
 Version: 1.0.0
-Date: 2022-11-12
 Authors@R:
   c(person(given=c("Bradley", "M"), family="Broom", role=c("aut"), email="bmbroom@mdanderson.org", comment=c(ORCID="0000-0002-0915-3164")),
     person(given=c("Mary", "A"), family="Rohrdanz", role=c("aut","cre"), email="marohrdanz@mdanderson.org"),
