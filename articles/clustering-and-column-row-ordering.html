@@ -90,7 +90,7 @@
   </a>
 </li>
 <li>
-  <a href="https://github.com/md-anderson-bioinformatics.github.io/NGCHM-R/" class="external-link">
+  <a href="https://github.com/MD-Anderson-Bioinformatics/NGCHM-R/" class="external-link">
     <span class="fa fa-github"></span>
      
   </a>
@@ -105,7 +105,7 @@
 
       
 
-      </header><script src="clustering-and-column-row-ordering_files/accessible-code-block-0.0.1/empty-anchor.js"></script><div class="row">
+      </header><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>Clustering and Column/Row Ordering</h1>
@@ -118,12 +118,17 @@
 
     
     
-<p>This vignette describes options for ordering rows and columns of a NG-CHM, and the additional options available when the ordering is hierarchical clustering.</p>
+<p>This vignette describes options for ordering rows and columns of a
+NG-CHM, and the additional options available when the ordering is
+hierarchical clustering.</p>
 <div class="section level2">
 <h2 id="specifying-row-column-order">Specifying Row / Column Order<a class="anchor" aria-label="anchor" href="#specifying-row-column-order"></a>
 </h2>
-<p>The <code><a href="../reference/chmNew.html">chmNew()</a></code> function allows for arguments “rowOrder” and “colOrder”, each of which can be a vector, dendrogram, or function specifying the order of the rows/columns.</p>
-<p>The following command produces a NG-CHM with rows sorted alphabetically and columns ordered randomly:</p>
+<p>The <code><a href="../reference/chmNew.html">chmNew()</a></code> function allows for arguments “rowOrder”
+and “colOrder”, each of which can be a vector, dendrogram, or function
+specifying the order of the rows/columns.</p>
+<p>The following command produces a NG-CHM with rows sorted
+alphabetically and columns ordered randomly:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">NGCHM</span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">NGCHMDemoData</span><span class="op">)</span></span>
@@ -132,22 +137,38 @@
 <div class="section level2">
 <h2 id="hierarchical-clustering-options">Hierarchical Clustering Options<a class="anchor" aria-label="anchor" href="#hierarchical-clustering-options"></a>
 </h2>
-<p>For hierarchical clustering, additional options are available to specify the distance measure and clustering method.</p>
-<p>The distance measure is specified with the ‘rowDist’ and ‘colDist’ arguments to <code><a href="../reference/chmNew.html">chmNew()</a></code>, and available choices include those of the <code><a href="https://rdrr.io/r/stats/dist.html" class="external-link">stats::dist()</a></code> function. There are two additional distance metric options: ‘cosine’ and ‘correlation’. The default is ‘correlation’, which computes the distance measure as 1 minus the Pearson correlation among the rows/columns.</p>
-<p>The clustering method is specified with the ‘rowAgglom’ and ‘colAgglom’ arguments, and available options are those of the <code><a href="https://rdrr.io/r/stats/hclust.html" class="external-link">stats::hclust</a></code> function. The default is ‘ward.D2’.</p>
-<p>This example specifies a NG-CHM with hierarchical clustering using the Euclidean distance metric and complete linkage clustering algorithm for both rows and columns:</p>
+<p>For hierarchical clustering, additional options are available to
+specify the distance measure and clustering method.</p>
+<p>The distance measure is specified with the ‘rowDist’ and ‘colDist’
+arguments to <code><a href="../reference/chmNew.html">chmNew()</a></code>, and available choices include those
+of the <code><a href="https://rdrr.io/r/stats/dist.html" class="external-link">stats::dist()</a></code> function. There are two additional
+distance metric options: ‘cosine’ and ‘correlation’. The default is
+‘correlation’, which computes the distance measure as 1 minus the
+Pearson correlation among the rows/columns.</p>
+<p>The clustering method is specified with the ‘rowAgglom’ and
+‘colAgglom’ arguments, and available options are those of the
+<code><a href="https://rdrr.io/r/stats/hclust.html" class="external-link">stats::hclust</a></code> function. The default is ‘ward.D2’.</p>
+<p>This example specifies a NG-CHM with hierarchical clustering using
+the Euclidean distance metric and complete linkage clustering algorithm
+for both rows and columns:</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">hm</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/chmNew.html">chmNew</a></span><span class="op">(</span><span class="st">'tcga-brca'</span>, <span class="va">TCGA.BRCA.ExpressionData</span>, rowDist<span class="op">=</span><span class="st">'euclidean'</span>, colDist<span class="op">=</span><span class="st">'euclidean'</span>, rowAgglom<span class="op">=</span><span class="st">'complete'</span>, colAgglom<span class="op">=</span><span class="st">'complete'</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="explicit-clustering">Explicit Clustering<a class="anchor" aria-label="anchor" href="#explicit-clustering"></a>
 </h2>
-<p>Users may perform the clustering explicitly, and use the results in constructing a NG-CHM. The following creates an object of class hclust from the distance matrix of the demo expression data, for both the rows and columns, and uses those clustering results to construct an NG-CHM.</p>
+<p>Users may perform the clustering explicitly, and use the results in
+constructing a NG-CHM. The following creates an object of class hclust
+from the distance matrix of the demo expression data, for both the rows
+and columns, and uses those clustering results to construct an
+NG-CHM.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">rowClust</span> <span class="op">&lt;-</span> <span class="fu">stats</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/stats/hclust.html" class="external-link">hclust</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/dist.html" class="external-link">dist</a></span><span class="op">(</span><span class="va">TCGA.BRCA.ExpressionData</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="va">colClust</span> <span class="op">&lt;-</span> <span class="fu">stats</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/stats/hclust.html" class="external-link">hclust</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/dist.html" class="external-link">dist</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/t.html" class="external-link">t</a></span><span class="op">(</span><span class="va">TCGA.BRCA.ExpressionData</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="va">hm</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/chmNew.html">chmNew</a></span><span class="op">(</span><span class="st">'tcga-brca'</span>, <span class="va">TCGA.BRCA.ExpressionData</span>, rowOrder<span class="op">=</span><span class="va">rowClust</span>, colOrder<span class="op">=</span><span class="va">colClust</span><span class="op">)</span></span></code></pre></div>
-<p>Similarly, an hclust object can be transformed into a dendrogram and used for the row and/or column ordering. The example below uses the clutering results from above as dedrograms:</p>
+<p>Similarly, an hclust object can be transformed into a dendrogram and
+used for the row and/or column ordering. The example below uses the
+clutering results from above as dedrograms:</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">rowDendrogram</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/dendrogram.html" class="external-link">as.dendrogram</a></span><span class="op">(</span><span class="va">rowClust</span><span class="op">)</span></span>
 <span><span class="va">colDendrogram</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/dendrogram.html" class="external-link">as.dendrogram</a></span><span class="op">(</span><span class="va">colClust</span><span class="op">)</span></span>
@@ -172,7 +193,7 @@
 
 <div class="pkgdown">
   <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
 </div>
 
       </footer>
