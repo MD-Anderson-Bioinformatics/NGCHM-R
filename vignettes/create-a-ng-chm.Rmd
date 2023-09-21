@@ -76,7 +76,7 @@ The NG-CHM can be exported to two different file types:
 
 1. A stand-alone HTML file that can be emailed to collaborators, opened in a standard browser, or embedded  
    in an RMarkdown file.
-2. A '.ngchm' file that can be opened in the [NGCHM Viewer](https://www.ngchm.net/Downloads/ngChmApp.html).
+2. A '.ngchm' file that can be opened in the [NGCHM Viewer](https://www.ngchm.net/Downloads/current/ngChmApp.html).
 
 Both methods use files from the [NGCHMSupportFiles](https://github.com/MD-Anderson-Bioinformatics/NGCHMSupportFiles) package 
 referenced in the [Installation page](Installation.html). When loaded, NGCHMSupportFiles 
@@ -102,7 +102,7 @@ Alternatively, .ngchm file can be created with the `chmExportToFile()` function.
 chmExportToFile(hm,'tcga-brca.ngchm')
 ```
 
-The file 'tcga-brca.ngchm' can be opened in the [NG-CHM Viewer](https://www.ngchm.net/Downloads/ngChmApp.html). 
+The file 'tcga-brca.ngchm' can be opened in the [NG-CHM Viewer](https://www.ngchm.net/Downloads/current/ngChmApp.html).
 **IMPORTANT: The filename must end with '.ngchm' to open in the NG-CHM Viewer**. 
 
 
