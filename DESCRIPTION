@@ -44,7 +44,6 @@ Suggests:
     uwot,
     Rtsne
 Remotes:
-    MD-Anderson-Bioinformatics/tsvio,
     MD-Anderson-Bioinformatics/NGCHMSupportFiles,
     MD-Anderson-Bioinformatics/NGCHMDemoData
 VignetteBuilder: knitr
