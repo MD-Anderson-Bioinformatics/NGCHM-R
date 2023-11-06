@@ -40,9 +40,7 @@ Suggests:
     uwot
 VignetteBuilder:
     knitr
-Remotes:
-    MD-Anderson-Bioinformatics/NGCHMDemoData,
-    MD-Anderson-Bioinformatics/NGCHMSupportFiles
+Additional_repositories: https://marohrdanz.github.io/drat
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.2.3
