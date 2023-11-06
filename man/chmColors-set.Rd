@@ -19,9 +19,11 @@ The modified NG-CHM object.
 Set the colors of an ngchmColormap, ngchmLayer, ngchmBar, or ngchmCovariate.
 }
 \examples{
+\dontrun{
 data(TCGA.GBM.EXPR, package='NGCHMDemoData');
 layer <- chmNewDataLayer('GBM Layer', TCGA.GBM.EXPR[1:50,1:50])
 chmColors (layer) <- c("blue", "white", "red")
+}
 
 }
 \seealso{

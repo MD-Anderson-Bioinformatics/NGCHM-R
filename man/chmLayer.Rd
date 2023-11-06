@@ -20,11 +20,13 @@ An object of class ngchmLayer or NULL.
 This function returns a Data Layer contained in a Next Generation Clustered Heat Map.
 }
 \examples{
+\dontrun{
 data(TCGA.GBM.Demo, package='NGCHMDemoData');
 matrix <- TCGA.GBM.ExpressionData[1:50,1:50];
 hm <- chmNew ('New Heat Map') + chmNewDataLayer ('Layer 1', matrix);
 layer <- chmLayer (hm, "Layer 1");
 layercopy <- chmLayer (hm, 1);
+}
 
 }
 \seealso{

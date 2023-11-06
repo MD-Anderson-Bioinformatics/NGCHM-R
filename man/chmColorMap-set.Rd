@@ -18,9 +18,11 @@ The modified NG-CHM object.
 Set the color map of an NG-CHM object
 }
 \examples{
+\dontrun{
 data(TCGA.GBM.EXPR, package='NGCHMDemoData');
 dataLayer <- chmNewDataLayer('GBM layer', TCGA.GBM.EXPR[1:30,1:30]);
 chmColorMap (dataLayer) <- chmNewColorMap (c(2,14));
+}
 
 }
 \seealso{

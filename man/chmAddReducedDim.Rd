@@ -46,6 +46,7 @@ that can be used to specify the desired dimension.  The method's return value is
 the one described in the preceding paragraph.  This package defines methods for classes \code{prcomp} and \code{umap}.
 }
 \examples{
+\dontrun{
 data(TCGA.GBM.EXPR, package='NGCHMDemoData');
 mat <- TCGA.GBM.EXPR[1:50,1:50];
 prc <- prcomp(mat);
@@ -54,6 +55,7 @@ hm <- chmAddReducedDim(hm, "column", prc, "PCA", 3, "PC");
 
 umc <- umap::umap (t(mat));
 hm <- chmAddReducedDim(hm, "column", umc, "UMAP");
+}
 
 }
 \seealso{

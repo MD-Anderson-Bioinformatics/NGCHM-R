@@ -11,7 +11,7 @@ chmAddTSNE(hm, axis, tsne, pointIds, basename = "TSNE")
 
 \item{axis}{The NGCHM axis ("row" or "column") to add the coordinates to}
 
-\item{tsne}{TSNE coordinates (output of \code{\link[Rtsne:Rtsne]{Rtsne::Rtsne()}}) for the specified NGCHM axis}
+\item{tsne}{TSNE coordinates (output of \href{https://CRAN.R-project.org/package=Rtsne}{Rtsne::Rtsne()}) for the specified NGCHM axis}
 
 \item{pointIds}{The NGCHM names for the data points in tsne}
 
@@ -27,17 +27,18 @@ where BASENAME is specified by the parameter basename (default TSNE) and N range
 added covariate bars.
 }
 \details{
-pointIds is required because \code{\link[Rtsne:Rtsne]{Rtsne::Rtsne()}} does not preserve the rownames of the data matrix it was applied to.
+pointIds is required because \href{https://CRAN.R-project.org/package=Rtsne}{Rtsne::Rtsne()} does not preserve the rownames of the data matrix it was applied to.
 Their values must match those on that axis of the NGCHM, but their order must match those in the data
-matrix passed to \code{\link[Rtsne:Rtsne]{Rtsne::Rtsne()}}.
+matrix passed to \href{https://CRAN.R-project.org/package=Rtsne}{Rtsne::Rtsne()}.
 }
 \examples{
+\dontrun{
 data(TCGA.GBM.EXPR, package='NGCHMDemoData');
 mat <- TCGA.GBM.EXPR[1:50,1:500];
 rtc <- Rtsne::Rtsne(t(mat));
 hm <- chmNew ("gbm", mat);
 hm <- chmAddTSNE(hm, "column", rtc, colnames(mat));
-
+}
 }
 \seealso{
 \code{\link[=chmAddPCA]{chmAddPCA()}}

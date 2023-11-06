@@ -21,11 +21,13 @@ A ngchmCovariate or NULL.
 Get a covariate attached to an NG-CHM dataset.
 }
 \examples{
+\dontrun{
 data(TCGA.GBM.Demo, package='NGCHMDemoData');
 dataset <- chmNewDataset ("gbmexpr", "TCGA GBM Expression Data", TCGA.GBM.ExpressionData);
 dataset <- chmAddCovariate (dataset, "column",
                chmNewCovariate("TP53 Mutation", TCGA.GBM.TP53MutationData));
 chmCovariate (dataset, "TP53 Mutation");
+}
 
 }
 \seealso{

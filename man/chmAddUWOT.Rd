@@ -11,7 +11,7 @@ chmAddUWOT(hm, axis, uwot, pointIds, basename = "UMAP")
 
 \item{axis}{The NGCHM axis ("row" or "column") to add the coordinates to.}
 
-\item{uwot}{UMAP coordinates (output of \code{\link[uwot:umap]{uwot::umap()}}) for the specified NGCHM axis.}
+\item{uwot}{UMAP coordinates (output of \href{https://CRAN.R-project.org/package=uwot}{uwot::umap()}) for the specified NGCHM axis.}
 
 \item{pointIds}{The NGCHM names for the data points in uwot}
 
@@ -27,15 +27,17 @@ where BASENAME is specified by the parameter basename (default UMAP) and N range
 added covariate bars.
 }
 \details{
-pointIds is required because \code{\link[uwot:umap]{uwot::umap()}} does not preserve the rownames of the data matrix it was applied to.
+pointIds is required because \href{https://CRAN.R-project.org/package=uwot}{uwot::umap()} does not preserve the rownames of the data matrix it was applied to.
 Their values must match those on that axis of the NGCHM, but their order must match those in the data
-matrix passed to \code{\link[uwot:umap]{uwot::umap()}}.
+matrix passed to \href{https://CRAN.R-project.org/package=uwot}{uwot::umap()}.
 }
 \examples{
+\dontrun{
 data(TCGA.GBM.EXPR, package='NGCHMDemoData');
 umc <- uwot::umap(t(TCGA.GBM.EXPR));
 hm <- chmNew ("gbm", TCGA.GBM.EXPR);
 hm <- chmAddUWOT(hm, "column", umc, colnames(TCGA.GBM.EXPR));
+}
 
 }
 \seealso{
