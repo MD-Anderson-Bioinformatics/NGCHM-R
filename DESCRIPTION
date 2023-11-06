@@ -1,28 +1,47 @@
-Package: NGCHM
 Type: Package
+Package: NGCHM
 Title: Utilities for Creating Next Generation Clustered Heat Maps
 Version: 1.0.0
-Authors@R:
-  c(person(given=c("Bradley", "M"), family="Broom", role=c("aut"), email="bmbroom@mdanderson.org", comment=c(ORCID="0000-0002-0915-3164")),
-    person(given=c("Mary", "A"), family="Rohrdanz", role=c("aut","cre"), email="marohrdanz@mdanderson.org"),
-    person(given="Chris", family="Wakefield", role=c("ctb"), email="cwakefield@mdanderson.org"),
-    person(given="James", family="Melott", role=c("ctb"), email="jmmelott@mdanderson.org"),
-    person(given="MD Anderson Cancer Center", role=c("cph")))
+Authors@R:c(
+    person(c("Bradley", "M"), "Broom", , "bmbroom@mdanderson.org", role = "aut",
+           comment = c(ORCID = "0000-0002-0915-3164")),
+    person(c("Mary", "A"), "Rohrdanz", , "marohrdanz@mdanderson.org", role = c("aut", "cre")),
+    person("Chris", "Wakefield", , "cwakefield@mdanderson.org", role = "ctb"),
+    person("James", "Melott", , "jmmelott@mdanderson.org", role = "ctb"),
+    person("MD Anderson Cancer Center", role = "cph")
+  )
+Description: Utilities for creating Next Generation Clustered Heat Maps.
+License: GPL-3
 Depends:
     R (>= 3.4.0)
 Imports:
-    methods,
-    utils,
-    stats,
-    grDevices,
     digest,
+    grDevices,
+    htmltools,
     httr,
     jsonlite,
-    htmltools,
     logger (>= 0.2.0),
-    tsvio
-Description: Utilities for creating Next Generation Clustered Heat Maps.
-License: GPL-3
+    methods,
+    stats,
+    tsvio,
+    utils
+Suggests:
+    knitr,
+    NGCHMDemoData,
+    NGCHMSupportFiles,
+    rmarkdown,
+    Rtsne,
+    testthat,
+    umap,
+    uwot
+VignetteBuilder:
+    knitr
+Remotes:
+    MD-Anderson-Bioinformatics/NGCHMDemoData,
+    MD-Anderson-Bioinformatics/NGCHMSupportFiles
+Encoding: UTF-8
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.2.3
 Collate:
     'allClasses.R'
     'allGenerics.R'
@@ -34,19 +53,3 @@ Collate:
     'ngchmshaidy.R'
     'zzz.R'
     'package.R'
-Suggests:
-    testthat,
-    knitr,
-    rmarkdown,
-    NGCHMSupportFiles,
-    NGCHMDemoData,
-    umap,
-    uwot,
-    Rtsne
-Remotes:
-    MD-Anderson-Bioinformatics/NGCHMSupportFiles,
-    MD-Anderson-Bioinformatics/NGCHMDemoData
-VignetteBuilder: knitr
-Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.2.1
-Encoding: UTF-8
