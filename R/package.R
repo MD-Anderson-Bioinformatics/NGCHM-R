@@ -31,6 +31,7 @@
 #' @import htmltools
 #'
 #' @examples
+#' \dontrun{
 #' library(NGCHMSupportFiles)
 #' data(TCGA.GBM.EXPR, package='NGCHMDemoData');
 #' chm1 <- chmNew('gbm', TCGA.GBM.EXPR[1:50,1:50],
@@ -43,6 +44,7 @@
 #' rownames(mat) <- sprintf ("ABCA%d", 1:10)
 #' colnames(mat) <- sprintf ("Sample%d", 1:10)
 #' chm <- chmNew ('my-chm', mat)
+#' }
 #'\dontrun{chmSetCollection ('//server/collection')
 #' chmInstall (chm)
 #'}
