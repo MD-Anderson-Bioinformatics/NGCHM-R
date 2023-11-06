@@ -3591,9 +3591,9 @@ writeBinLines <- function(text, con) {
 #' where BASENAME is specified by the parameter basename (default TSNE) and N ranges from 1 to the number of
 #' added covariate bars.
 #'
-#' pointIds is required because [Rtsne::Rtsne()] does not preserve the rownames of the data matrix it was applied to.
+#' pointIds is required because [Rtsne::Rtsne()](https://CRAN.R-project.org/package=Rtsne) does not preserve the rownames of the data matrix it was applied to.
 #' Their values must match those on that axis of the NGCHM, but their order must match those in the data
-#' matrix passed to [Rtsne::Rtsne()].
+#' matrix passed to [Rtsne::Rtsne()](https://CRAN.R-project.org/package=Rtsne).
 #'
 #' @examples
 #' data(TCGA.GBM.EXPR, package='NGCHMDemoData');
@@ -3606,7 +3606,7 @@ writeBinLines <- function(text, con) {
 #'
 #' @param hm The NGCHM to add the coordinates to
 #' @param axis The NGCHM axis ("row" or "column") to add the coordinates to
-#' @param tsne TSNE coordinates (output of [Rtsne::Rtsne()]) for the specified NGCHM axis
+#' @param tsne TSNE coordinates (output of [Rtsne::Rtsne()](https://CRAN.R-project.org/package=Rtsne)) for the specified NGCHM axis
 #' @param pointIds The NGCHM names for the data points in tsne
 #' @param basename The prefix to use for the coordinate names.
 #'
@@ -3704,7 +3704,7 @@ chmAddPCA <- function (hm, axis, prc, basename = "PC", ndim=2) {
 #'
 #' @param hm The NGCHM to add the coordinates to.
 #' @param axis The NGCHM axis ("row" or "column") to add the coordinates to.
-#' @param umap TSNE coordinates (output of [umap::umap()]) for the specified NGCHM axis.
+#' @param umap TSNE coordinates (output of [umap::umap()](https://CRAN.R-project.org/package=umap)) for the specified NGCHM axis.
 #' @param basename The prefix to use for the coordinate names.
 #'
 #' @return The NGCHM with added coordinates.
@@ -3741,9 +3741,9 @@ chmAddUMAP <- function (hm, axis, umap, basename = "UMAP") {
 #' where BASENAME is specified by the parameter basename (default UMAP) and N ranges from 1 to the number of
 #' added covariate bars.
 #'
-#' pointIds is required because [uwot::umap()] does not preserve the rownames of the data matrix it was applied to.
+#' pointIds is required because [uwot::umap()](https://CRAN.R-project.org/package=uwot) does not preserve the rownames of the data matrix it was applied to.
 #' Their values must match those on that axis of the NGCHM, but their order must match those in the data
-#' matrix passed to [uwot::umap()].
+#' matrix passed to [uwot::umap()](https://CRAN.R-project.org/package=uwot).
 #'
 #' @examples
 #' data(TCGA.GBM.EXPR, package='NGCHMDemoData');
@@ -3755,7 +3755,7 @@ chmAddUMAP <- function (hm, axis, umap, basename = "UMAP") {
 #'
 #' @param hm The NGCHM to add the coordinates to.
 #' @param axis The NGCHM axis ("row" or "column") to add the coordinates to.
-#' @param uwot UMAP coordinates (output of [uwot::umap()]) for the specified NGCHM axis.
+#' @param uwot UMAP coordinates (output of [uwot::umap()](https://CRAN.R-project.org/package=uwot)) for the specified NGCHM axis.
 #' @param pointIds The NGCHM names for the data points in uwot
 #' @param basename The prefix to use for the coordinate names.
 #'
