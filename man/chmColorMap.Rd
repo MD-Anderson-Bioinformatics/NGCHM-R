@@ -21,10 +21,14 @@ An ngchmColormap
 Get the color map of an NG-CHM object.
 }
 \examples{
-\dontrun{
-data(TCGA.GBM.EXPR, package='NGCHMDemoData');
-chmColorMap (chmNewDataLayer('New layer', TCGA.GBM.EXPR[1:3,1:3]))
+# If the NGCHMDemoData package is installed, use it to demo usage
+if (requireNamespace("NGCHMDemoData", quietly = TRUE)) {
+  data(TCGA.GBM.EXPR, package='NGCHMDemoData')
+  colormap <- chmColorMap(chmNewDataLayer('New layer', TCGA.GBM.EXPR[1:3,1:3]))
 }
+matrix <- matrix(rnorm(100), nrow = 10, ncol = 10,
+    dimnames = list(paste0("r", 1:10), paste0("c", 1:10)))
+colormap <- chmColorMap(chmNewDataLayer('New layer', matrix))
 
 }
 \seealso{

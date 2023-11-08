@@ -46,16 +46,24 @@ that can be used to specify the desired dimension.  The method's return value is
 the one described in the preceding paragraph.  This package defines methods for classes \code{prcomp} and \code{umap}.
 }
 \examples{
-\dontrun{
-data(TCGA.GBM.EXPR, package='NGCHMDemoData');
-mat <- TCGA.GBM.EXPR[1:50,1:50];
-prc <- prcomp(mat);
-hm <- chmNew('mat', mat);
-hm <- chmAddReducedDim(hm, "column", prc, "PCA", 3, "PC");
-
-umc <- umap::umap (t(mat));
-hm <- chmAddReducedDim(hm, "column", umc, "UMAP");
+# If the NGCHMDemoData package is installed, use it to demo usage
+if (requireNamespace("NGCHMDemoData", quietly = TRUE)) {
+  data(TCGA.GBM.EXPR, package='NGCHMDemoData')
+  mat <- TCGA.GBM.EXPR[1:50,1:50]
+  prc <- prcomp(mat)
+  hm <- chmNew('Demo reduced dimension coordinates', mat)
+  hm <- chmAddReducedDim(hm, "column", prc, "PCA", 3, "PC")
+  umc <- umap::umap(t(mat))
+  hm <- chmAddReducedDim(hm, "column", umc, "UMAP")
 }
+# Generic additional example
+matrix <- matrix(rnorm(1000), nrow = 100, ncol = 100,
+    dimnames = list(paste0("r", 1:100), paste0("c", 1:100)))
+prc <- prcomp(matrix)
+hm <- chmNew("Demo reduced dimension coordinates", matrix)
+hm <- chmAddReducedDim(hm, "column", prc, "PCA", 3, "PC")
+umc <- umap::umap(t(matrix))
+hm <- chmAddReducedDim(hm, "column", umc, "UMAP")
 
 }
 \seealso{

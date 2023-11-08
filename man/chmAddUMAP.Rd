@@ -25,13 +25,20 @@ where BASENAME is specified by the parameter basename (default UMAP) and N range
 added covariate bars.
 }
 \examples{
-\dontrun{
-data(TCGA.GBM.EXPR, package='NGCHMDemoData');
-mat <- TCGA.GBM.EXPR[1:50,1:50];
-umc <- umap::umap(t(mat));
-hm <- chmNew ("gbm", mat);
-hm <- chmAddUMAP(hm, "column", umc);
+# If the NGCHMDemoData package is installed, use it to demo usage
+if (requireNamespace("NGCHMDemoData", quietly = TRUE)) {
+  data(TCGA.GBM.EXPR, package='NGCHMDemoData')
+  mat <- TCGA.GBM.EXPR[1:50,1:50]
+  umc <- umap::umap(t(mat))
+  hm <- chmNew("gbm", mat)
+  hm <- chmAddUMAP(hm, "column", umc)
 }
+# Generic additional example
+matrix <- matrix(rnorm(1000), nrow = 100, ncol = 100,
+    dimnames = list(paste0("r", 1:100), paste0("c", 1:100)))
+umc <- umap::umap(t(matrix))
+hm <- chmNew("Demo UMAP", matrix)
+hm <- chmAddUMAP(hm, "column", umc)
 
 }
 \seealso{

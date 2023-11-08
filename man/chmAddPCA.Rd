@@ -27,12 +27,19 @@ Coordinates are given names 'BASENAME.coordinate.N', where BASENAME is specified
 parameter basename (default "PC") and N ranges from 1 to the number of added covariate bars.
 }
 \examples{
-\dontrun{
-data(TCGA.GBM.EXPR, package='NGCHMDemoData');
-prc <- prcomp(TCGA.GBM.EXPR);
-hm <- chmNew ("gbm", TCGA.GBM.EXPR);
-hm <- chmAddPCA(hm, "column", prc);
+# If the NGCHMDemoData package is installed, use it to demo usage
+if (requireNamespace("NGCHMDemoData", quietly = TRUE)) {
+  data(TCGA.GBM.EXPR, package = 'NGCHMDemoData')
+  prc <- prcomp(TCGA.GBM.EXPR)
+  hm <- chmNew("gbm", TCGA.GBM.EXPR)
+  hm <- chmAddPCA(hm, "column", prc)
 }
+# Generic additional example
+matrix <- matrix(rnorm(100), nrow = 10, ncol = 10,
+    dimnames = list(paste0("r", 1:10), paste0("c", 1:10)))
+prc <- prcomp(matrix)
+hm <- chmNew("Demo PCA", matrix)
+hm <- chmAddPCA(hm, "column", prc)
 
 }
 \seealso{

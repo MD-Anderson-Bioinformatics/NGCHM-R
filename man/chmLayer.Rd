@@ -20,13 +20,21 @@ An object of class ngchmLayer or NULL.
 This function returns a Data Layer contained in a Next Generation Clustered Heat Map.
 }
 \examples{
-\dontrun{
-data(TCGA.GBM.Demo, package='NGCHMDemoData');
-matrix <- TCGA.GBM.ExpressionData[1:50,1:50];
-hm <- chmNew ('New Heat Map') + chmNewDataLayer ('Layer 1', matrix);
-layer <- chmLayer (hm, "Layer 1");
-layercopy <- chmLayer (hm, 1);
+# If the NGCHMDemoData package is installed, use it to create an example usage
+if (requireNamespace("NGCHMDemoData", quietly = TRUE)) {
+  # Create example NGCHM
+  data(TCGA.GBM.Demo, package = 'NGCHMDemoData')
+  matrix <- TCGA.GBM.ExpressionData[1:50,1:50]
+  hm <- chmNew('New Heat Map') + chmNewDataLayer('my layer', matrix)
+  layer <- chmLayer(hm, "my layer")
+  same_layer <- chmLayer(hm, 1)
 }
+# Generic additional example
+matrix <- matrix(rnorm(100), nrow = 10, ncol = 10,
+    dimnames = list(paste0("r", 1:10), paste0("c", 1:10)))
+hm <- chmNew('New Heat Map') + chmNewDataLayer('my layer', matrix);
+layer <- chmLayer(hm, "my layer")
+same_layer <- chmLayer(hm, 1)
 
 }
 \seealso{

@@ -32,13 +32,21 @@ Their values must match those on that axis of the NGCHM, but their order must ma
 matrix passed to \href{https://CRAN.R-project.org/package=Rtsne}{Rtsne::Rtsne()}.
 }
 \examples{
-\dontrun{
-data(TCGA.GBM.EXPR, package='NGCHMDemoData');
-mat <- TCGA.GBM.EXPR[1:50,1:500];
-rtc <- Rtsne::Rtsne(t(mat));
-hm <- chmNew ("gbm", mat);
-hm <- chmAddTSNE(hm, "column", rtc, colnames(mat));
+# If the NGCHMDemoData package is installed, use it to demo usage
+if (requireNamespace("NGCHMDemoData", quietly = TRUE)) {
+  data(TCGA.GBM.EXPR, package = 'NGCHMDemoData')
+  mat <- TCGA.GBM.EXPR[1:50,1:500]
+  rtc <- Rtsne::Rtsne(t(mat))
+  hm <- chmNew("gbm", mat)
+  hm <- chmAddTSNE(hm, "column", rtc, colnames(mat))
 }
+# Generic additional example
+matrix <- matrix(rnorm(1000), nrow = 100, ncol = 100,
+    dimnames = list(paste0("r", 1:100), paste0("c", 1:100)))
+rtc <- Rtsne::Rtsne(t(matrix), check_duplicates = FALSE)
+hm <- chmNew("Demo TSNE", matrix)
+hm <- chmAddTSNE(hm, "column", rtc, colnames(matrix))
+
 }
 \seealso{
 \code{\link[=chmAddPCA]{chmAddPCA()}}
