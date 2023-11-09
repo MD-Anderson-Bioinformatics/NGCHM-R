@@ -33,7 +33,8 @@
 #' @examples
 #' # The NGCHMSupportFiles package is required by chmExportToFile and chmExportToPDF
 #' # The NGCHMDemoData package used to crate a demo NGCHM
-#' if (requireNamespace("NGCHMSupportFiles", quietly = TRUE) && requireNamespace("NGCHMDemoData", quietly = TRUE)) {
+#' if (requireNamespace("NGCHMSupportFiles", quietly = TRUE)
+#'     && requireNamespace("NGCHMDemoData", quietly = TRUE)) {
 #'   library(NGCHMSupportFiles)
 #'   data(TCGA.GBM.EXPR, package = 'NGCHMDemoData')
 #'   chm1 <- chmNew('gbm', TCGA.GBM.EXPR[1:50,1:50],
