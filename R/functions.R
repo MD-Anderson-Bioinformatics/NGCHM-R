@@ -3661,15 +3661,15 @@ writeBinLines <- function(text, con) {
 #' # If the NGCHMDemoData package is installed, use it to demo usage
 #' if (requireNamespace("NGCHMDemoData", quietly = TRUE)) {
 #'   data(TCGA.GBM.EXPR, package = 'NGCHMDemoData')
-#'   mat <- TCGA.GBM.EXPR[1:50,1:500]
-#'   rtc <- Rtsne::Rtsne(t(mat))
+#'   mat <- TCGA.GBM.EXPR[1:10,1:10]
+#'   rtc <- Rtsne::Rtsne(t(mat), check_duplicates = FALSE, perplexity = 3)
 #'   hm <- chmNew("gbm", mat)
 #'   hm <- chmAddTSNE(hm, "column", rtc, colnames(mat))
 #' }
 #' # Generic additional example
-#' matrix <- matrix(rnorm(1000), nrow = 100, ncol = 100,
-#'     dimnames = list(paste0("r", 1:100), paste0("c", 1:100)))
-#' rtc <- Rtsne::Rtsne(t(matrix), check_duplicates = FALSE)
+#' matrix <- matrix(rnorm(100), nrow = 10, ncol = 10,
+#'     dimnames = list(paste0("r", 1:10), paste0("c", 1:10)))
+#' rtc <- Rtsne::Rtsne(t(matrix), check_duplicates = FALSE, perplexity = 3)
 #' hm <- chmNew("Demo TSNE", matrix)
 #' hm <- chmAddTSNE(hm, "column", rtc, colnames(matrix))
 #'
@@ -3719,8 +3719,8 @@ chmAddTSNE <- function (hm, axis, tsne, pointIds, basename = "TSNE") {
 #' # If the NGCHMDemoData package is installed, use it to demo usage
 #' if (requireNamespace("NGCHMDemoData", quietly = TRUE)) {
 #'   data(TCGA.GBM.EXPR, package = 'NGCHMDemoData')
-#'   prc <- prcomp(TCGA.GBM.EXPR)
-#'   hm <- chmNew("gbm", TCGA.GBM.EXPR)
+#'   prc <- prcomp(TCGA.GBM.EXPR[1:50,1:50])
+#'   hm <- chmNew("gbm", TCGA.GBM.EXPR[1:50,1:50])
 #'   hm <- chmAddPCA(hm, "column", prc)
 #' }
 #' # Generic additional example
@@ -3783,9 +3783,9 @@ chmAddPCA <- function (hm, axis, prc, basename = "PC", ndim = 2) {
 #'   hm <- chmAddUMAP(hm, "column", umc)
 #' }
 #' # Generic additional example
-#' matrix <- matrix(rnorm(1000), nrow = 100, ncol = 100,
+#' matrix <- matrix(rnorm(100), nrow = 10, ncol = 10,
 #'     dimnames = list(paste0("r", 1:100), paste0("c", 1:100)))
-#' umc <- umap::umap(t(matrix))
+#' umc <- umap::umap(t(matrix), n_neighbors = 8)
 #' hm <- chmNew("Demo UMAP", matrix)
 #' hm <- chmAddUMAP(hm, "column", umc)
 #'
@@ -3838,14 +3838,14 @@ chmAddUMAP <- function (hm, axis, umap, basename = "UMAP") {
 #' # If the NGCHMDemoData package is installed, use it to demo usage
 #' if (requireNamespace("NGCHMDemoData", quietly = TRUE)) {
 #'   data(TCGA.GBM.EXPR, package='NGCHMDemoData')
-#'   umc <- uwot::umap(t(TCGA.GBM.EXPR))
-#'   hm <- chmNew ("gbm", TCGA.GBM.EXPR)
-#'   hm <- chmAddUWOT(hm, "column", umc, colnames(TCGA.GBM.EXPR))
+#'   umc <- uwot::umap(t(TCGA.GBM.EXPR[1:50,1:50]))
+#'   hm <- chmNew ("gbm", TCGA.GBM.EXPR[1:50,1:50])
+#'   hm <- chmAddUWOT(hm, "column", umc, colnames(TCGA.GBM.EXPR[1:50,1:50]))
 #' }
 #' # Generic additional example
-#' matrix <- matrix(rnorm(1000), nrow = 100, ncol = 100,
-#'     dimnames = list(paste0("r", 1:100), paste0("c", 1:100)))
-#' umc <- uwot::umap(t(matrix))
+#' matrix <- matrix(rnorm(100), nrow = 10, ncol = 10,
+#'     dimnames = list(paste0("r", 1:10), paste0("c", 1:10)))
+#' umc <- uwot::umap(t(matrix), n_neighbors = 8)
 #' hm <- chmNew("Demo UMAP", matrix)
 #' hm <- chmAddUWOT(hm, "column", umc, colnames(matrix))
 #'
@@ -3931,20 +3931,20 @@ getDimensions.default <- function (obj, ...) {
 #' # If the NGCHMDemoData package is installed, use it to demo usage
 #' if (requireNamespace("NGCHMDemoData", quietly = TRUE)) {
 #'   data(TCGA.GBM.EXPR, package='NGCHMDemoData')
-#'   mat <- TCGA.GBM.EXPR[1:50,1:50]
+#'   mat <- TCGA.GBM.EXPR[1:10,1:10]
 #'   prc <- prcomp(mat)
 #'   hm <- chmNew('Demo reduced dimension coordinates', mat)
 #'   hm <- chmAddReducedDim(hm, "column", prc, "PCA", 3, "PC")
-#'   umc <- umap::umap(t(mat))
+#'   umc <- umap::umap(t(mat), n_neighbors = 8)
 #'   hm <- chmAddReducedDim(hm, "column", umc, "UMAP")
 #' }
 #' # Generic additional example
-#' matrix <- matrix(rnorm(1000), nrow = 100, ncol = 100,
-#'     dimnames = list(paste0("r", 1:100), paste0("c", 1:100)))
+#' matrix <- matrix(rnorm(100), nrow = 10, ncol = 10,
+#'     dimnames = list(paste0("r", 1:10), paste0("c", 1:10)))
 #' prc <- prcomp(matrix)
 #' hm <- chmNew("Demo reduced dimension coordinates", matrix)
 #' hm <- chmAddReducedDim(hm, "column", prc, "PCA", 3, "PC")
-#' umc <- umap::umap(t(matrix))
+#' umc <- umap::umap(t(matrix), n_neighbors = 8)
 #' hm <- chmAddReducedDim(hm, "column", umc, "UMAP")
 #'
 #' @export
