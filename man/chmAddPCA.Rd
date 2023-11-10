@@ -30,8 +30,8 @@ parameter basename (default "PC") and N ranges from 1 to the number of added cov
 # If the NGCHMDemoData package is installed, use it to demo usage
 if (requireNamespace("NGCHMDemoData", quietly = TRUE)) {
   data(TCGA.GBM.EXPR, package = 'NGCHMDemoData')
-  prc <- prcomp(TCGA.GBM.EXPR)
-  hm <- chmNew("gbm", TCGA.GBM.EXPR)
+  prc <- prcomp(TCGA.GBM.EXPR[1:50,1:50])
+  hm <- chmNew("gbm", TCGA.GBM.EXPR[1:50,1:50])
   hm <- chmAddPCA(hm, "column", prc)
 }
 # Generic additional example

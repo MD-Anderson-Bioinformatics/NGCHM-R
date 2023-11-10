@@ -49,20 +49,20 @@ the one described in the preceding paragraph.  This package defines methods for 
 # If the NGCHMDemoData package is installed, use it to demo usage
 if (requireNamespace("NGCHMDemoData", quietly = TRUE)) {
   data(TCGA.GBM.EXPR, package='NGCHMDemoData')
-  mat <- TCGA.GBM.EXPR[1:50,1:50]
+  mat <- TCGA.GBM.EXPR[1:10,1:10]
   prc <- prcomp(mat)
   hm <- chmNew('Demo reduced dimension coordinates', mat)
   hm <- chmAddReducedDim(hm, "column", prc, "PCA", 3, "PC")
-  umc <- umap::umap(t(mat))
+  umc <- umap::umap(t(mat), n_neighbors = 8)
   hm <- chmAddReducedDim(hm, "column", umc, "UMAP")
 }
 # Generic additional example
-matrix <- matrix(rnorm(1000), nrow = 100, ncol = 100,
-    dimnames = list(paste0("r", 1:100), paste0("c", 1:100)))
+matrix <- matrix(rnorm(100), nrow = 10, ncol = 10,
+    dimnames = list(paste0("r", 1:10), paste0("c", 1:10)))
 prc <- prcomp(matrix)
 hm <- chmNew("Demo reduced dimension coordinates", matrix)
 hm <- chmAddReducedDim(hm, "column", prc, "PCA", 3, "PC")
-umc <- umap::umap(t(matrix))
+umc <- umap::umap(t(matrix), n_neighbors = 8)
 hm <- chmAddReducedDim(hm, "column", umc, "UMAP")
 
 }

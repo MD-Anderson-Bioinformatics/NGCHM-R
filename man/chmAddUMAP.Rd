@@ -34,9 +34,9 @@ if (requireNamespace("NGCHMDemoData", quietly = TRUE)) {
   hm <- chmAddUMAP(hm, "column", umc)
 }
 # Generic additional example
-matrix <- matrix(rnorm(1000), nrow = 100, ncol = 100,
+matrix <- matrix(rnorm(100), nrow = 10, ncol = 10,
     dimnames = list(paste0("r", 1:100), paste0("c", 1:100)))
-umc <- umap::umap(t(matrix))
+umc <- umap::umap(t(matrix), n_neighbors = 8)
 hm <- chmNew("Demo UMAP", matrix)
 hm <- chmAddUMAP(hm, "column", umc)
 
