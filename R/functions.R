@@ -3784,7 +3784,7 @@ chmAddPCA <- function (hm, axis, prc, basename = "PC", ndim = 2) {
 #' }
 #' # Generic additional example
 #' matrix <- matrix(rnorm(100), nrow = 10, ncol = 10,
-#'     dimnames = list(paste0("r", 1:100), paste0("c", 1:100)))
+#'     dimnames = list(paste0("r", 1:10), paste0("c", 1:10)))
 #' umc <- umap::umap(t(matrix), n_neighbors = 8)
 #' hm <- chmNew("Demo UMAP", matrix)
 #' hm <- chmAddUMAP(hm, "column", umc)
