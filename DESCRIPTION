@@ -10,7 +10,7 @@ Authors@R: c(
     person("James", "Melott", , "jmmelott@mdanderson.org", role = "ctb"),
     person("MD Anderson Cancer Center", role = "cph")
   )
-Description: A package for creating Next-Generation Clustered Heat Maps
+Description: Tool for creating Next-Generation Clustered Heat Maps
     (NG-CHMs). NG-CHMs allow for dynamic exploration of heat map data in a
     web browser. 'NGCHM' allows users to create stand-alone HTML files
     containing a Next-Generation Clustered Heat Map and/or .ngchm files to
