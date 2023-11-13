@@ -32,7 +32,7 @@
 #'
 #' @examples
 #' # The NGCHMSupportFiles package is required by chmExportToFile and chmExportToPDF
-#' # The NGCHMDemoData package used to crate a demo NGCHM
+#' # The NGCHMDemoData package used to create a demo NGCHM
 #' \dontrun{
 #'   library(NGCHMSupportFiles)
 #'   data(TCGA.GBM.EXPR, package = 'NGCHMDemoData')
