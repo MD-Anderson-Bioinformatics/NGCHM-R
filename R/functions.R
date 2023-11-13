@@ -3928,8 +3928,8 @@ getDimensions.default <- function (obj, ...) {
 #' the one described in the preceding paragraph.  This package defines methods for classes `prcomp` and `umap`.
 #'
 #' @examples
-#' # If the NGCHMDemoData package is installed, use it to demo usage
-#' if (requireNamespace("NGCHMDemoData", quietly = TRUE)) {
+#' # Don't run the NGCHMDemoData example to save time
+#' \dontrun{
 #'   data(TCGA.GBM.EXPR, package='NGCHMDemoData')
 #'   mat <- TCGA.GBM.EXPR[1:10,1:10]
 #'   prc <- prcomp(mat)
