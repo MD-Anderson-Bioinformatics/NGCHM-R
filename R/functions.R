@@ -582,7 +582,7 @@ chmNewDataLayer <- function (label, data, colors, summarizationMethod, cuts_colo
 #'   layer <- chmLayer(hm, "my layer")
 #'   same_layer <- chmLayer(hm, 1)
 #' }
-#' # Generic additional example
+#' # Small example not requiring NGCHMDemoData
 #' matrix <- matrix(rnorm(100), nrow = 10, ncol = 10,
 #'     dimnames = list(paste0("r", 1:10), paste0("c", 1:10)))
 #' hm <- chmNew('New Heat Map') + chmNewDataLayer('my layer', matrix);
@@ -650,7 +650,7 @@ chmLayer <- function (hm, label) {
 #'   chmLayer(hm, "Layer 1") <- matrix
 #'   chmLayer(hm, 1, cuts_color = "#fefefe") <- chmNewDataLayer("New data layer", matrix+1)
 #' }
-#' # Generic additional example
+#' # Small example not requiring NGCHMDemoData
 #' matrix <- matrix(rnorm(100), nrow = 10, ncol = 10,
 #'     dimnames = list(paste0("r", 1:10), paste0("c", 1:10)))
 #' hm <- chmNew('New Heat Map')
@@ -907,7 +907,7 @@ chmNewCovariate <- function (fullname, values, value.properties=NULL, type=NULL,
 #'                chmNewCovariate("TP53 Mutation", TCGA.GBM.TP53MutationData))
 #'   tp53_mutation <- chmCovariate(dataset, "TP53 Mutation")
 #' }
-#' # Generic additional example
+#' # Small example not requiring NGCHMDemoData
 #' matrix <- matrix(rnorm(100), nrow = 10, ncol = 10,
 #'     dimnames = list(paste0("r", 1:10), paste0("c", 1:10)))
 #' dataset <- chmNewDataset("Demo", "Random Demo Dataset", matrix)
@@ -1081,7 +1081,7 @@ ngchmNewBar <- function (label, type, data, colors=NULL, display="visible", thic
 #'   # Get covariate bar by name
 #'   tp53_covariate_bar <- chmCovariateBar(hm, "TP53 Mutation")
 #' }
-#' # Generic additional example
+#' # Small example not requiring NGCHMDemoData
 #' matrix <- matrix(rnorm(100), nrow = 10, ncol = 10,
 #'     dimnames = list(paste0("r", 1:10), paste0("c", 1:10)))
 #' hm <- chmNew("Demo", matrix)
@@ -1629,7 +1629,7 @@ chmColorMap <- function (x) {
 #'   dataLayer <- chmNewDataLayer('GBM layer', TCGA.GBM.EXPR[1:30,1:30])
 #'   chmColorMap(dataLayer) <- chmNewColorMap(c(2,14))
 #' }
-#' # Generic additional example
+#' # Small example not requiring NGCHMDemoData
 #' matrix <- matrix(rnorm(100), nrow = 10, ncol = 10,
 #'     dimnames = list(paste0("r", 1:10), paste0("c", 1:10)))
 #' dataLayer <- chmNewDataLayer('my layer', matrix)
@@ -1663,7 +1663,7 @@ chmColorMap <- function (x) {
 #'  data(TCGA.GBM.EXPR, package='NGCHMDemoData')
 #'  colors <- chmColors(chmNewDataLayer('GBM Expression', TCGA.GBM.EXPR[1:50,1:50]))
 #' }
-#' # Generic additional example
+#' # Small example not requiring NGCHMDemoData
 #' matrix <- matrix(rnorm(100), nrow = 10, ncol = 10,
 #'     dimnames = list(paste0("r", 1:10), paste0("c", 1:10)))
 #' colors <- chmColors(chmNewDataLayer('my layer', matrix))
@@ -1692,7 +1692,7 @@ chmColors <- function (x) {
 #'   layer <- chmNewDataLayer('GBM Layer', TCGA.GBM.EXPR[1:50,1:50])
 #'   chmColors(layer) <- c("blue", "white", "red")
 #' }
-#' # Generic additional example
+#' # Small example not requiring NGCHMDemoData
 #' matrix <- matrix(rnorm(100), nrow = 10, ncol = 10,
 #'     dimnames = list(paste0("r", 1:10), paste0("c", 1:10)))
 #' layer <- chmNewDataLayer('my layer', matrix)
@@ -3666,7 +3666,7 @@ writeBinLines <- function(text, con) {
 #'   hm <- chmNew("gbm", mat)
 #'   hm <- chmAddTSNE(hm, "column", rtc, colnames(mat))
 #' }
-#' # Generic additional example
+#' # Small example not requiring NGCHMDemoData
 #' matrix <- matrix(rnorm(100), nrow = 10, ncol = 10,
 #'     dimnames = list(paste0("r", 1:10), paste0("c", 1:10)))
 #' rtc <- Rtsne::Rtsne(t(matrix), check_duplicates = FALSE, perplexity = 3)
@@ -3723,7 +3723,7 @@ chmAddTSNE <- function (hm, axis, tsne, pointIds, basename = "TSNE") {
 #'   hm <- chmNew("gbm", TCGA.GBM.EXPR[1:50,1:50])
 #'   hm <- chmAddPCA(hm, "column", prc)
 #' }
-#' # Generic additional example
+#' # Small example not requiring NGCHMDemoData
 #' matrix <- matrix(rnorm(100), nrow = 10, ncol = 10,
 #'     dimnames = list(paste0("r", 1:10), paste0("c", 1:10)))
 #' prc <- prcomp(matrix)
@@ -3782,7 +3782,7 @@ chmAddPCA <- function (hm, axis, prc, basename = "PC", ndim = 2) {
 #'   hm <- chmNew("gbm", mat)
 #'   hm <- chmAddUMAP(hm, "column", umc)
 #' }
-#' # Generic additional example
+#' # Small example not requiring NGCHMDemoData
 #' matrix <- matrix(rnorm(100), nrow = 10, ncol = 10,
 #'     dimnames = list(paste0("r", 1:10), paste0("c", 1:10)))
 #' umc <- umap::umap(t(matrix), n_neighbors = 8)
@@ -3842,7 +3842,7 @@ chmAddUMAP <- function (hm, axis, umap, basename = "UMAP") {
 #'   hm <- chmNew ("gbm", TCGA.GBM.EXPR[1:50,1:50])
 #'   hm <- chmAddUWOT(hm, "column", umc, colnames(TCGA.GBM.EXPR[1:50,1:50]))
 #' }
-#' # Generic additional example
+#' # Small example not requiring NGCHMDemoData
 #' matrix <- matrix(rnorm(100), nrow = 10, ncol = 10,
 #'     dimnames = list(paste0("r", 1:10), paste0("c", 1:10)))
 #' umc <- uwot::umap(t(matrix), n_neighbors = 8)
@@ -3938,7 +3938,7 @@ getDimensions.default <- function (obj, ...) {
 #'   umc <- umap::umap(t(mat), n_neighbors = 8)
 #'   hm <- chmAddReducedDim(hm, "column", umc, "UMAP")
 #' }
-#' # Generic additional example
+#' # Small example not requiring NGCHMDemoData
 #' matrix <- matrix(rnorm(100), nrow = 10, ncol = 10,
 #'     dimnames = list(paste0("r", 1:10), paste0("c", 1:10)))
 #' prc <- prcomp(matrix)

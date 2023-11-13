@@ -56,7 +56,7 @@ the one described in the preceding paragraph.  This package defines methods for 
   umc <- umap::umap(t(mat), n_neighbors = 8)
   hm <- chmAddReducedDim(hm, "column", umc, "UMAP")
 }
-# Generic additional example
+# Small example not requiring NGCHMDemoData
 matrix <- matrix(rnorm(100), nrow = 10, ncol = 10,
     dimnames = list(paste0("r", 1:10), paste0("c", 1:10)))
 prc <- prcomp(matrix)

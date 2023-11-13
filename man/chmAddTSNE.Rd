@@ -40,7 +40,7 @@ if (requireNamespace("NGCHMDemoData", quietly = TRUE)) {
   hm <- chmNew("gbm", mat)
   hm <- chmAddTSNE(hm, "column", rtc, colnames(mat))
 }
-# Generic additional example
+# Small example not requiring NGCHMDemoData
 matrix <- matrix(rnorm(100), nrow = 10, ncol = 10,
     dimnames = list(paste0("r", 1:10), paste0("c", 1:10)))
 rtc <- Rtsne::Rtsne(t(matrix), check_duplicates = FALSE, perplexity = 3)

@@ -31,7 +31,7 @@ if (requireNamespace("NGCHMDemoData", quietly = TRUE)) {
   # Get covariate bar by name
   tp53_covariate_bar <- chmCovariateBar(hm, "TP53 Mutation")
 }
-# Generic additional example
+# Small example not requiring NGCHMDemoData
 matrix <- matrix(rnorm(100), nrow = 10, ncol = 10,
     dimnames = list(paste0("r", 1:10), paste0("c", 1:10)))
 hm <- chmNew("Demo", matrix)

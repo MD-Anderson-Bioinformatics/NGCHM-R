@@ -29,7 +29,7 @@ if (requireNamespace("NGCHMDemoData", quietly = TRUE)) {
   layer <- chmLayer(hm, "my layer")
   same_layer <- chmLayer(hm, 1)
 }
-# Generic additional example
+# Small example not requiring NGCHMDemoData
 matrix <- matrix(rnorm(100), nrow = 10, ncol = 10,
     dimnames = list(paste0("r", 1:10), paste0("c", 1:10)))
 hm <- chmNew('New Heat Map') + chmNewDataLayer('my layer', matrix);

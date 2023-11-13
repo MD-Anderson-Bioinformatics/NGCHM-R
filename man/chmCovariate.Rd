@@ -29,7 +29,7 @@ if (requireNamespace("NGCHMDemoData", quietly = TRUE)) {
                chmNewCovariate("TP53 Mutation", TCGA.GBM.TP53MutationData))
   tp53_mutation <- chmCovariate(dataset, "TP53 Mutation")
 }
-# Generic additional example
+# Small example not requiring NGCHMDemoData
 matrix <- matrix(rnorm(100), nrow = 10, ncol = 10,
     dimnames = list(paste0("r", 1:10), paste0("c", 1:10)))
 dataset <- chmNewDataset("Demo", "Random Demo Dataset", matrix)
