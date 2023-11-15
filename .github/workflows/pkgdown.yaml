@@ -19,6 +19,7 @@ jobs:
     runs-on: macOS-latest
     env:
       GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
+      JAVA_VERSION: 11
     steps:
       - uses: actions/checkout@v3
 
@@ -32,6 +33,12 @@ jobs:
         with:
           extra-packages: any::pkgdown, local::.
           needs: website
+
+      - name: Set up JDK for java ${{ env.JAVA_VERSION }}
+        uses: actions/setup-java@v3
+        with:
+          java-version: "${{ env.JAVA_VERSION }}"
+          distribution: 'temurin'
 
       - name: Render index.Rmd (landing page for website)
         run: Rscript -e 'rmarkdown::render("index.Rmd", "md_document"); print(sessionInfo())'
