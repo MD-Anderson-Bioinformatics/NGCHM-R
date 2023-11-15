@@ -19,9 +19,17 @@ The modified NG-CHM object.
 Set the colors of an ngchmColormap, ngchmLayer, ngchmBar, or ngchmCovariate.
 }
 \examples{
-data(TCGA.GBM.EXPR, package='NGCHMDemoData');
-layer <- chmNewDataLayer('GBM Layer', TCGA.GBM.EXPR[1:50,1:50])
-chmColors (layer) <- c("blue", "white", "red")
+# If the NGCHMDemoData package is installed, use it to demo usage
+if (requireNamespace("NGCHMDemoData", quietly = TRUE)) {
+  data(TCGA.GBM.EXPR, package = 'NGCHMDemoData')
+  layer <- chmNewDataLayer('GBM Layer', TCGA.GBM.EXPR[1:50,1:50])
+  chmColors(layer) <- c("blue", "white", "red")
+}
+# Small example not requiring NGCHMDemoData
+matrix <- matrix(rnorm(100), nrow = 10, ncol = 10,
+    dimnames = list(paste0("r", 1:10), paste0("c", 1:10)))
+layer <- chmNewDataLayer('my layer', matrix)
+chmColors(layer) <- c("blue", "white", "red")
 
 }
 \seealso{

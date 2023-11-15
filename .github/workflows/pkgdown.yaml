@@ -4,8 +4,9 @@ on:
       - main
     tags:
       -'*'
+  workflow_dispatch:
 
-name: build-pkgdown-site
+name: Build documentation website
 
 ##
 ## This job:

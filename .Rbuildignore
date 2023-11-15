@@ -7,3 +7,4 @@
 ^index.md$
 ^index.Rmd$
 ^NGCHM-R.git.Rproj$
+vignettes/*
