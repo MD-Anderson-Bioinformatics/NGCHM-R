@@ -17,7 +17,7 @@ knitr::opts_chunk$set(
 ## System Requirements
 
 - R >= 3.5
-- Java >= 8
+- Java >= 11
 - git, tar, scp, ssh
   - Mac/Linux: typically installed by default
   - Windows: Cygwin or Windows Subsystem for Linux (Windows 10)
