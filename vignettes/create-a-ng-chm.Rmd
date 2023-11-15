@@ -19,10 +19,10 @@ This vignette demonstrates how to construct a simple NG-CHM, export it to a file
 ## Sample NG-CHM Data
 
 This vignette uses an additional package of demo data, [NGCHMDemoData](https://github.com/MD-Anderson-Bioinformatics/NGCHMDemoData), 
-which can be installed from GitHub with [remotes](https://cran.r-project.org/package=remotes):
+which can be installed from [our R-Universe repository](https://md-anderson-bioinformatics.r-universe.dev/packages):
 
 ```{r, results='hide', message=FALSE, warning=FALSE, eval=FALSE}
-remotes::install_github('MD-Anderson-Bioinformatics/NGCHMDemoData', ref='main')
+install.packages('NGCHMDemoData', repos = c('https://md-anderson-bioinformatics.r-universe.dev', 'https://cloud.r-project.org'))
 ```
 
 and loaded into the current environment:
