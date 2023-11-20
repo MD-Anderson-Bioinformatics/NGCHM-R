@@ -17,7 +17,7 @@ knitr::opts_chunk$set(
 ## System Requirements
 
 - R >= 3.5
-- Java >= 8
+- Java >= 11
 - git, tar, scp, ssh
   - Mac/Linux: typically installed by default
   - Windows: Cygwin or Windows Subsystem for Linux (Windows 10)
@@ -34,13 +34,14 @@ knitr::opts_chunk$set(
 
 ## Install from GitHub
 
-The above-mentioned R packages can be installed from GitHub with
-[remotes](https://cran.r-project.org/package=remotes):
+The above-mentioned R packages can be installed from CRAN and
+[our R-Universe repository](https://md-anderson-bioinformatics.r-universe.dev/packages):
+
 
 ```{r, results='hide', message=FALSE, warning=FALSE, eval=FALSE}
-remotes::install_github('MD-Anderson-Bioinformatics/tsvio')
-remotes::install_github('MD-Anderson-Bioinformatics/NGCHMSupportFiles', ref='main')
-remotes::install_github('MD-Anderson-Bioinformatics/NGCHM-R')
+install.packages('tsvio')
+install.packages('NGCHMSupportFiles', repos = c('https://md-anderson-bioinformatics.r-universe.dev', 'https://cloud.r-project.org'))
+install.packages('NGCHM', repos = c('https://md-anderson-bioinformatics.r-universe.dev', 'https://cloud.r-project.org'))
 ```
 
 ## Using the Docker Image
