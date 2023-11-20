@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">NGCHMR</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.13.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.0.0</span>
       </span>
     </div>
 
@@ -115,11 +115,21 @@ return NULL.</p></dd>
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">TCGA.GBM.Demo</span>, package<span class="op">=</span><span class="st">'NGCHMDemoData'</span><span class="op">)</span>;</span></span>
-<span class="r-in"><span><span class="va">matrix</span> <span class="op">&lt;-</span> <span class="va">TCGA.GBM.ExpressionData</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">50</span>,<span class="fl">1</span><span class="op">:</span><span class="fl">50</span><span class="op">]</span>;</span></span>
-<span class="r-in"><span><span class="va">hm</span> <span class="op">&lt;-</span> <span class="fu"><a href="chmNew.html">chmNew</a></span> <span class="op">(</span><span class="st">'New Heat Map'</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="chmNewDataLayer.html">chmNewDataLayer</a></span> <span class="op">(</span><span class="st">'Layer 1'</span>, <span class="va">matrix</span><span class="op">)</span>;</span></span>
-<span class="r-in"><span><span class="va">layer</span> <span class="op">&lt;-</span> <span class="fu">chmLayer</span> <span class="op">(</span><span class="va">hm</span>, <span class="st">"Layer 1"</span><span class="op">)</span>;</span></span>
-<span class="r-in"><span><span class="va">layercopy</span> <span class="op">&lt;-</span> <span class="fu">chmLayer</span> <span class="op">(</span><span class="va">hm</span>, <span class="fl">1</span><span class="op">)</span>;</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># If the NGCHMDemoData package is installed, use it to create an example usage</span></span></span>
+<span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/ns-load.html" class="external-link">requireNamespace</a></span><span class="op">(</span><span class="st">"NGCHMDemoData"</span>, quietly <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span></span>
+<span class="r-in"><span>  <span class="co"># Create example NGCHM</span></span></span>
+<span class="r-in"><span>  <span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">TCGA.GBM.Demo</span>, package <span class="op">=</span> <span class="st">'NGCHMDemoData'</span><span class="op">)</span></span></span>
+<span class="r-in"><span>  <span class="va">matrix</span> <span class="op">&lt;-</span> <span class="va">TCGA.GBM.ExpressionData</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">50</span>,<span class="fl">1</span><span class="op">:</span><span class="fl">50</span><span class="op">]</span></span></span>
+<span class="r-in"><span>  <span class="va">hm</span> <span class="op">&lt;-</span> <span class="fu"><a href="chmNew.html">chmNew</a></span><span class="op">(</span><span class="st">'New Heat Map'</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="chmNewDataLayer.html">chmNewDataLayer</a></span><span class="op">(</span><span class="st">'my layer'</span>, <span class="va">matrix</span><span class="op">)</span></span></span>
+<span class="r-in"><span>  <span class="va">layer</span> <span class="op">&lt;-</span> <span class="fu">chmLayer</span><span class="op">(</span><span class="va">hm</span>, <span class="st">"my layer"</span><span class="op">)</span></span></span>
+<span class="r-in"><span>  <span class="va">same_layer</span> <span class="op">&lt;-</span> <span class="fu">chmLayer</span><span class="op">(</span><span class="va">hm</span>, <span class="fl">1</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="op">}</span></span></span>
+<span class="r-in"><span><span class="co"># Small example not requiring NGCHMDemoData</span></span></span>
+<span class="r-in"><span><span class="va">matrix</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="fl">100</span><span class="op">)</span>, nrow <span class="op">=</span> <span class="fl">10</span>, ncol <span class="op">=</span> <span class="fl">10</span>,</span></span>
+<span class="r-in"><span>    dimnames <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"r"</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">10</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"c"</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">10</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">hm</span> <span class="op">&lt;-</span> <span class="fu"><a href="chmNew.html">chmNew</a></span><span class="op">(</span><span class="st">'New Heat Map'</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="chmNewDataLayer.html">chmNewDataLayer</a></span><span class="op">(</span><span class="st">'my layer'</span>, <span class="va">matrix</span><span class="op">)</span>;</span></span>
+<span class="r-in"><span><span class="va">layer</span> <span class="op">&lt;-</span> <span class="fu">chmLayer</span><span class="op">(</span><span class="va">hm</span>, <span class="st">"my layer"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">same_layer</span> <span class="op">&lt;-</span> <span class="fu">chmLayer</span><span class="op">(</span><span class="va">hm</span>, <span class="fl">1</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 </code></pre></div>
     </div>

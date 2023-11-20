@@ -39,7 +39,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">NGCHMR</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.13.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.0.0</span>
       </span>
     </div>
 
@@ -123,7 +123,7 @@
 </h2>
 <ul>
 <li>R &gt;= 3.5</li>
-<li>Java &gt;= 8</li>
+<li>Java &gt;= 11</li>
 <li>git, tar, scp, ssh
 <ul>
 <li>Mac/Linux: typically installed by default</li>
@@ -154,11 +154,12 @@ file</li>
 <div class="section level2">
 <h2 id="install-from-github">Install from GitHub<a class="anchor" aria-label="anchor" href="#install-from-github"></a>
 </h2>
-<p>The above-mentioned R packages can be installed from GitHub with <a href="https://cran.r-project.org/package=remotes" class="external-link">remotes</a>:</p>
+<p>The above-mentioned R packages can be installed from CRAN and <a href="https://md-anderson-bioinformatics.r-universe.dev/packages" class="external-link">our
+R-Universe repository</a>:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu">remotes</span><span class="fu">::</span><span class="fu">install_github</span><span class="op">(</span><span class="st">'MD-Anderson-Bioinformatics/tsvio'</span><span class="op">)</span></span>
-<span><span class="fu">remotes</span><span class="fu">::</span><span class="fu">install_github</span><span class="op">(</span><span class="st">'MD-Anderson-Bioinformatics/NGCHMSupportFiles'</span>, ref<span class="op">=</span><span class="st">'main'</span><span class="op">)</span></span>
-<span><span class="fu">remotes</span><span class="fu">::</span><span class="fu">install_github</span><span class="op">(</span><span class="st">'MD-Anderson-Bioinformatics/NGCHM-R'</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">'tsvio'</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">'NGCHMSupportFiles'</span>, repos <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'https://md-anderson-bioinformatics.r-universe.dev'</span>, <span class="st">'https://cloud.r-project.org'</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">'NGCHM'</span>, repos <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'https://md-anderson-bioinformatics.r-universe.dev'</span>, <span class="st">'https://cloud.r-project.org'</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="using-the-docker-image">Using the Docker Image<a class="anchor" aria-label="anchor" href="#using-the-docker-image"></a>
