@@ -2,14 +2,12 @@ Type: Package
 Package: NGCHM
 Title: Utilities for Creating Next Generation Clustered Heat Maps
 Version: 1.0.0
-Authors@R: c(
-    person(c("Bradley", "M"), "Broom", , "bmbroom@mdanderson.org", role = "aut",
-           comment = c(ORCID = "0000-0002-0915-3164")),
-    person(c("Mary", "A"), "Rohrdanz", , "marohrdanz@mdanderson.org", role = c("aut", "cre")),
-    person("Chris", "Wakefield", , "cwakefield@mdanderson.org", role = "ctb"),
-    person("James", "Melott", , "jmmelott@mdanderson.org", role = "ctb"),
-    person("MD Anderson Cancer Center", role = "cph")
-  )
+Authors@R:
+  c(person(given=c("Bradley", "M"), family="Broom", role=c("aut"), email="bmbroom@mdanderson.org", comment=c(ORCID="0000-0002-0915-3164")),
+    person(given=c("Mary", "A"), family="Rohrdanz", role=c("ctb", "cre"), email="marohrdanz@mdanderson.org"),
+    person(given="Chris", family="Wakefield", role=c("ctb"), email="cwakefield@mdanderson.org"),
+    person(given="James", family="Melott", role=c("ctb"), email="jmmelott@mdanderson.org"),
+    person(given="MD Anderson Cancer Center", role=c("cph")))
 Description: Tool for creating Next-Generation Clustered Heat Maps
     (NG-CHMs). NG-CHMs allow for dynamic exploration of heat map data in a
     web browser. 'NGCHM' allows users to create stand-alone HTML files
