@@ -29,15 +29,14 @@ Imports:
     utils
 Suggests:
     knitr,
-    NGCHMDemoData,
-    NGCHMSupportFiles,
     rmarkdown,
     Rtsne,
     testthat,
     umap,
     uwot
-VignetteBuilder:
-    knitr
+Enhances:
+    NGCHMDemoData,
+    NGCHMSupportFiles
 Additional_repositories: https://md-anderson-bioinformatics.r-universe.dev
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
