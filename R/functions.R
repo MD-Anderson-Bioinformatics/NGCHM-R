@@ -3902,6 +3902,8 @@ getDimensions <- function (obj, ...) {
   UseMethod ("getDimensions", obj);
 };
 
+#' @rdname getDimensions-method
+#' @export
 getDimensions.default <- function (obj, ...) {
   return (NULL);
 };
@@ -4020,12 +4022,14 @@ chmAddReducedDim <- function (hm, axis, obj, dimName, maxDim, basename, dimAxis)
 
 #' @rdname getDimensions-method
 #' @aliases getDimensions,prcomp
+#' @export
 getDimensions.prcomp = function (obj, ...) {
   return (obj$rotation);
 };
 
 #' @rdname getDimensions-method
 #' @aliases getDimensions,umap
+#' @export
 getDimensions.umap = function (obj, ...) {
   return (obj$layout);
 };
@@ -4033,6 +4037,7 @@ getDimensions.umap = function (obj, ...) {
 #' @rdname getDimensions-method
 #' @aliases getDimensions,Seurat
 #' @param dimName The name of the dimension matrix to obtain.
+#' @export
 getDimensions.Seurat = function (obj, dimName, ...) {
   return (obj@reductions[[dimName]]@cell.embeddings);
 };
