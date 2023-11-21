@@ -39,6 +39,7 @@ Enhances:
     NGCHMSupportFiles
 Additional_repositories: https://md-anderson-bioinformatics.r-universe.dev
 Encoding: UTF-8
+URL: https://md-anderson-bioinformatics.github.io/NGCHM-R/, https://github.com/MD-Anderson-Bioinformatics/NGCHM-R
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.2.3
 Collate:
