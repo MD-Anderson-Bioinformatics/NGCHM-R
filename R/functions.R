@@ -2893,7 +2893,7 @@ getBuilderJar <- function (server) {
 #' @export
 #'
 #' @details serverSpec can be any of:
-#' \itemize{
+#' \describe{
 #'   \item{A configuration directory path. }{The specification will be read from a file 'config.txt' in that directory.}
 #'   \item{An NGCHM server URL (ending in '/chm' or '/Viewer' for instance). }{A minimal specification will be inferred.
 #'         Known methods for uploading NGCHMs to the server will be autoprobed unless specified manually.}
@@ -2901,7 +2901,7 @@ getBuilderJar <- function (server) {
 #'         specified URL.}
 #' }
 #' serverOptions can include both protocol-specific options and the following generic options:
-#' \itemize{
+#' \describe{
 #'  \item{'serverURL'. }{The URL for the NGCHM server.}
 #'  \item{'serverProtocol'. }{The protocol to be used for uploading etc. NGCHMs to the server.}
 #'  \item{'jarFile'. }{The jarFile used to build NGCHMs.}
