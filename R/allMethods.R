@@ -72,13 +72,6 @@ setMethod("chmInstall",
     chm
   }
 )
-### ' @rdname chmInstall-method
-### ' @aliases chmInstall,character,ngchm-method
-## setMethod ("chmInstall",
-##    signature = c(server="character", chm="ngchm"),
-##    definition = function (server, chm, ...) {
-## 	chmInstall (chmServerCheck (server), chm, ...);
-##    });
 
 #' @rdname chmUninstall-method
 #' @aliases chmUninstall,character-method
@@ -91,13 +84,6 @@ setMethod("chmUninstall",
     server@serverProtocol@uninstallMethod(server, chm, ...)
   }
 )
-### ' @rdname chmUninstall-method
-### ' @aliases chmUninstall,ngchmServer,ngchm-method
-## setMethod ("chmUninstall",
-##    signature = c(server="ngchmServer", chm="ngchm"),
-##    definition = function (server, chm, ...) {
-##        chmUninstall (server, chmName(chm), ...);
-## });
 
 #' @rdname chmUninstall-method
 #' @aliases chmUninstall,ngchm-method
@@ -107,13 +93,6 @@ setMethod("chmUninstall",
     chmUninstall(chmName(chm), ...)
   }
 )
-### ' @rdname chmUninstall-method
-### ' @aliases chmUninstall,character,character-method
-## setMethod ("chmUninstall",
-##    signature = c(server="character", chm="character"),
-##    definition = function (server, chm, ...) {
-##        chmUninstall (chmServerCheck(server), chm, ...);
-##    });
 
 #' @rdname chmMakePrivate-method
 #' @aliases chmMakePrivate,ngchmServer,character-method
@@ -804,8 +783,6 @@ writeChm <- function(chm, saveDir = NULL) {
     if (!dir.create(chm@inpDir, recursive = TRUE)) {
       stop(sprintf("Unable to create directory '%s' in which to save CHM specification", chm@inpDir))
     }
-    # system (sprintf ("/bin/rm -rf %s", chm@inpDir));
-    # systemCheck (sprintf ("/bin/mkdir %s", chm@inpDir));
     saveDir <- chm@inpDir
   }
 
