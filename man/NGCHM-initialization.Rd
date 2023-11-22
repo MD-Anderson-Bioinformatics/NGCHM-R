@@ -46,12 +46,12 @@ Javascript files define context specific menu entries.
 
 \examples{
 \dontrun{
-#/usr/local/ngchm/conf.d/00-servers.txt :
-[servers]
-my-server = /usr/local/ngchm/my-server
+# /usr/local/ngchm/conf.d/00-servers.txt :
+# [servers]
+# my-server = /usr/local/ngchm/my-server
 }
 \dontrun{
-#/usr/local/ngchm/my-server/config.txt :
-serverProtocol = manual
+# /usr/local/ngchm/my-server/config.txt :
+# serverProtocol = manual
 }
 }

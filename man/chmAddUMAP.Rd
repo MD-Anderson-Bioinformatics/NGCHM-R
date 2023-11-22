@@ -27,15 +27,17 @@ added covariate bars.
 \examples{
 # If the NGCHMDemoData package is installed, use it to demo usage
 if (requireNamespace("NGCHMDemoData", quietly = TRUE)) {
-  data(TCGA.GBM.EXPR, package='NGCHMDemoData')
-  mat <- TCGA.GBM.EXPR[1:50,1:50]
+  data(TCGA.GBM.EXPR, package = "NGCHMDemoData")
+  mat <- TCGA.GBM.EXPR[1:50, 1:50]
   umc <- umap::umap(t(mat))
   hm <- chmNew("gbm", mat)
   hm <- chmAddUMAP(hm, "column", umc)
 }
 # Small example not requiring NGCHMDemoData
-matrix <- matrix(rnorm(100), nrow = 10, ncol = 10,
-    dimnames = list(paste0("r", 1:10), paste0("c", 1:10)))
+matrix <- matrix(rnorm(100),
+  nrow = 10, ncol = 10,
+  dimnames = list(paste0("r", 1:10), paste0("c", 1:10))
+)
 umc <- umap::umap(t(matrix), n_neighbors = 8)
 hm <- chmNew("Demo UMAP", matrix)
 hm <- chmAddUMAP(hm, "column", umc)

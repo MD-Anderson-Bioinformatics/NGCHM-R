@@ -25,12 +25,14 @@ An object of class ngchmLayer
 This function creates a new Data Layer suitable for adding to a Next Generation Clustered Heat Map.
 }
 \examples{
-noise <- matrix (runif(1000) + runif(1000*1000), nrow=1000)
-rownames(noise) <- sprintf ("Row\%d", 1:nrow(noise))
-colnames(noise) <- sprintf ("Col\%d", 1:ncol(noise))
-noise.colors <- chmNewColorMap (c(0,1,2),
-                                c("green", "black", "red"), missing.color="yellow")
-layer <- chmNewDataLayer ("Noisy Data", noise, noise.colors)
+noise <- matrix(runif(1000) + runif(1000 * 1000), nrow = 1000)
+rownames(noise) <- sprintf("Row\%d", 1:nrow(noise))
+colnames(noise) <- sprintf("Col\%d", 1:ncol(noise))
+noise.colors <- chmNewColorMap(c(0, 1, 2),
+  c("green", "black", "red"),
+  missing.color = "yellow"
+)
+layer <- chmNewDataLayer("Noisy Data", noise, noise.colors)
 
 }
 \seealso{

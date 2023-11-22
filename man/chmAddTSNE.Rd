@@ -34,15 +34,17 @@ matrix passed to \href{https://CRAN.R-project.org/package=Rtsne}{Rtsne::Rtsne()}
 \examples{
 # If the NGCHMDemoData package is installed, use it to demo usage
 if (requireNamespace("NGCHMDemoData", quietly = TRUE)) {
-  data(TCGA.GBM.EXPR, package = 'NGCHMDemoData')
-  mat <- TCGA.GBM.EXPR[1:10,1:10]
+  data(TCGA.GBM.EXPR, package = "NGCHMDemoData")
+  mat <- TCGA.GBM.EXPR[1:10, 1:10]
   rtc <- Rtsne::Rtsne(t(mat), check_duplicates = FALSE, perplexity = 3)
   hm <- chmNew("gbm", mat)
   hm <- chmAddTSNE(hm, "column", rtc, colnames(mat))
 }
 # Small example not requiring NGCHMDemoData
-matrix <- matrix(rnorm(100), nrow = 10, ncol = 10,
-    dimnames = list(paste0("r", 1:10), paste0("c", 1:10)))
+matrix <- matrix(rnorm(100),
+  nrow = 10, ncol = 10,
+  dimnames = list(paste0("r", 1:10), paste0("c", 1:10))
+)
 rtc <- Rtsne::Rtsne(t(matrix), check_duplicates = FALSE, perplexity = 3)
 hm <- chmNew("Demo TSNE", matrix)
 hm <- chmAddTSNE(hm, "column", rtc, colnames(matrix))

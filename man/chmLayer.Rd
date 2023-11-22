@@ -23,16 +23,18 @@ This function returns a Data Layer contained in a Next Generation Clustered Heat
 # If the NGCHMDemoData package is installed, use it to create an example usage
 if (requireNamespace("NGCHMDemoData", quietly = TRUE)) {
   # Create example NGCHM
-  data(TCGA.GBM.Demo, package = 'NGCHMDemoData')
-  matrix <- TCGA.GBM.ExpressionData[1:50,1:50]
-  hm <- chmNew('New Heat Map') + chmNewDataLayer('my layer', matrix)
+  data(TCGA.GBM.Demo, package = "NGCHMDemoData")
+  matrix <- TCGA.GBM.ExpressionData[1:50, 1:50]
+  hm <- chmNew("New Heat Map") + chmNewDataLayer("my layer", matrix)
   layer <- chmLayer(hm, "my layer")
   same_layer <- chmLayer(hm, 1)
 }
 # Small example not requiring NGCHMDemoData
-matrix <- matrix(rnorm(100), nrow = 10, ncol = 10,
-    dimnames = list(paste0("r", 1:10), paste0("c", 1:10)))
-hm <- chmNew('New Heat Map') + chmNewDataLayer('my layer', matrix);
+matrix <- matrix(rnorm(100),
+  nrow = 10, ncol = 10,
+  dimnames = list(paste0("r", 1:10), paste0("c", 1:10))
+)
+hm <- chmNew("New Heat Map") + chmNewDataLayer("my layer", matrix)
 layer <- chmLayer(hm, "my layer")
 same_layer <- chmLayer(hm, 1)
 

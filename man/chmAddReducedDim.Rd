@@ -48,17 +48,19 @@ the one described in the preceding paragraph.  This package defines methods for 
 \examples{
 # Don't run the NGCHMDemoData example to save time
 \dontrun{
-  data(TCGA.GBM.EXPR, package='NGCHMDemoData')
-  mat <- TCGA.GBM.EXPR[1:10,1:10]
-  prc <- prcomp(mat)
-  hm <- chmNew('Demo reduced dimension coordinates', mat)
-  hm <- chmAddReducedDim(hm, "column", prc, "PCA", 3, "PC")
-  umc <- umap::umap(t(mat), n_neighbors = 8)
-  hm <- chmAddReducedDim(hm, "column", umc, "UMAP")
+data(TCGA.GBM.EXPR, package = "NGCHMDemoData")
+mat <- TCGA.GBM.EXPR[1:10, 1:10]
+prc <- prcomp(mat)
+hm <- chmNew("Demo reduced dimension coordinates", mat)
+hm <- chmAddReducedDim(hm, "column", prc, "PCA", 3, "PC")
+umc <- umap::umap(t(mat), n_neighbors = 8)
+hm <- chmAddReducedDim(hm, "column", umc, "UMAP")
 }
 # Small example not requiring NGCHMDemoData
-matrix <- matrix(rnorm(100), nrow = 10, ncol = 10,
-    dimnames = list(paste0("r", 1:10), paste0("c", 1:10)))
+matrix <- matrix(rnorm(100),
+  nrow = 10, ncol = 10,
+  dimnames = list(paste0("r", 1:10), paste0("c", 1:10))
+)
 prc <- prcomp(matrix)
 hm <- chmNew("Demo reduced dimension coordinates", matrix)
 hm <- chmAddReducedDim(hm, "column", prc, "PCA", 3, "PC")

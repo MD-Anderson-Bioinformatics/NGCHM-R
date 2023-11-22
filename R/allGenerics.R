@@ -1,4 +1,3 @@
-
 #' Get the name of a NGCHM.
 #'
 #' This function returns the name of a Next Generation Clustered Heat Map (NGCHM) object.
@@ -12,8 +11,7 @@
 #'
 #' @seealso [ngchm-class]
 #'
-setGeneric ("chmName", function(chm) standardGeneric("chmName"));
-
+setGeneric("chmName", function(chm) standardGeneric("chmName"))
 #' Set the row order of data shown in a NGCHM.
 #'
 #' Set the order in which rows in the data will be shown in a Next Generation Clustered Heat Map.
@@ -29,8 +27,7 @@ setGeneric ("chmName", function(chm) standardGeneric("chmName"));
 #'
 #' @seealso "chmColOrder<-"
 #'
-setGeneric ("chmRowOrder<-", function(chm,value) standardGeneric("chmRowOrder<-"));
-
+setGeneric("chmRowOrder<-", function(chm, value) standardGeneric("chmRowOrder<-"))
 #' Set the column order of data shown in a NGCHM.
 #'
 #' Set the order in which columns in the data will be shown in a Next Generation Clustered Heat Map.
@@ -46,8 +43,7 @@ setGeneric ("chmRowOrder<-", function(chm,value) standardGeneric("chmRowOrder<-"
 #'
 #' @seealso "chmRowOrder<-"
 #'
-setGeneric ("chmColOrder<-", function(chm,value) standardGeneric("chmColOrder<-"));
-
+setGeneric("chmColOrder<-", function(chm, value) standardGeneric("chmColOrder<-"))
 #' Add meta data.
 #'
 #' Add meta data to the rows/columns of a Next Generation Clustered Heat Map.
@@ -61,8 +57,7 @@ setGeneric ("chmColOrder<-", function(chm,value) standardGeneric("chmColOrder<-"
 #' @exportMethod chmAddMetaData
 #' @rdname chmAddMetaData-method
 #'
-setGeneric ("chmAddMetaData", function(chm,where,type,value) standardGeneric("chmAddMetaData"));
-
+setGeneric("chmAddMetaData", function(chm, where, type, value) standardGeneric("chmAddMetaData"))
 #' Add a list of objects to a NGCHM.
 #'
 #' Each additional parameter is added to the NGCHM according to its type.  Objects that
@@ -82,8 +77,7 @@ setGeneric ("chmAddMetaData", function(chm,where,type,value) standardGeneric("ch
 #' @seealso "chmAddDataset"
 #' @seealso "chmAddLayer"
 #' @seealso "chmAddMetaData"
-setGeneric ("chmAdd", function(chm, ...) standardGeneric("chmAdd"));
-
+setGeneric("chmAdd", function(chm, ...) standardGeneric("chmAdd"))
 #' Add a Layer to a NGCHM.
 #'
 #' Add a Layer to a Next Generation Clustered Heat Map (NGCHM) and return the extended CHM.  A CHM
@@ -101,8 +95,7 @@ setGeneric ("chmAdd", function(chm, ...) standardGeneric("chmAdd"));
 #'
 #' @seealso [chmNewDataLayer()]
 #' @seealso [ngchmLayer-class]
-setGeneric ("chmAddLayer", function(chm,layer) standardGeneric("chmAddLayer"));
-
+setGeneric("chmAddLayer", function(chm, layer) standardGeneric("chmAddLayer"))
 #' Add an auxiliary dataset to a NGCHM.
 #'
 #' Add an auxiliary dataset to a Next Generation Clustered Heat Map (NGCHM) and return the extended CHM.
@@ -121,8 +114,7 @@ setGeneric ("chmAddLayer", function(chm,layer) standardGeneric("chmAddLayer"));
 #'
 #' @seealso [chmNewDataset()]
 #' @seealso [ngchmDataset-class]
-setGeneric ("chmAddDataset", function(chm,dataset) standardGeneric("chmAddDataset"));
-
+setGeneric("chmAddDataset", function(chm, dataset) standardGeneric("chmAddDataset"))
 #' Add an extra dialog to a NGCHM.
 #'
 #' Add an extra dialog to a Next Generation Clustered Heat Map (NGCHM) and return the extended CHM.
@@ -137,8 +129,7 @@ setGeneric ("chmAddDataset", function(chm,dataset) standardGeneric("chmAddDatase
 #'
 #' @seealso [chmNewDialog()]
 #' @seealso [ngchmDialog-class]
-setGeneric ("chmAddDialog", function(chm,dialog) standardGeneric("chmAddDialog"));
-
+setGeneric("chmAddDialog", function(chm, dialog) standardGeneric("chmAddDialog"))
 #' Add a covariate to an auxiliary dataset.
 #'
 #' Add a covariate to an auxiliary dataset and return the extended dataset.
@@ -156,8 +147,7 @@ setGeneric ("chmAddDialog", function(chm,dialog) standardGeneric("chmAddDialog")
 #'
 #' @seealso [chmNewCovariate()]
 #' @seealso [ngchmCovariate-class]
-setGeneric ("chmAddCovariate", function(dataset,where,covariate) standardGeneric("chmAddCovariate"));
-
+setGeneric("chmAddCovariate", function(dataset, where, covariate) standardGeneric("chmAddCovariate"))
 #' Add tags to a NGCHM.
 #'
 #' Add one or more tags to a Next Generation Clustered Heat Map (NGCHM) and return the extended CHM.
@@ -169,8 +159,7 @@ setGeneric ("chmAddCovariate", function(dataset,where,covariate) standardGeneric
 #'
 #' @exportMethod chmAddTag
 #' @rdname chmAddTag-method
-setGeneric ("chmAddTag", function(chm,tag) standardGeneric("chmAddTag"));
-
+setGeneric("chmAddTag", function(chm, tag) standardGeneric("chmAddTag"))
 #' Add a colormap to a NGCHM.
 #'
 #' Add a colormap to a Next Generation Clustered Heat Map (NGCHM) and return the extended CHM.
@@ -190,8 +179,7 @@ setGeneric ("chmAddTag", function(chm,tag) standardGeneric("chmAddTag"));
 #'
 #' @seealso [chmNewColorMap()]
 #' @seealso [ngchmColormap-class]
-setGeneric ("chmAddColormap", function(chm,colormap) standardGeneric("chmAddColormap"));
-
+setGeneric("chmAddColormap", function(chm, colormap) standardGeneric("chmAddColormap"))
 #' Add a group of related links to the NGCHM.
 #'
 #' @param chm The chm to add the related link group to.
@@ -204,8 +192,7 @@ setGeneric ("chmAddColormap", function(chm,colormap) standardGeneric("chmAddColo
 #'
 #' @exportMethod chmAddRelatedGroup
 #' @rdname chmAddRelatedGroup-method
-setGeneric ("chmAddRelatedGroup", function(chm, name, header, linktype, blurb) standardGeneric("chmAddRelatedGroup"));
-
+setGeneric("chmAddRelatedGroup", function(chm, name, header, linktype, blurb) standardGeneric("chmAddRelatedGroup"))
 #' Add a link to related information to the NGCHM.
 #'
 #' @param chm The chm to add the related link to.
@@ -217,8 +204,7 @@ setGeneric ("chmAddRelatedGroup", function(chm, name, header, linktype, blurb) s
 #'
 #' @exportMethod chmAddRelated
 #' @rdname chmAddRelated-method
-setGeneric ("chmAddRelated", function(chm, group, link, description) standardGeneric("chmAddRelated"));
-
+setGeneric("chmAddRelated", function(chm, group, link, description) standardGeneric("chmAddRelated"))
 #' Generate an overview image of the NGCHM when making it.
 #'
 #' Generate an overview image of the NGCHM when making it.  By default, the system generates no default overview
@@ -234,8 +220,7 @@ setGeneric ("chmAddRelated", function(chm, group, link, description) standardGen
 #'
 #' @exportMethod chmAddOverview
 #' @rdname chmAddOverview-method
-setGeneric ("chmAddOverview", function(chm, format, width, height) standardGeneric("chmAddOverview"));
-
+setGeneric("chmAddOverview", function(chm, format, width, height) standardGeneric("chmAddOverview"))
 #' Add a file template to the NGCHM.
 #'
 #' @param chm The chm to add the file template to.
@@ -247,8 +232,7 @@ setGeneric ("chmAddOverview", function(chm, format, width, height) standardGener
 #'
 #' @exportMethod chmAddTemplate
 #' @rdname chmAddTemplate-method
-setGeneric ("chmAddTemplate", function(chm, source.path, dest.path, substitutions) standardGeneric("chmAddTemplate"));
-
+setGeneric("chmAddTemplate", function(chm, source.path, dest.path, substitutions) standardGeneric("chmAddTemplate"))
 #' Add custom CSS to a NGCHM.
 #'
 #' Add custom Cascading Style Sheet (CSS) to a Next Generation Clustered Heat Map (NGCHM) and
@@ -263,8 +247,7 @@ setGeneric ("chmAddTemplate", function(chm, source.path, dest.path, substitution
 #' @rdname chmAddCSS-method
 #'
 #' @seealso [ngchmCSS-class]
-setGeneric ("chmAddCSS", function(chm,css) standardGeneric("chmAddCSS"));
-
+setGeneric("chmAddCSS", function(chm, css) standardGeneric("chmAddCSS"))
 #' Add custom property to a NGCHM.
 #'
 #' Add custom property to a Next Generation Clustered Heat Map (NGCHM) and
@@ -280,8 +263,7 @@ setGeneric ("chmAddCSS", function(chm,css) standardGeneric("chmAddCSS"));
 #' @rdname chmAddProperty-method
 #'
 #' @seealso [ngchmProperty-class]
-setGeneric ("chmAddProperty", function(chm,label,value) standardGeneric("chmAddProperty"));
-
+setGeneric("chmAddProperty", function(chm, label, value) standardGeneric("chmAddProperty"))
 #' Add a menu entry to a NGCHM.
 #'
 #' Add a popup menu entry to a Next Generation Clustered Heat Map (NGCHM) and
@@ -298,8 +280,7 @@ setGeneric ("chmAddProperty", function(chm,label,value) standardGeneric("chmAddP
 #' @rdname chmAddMenuItem-method
 #'
 #' @seealso [ngchmMenuItem-class]
-setGeneric ("chmAddMenuItem", function(chm,where,label,func) standardGeneric("chmAddMenuItem"));
-
+setGeneric("chmAddMenuItem", function(chm, where, label, func) standardGeneric("chmAddMenuItem"))
 #' Add an axis type to a NGCHM.
 #'
 #' Adds an axis type to a Next Generation Clustered Heat Map (NGCHM) and
@@ -324,8 +305,7 @@ setGeneric ("chmAddMenuItem", function(chm,where,label,func) standardGeneric("ch
 #' @seealso [chmRegisterMatrixFunction()]
 #' @seealso [chmRegisterTypeMapper()]
 #' @seealso [ngchmAxisType-class]
-setGeneric ("chmAddAxisType", function (chm, where, type, func) standardGeneric("chmAddAxisType"));
-
+setGeneric("chmAddAxisType", function(chm, where, type, func) standardGeneric("chmAddAxisType"))
 #' Add a CHM-specific axis type function to a NGCHM.
 #'
 #' Adds a CHM-specific axis type function to a Next Generation Clustered Heat Map (NGCHM) and
@@ -347,8 +327,7 @@ setGeneric ("chmAddAxisType", function (chm, where, type, func) standardGeneric(
 #'
 #' @seealso [chmListTypes()]
 #' @seealso [ngchmAxisType-class]
-setGeneric ("chmAddSpecificAxisTypeFunction", function (chm, where, type, label, func) standardGeneric("chmAddSpecificAxisTypeFunction"));
-
+setGeneric("chmAddSpecificAxisTypeFunction", function(chm, where, type, label, func) standardGeneric("chmAddSpecificAxisTypeFunction"))
 #' Add a covariate bar to a NGCHM.
 #'
 #' Add a covariate bar to a Next Generation Clustered Heat Map (NGCHM) and
@@ -371,8 +350,7 @@ setGeneric ("chmAddSpecificAxisTypeFunction", function (chm, where, type, label,
 #' @seealso [chmNewCovariate()]
 #' @seealso [chmNewCovariateBar()]
 #' @seealso [ngchmCovariate-class]
-setGeneric ("chmAddCovariateBar", function(chm,where,covar,...) standardGeneric("chmAddCovariateBar"));
-
+setGeneric("chmAddCovariateBar", function(chm, where, covar, ...) standardGeneric("chmAddCovariateBar"))
 #' Get the name of a NGCHM server.
 #'
 #' Return the name of a Next Generation Clustered Heat Map (NGCHM) server.
@@ -385,8 +363,7 @@ setGeneric ("chmAddCovariateBar", function(chm,where,covar,...) standardGeneric(
 #' @rdname chmDeployServer-method
 #'
 #' @seealso [ngchmServer-class]
-setGeneric ("chmDeployServer", function(server) standardGeneric("chmDeployServer"));
-
+setGeneric("chmDeployServer", function(server) standardGeneric("chmDeployServer"))
 #' Get the base URL for a NGCHM installed on a NGCHM server.
 #'
 #' Return the base URL of a Next Generation Clustered Heat Map (NGCHM) that
@@ -400,8 +377,7 @@ setGeneric ("chmDeployServer", function(server) standardGeneric("chmDeployServer
 #' @rdname chmUrlBase-method
 #'
 #' @seealso [ngchmServer-class]
-setGeneric ("chmUrlBase", function(server) standardGeneric("chmUrlBase"));
-
+setGeneric("chmUrlBase", function(server) standardGeneric("chmUrlBase"))
 #' Compile a NGCHM.
 #'
 #' Deprecated.  Users should no longer call this method directly.
@@ -422,8 +398,7 @@ setGeneric ("chmUrlBase", function(server) standardGeneric("chmUrlBase"));
 #' @seealso [chmNew()]
 #' @seealso [chmInstall()]
 #' @seealso [ngchmMakeFormat.original()]
-setGeneric ("chmMake", signature=c("chm"), function(chm,...) standardGeneric("chmMake"));
-
+setGeneric("chmMake", signature = c("chm"), function(chm, ...) standardGeneric("chmMake"))
 #' Add an NG-CHM to an NG-CHM collection.
 #'
 #' Add the given Next-Generation Clustered Heat Map (NG-CHM) to the specified collection (default: current collection).
@@ -441,8 +416,7 @@ setGeneric ("chmMake", signature=c("chm"), function(chm,...) standardGeneric("ch
 #' @seealso [chmUninstall()]
 #' @seealso [chmMakePrivate()]
 #' @seealso [chmMakePublic()]
-setGeneric ("chmInstall", function(chm,...) standardGeneric("chmInstall"));
-
+setGeneric("chmInstall", function(chm, ...) standardGeneric("chmInstall"))
 #' Remove an installed NGCHM.
 #'
 #' Remove the specified Next Generation Clustered Heat Map (NGCHM) from the specified server.
@@ -457,8 +431,7 @@ setGeneric ("chmInstall", function(chm,...) standardGeneric("chmInstall"));
 #' @seealso [ngchmServer-class]
 #' @seealso [ngchm-class]
 #' @seealso [chmInstall()]
-setGeneric ("chmUninstall", function(chm,...) standardGeneric("chmUninstall"));
-
+setGeneric("chmUninstall", function(chm, ...) standardGeneric("chmUninstall"))
 #' Get the URL for an installed NGCHM.
 #'
 #' Return the URL for accessing the specified Next Generation Clustered Heat Map (NGCHM) on the specified server.
@@ -470,8 +443,7 @@ setGeneric ("chmUninstall", function(chm,...) standardGeneric("chmUninstall"));
 #'
 #' @seealso [ngchmServer-class]
 #' @seealso [ngchm-class]
-setGeneric ("chmGetURL", function(chm,...) standardGeneric("chmGetURL"));
-
+setGeneric("chmGetURL", function(chm, ...) standardGeneric("chmGetURL"))
 #' Make an installed NGCHM private.
 #'
 #' Make private the specified Next Generation Clustered Heat Map (NGCHM) on the specified server.
@@ -487,8 +459,7 @@ setGeneric ("chmGetURL", function(chm,...) standardGeneric("chmGetURL"));
 #' @seealso [chmInstall()]
 #' @seealso [chmUninstall()]
 #' @seealso [chmMakePublic()]
-setGeneric ("chmMakePrivate", function(server,chm) standardGeneric("chmMakePrivate"));
-
+setGeneric("chmMakePrivate", function(server, chm) standardGeneric("chmMakePrivate"))
 #' Make an installed NGCHM public.
 #'
 #' Make public the specified Next Generation Clustered Heat Map (NGCHM) on the specified server.
@@ -504,8 +475,7 @@ setGeneric ("chmMakePrivate", function(server,chm) standardGeneric("chmMakePriva
 #' @seealso [chmInstall()]
 #' @seealso [chmUninstall()]
 #' @seealso [chmMakePrivate()]
-setGeneric ("chmMakePublic", function(server,chm) standardGeneric("chmMakePublic"));
-
+setGeneric("chmMakePublic", function(server, chm) standardGeneric("chmMakePublic"))
 #' Set access credentials.
 #'
 #' Set access credentials for the specific resource.
@@ -515,8 +485,7 @@ setGeneric ("chmMakePublic", function(server,chm) standardGeneric("chmMakePublic
 #'
 #' @param resource The resource (e.g. ngchmServer) to which the credentials apply.
 #' @param credentials The credentials.
-setGeneric( "chmSetCredentials", function(resource,credentials) standardGeneric("chmSetCredentials"));
-
+setGeneric("chmSetCredentials", function(resource, credentials) standardGeneric("chmSetCredentials"))
 #' Bind values to an existing JS function.
 #'
 #' Create a new JS function by binding values to extra parameters of an existing JS function.
@@ -531,8 +500,7 @@ setGeneric( "chmSetCredentials", function(resource,credentials) standardGeneric(
 #'        of each list element must match the name of the corresponding parameter.
 #'
 #' @seealso [chmNewFunction()]
-setGeneric ("chmBindFunction", function(name,fn,bindings) standardGeneric("chmBindFunction"));
-
+setGeneric("chmBindFunction", function(name, fn, bindings) standardGeneric("chmBindFunction"))
 #' Add standard toolbox to an axis
 #'
 #' Add a standard toolbox to an axis
@@ -545,8 +513,7 @@ setGeneric ("chmBindFunction", function(name,fn,bindings) standardGeneric("chmBi
 #' @param axistype the type of the axis
 #' @param datasetname the name of the dataset to use
 #' @param idstr string to append to toolbox menu labels (default '')
-setGeneric ("chmAddToolboxR", function(CHM,axis,axistype,datasetname,idstr) standardGeneric("chmAddToolboxR"));
-
+setGeneric("chmAddToolboxR", function(CHM, axis, axistype, datasetname, idstr) standardGeneric("chmAddToolboxR"))
 #' Add standard toolbox to an element
 #'
 #' Add a standard toolbox to an element
@@ -558,8 +525,7 @@ setGeneric ("chmAddToolboxR", function(CHM,axis,axistype,datasetname,idstr) stan
 #' @param axistype the type of both axes
 #' @param datasetname the name of the dataset to use
 #' @param idstr string to append to toolbox menu labels (default '')
-setGeneric ("chmAddToolboxR2", function(CHM,axistype,datasetname,idstr) standardGeneric("chmAddToolboxR2"));
-
+setGeneric("chmAddToolboxR2", function(CHM, axistype, datasetname, idstr) standardGeneric("chmAddToolboxR2"))
 #' Add standard toolbox to an element
 #'
 #' Add a standard toolbox to an element
@@ -572,8 +538,7 @@ setGeneric ("chmAddToolboxR2", function(CHM,axistype,datasetname,idstr) standard
 #' @param coltype the type of the column axis
 #' @param datasetname the name of the dataset to use
 #' @param idstr string to append to toolbox menu labels (default '')
-setGeneric ("chmAddToolboxRC", function(CHM,rowtype,coltype,datasetname,idstr) standardGeneric("chmAddToolboxRC"));
-
+setGeneric("chmAddToolboxRC", function(CHM, rowtype, coltype, datasetname, idstr) standardGeneric("chmAddToolboxRC"))
 #' Load CHM from NG-CHM server
 #'
 #' Load an R CHM object from an NG-CHM server.  The CHM concerned must have been built
@@ -584,7 +549,7 @@ setGeneric ("chmAddToolboxRC", function(CHM,rowtype,coltype,datasetname,idstr) s
 #'
 #' @param serverOrURL Either the server or the CHM url from which to load the CHM object.
 #' @param name Name of the CHM to load if the first parameter is a server id
-setGeneric ("chmLoadCHM", function(serverOrURL,name) standardGeneric("chmLoadCHM"))
+setGeneric("chmLoadCHM", function(serverOrURL, name) standardGeneric("chmLoadCHM"))
 
 #' Get the dataset from an NG-CHM object
 #'
@@ -594,7 +559,7 @@ setGeneric ("chmLoadCHM", function(serverOrURL,name) standardGeneric("chmLoadCHM
 #' @rdname chmGetDataset-method
 #'
 #' @param object An NG-CHM object containing an ngchmDataset
-setGeneric ("chmGetDataset", function(object) standardGeneric("chmGetDataset"))
+setGeneric("chmGetDataset", function(object) standardGeneric("chmGetDataset"))
 
 #' Determine if the NG-CHM has the given property.
 #'
@@ -605,7 +570,7 @@ setGeneric ("chmGetDataset", function(object) standardGeneric("chmGetDataset"))
 #'
 #' @param object An NG-CHM object
 #' @param label The name of the property to check
-setGeneric ("chmHasProperty", function(object,label) standardGeneric("chmHasProperty"))
+setGeneric("chmHasProperty", function(object, label) standardGeneric("chmHasProperty"))
 
 #' Get a property value from an NG-CHM object
 #'
@@ -616,7 +581,7 @@ setGeneric ("chmHasProperty", function(object,label) standardGeneric("chmHasProp
 #'
 #' @param object An NG-CHM object
 #' @param label The name of the property to get
-setGeneric ("chmGetProperty", function(object,label) standardGeneric("chmGetProperty"))
+setGeneric("chmGetProperty", function(object, label) standardGeneric("chmGetProperty"))
 
 #' Get shaid for an object
 #'
@@ -627,7 +592,7 @@ setGeneric ("chmGetProperty", function(object,label) standardGeneric("chmGetProp
 #'
 #' @return The shaid of the object.
 #'
-setGeneric ("shaidyGetShaid", function(object) standardGeneric("shaidyGetShaid"))
+setGeneric("shaidyGetShaid", function(object) standardGeneric("shaidyGetShaid"))
 
 #' Get an object's component shaids
 #'
@@ -638,4 +603,4 @@ setGeneric ("shaidyGetShaid", function(object) standardGeneric("shaidyGetShaid")
 #'
 #' @return A list of shaids.
 #'
-setGeneric ("shaidyGetComponents", function(object) standardGeneric("shaidyGetComponents"))
+setGeneric("shaidyGetComponents", function(object) standardGeneric("shaidyGetComponents"))

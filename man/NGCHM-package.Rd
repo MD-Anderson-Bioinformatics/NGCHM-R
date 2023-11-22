@@ -28,20 +28,22 @@ See NGCHM-initialization for details.
 # The NGCHMSupportFiles package is required by chmExportToFile and chmExportToPDF
 # The NGCHMDemoData package is used to create a demo NGCHM
 \dontrun{
-  library(NGCHMSupportFiles)
-  data(TCGA.GBM.EXPR, package = 'NGCHMDemoData')
-  chm1 <- chmNew('gbm', TCGA.GBM.EXPR[1:50,1:50],
-    rowAxisType = 'bio.gene.hugo',
-    colAxisType = 'bio.tcga.barcode.sample.vial.portion.analyte.aliquot')
-  chmExportToFile(chm1, tempfile('gbm', fileext = '.ngchm'))
-  chmExportToPDF(chm1, tempfile('gbm', fileext = '.pdf'))
+library(NGCHMSupportFiles)
+data(TCGA.GBM.EXPR, package = "NGCHMDemoData")
+chm1 <- chmNew("gbm", TCGA.GBM.EXPR[1:50, 1:50],
+  rowAxisType = "bio.gene.hugo",
+  colAxisType = "bio.tcga.barcode.sample.vial.portion.analyte.aliquot"
+)
+chmExportToFile(chm1, tempfile("gbm", fileext = ".ngchm"))
+chmExportToPDF(chm1, tempfile("gbm", fileext = ".pdf"))
 }
 mat <- matrix(rnorm(100), nrow = 10)
 rownames(mat) <- sprintf("ABCA\%d", 1:10)
 colnames(mat) <- sprintf("Sample\%d", 1:10)
-chm <- chmNew('my-chm', mat)
-\dontrun{chmSetCollection ('//server/collection')
-  chmInstall (chm)
+chm <- chmNew("my-chm", mat)
+\dontrun{
+chmSetCollection("//server/collection")
+chmInstall(chm)
 }
 }
 \seealso{

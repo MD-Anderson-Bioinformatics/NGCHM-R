@@ -17,5 +17,5 @@ This function was designed to facilitate setting rowGapLocations and colGapLocat
 \code{\link[=chmNew]{chmNew()}} function. See examples section.
 }
 \examples{
-mychm <- chmNew("test_chm", rowGapLocations=chmTreeGaps(5))
+mychm <- chmNew("test_chm", rowGapLocations = chmTreeGaps(5))
 }
