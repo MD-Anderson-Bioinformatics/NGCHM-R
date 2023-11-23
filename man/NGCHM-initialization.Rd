@@ -17,6 +17,30 @@ unless instructed to by an entry in a configuration file.
 
 Configuration files may be either text files (.txt extension), R scripts (.R extension),
 or javascript files (.js extension).
+
+Here is an example directory structruce for a server named 'my_server':
+
+\preformatted{
+.
+|-- conf.d
+|   \-- 00-servers.txt
+\-- my_server
+    \-- config.txt
+}
+
+Here are the contents of an example 00-servers.txt file:
+\preformatted{
+[servers]
+my-server = /usr/local/ngchm/my_server
+}
+
+Here are the contents of an example config.txt file:
+\preformatted{
+serverProtocol = shaidy
+accessMethod = api
+basePath = <URL to server. e.g. "https://mydomain.edu/server/api">
+serverURL = <URL to server. e.g. "https://mydomain.edu/server">
+}
 }
 \section{Text files}{
 
@@ -44,14 +68,3 @@ R scripts are sourced.  They can be used to define local NGCHM related functions
 Javascript files define context specific menu entries.
 }
 
-\examples{
-\dontrun{
-# /usr/local/ngchm/conf.d/00-servers.txt :
-# [servers]
-# my-server = /usr/local/ngchm/my-server
-}
-\dontrun{
-# /usr/local/ngchm/my-server/config.txt :
-# serverProtocol = manual
-}
-}

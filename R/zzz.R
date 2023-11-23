@@ -408,6 +408,31 @@ chmStringopFunction <- function(stringop) {
 #' must also define the values of any mandatory parameters required by ngchmServerProtocol, and
 #' may optionally define any optional parameters.
 #'
+#' @details
+#' Here is an example directory structruce for a server named 'my_server':
+#'
+#' \preformatted{
+#' .
+#' |-- conf.d
+#' |   \-- 00-servers.txt
+#' \-- my_server
+#'     \-- config.txt
+#' }
+#'
+#' Here are the contents of an example 00-servers.txt file:
+#' \preformatted{
+#' [servers]
+#' my-server = /usr/local/ngchm/my_server
+#' }
+#'
+#' Here are the contents of an example config.txt file:
+#' \preformatted{
+#' serverProtocol = shaidy
+#' accessMethod = api
+#' basePath = <URL to server. e.g. "https://mydomain.edu/server/api">
+#' serverURL = <URL to server. e.g. "https://mydomain.edu/server">
+#' }
+#'
 #' @section R scripts:
 #' R scripts are sourced.  They can be used to define local NGCHM related functions.
 #'
@@ -418,16 +443,6 @@ chmStringopFunction <- function(stringop) {
 #' @rdname NGCHM-initialization
 #' @aliases NGCHM-initialization
 #'
-#' @examples
-#' \dontrun{
-#' # /usr/local/ngchm/conf.d/00-servers.txt :
-#' # [servers]
-#' # my-server = /usr/local/ngchm/my-server
-#' }
-#' \dontrun{
-#' # /usr/local/ngchm/my-server/config.txt :
-#' # serverProtocol = manual
-#' }
 NULL
 
 loadConfigDir <- function(dirname) {
