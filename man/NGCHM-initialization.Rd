@@ -3,6 +3,9 @@
 \name{NGCHM-initialization}
 \alias{NGCHM-initialization}
 \title{Initialization of the NGCHM library.}
+\value{
+None. This function is used for its side effects of loading configuration files.
+}
 \description{
 When first loaded the NGCHM library reads configuration files in
 the configuration path specified by the NGCHMCONFIGPATH environment variable.  The

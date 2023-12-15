@@ -3,23 +3,27 @@
 \name{chmAddToolboxR}
 \alias{chmAddToolboxR}
 \alias{chmAddToolboxR,ngchm,character,character,character,character-method}
-\title{Add standard toolbox to an axis}
+\title{Add standard toolbox to an NG-CHM axis}
 \usage{
 chmAddToolboxR(CHM, axis, axistype, datasetname, idstr)
 
 \S4method{chmAddToolboxR}{ngchm,character,character,character,character}(CHM, axis, axistype, datasetname, idstr)
 }
 \arguments{
-\item{CHM}{CHM to which the toolbox will be added}
+\item{CHM}{An object of class 'ngchm'.}
 
-\item{axis}{the axis to which the toolbix will be added}
+\item{axis}{A single character string specifying the axis where the toolbox will be added. Can be
+"row", "column", or "both".}
 
-\item{axistype}{the type of the axis}
+\item{axistype}{A single character string specifying the type of the axis.}
 
-\item{datasetname}{the name of the dataset to use}
+\item{datasetname}{A single character string specifying the name of the dataset.}
 
 \item{idstr}{string to append to toolbox menu labels (default '')}
 }
+\value{
+An updated 'ngchm' object with the new toolbox added.
+}
 \description{
-Add a standard toolbox to an axis
+This function adds a toolbox to a NG-CHM (Next-Generation Clustered Heat Map) axis.
 }

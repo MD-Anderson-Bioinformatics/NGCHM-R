@@ -7,9 +7,14 @@
 chmFieldAccessFunction(fieldsep, idx)
 }
 \arguments{
-\item{fieldsep}{The string that separates fields in the strings of the input vector.}
+\item{fieldsep}{The separator to be used for splitting the input string. This should be a single
+character string.}
 
-\item{idx}{The index (zero origin) of the field the function should extract.}
+\item{idx}{The index (zero origin) of the field to be returned after splitting the input string.
+This should be a single integer.}
+}
+\value{
+The name of the newly created field access function.
 }
 \description{
 This function returns the name of a Javascript function thats accepts a string vector
@@ -20,6 +25,13 @@ fieldsep, and accesses field idx (zero origin).  The function returns a vector o
 The name of the function returned for a specific fieldsep and idx will be
 constant within an R session, but may differ between R sessions (or if this
 library is unloaded and reloaded).
+}
+\examples{
+# Create a new field access function that splits the input string at ',' and returns the first field.
+chmFieldAccessFunction(',', 1)
+# Create a new field access function that splits the input string at '-' and returns the second field.
+chmFieldAccessFunction('-', 2)
+
 }
 \seealso{
 \code{\link[=chmGetFunction]{chmGetFunction()}}

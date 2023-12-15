@@ -2,13 +2,17 @@
 % Please edit documentation in R/functions.R
 \name{ngchmGetServerProtocol}
 \alias{ngchmGetServerProtocol}
-\title{Lookup a Server Protocol}
+\title{Get Server Protocol for NG-CHM}
 \usage{
 ngchmGetServerProtocol(protocolName)
 }
 \arguments{
-\item{protocolName}{The name of the server protocol to lookup}
+\item{protocolName}{A single character string specifying the name of the protocol.}
+}
+\value{
+An object of class 'ngchmServerProtocol' representing the server protocol.
 }
 \description{
-Lookup a Server Protocol
+This function gets a server protocol for NG-CHM (Next-Generation Clustered Heat Map)
+by its name.
 }

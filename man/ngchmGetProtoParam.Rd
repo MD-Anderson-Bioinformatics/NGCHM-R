@@ -2,17 +2,23 @@
 % Please edit documentation in R/functions.R
 \name{ngchmGetProtoParam}
 \alias{ngchmGetProtoParam}
-\title{Get a server protocol parameter}
+\title{Get Protocol Parameter for NG-CHM Server}
 \usage{
 ngchmGetProtoParam(server, option, default = NULL)
 }
 \arguments{
-\item{server}{The NGCHM server}
+\item{server}{An object of class 'ngchmServer' representing the server.}
 
-\item{option}{The name of the protocol parameter to get}
+\item{option}{A single character string specifying the name of the protocol parameter.}
 
-\item{default}{The default value of the option (default NULL)}
+\item{default}{An optional default value to return if the protocol parameter is
+not found. Defaults to NULL.}
+}
+\value{
+The value of the protocol parameter if it is found, otherwise the
+specified default value.
 }
 \description{
-Get a server protocol parameter
+This function gets a protocol parameter for a specified NG-CHM
+(Next-Generation Clustered Heat Map) server.
 }

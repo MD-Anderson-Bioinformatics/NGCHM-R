@@ -36,9 +36,11 @@ ngchm.env <- new.env(parent = emptyenv())
 
 #' Specify per-user configuration for a specific deploy Server.
 #'
-#' @param server The server for which the configuration is being set.  Must have deployServer set.
-#' @param config The configuration to set
+#' @param server An object of class 'chmServer' or a character string specifying the
+#' name of the server.
+#' @param config A list specifying the configuration to be set for the server.
 #'
+#' @return None. This function is used for its side effects of setting the deployment server configuration.
 #' @export
 chmSetDeployServerConfig <- function(server, config) {
   if (is(server, "character")) server <- chmServer(server)
@@ -48,9 +50,22 @@ chmSetDeployServerConfig <- function(server, config) {
 
 #' Get per-user configuration for a specific deploy Server.
 #'
-#' @param server The server for which the configuration is being set.  Must have deployServer set.
+#' This function retrieves the configuration of a specified NG-CHM
+#' (Next-Generation Clustered Heat Map) deployment server.
+#'
+#' @param server The server for which the configuration is to be retrieved.
+#' This can be either a character string representing the server name or an object
+#' of class 'ngchmServer'.
 #'
 #' @export
+#'
+#' @return The configuration of the specified server if it exists, otherwise NULL.
+#'
+#' @examples
+#' # Get the configuration of the server named 'myServer'.
+#' config <- chmGetDeployServerConfig('myServer')
+#' # Get the configuration of the server represented by the 'myServer' object.
+#' config <- chmGetDeployServerConfig(myServer)
 chmGetDeployServerConfig <- function(server) {
   if (is(server, "character")) server <- chmServer(server)
   if (exists(server@deployServer, ngchm.env$deployServerConfigs)) {
@@ -307,13 +322,23 @@ loadTextConfig <- function(filename) {
 #' constant within an R session, but may differ between R sessions (or if this
 #' library is unloaded and reloaded).
 #'
-#' @param fieldsep The string that separates fields in the strings of the input vector.
-#' @param idx The index (zero origin) of the field the function should extract.
+#' @param fieldsep The separator to be used for splitting the input string. This should be a single
+#'                 character string.
+#' @param idx The index (zero origin) of the field to be returned after splitting the input string.
+#'            This should be a single integer.
 #'
 #' @export
 #'
 #' @seealso [chmGetFunction()]
 #' @seealso [chmStringopFunction()]
+#'
+#' @return The name of the newly created field access function.
+#'
+#' @examples
+#' # Create a new field access function that splits the input string at ',' and returns the first field.
+#' chmFieldAccessFunction(',', 1)
+#' # Create a new field access function that splits the input string at '-' and returns the second field.
+#' chmFieldAccessFunction('-', 2)
 #'
 chmFieldAccessFunction <- function(fieldsep, idx) {
   key <- sprintf("fa%s%d", fieldsep, idx)
@@ -349,13 +374,13 @@ chmFieldAccessFunction <- function(fieldsep, idx) {
 #' constant within an R session, but may differ between R sessions (or if this
 #' library is unloaded and reloaded).
 #'
-#' @param stringop A javascript code fragment that can be applied to a string to yield another string.
-#'
+#' @param stringop A javascript code fragment that can be applied to a string to
+#' yield another string.
 #' @export
-#'
 #' @seealso [chmGetFunction()]
 #' @seealso [chmFieldAccessFunction()]
 #'
+#' @return A character string specifying the name of the new function.
 chmStringopFunction <- function(stringop) {
   key <- sprintf("sop%s", stringop)
   if (!exists(key, ngchm.env$parseFns)) {
@@ -439,6 +464,7 @@ chmStringopFunction <- function(stringop) {
 #' @section Javascript scripts:
 #' Javascript files define context specific menu entries.
 #'
+#' @return None. This function is used for its side effects of loading configuration files.
 #' @name NGCHM-initialization
 #' @rdname NGCHM-initialization
 #' @aliases NGCHM-initialization

@@ -2,15 +2,26 @@
 % Please edit documentation in R/functions.R
 \name{initLogging}
 \alias{initLogging}
-\title{Function to initialize logging}
+\title{Initialize Logging}
 \usage{
 initLogging(log_level, log_file = NULL)
 }
 \arguments{
-\item{log_level}{One of 'TRACE', 'DEBUG', 'INFO', 'SUCCESS'}
+\item{log_level}{A single character string specifying the log level. This should
+be one of 'TRACE', 'DEBUG', 'INFO', 'WARN', 'ERROR', or 'FATAL'.}
 
-\item{log_file}{Desired path/name of log file}
+\item{log_file}{An optional character string specifying the name of the file where
+the log will be written. If this is NULL, the log will be written to the console.}
+}
+\value{
+None. This function is used for its side effects of initializing the logging.
 }
 \description{
-Function to initialize logging
+This function initializes logging for the application.
+}
+\examples{
+# Initialize logging with log level 'INFO' and write the log to 'myLog.log'.
+initLogging('INFO', 'myLog.log')
+# Initialize logging with log level 'DEBUG' and write the log to the console.
+initLogging('DEBUG')
 }

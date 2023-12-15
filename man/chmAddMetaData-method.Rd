@@ -3,22 +3,26 @@
 \name{chmAddMetaData}
 \alias{chmAddMetaData}
 \alias{chmAddMetaData,ngchm,character,character,character-method}
-\title{Add meta data.}
+\title{Add MetaData to NG-CHM}
 \usage{
 chmAddMetaData(chm, where, type, value)
 
 \S4method{chmAddMetaData}{ngchm,character,character,character}(chm, where, type, value)
 }
 \arguments{
-\item{chm}{The chm to add the meta data to.}
+\item{chm}{An object of class 'ngchm'.}
 
-\item{where}{The axis of the chm to add the meta data to (row, column, or both).}
+\item{where}{A single character string specifying where to add the metadata. Can be "row", "column", or "both".}
 
-\item{type}{The type of the meta data.}
+\item{type}{A single character string specifying the type of the metadata.}
 
-\item{value}{A character vector or NULL.
-If value is a character vector, elements of the vector will be attached as meta data to to NGCHM row of the same name.}
+\item{value}{A character vector specifying the values of the metadata.
+If value is a character vector, elements of the vector will be attached as meta data
+to to NGCHM row of the same name.}
+}
+\value{
+An updated 'ngchm' object with the new metadata added.
 }
 \description{
-Add meta data to the rows/columns of a Next Generation Clustered Heat Map.
+This function adds metadata to a NG-CHM (Next-Generation Clustered Heat Map) object.
 }

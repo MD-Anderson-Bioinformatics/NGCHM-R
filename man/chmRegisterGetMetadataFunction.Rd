@@ -7,9 +7,14 @@
 chmRegisterGetMetadataFunction(functionName, metadataColumnName)
 }
 \arguments{
-\item{functionName}{The name given to the Javascript function.}
+\item{functionName}{A single character string specifying the name of the
+function to be registered.}
 
-\item{metadataColumnName}{The name of the metadata column to access.}
+\item{metadataColumnName}{A single character string specifying the name
+of the metadata column to be retrieved by the function.}
+}
+\value{
+The registered function.
 }
 \description{
 This function defines and registers a Javascript function for obtaining a specific

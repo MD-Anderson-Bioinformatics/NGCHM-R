@@ -172,19 +172,29 @@ ngchmShaidyInit <- function() {
   ngchm.env$shaidyStack <- c()
 }
 
-#' Create a shaidy repository for NG-CHMS
+#' Initialize Shaidy Repository for NG-CHM
 #'
-#' @param shaidyDir Basepath of local shaidy repository to create
+#' This function initializes a Shaidy repository for NG-CHM (Next-Generation Clustered Heat Map).
 #'
+#' @param shaidyDir A single character string specifying the directory where the
+#' Shaidy repository will be initialized.
+#'
+#' @return None. This function is used for its side effects of initializing the
+#' Shaidy repository.
 #' @export
 ngchmInitShaidyRepository <- function(shaidyDir) {
   shaidyInitRepository(shaidyDir, c("collection", "chm", "dataset", "dendrogram", "label", "tile", "viewer", "file"))
 }
 
-#' Push a shaidy repository onto the stack of temporary repositories
+#' Push Temporary Repository for NG-CHM
 #'
-#' @param shaidyDir Basepath of local shaidy repository to use as a temporary repository
+#' This function pushes a temporary repository for NG-CHM (Next-Generation Clustered
+#' Heat Map) onto the Shaidy stack.
 #'
+#' @param shaidyDir A single character string specifying the directory of the
+#' temporary repository.
+#' @return None. This function is used for its side effects of pushing the temporary
+#' repository onto the Shaidy stack.
 #' @export
 ngchmPushTempRepository <- function(shaidyDir) {
   newrepo <- shaidyLoadRepository("file", shaidyDir)
@@ -194,23 +204,33 @@ ngchmPushTempRepository <- function(shaidyDir) {
 
 #' Push a local shaidy repository onto the stack of source repositories
 #'
-#' @param shaidyDir Basepath of local shaidy repository to use as a source repository
-#' @param accessMethod Method for accessing repository
+#' This function pushes a source repository for NG-CHM (Next-Generation
+#' Clustered Heat Map) onto the Shaidy stack.
 #'
+#' @param shaidyDir A single character string specifying the directory of the
+#' source repository.
+#' @param accessMethod A single character string specifying the access method
+#' for the source repository. Defaults to "file".
 #' @export
+#' @return None. This function is used for its side effects of pushing the source
+#' repository onto the Shaidy stack.
 ngchmPushSourceRepository <- function(shaidyDir, accessMethod = "file") {
   newrepo <- shaidyLoadRepository(accessMethod, shaidyDir)
   assign(envir = ngchm.env, "shaidyStack", c(list(newrepo), ngchm.env$shaidyStack))
 }
 
 #' Push a shaidy server onto the stack of source repositories
+#' 
+#' This function pushes a source server for NG-CHM (Next-Generation Clustered Heat Map)
+#' onto the Shaidy stack.
 #'
-#' @param server An ngchmServer or the name of one.
-#'
+#' @param server An object of class 'ngchmServer' or a single character string
+#' specifying the name of the server.
+#' @export
+#' @return None. This function is used for its side effects of pushing the source
+#' server onto the Shaidy stack.
 #' @seealso [chmLoadShaidyCHM()]
 #' @seealso [chmCreateServer()]
-#'
-#' @export
 ngchmPushSourceServer <- function(server) {
   if (is(server, "character")) {
     stopifnot(length(server) == 1)
@@ -221,6 +241,7 @@ ngchmPushSourceServer <- function(server) {
   sr <- shaidyLoadRepository(server@protoOpts$accessMethod, server@protoOpts$basePath)
   assign(envir = ngchm.env, "shaidyStack", c(list(sr), ngchm.env$shaidyStack))
 }
+
 #' Find a repository, if any, that contains the requested shaid
 #'
 #' @param shaid The shaid to search for
@@ -725,14 +746,16 @@ chmCurrentServer <- function() {
 #'
 #' The interpretation of each path component is server specific.
 #'
-#' @param path A path specifying a server and/or collection
+#' @param path A single character string specifying the path of the collection
+#' to be set. The path should be in the format '//server/collection'.
 #'
 #' @export
 #'
 #' @seealso [chmCurrentCollection()]
 #' @seealso [chmServer()]
 #' @seealso [chmListServers()]
-
+#' @return None. This function is used for its side effects of setting the current
+#' server and collection.
 chmSetCollection <- function(path) {
   stopifnot(!missing(path) && typeof(path) == "character" && length(path) == 1)
   res <- parsePathSpec(path)
@@ -774,7 +797,9 @@ parsePathSpec <- function(path) {
   list(server = newServer, collection = newCollection)
 }
 
-#' Create a new collection
+#' Create a new NG-CHM Collection
+#'
+#' This function creates a new NG-CHM (Next-Generation Clustered Heat Map) collection on the server.
 #'
 #' The path is a sequence of components separated by slashes (/).
 #' If the path begins with a double slash (//) the following
@@ -789,12 +814,17 @@ parsePathSpec <- function(path) {
 #'
 #' The interpretation of each path component is server specific.
 #'
-#' @param path A path specifying a collection to be created
-#' @param recursive If TRUE, create intermediate collections as required
+#' @param path The path where the collection should be created. This should be a single character string.
+#' @param recursive A logical value indicating whether to create parent collections if they do not exist. Default is FALSE.
 #'
+#' @return None. This function is used for its side effects of creating a new collection on the server.
 #' @export
 #'
 #' @seealso [chmCurrentCollection()]
+#'
+#' @examples
+#' chmCreateCollection('path/to/collection') # Create a new collection at the specified path.
+#' chmCreateCollection('path/to/collection', recursive = TRUE) # Create a new collection at the specified path, creating any necessary parent collections.
 chmCreateCollection <- function(path, recursive = FALSE) {
   stopifnot(!missing(path) && typeof(path) == "character" && length(path) == 1)
   server <- ngchm.env$currentServer

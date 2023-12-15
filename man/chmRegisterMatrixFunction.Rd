@@ -7,13 +7,19 @@
 chmRegisterMatrixFunction(rowtype, columntype, label, fn)
 }
 \arguments{
-\item{rowtype}{The row type required by this function.}
+\item{rowtype}{A character vector specifying the row type(s) of the matrix function.}
 
-\item{columntype}{The column type required by this function.}
+\item{columntype}{A character vector specifying the column type(s) of the
+matrix function.}
 
-\item{label}{The name of the axis menu entry to be used for this function.}
+\item{label}{A single character string specifying the label of the matrix function.}
 
-\item{fn}{The Javascript function to register.}
+\item{fn}{The function to be registered. This can be either a function or a
+character string representing the name of a function.}
+}
+\value{
+None. This function is used for its side effects of registering a new
+function in the NGCHM matrix menues.
 }
 \description{
 This function registers a Javascript function that will be automatically

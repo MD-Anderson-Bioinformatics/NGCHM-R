@@ -4,15 +4,18 @@
 \name{+}
 \alias{+}
 \alias{+,ngchmVersion2,ngchmAxis-method}
-\title{Add an ngchmAxis to an NG-CHM}
+\title{Add an Axis to an NG-CHM Version 2}
 \usage{
 \S4method{+}{ngchmVersion2,ngchmAxis}(e1, e2)
 }
 \arguments{
-\item{e1}{An NG-CHM.}
+\item{e1}{An object of class 'ngchmVersion2' to which the axis is to be added.}
 
-\item{e2}{An NG-CHM Axis.}
+\item{e2}{An object of class 'ngchmAxis' representing the axis to be added.}
+}
+\value{
+An updated 'ngchmVersion2' object with the added axis.
 }
 \description{
-Returns the NG-CHM (e1) augmented with the specified NG-CHM axis (e2).
+This function adds an 'ngchmAxis' to an 'ngchmVersion2' object.
 }

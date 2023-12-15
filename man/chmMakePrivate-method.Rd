@@ -6,7 +6,7 @@
 \alias{chmMakePrivate,ngchmServer,ngchm-method}
 \alias{chmMakePrivate,character,ngchm-method}
 \alias{chmMakePrivate,character,character-method}
-\title{Make an installed NGCHM private.}
+\title{Make NG-CHM Private on Server}
 \usage{
 chmMakePrivate(server, chm)
 
@@ -19,12 +19,15 @@ chmMakePrivate(server, chm)
 \S4method{chmMakePrivate}{character,character}(server, chm)
 }
 \arguments{
-\item{server}{The server on which the NGCHM to make private is installed.}
+\item{server}{An object of class 'ngchmServer' representing the server where the NG-CHM is hosted.}
 
-\item{chm}{The NGCHM to make private.}
+\item{chm}{A single character string specifying the name of the NG-CHM to be made private.}
+}
+\value{
+No return value. The function is called for its side effect of making the specified NG-CHM private on the specified server.
 }
 \description{
-Make private the specified Next Generation Clustered Heat Map (NGCHM) on the specified server.
+This function makes a specific NG-CHM (Next-Generation Clustered Heat Map) private on a specified server.
 }
 \seealso{
 \linkS4class{ngchmServer}

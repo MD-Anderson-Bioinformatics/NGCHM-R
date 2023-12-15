@@ -15,6 +15,9 @@
 
 \item{...}{Ignored.}
 }
+\value{
+No return value. The function is called for its side effect of plotting the specified NG-CHM.
+}
 \description{
 Open the NG-CHM on the specified server in the viewer.
 }

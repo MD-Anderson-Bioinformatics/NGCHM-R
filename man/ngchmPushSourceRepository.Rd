@@ -7,10 +7,17 @@
 ngchmPushSourceRepository(shaidyDir, accessMethod = "file")
 }
 \arguments{
-\item{shaidyDir}{Basepath of local shaidy repository to use as a source repository}
+\item{shaidyDir}{A single character string specifying the directory of the
+source repository.}
 
-\item{accessMethod}{Method for accessing repository}
+\item{accessMethod}{A single character string specifying the access method
+for the source repository. Defaults to "file".}
+}
+\value{
+None. This function is used for its side effects of pushing the source
+repository onto the Shaidy stack.
 }
 \description{
-Push a local shaidy repository onto the stack of source repositories
+This function pushes a source repository for NG-CHM (Next-Generation
+Clustered Heat Map) onto the Shaidy stack.
 }

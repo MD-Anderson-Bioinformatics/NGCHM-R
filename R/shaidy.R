@@ -296,14 +296,22 @@ print.shaidyRepo <- function(x, ...) {
   invisible(x)
 }
 
-#' Create and initialize a local shaidy repository.
+#' Create and initialize Shaidy Repository
 #'
-#' @param shaidyDir Basepath of local shaidy repository to create
-#' @param blob.types A string vector naming the blob types to include in the repository
+#' This function initializes a Shaidy repository in a specified directory with
+#' specified blob types.
 #'
+#' @param shaidyDir A single character string specifying the directory where the
+#' Shaidy repository will be initialized.
+#' @param blob.types A character vector specifying the blob types for the Shaidy
+#' repository.
+#'
+#' @return None. This function is used for its side effects of initializing the Shaidy
+#' repository.
 #' @import jsonlite
-#'
 #' @export
+#' @examples
+#' shaidyInitRepository('myShaidyDir', c('blobType1', 'blobType2')) # Initialize a Shaidy repository in 'myShaidyDir' with blob types 'blobType1' and 'blobType2'.
 shaidyInitRepository <- function(shaidyDir, blob.types) {
   stopifnot(!dir.exists(shaidyDir))
   stopifnot(dir.create(shaidyDir, recursive = TRUE))
@@ -316,6 +324,7 @@ shaidyInitRepository <- function(shaidyDir, blob.types) {
     stopifnot(dir.create(repo$blob.path(bt), recursive = FALSE))
   }
 }
+
 #' Find the first repository, if any, that contains the requested shaid
 #'
 #' @param repos The list of repositories to search

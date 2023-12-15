@@ -7,7 +7,12 @@
 chmSetCollection(path)
 }
 \arguments{
-\item{path}{A path specifying a server and/or collection}
+\item{path}{A single character string specifying the path of the collection
+to be set. The path should be in the format '//server/collection'.}
+}
+\value{
+None. This function is used for its side effects of setting the current
+server and collection.
 }
 \description{
 The path is a sequence of components separated by slashes (/).

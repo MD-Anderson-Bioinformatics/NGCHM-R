@@ -1314,16 +1314,19 @@ chmOperatorAdd <- function(left, right) {
   }
 }
 
-#' Add an ngchmAxis to an NG-CHM
+#' Add an Axis to an NG-CHM Version 2
 #'
-#' Returns the NG-CHM (e1) augmented with the specified NG-CHM axis (e2).
+#' This function adds an 'ngchmAxis' to an 'ngchmVersion2' object.
 #'
 #' @name +
 #' @docType methods
 #' @rdname addition-methods
 #' @aliases +,ngchmVersion2,ngchmAxis-method
-#' @param e1 An NG-CHM.
-#' @param e2 An NG-CHM Axis.
+#' @param e1 An object of class 'ngchmVersion2' to which the axis is to be added.
+#' @param e2 An object of class 'ngchmAxis' representing the axis to be added.
+#'
+#' @return An updated 'ngchmVersion2' object with the added axis.
+#'
 #' @export
 setMethod("+",
   signature = c(e1 = "ngchmVersion2", e2 = "ngchmAxis"),

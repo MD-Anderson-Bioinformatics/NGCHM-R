@@ -2,10 +2,14 @@
 #' @import utils
 NULL
 
-#' Function to initialize logging
+#' Initialize Logging
 #'
-#' @param log_level One of 'TRACE', 'DEBUG', 'INFO', 'SUCCESS'
-#' @param log_file Desired path/name of log file
+#' This function initializes logging for the application.
+#'
+#' @param log_level A single character string specifying the log level. This should
+#' be one of 'TRACE', 'DEBUG', 'INFO', 'WARN', 'ERROR', or 'FATAL'.
+#' @param log_file An optional character string specifying the name of the file where
+#' the log will be written. If this is NULL, the log will be written to the console.
 #' @export
 #' @importFrom logger log_threshold
 #' @importFrom logger log_info
@@ -17,7 +21,13 @@ NULL
 #' @importFrom logger appender_console
 #' @importFrom logger layout_glue_generator
 #' @importFrom logger layout_glue
+#' @return None. This function is used for its side effects of initializing the logging.
 #'
+#' @examples
+#' # Initialize logging with log level 'INFO' and write the log to 'myLog.log'.
+#' initLogging('INFO', 'myLog.log')
+#' # Initialize logging with log level 'DEBUG' and write the log to the console.
+#' initLogging('DEBUG')
 initLogging <- function(log_level, log_file = NULL) {
   log_threshold(log_level)
   if (!is.null(log_file)) {
@@ -87,19 +97,24 @@ ngchmRegisterServer <- function(uuid, server) {
   server
 }
 
-#' Unregister ngchmServer(s).
+#' Unregister NG-CHM Server
 #'
-#' This function unregisters one or more ngchmServer(s).
+#' This function unregisters a server for NG-CHM (Next-Generation Clustered Heat
+#' Map) by its UUID and optionally by its name.
 #'
-#' @param uuid A string that identifies the server namespace.
-#' @param name The names(s) of the ngchmServer(s) to unregister.  If not specified, all ngchmServers in the
-#' namespace are unregistered.
-#'
-#' @export
-#'
+#' @param uuid A single character string specifying the UUID of the server.
+#' @param name The names(s) of the ngchmServer(s) to unregister.
+#' If not specified, all ngchmServers in the namespace are unregistered.
+#' Defaults to NULL.
+#' @return None. This function is used for its side effects of unregistering the server.
 #' @seealso [ngchmRegisterServer()]
 #' @seealso [ngchmServer-class]
-#'
+#' @export
+#' @examples
+#' # Unregister the server with UUID 'myUUID'.
+#' ngchmUnregisterServer('myUUID')
+#' # Unregister the server with UUID 'myUUID' and name 'myName'.
+#' ngchmUnregisterServer('myUUID', 'myName')
 ngchmUnregisterServer <- function(uuid, name = NULL) {
   if (length(name) == 0) {
     matches <- vapply(ngchm.env$servers, function(srv) (srv$uuid == uuid), TRUE)
@@ -141,6 +156,9 @@ chmServer <- function(name) {
 #' Get the library's internal ngchm environment to help debugging.
 #'
 #' @export
+#' @return A list representing the current environment for NG-CHM.
+#' @examples
+#' ngchmGetEnv() # Get the current environment for NG-CHM.
 ngchmGetEnv <- function() {
   return(ngchm.env)
 }
@@ -1546,14 +1564,22 @@ chmProperty <- function(hm, label) {
   }
   x
 }
-#' Create a list of NGCHM properties.
+
+#' Create NG-CHM Properties
 #'
-#' Create a list of NGCHM properties.
+#' This function creates one or more NG-CHM (Next-Generation Clustered Heat Map) properties.
 #'
-#' @param ... A named list of property values.
+#' @param ... Named arguments representing the properties to be created.
+#' Each argument should be a single value of type character, double, integer, or logical.
 #'
-#' @export
+#' @return A list of properties. Each property is represented as a list with two elements: 'label' and 'value'.
+#'
 #' @seealso [chmAdd()]
+#'
+#' @examples
+#' # Create three properties: 'prop1', 'prop2', and 'prop3'.
+#' props <- chmProperties(prop1 = "value1", prop2 = 2, prop3 = TRUE)
+#' @export
 chmProperties <- function(...) {
   props <- list(...)
   if (length(props) > 0) {
@@ -1861,14 +1887,14 @@ chmGetFunction <- function(name) {
 #' @param label The name of the axis menu entry to be used for this function.
 #' @param fn The Javascript function to register.
 #'
-#' @return NULL
-#'
 #' @export
 #'
 #' @seealso [chmAddAxisType()]
 #' @seealso [chmRegisterMatrixFunction()]
 #' @seealso [chmRegisterTypeMapper()]
 #' @seealso [chmNewFunction()]
+#'
+#' @return None. This function is used for its side effects of registering a new axis function.
 chmRegisterAxisFunction <- function(type, label, fn) {
   if (typeof(label) != "character") {
     stop(sprintf("Parameter 'label' must have type 'character', not '%s'", typeof(label)))
@@ -1981,19 +2007,19 @@ getAllMatrixTypeFunctions <- function(chm, rowtypes, columntypes) {
 #' axes types.
 #' This function is intended for use by NGCHM system developers.
 #'
-#' @param rowtype The row type required by this function.
-#' @param columntype The column type required by this function.
-#' @param label The name of the axis menu entry to be used for this function.
-#' @param fn The Javascript function to register.
-#'
-#' @return NULL
-#'
+#' @param rowtype A character vector specifying the row type(s) of the matrix function.
+#' @param columntype A character vector specifying the column type(s) of the
+#' matrix function.
+#' @param label A single character string specifying the label of the matrix function.
+#' @param fn The function to be registered. This can be either a function or a
+#' character string representing the name of a function.
 #' @export
-#'
 #' @seealso [chmAddAxisType()]
 #' @seealso [chmRegisterAxisFunction()]
 #' @seealso [chmRegisterTypeMapper()]
 #' @seealso [chmNewFunction()]
+#' @return None. This function is used for its side effects of registering a new
+#' function in the NGCHM matrix menues.
 chmRegisterMatrixFunction <- function(rowtype, columntype, label, fn) {
   if (typeof(label) != "character") {
     stop(sprintf("Parameter 'label' must have type 'character', not '%s'", typeof(label)))
@@ -2037,11 +2063,12 @@ chmRegisterMatrixFunction <- function(rowtype, columntype, label, fn) {
 #' basic information about the semantic interpretation of a type name.  Registration
 #' of a typename is (currently) not required in order to use it.
 #'
-#' @param typename The name of the type.
-#' @param description A description of the type.
+#' @param typename A character vector specifying the name(s) of the type(s) to be
+#' registered.
+#' @param description A single character string specifying the description of the
+#' type(s).
 #'
-#' @return NULL
-#'
+#' @return None. This function is used for its side effects of registering a new type.
 #' @export
 #'
 #' @seealso [chmListTypes()]
@@ -2246,17 +2273,19 @@ chmRegisterTypeMapper <- function(fromtype, totype, op, ...) {
 #' building a Next Generation Clustered Heat Map.  This function is
 #' intended for use by NGCHM system developers.
 #'
-#' @param fn The Javascript function to register.
+#' @param fn The function to be registered. This should be an object of class 'ngchmJS'.
 #'
-#' @return NULL
+#' @return The registered function.
 #'
 #' @export
+#' @examples
+#' # Assume 'myFunction' is an object of class 'ngchmJS'
+#' chmRegisterFunction(myFunction) # Register 'myFunction'.
 #'
 #' @seealso [chmAddMenuItem()]
 #' @seealso [chmNewFunction()]
 #' @seealso [ngchmAxisFunction-class]
 #' @seealso [ngchmMatrixFunction-class]
-#'
 chmRegisterFunction <- function(fn) {
   if (!is(fn, "ngchmJS")) {
     stop(sprintf("Parameter 'fn' must have type 'ngchmJS', not '%s'", classstr(fn)))
@@ -2275,21 +2304,30 @@ chmRegisterFunction <- function(fn) {
 #' This function creates and registers a protocol implementation for manipulating
 #' an NGCHM server.
 #'
-#' @param protocolName The name of this protocol implementation.
-#' @param chmFormat The chm format required by this protocol. Defaults to original format.
-#' @param requiredParams The protocol's required parameters, if any.
-#' @param optionalParams The protocol's optional parameters, if any.
-#' @param paramValidator A function(list) for validating the parameters specified for a new server.
-#' @param findCollection A function(server,collection,path) for finding a collection.
-#' @param createCollection A function(server,collection,name) for creating a collection.
-#' @param installMethod A function(server,chm) for installing an NG-CHM.
-#' @param uninstallMethod A function(server,chmname) for uninstalling an NG-CHM.
-#' @param makePrivate A function(server,chmname) for hiding an NG-CHM.
-#' @param makePublic A function(server,chmname) for showing an NG-CHM.
-#' @param setCredentials A function(server,credentialstring) for setting credentials.
-#'
+#' @param protocolName A single character string specifying the name of the protocol.
+#' @param chmFormat A single character string specifying the format of the heat map.
+#' Defaults to "original".
+#' @param requiredParams A character vector specifying the required parameters for the
+#' protocol, if any.
+#' @param optionalParams A character vector specifying the optional parameters for the
+#' protocol, if any.
+#' @param paramValidator A function(list) for validating the parameters specified
+#' for a new server.
+#' @param findCollection A function(server,collection,path) that finds a collection
+#' on the server.
+#' @param createCollection A function(server,collection,name) that creates a collection
+#' on the server.
+#' @param installMethod A function(server,chm) that installs a heat map on the server.
+#' @param uninstallMethod A function(server,chmname) that uninstalls a heat map 
+#' from the server.
+#' @param makePrivate A function(server,chmname) that makes a heat map private
+#' on the server.
+#' @param makePublic A function(server,chmname) that makes a heat map public on the
+#' server.
+#' @param setCredentials A function(server,credentialstring) that sets the credentials
+#' for the server.
 #' @export
-
+#' @return An object of class 'ngchmServerProtocol' representing the new server protocol.
 ngchmCreateServerProtocol <- function(protocolName, chmFormat,
                                       requiredParams, optionalParams,
                                       paramValidator,
@@ -2396,12 +2434,15 @@ ngchmListServerProtocols <- function() {
   vapply(ngchm.env$serverProtocols, function(sp) sp@protocolName, "")
 }
 
-#' Lookup a Server Protocol
+#' Get Server Protocol for NG-CHM
 #'
+#' This function gets a server protocol for NG-CHM (Next-Generation Clustered Heat Map)
+#' by its name.
+#'
+#' @param protocolName A single character string specifying the name of the protocol.
+#'
+#' @return An object of class 'ngchmServerProtocol' representing the server protocol.
 #' @export
-#'
-#' @param protocolName The name of the server protocol to lookup
-
 ngchmGetServerProtocol <- function(protocolName) {
   if (typeof(protocolName) != "character") {
     stop(sprintf("Parameter 'protocolName' must have type 'character', not '%s'", typeof(protocolName)))
@@ -2420,14 +2461,18 @@ ngchmGetServerProtocol <- function(protocolName) {
   }
 }
 
-#' Get a server protocol parameter
+#' Get Protocol Parameter for NG-CHM Server
 #'
+#' This function gets a protocol parameter for a specified NG-CHM
+#' (Next-Generation Clustered Heat Map) server.
+#'
+#' @param server An object of class 'ngchmServer' representing the server.
+#' @param option A single character string specifying the name of the protocol parameter.
+#' @param default An optional default value to return if the protocol parameter is
+#' not found. Defaults to NULL.
 #' @export
-#'
-#' @param server The NGCHM server
-#' @param option The name of the protocol parameter to get
-#' @param default The default value of the option (default NULL)
-
+#' @return The value of the protocol parameter if it is found, otherwise the
+#' specified default value.
 ngchmGetProtoParam <- function(server, option, default = NULL) {
   stopifnot(is(server, "ngchmServer"))
   stopifnot(is(option, "character"))
@@ -2445,7 +2490,8 @@ ngchmGetProtoParam <- function(server, option, default = NULL) {
 #'
 #' This function lists the predefined Javascript functions available for use in NGCHM menus.
 #'
-#' @param re Only functions with names matching re are printed (default ".*")
+#' @param re The regular expression to match. This should be a single character string.
+#' Default is ".*", which matches all functions.
 #'
 #' @export
 #'
@@ -2454,6 +2500,11 @@ ngchmGetProtoParam <- function(server, option, default = NULL) {
 #' @seealso [chmRegisterFunction()]
 #' @seealso [grep()]
 #'
+#' @return None. This function is used for its side effects of printing the names and descriptions of the matching functions.
+#'
+#' @examples
+#' chmListFunctions() # List all functions.
+#' chmListFunctions('^chm') # List all functions whose names start with 'chm'.
 chmListFunctions <- function(re = ".*") {
   if (typeof(re) != "character") {
     stop(sprintf("Parameter 're' must have type 'character', not '%s'", typeof(re)))
@@ -2472,15 +2523,15 @@ chmListFunctions <- function(re = ".*") {
 #' metadata value and returning it as a javascript list.  The function is suitable for
 #' use as an axis type accessor function.
 #'
-#' @param functionName The name given to the Javascript function.
-#' @param metadataColumnName The name of the metadata column to access.
-#'
+#' @param functionName A single character string specifying the name of the
+#' function to be registered.
+#' @param metadataColumnName A single character string specifying the name
+#' of the metadata column to be retrieved by the function.
 #' @export
-#'
+#' @return The registered function.
 #' @seealso [chmAddAxisType()]
 #' @seealso [chmGetFunction()]
 #' @seealso [chmListFunctions()]
-#'
 chmRegisterGetMetadataFunction <- function(functionName, metadataColumnName) {
   if (typeof(functionName) != "character") {
     stop(sprintf("Parameter 'functionName' must have type 'character', not '%s'", typeof(functionName)))
@@ -2516,17 +2567,20 @@ chmRegisterGetMetadataFunction <- function(functionName, metadataColumnName) {
 #' This function defines and registers a Javascript function for converting a list of type values
 #' separated by the specified separator into the single values, and registers it as a type mapper.
 #'
-#' @param functionName The name given to the Javascript function.
-#' @param listtype The name of the list type.
-#' @param itemtype The name of the individual values.
-#' @param separator The string that separates items within the list.
-#'
+#' @param functionName A single character string specifying the name of the function
+#' to be registered.
+#' @param listtype A single character string specifying the type of the list to be split.
+#' @param itemtype A single character string specifying the type of the items in the
+#' list after splitting.
+#' @param separator A single character string specifying the separator to be used for
+#' splitting.
+
 #' @export
-#'
+#' @return None. This function is used for its side effects of registering a new type
+#' splitter.
 #' @seealso [chmGetFunction()]
 #' @seealso [chmListFunctions()]
 #' @seealso [chmRegisterTypeMapper()]
-#'
 chmRegisterTypeSplitter <- function(functionName, listtype, itemtype, separator) {
   if (typeof(functionName) != "character") {
     stop(sprintf("Parameter 'functionName' must have type 'character', not '%s'", typeof(functionName)))
@@ -2592,18 +2646,15 @@ chmListTypes <- function(re = ".*") {
 #' the toolbox of an NGCHM.  This function is
 #' intended for use by NGCHM system developers.
 #'
-#' @param tbtype The toolbox type.
-#' @param menulabel The base menu label for the toolbox operation.
-#' @param jsfn The Javascript function that implements the toolbox operation.
-#'
-#' @return NULL
-#'
+#' @param menulabel A single character string specifying the menu label of the
+#' toolbox function.
+#' @param jsfn The function to be registered. This should be an object of class 'ngchmJS'.
 #' @export
-#'
 #' @seealso [chmNewFunction()]
 #' @seealso [ngchmAxisFunction-class]
 #' @seealso [ngchmMatrixFunction-class]
-#'
+#' @return None. This function is used for its side effects of registering a new
+#' toolbox function.
 chmRegisterToolboxFunction <- function(tbtype, menulabel, jsfn) {
   if (typeof(menulabel) != "character") {
     stop(sprintf("Parameter 'menulabel' must have type 'character', not '%s'", typeof(menulabel)))
@@ -2892,10 +2943,16 @@ chmAxisType <- function(typename, func) {
   new(Class = "ngchmAxisType", where = "", type = typename, func = func)
 }
 
-#' Return the names of the NGCHM servers defined to date in this session.
+#' List NG-CHM Servers
+#'
+#' This function lists all NG-CHM (Next-Generation Clustered Heat Map) servers that are currently available.
+#'
+#' @return A character vector containing the names of all available servers.
+#'
+#' @examples
+#' servers <- chmListServers() # Get a list of all available servers.
 #'
 #' @export
-
 chmListServers <- function() {
   vapply(ngchm.env$servers, function(svr) svr$name, "")
 }
@@ -3245,14 +3302,17 @@ chmCreateManagedServer <- function(serverName, privateAddr, publicAddr = NULL, c
   )
 }
 
-#' Check that all required parameters are specified, and all specified parameters are either required or optional.
+#' Check Protocol Parameters for NG-CHM
 #'
-#' @param params A list of named parameters.
-#' @param required A character vector of required parameter names
-#' @param optional A character vector of optional parameter names
+#' Check that all required parameters are specified, and all specified parameters are
+#' either required or optional.
 #'
+#' @param params A list of parameters to be checked.
+#' @param required A character vector specifying the required parameters.
+#' @param optional A character vector specifying the optional parameters.
 #' @export
-#'
+#' @return None. This function is used for its side effects of checking the
+#' parameters and potentially stopping execution with an error message.
 ngchmProtoParamCheck <- function(params, required, optional) {
   nm <- names(params)
   need <- setdiff(required, nm)
@@ -3417,11 +3477,12 @@ chmAddAutoMenuItems <- function(chm) {
 #'
 #' This function outputs the Javascript required to customize an NGCHM.
 #'
-#' @param chm An NGCHM
-#' @param filename The file to which the customization code will be written.
+#' @param chm An object of class 'chm' representing the heat map.
+#' @param filename A single character string specifying the name of the file
+#' where the JavaScript will be written.
 #'
 #' @export
-#'
+#' @return None. This function is used for its side effects of writing the JavaScript to a file.
 chmWriteCustomJS <- function(chm, filename) {
   chm <- chmFixVersion(chm)
   if (length(chm@datasets) > 0) {
@@ -3439,11 +3500,16 @@ chmWriteCustomJS <- function(chm, filename) {
 #' If idx is specified, format if given must equal that of the overview image, and the path to that overview image is returned.
 #' If idx is not specified, the file path to the first overview of the given format (default 'png') is returned.
 #'
-#' @param chm An NGCHM.
+#' @param chm The CHM for which the overview is to be retrieved.
 #' @param format The format of overview image desired (defaults to 'png' if idx is not specified).
 #' @param idx The index of the overview image desired (defaults to first image of the specified format).
-#'
 #' @export
+#' @return The path to the retrieved overview.
+#' @examples
+#' # Get the 'jpg' overview of the CHM represented by the 'myCHM' object.
+#' overview <- chmGetOverview(myCHM, format = 'jpg')
+#' # Get the second 'jpg' overview of the CHM represented by the 'myCHM' object.
+#' overview <- chmGetOverview(myCHM, format = 'jpg', idx = 2)
 chmGetOverview <- function(chm, format = NULL, idx = NULL) {
   chm <- chmFixVersion(chm)
   if (is.null(idx)) {
@@ -3587,9 +3653,14 @@ utempfile <- function(...) {
 #'
 #' Opens the NG-CHM browser page in the viewer.
 #'
-#' @param server The server to browse. Defaults to option "NGCHM.Server" or the first server.
-#' @param viewer The viewer to use. Defaults to option "viewer" or browseURL.
+#' @param server The NG-CHM server to be browsed. If NULL, the function will use the first server in the list of available servers.
+#' @param viewer The function to be used to open the web browser. If NULL, the function will use the 'browseURL' function.
 #' @export
+#' @return None. This function is used for its side effects of opening a web browser to view the NG-CHM server.
+#'
+#' @examples
+#' chmBrowse() # Browse the first server in the list of available servers using the 'browseURL' function.
+#' chmBrowse(server = 'http://localhost:8080', viewer = browseURL) # Browse the specified server using the 'browseURL' function.
 #'
 #' @seealso [utils::browseURL()]
 chmBrowse <- function(server = NULL, viewer = NULL) {
@@ -3599,16 +3670,24 @@ chmBrowse <- function(server = NULL, viewer = NULL) {
   viewer(server@viewServer)
 }
 
-#' Manage the NGCHMs on the specified server in the viewer.
+#' Open the NG-CHM Manager
 #'
-#' Opens the NG-CHM manager page in the viewer.
-#'
-#' @param server The server to browse. Defaults to option "NGCHM.Server" or the first server.
-#'        The server must be managed.
-#' @param viewer The viewer to use. Defaults to option "viewer" or browseURL.
-#' @export
+#' This function opens a web browser to view the NG-CHM (Next-Generation Clustered Heat Map) Manager on the specified server.
 #'
 #' @seealso [utils::browseURL()]
+#' @param server The NG-CHM server to be browsed. If NULL, the function will use the first server
+#' in the list of available servers.
+#' @param viewer The function to be used to open the web browser. If NULL, the function will use the 'browseURL' function.
+#'
+#' @return None. This function is used for its side effects of opening a web browser to view the NG-CHM Manager.
+#'
+#' @examples
+#' # Open the NG-CHM Manager on the first server in the list of available servers using the 'browseURL' function.
+#' chmManager()
+#' # Open the NG-CHM Manager on the specified server using the 'browseURL' function.
+#' chmManager(server = 'http://localhost:8080', viewer = browseURL)
+#'
+#' @export
 chmManager <- function(server = NULL, viewer = NULL) {
   if (is.null(server)) server <- getOption("NGCHM.Server", chmListServers()[1])
   if (!is(server, "ngchmServer")) server <- chmServer(server)
@@ -3623,6 +3702,7 @@ chmManager <- function(server = NULL, viewer = NULL) {
 #' @param server The server containing the NG-CHM.  Defaults to option "NGCHM.Server" or the first server.
 #' @param viewer The viewer to use. Defaults to option "viewer" or browseURL.
 #' @param ... Ignored.
+#' @return No return value. The function is called for its side effect of plotting the specified NG-CHM.
 #' @export
 plot.ngchmVersion2 <- function(x, server = NULL, viewer = NULL, ...) {
   if (is.null(server)) server <- getOption("NGCHM.Server", chmListServers()[1])

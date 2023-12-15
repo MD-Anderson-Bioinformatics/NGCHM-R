@@ -14,10 +14,10 @@
 setGeneric("chmName", function(chm) standardGeneric("chmName"))
 #' Set the row order of data shown in a NGCHM.
 #'
-#' Set the order in which rows in the data will be shown in a Next Generation Clustered Heat Map.
+#' This function sets the row order for a NG-CHM (Next-Generation Clustered Heat Map) object.
 #'
-#' @param chm The chm for which to set the row order.
-#' @param value An ordering of the row labels.
+#' @param chm An object of class 'ngchm'.
+#' @param value An object of class 'optDendrogram' or 'file' specifying the new row order.
 #' If value is NULL, the labels will be displayed in the same order they are found in the first data layer.
 #' If value is a character vector, the labels will be displayed in that order.
 #' If value is a dendrogram, the labels displayed in the order they occur in a depth first traversal of the tree.
@@ -25,15 +25,17 @@ setGeneric("chmName", function(chm) standardGeneric("chmName"))
 #' @exportMethod chmRowOrder<-
 #' @rdname chmRowOrder-method
 #'
+#' @return An updated 'ngchm' object with the new row order.
 #' @seealso "chmColOrder<-"
 #'
 setGeneric("chmRowOrder<-", function(chm, value) standardGeneric("chmRowOrder<-"))
+
 #' Set the column order of data shown in a NGCHM.
 #'
-#' Set the order in which columns in the data will be shown in a Next Generation Clustered Heat Map.
+#' This function sets the column order for a NG-CHM (Next-Generation Clustered Heat Map) object.
 #'
-#' @param chm The chm for which to set the column order.
-#' @param value An ordering of the column labels.
+#' @param chm An object of class 'ngchm'.
+#' @param value An object of class 'optDendrogram' or 'file' specifying the new column order.
 #' If value is NULL, the labels will be displayed in the same order they are found in the first data layer.
 #' If value is a character vector, the labels will be displayed in that order.
 #' If value is a dendrogram, the labels displayed in the order they occur in a depth first traversal of the tree.
@@ -43,20 +45,23 @@ setGeneric("chmRowOrder<-", function(chm, value) standardGeneric("chmRowOrder<-"
 #'
 #' @seealso "chmRowOrder<-"
 #'
+#' @return An updated 'ngchm' object with the new column order.
 setGeneric("chmColOrder<-", function(chm, value) standardGeneric("chmColOrder<-"))
-#' Add meta data.
+#' Add MetaData to NG-CHM
 #'
-#' Add meta data to the rows/columns of a Next Generation Clustered Heat Map.
+#' This function adds metadata to a NG-CHM (Next-Generation Clustered Heat Map) object.
 #'
-#' @param chm The chm to add the meta data to.
-#' @param where The axis of the chm to add the meta data to (row, column, or both).
-#' @param type The type of the meta data.
-#' @param value A character vector or NULL.
-#' If value is a character vector, elements of the vector will be attached as meta data to to NGCHM row of the same name.
+#' @param chm An object of class 'ngchm'.
+#' @param where A single character string specifying where to add the metadata. Can be "row", "column", or "both".
+#' @param type A single character string specifying the type of the metadata.
+#' @param value A character vector specifying the values of the metadata.
+#' If value is a character vector, elements of the vector will be attached as meta data
+#' to to NGCHM row of the same name.
 #'
 #' @exportMethod chmAddMetaData
 #' @rdname chmAddMetaData-method
 #'
+#' @return An updated 'ngchm' object with the new metadata added.
 setGeneric("chmAddMetaData", function(chm, where, type, value) standardGeneric("chmAddMetaData"))
 #' Add a list of objects to a NGCHM.
 #'
@@ -417,42 +422,53 @@ setGeneric("chmMake", signature = c("chm"), function(chm, ...) standardGeneric("
 #' @seealso [chmMakePrivate()]
 #' @seealso [chmMakePublic()]
 setGeneric("chmInstall", function(chm, ...) standardGeneric("chmInstall"))
-#' Remove an installed NGCHM.
+
+#' Remove an NG-CHM from Server
 #'
-#' Remove the specified Next Generation Clustered Heat Map (NGCHM) from the specified server.
+#' This function removes a specific NG-CHM (Next-Generation Clustered Heat Map) from a specified server.
+#'
+#' @param chm A single character string specifying the NG-CHM's name, or an object of class "ngchm"
+#' representing the NG-CHM to be uninstalled.
+#' @param server An object of class 'ngchmServer' or a character string representing the server from
+#' which the NG-CHM is to be uninstalled. If not provided, the current server is used.
+#' @param ... Additional server (protocol) specific parameters.
+#'
+#' @return No return value. The function is called for its side effect of uninstalling the
+#' specified NG-CHM from the specified server.
 #'
 #' @exportMethod chmUninstall
 #' @rdname chmUninstall-method
-#'
-#' @param server The server on which the NGCHM to remove is installed.
-#' @param chm The NGCHM to remove.
-#' @param ... Additional server (protocol) specific parameters.
 #'
 #' @seealso [ngchmServer-class]
 #' @seealso [ngchm-class]
 #' @seealso [chmInstall()]
 setGeneric("chmUninstall", function(chm, ...) standardGeneric("chmUninstall"))
+
 #' Get the URL for an installed NGCHM.
 #'
 #' Return the URL for accessing the specified Next Generation Clustered Heat Map (NGCHM) on the specified server.
 #'
+#' @param chm A single character string specifying the name of the NG-CHM.
+#' @param server A single character string specifying the server where the NG-CHM is hosted. If not provided, the current server is used.
+#'
+#' @return A character string representing the URL of the specified NG-CHM on the specified server.
+#'
 #' @exportMethod chmGetURL
 #' @rdname chmGetURL-method
-#'
-#' @param chm The NGCHM for which the URL is required.
-#'
 #' @seealso [ngchmServer-class]
 #' @seealso [ngchm-class]
 setGeneric("chmGetURL", function(chm, ...) standardGeneric("chmGetURL"))
-#' Make an installed NGCHM private.
+
+#' Make NG-CHM Private on Server
 #'
-#' Make private the specified Next Generation Clustered Heat Map (NGCHM) on the specified server.
+#' This function makes a specific NG-CHM (Next-Generation Clustered Heat Map) private on a specified server.
 #'
+#' @param server An object of class 'ngchmServer' representing the server where the NG-CHM is hosted.
+#' @param chm A single character string specifying the name of the NG-CHM to be made private.
+#'
+#' @return No return value. The function is called for its side effect of making the specified NG-CHM private on the specified server.
 #' @exportMethod chmMakePrivate
 #' @rdname chmMakePrivate-method
-#'
-#' @param server The server on which the NGCHM to make private is installed.
-#' @param chm The NGCHM to make private.
 #'
 #' @seealso [ngchmServer-class]
 #' @seealso [ngchm-class]
@@ -460,15 +476,18 @@ setGeneric("chmGetURL", function(chm, ...) standardGeneric("chmGetURL"))
 #' @seealso [chmUninstall()]
 #' @seealso [chmMakePublic()]
 setGeneric("chmMakePrivate", function(server, chm) standardGeneric("chmMakePrivate"))
-#' Make an installed NGCHM public.
+
+#' Make NG-CHM Public on Server
 #'
-#' Make public the specified Next Generation Clustered Heat Map (NGCHM) on the specified server.
+#' This function makes a specific NG-CHM (Next-Generation Clustered Heat Map) public on a specified server.
+#'
+#' @param server An object of class 'ngchmServer' representing the server where the NG-CHM is hosted.
+#' @param chm A single character string specifying the name of the NG-CHM to be made public.
+#'
+#' @return No return value. The function is called for its side effect of making the specified NG-CHM public on the specified server.
 #'
 #' @exportMethod chmMakePublic
 #' @rdname chmMakePublic-method
-#'
-#' @param server The server on which the NGCHM to make public is installed.
-#' @param chm The NGCHM to make public.
 #'
 #' @seealso [ngchmServer-class]
 #' @seealso [ngchm-class]
@@ -476,16 +495,22 @@ setGeneric("chmMakePrivate", function(server, chm) standardGeneric("chmMakePriva
 #' @seealso [chmUninstall()]
 #' @seealso [chmMakePrivate()]
 setGeneric("chmMakePublic", function(server, chm) standardGeneric("chmMakePublic"))
-#' Set access credentials.
+
+#' Set Access Credentials for NG-CHM Server
 #'
-#' Set access credentials for the specific resource.
+#' This function sets the credentials for a specific NG-CHM (Next-Generation Clustered Heat Map) server.
+#'
+#' @param resource An object of class 'ngchmServer' or a character string representing the server for
+#' which the credentials are to be set.
+#' @param credentials A single character string specifying the credentials to be set for the server.
+#'
+#' @return No return value. The function is called for its side effect of setting the credentials for
+#' the specified server.
 #'
 #' @exportMethod chmSetCredentials
 #' @rdname chmSetCredentials-method
-#'
-#' @param resource The resource (e.g. ngchmServer) to which the credentials apply.
-#' @param credentials The credentials.
 setGeneric("chmSetCredentials", function(resource, credentials) standardGeneric("chmSetCredentials"))
+
 #' Bind values to an existing JS function.
 #'
 #' Create a new JS function by binding values to extra parameters of an existing JS function.
@@ -493,51 +518,61 @@ setGeneric("chmSetCredentials", function(resource, credentials) standardGeneric(
 #' @exportMethod chmBindFunction
 #' @rdname chmBindFunction-method
 #'
-#' @param name The name to give the new JS function.
-#' @param fn An existing JS function with at least one extra parameter.
+#' @param name A single character string specifying the name of the function.
+#' @param fn An object of class 'ngchmJS' representing the function to be bound.
 #' @param bindings A list containing at least one parameter binding.  Each list element
 #'        binds one parameter, starting from the first unbound parameter, and the name
 #'        of each list element must match the name of the corresponding parameter.
 #'
+#' @return A new 'ngchmJS' object representing the bound function.
 #' @seealso [chmNewFunction()]
 setGeneric("chmBindFunction", function(name, fn, bindings) standardGeneric("chmBindFunction"))
-#' Add standard toolbox to an axis
+#' Add standard toolbox to an NG-CHM axis
 #'
-#' Add a standard toolbox to an axis
+#' This function adds a toolbox to a NG-CHM (Next-Generation Clustered Heat Map) axis.
 #'
 #' @exportMethod chmAddToolboxR
 #' @rdname chmAddToolboxR-method
 #'
-#' @param CHM CHM to which the toolbox will be added
-#' @param axis the axis to which the toolbix will be added
-#' @param axistype the type of the axis
-#' @param datasetname the name of the dataset to use
+#' @param CHM An object of class 'ngchm'.
+#' @param axis A single character string specifying the axis where the toolbox will be added. Can be
+#' "row", "column", or "both".
+#' @param axistype A single character string specifying the type of the axis.
+#' @param datasetname A single character string specifying the name of the dataset.
 #' @param idstr string to append to toolbox menu labels (default '')
-setGeneric("chmAddToolboxR", function(CHM, axis, axistype, datasetname, idstr) standardGeneric("chmAddToolboxR"))
-#' Add standard toolbox to an element
 #'
-#' Add a standard toolbox to an element
+#' @return An updated 'ngchm' object with the new toolbox added.
+setGeneric("chmAddToolboxR", function(CHM, axis, axistype, datasetname, idstr) standardGeneric("chmAddToolboxR"))
+
+#' Add Toolbox R2 to NG-CHM
+#'
+#' This function adds a toolbox of type R2 to a NG-CHM (Next-Generation Clustered Heat Map) object.
+#'
+#' @param CHM An object of class 'ngchm'.
+#' @param axistype A single character string specifying the type of the axis.
+#' @param datasetname A single character string specifying the name of the dataset.
+#' @param idstr string to append to toolbox menu labels (default '')
+#'
+#' @return An updated 'ngchm' object with the new toolbox of type R2 added.
 #'
 #' @exportMethod chmAddToolboxR2
 #' @rdname chmAddToolboxR2-method
-#'
-#' @param CHM CHM to which the toolbox will be added
-#' @param axistype the type of both axes
-#' @param datasetname the name of the dataset to use
-#' @param idstr string to append to toolbox menu labels (default '')
 setGeneric("chmAddToolboxR2", function(CHM, axistype, datasetname, idstr) standardGeneric("chmAddToolboxR2"))
-#' Add standard toolbox to an element
+
+#' Add Toolbox RC to NG-CHM
 #'
-#' Add a standard toolbox to an element
+#' This function adds a toolbox of type RC to a NG-CHM (Next-Generation Clustered Heat Map) object.
+#'
+#' @param CHM An object of class 'ngchm'.
+#' @param rowtype A single character string specifying the type of the row.
+#' @param coltype A single character string specifying the type of the column.
+#' @param datasetname A single character string specifying the name of the dataset.
+#' @param idstr string to append to toolbox menu labels (default '')
+#'
+#' @return An updated 'ngchm' object with the new toolbox of type RC added.
 #'
 #' @exportMethod chmAddToolboxRC
 #' @rdname chmAddToolboxRC-method
-#'
-#' @param CHM CHM to which the toolbox will be added
-#' @param rowtype the type of the row axis
-#' @param coltype the type of the column axis
-#' @param datasetname the name of the dataset to use
-#' @param idstr string to append to toolbox menu labels (default '')
 setGeneric("chmAddToolboxRC", function(CHM, rowtype, coltype, datasetname, idstr) standardGeneric("chmAddToolboxRC"))
 #' Load CHM from NG-CHM server
 #'
@@ -547,40 +582,51 @@ setGeneric("chmAddToolboxRC", function(CHM, rowtype, coltype, datasetname, idstr
 #' @exportMethod chmLoadCHM
 #' @rdname chmLoadCHM-method
 #'
-#' @param serverOrURL Either the server or the CHM url from which to load the CHM object.
-#' @param name Name of the CHM to load if the first parameter is a server id
+#' @param serverOrURL An object of class 'ngchmServer' representing the server from which the NG-CHM
+#' is to be loaded.
+#' @param name A single character string specifying the name of the NG-CHM to be loaded.
+#'
+#' @return An object of class 'ngchm' representing the loaded NG-CHM.
 setGeneric("chmLoadCHM", function(serverOrURL, name) standardGeneric("chmLoadCHM"))
 
 #' Get the dataset from an NG-CHM object
 #'
-#' Get the ngchmDataset object from an NG-CHM object.
+#' This function retrieves the dataset associated with a specific NG-CHM
+#' (Next-Generation Clustered Heat Map).
+#'
+#' @param object An NG-CHM object containing an ngchmDataset
+#'
+#' @return The dataset associated with the specified object.
 #'
 #' @exportMethod chmGetDataset
 #' @rdname chmGetDataset-method
 #'
-#' @param object An NG-CHM object containing an ngchmDataset
 setGeneric("chmGetDataset", function(object) standardGeneric("chmGetDataset"))
 
 #' Determine if the NG-CHM has the given property.
 #'
-#' Determine if the NG-CHM has the given property.
+#' This function checks if a specific property exists in a NG-CHM (Next-Generation Clustered Heat Map) object.
+#'
+#' @param object An object of class 'ngchmVersion2' representing the NG-CHM to be checked.
+#' @param label A single character string or a vector of character strings specifying the label(s) of the property(ies) to be checked.
+#'
+#' @return A logical value indicating whether the specified property(ies) exist in the 'ngchmVersion2' object. If 'label' is a vector, a logical vector is returned.
 #'
 #' @exportMethod chmHasProperty
 #' @rdname chmHasProperty-method
-#'
-#' @param object An NG-CHM object
-#' @param label The name of the property to check
 setGeneric("chmHasProperty", function(object, label) standardGeneric("chmHasProperty"))
 
-#' Get a property value from an NG-CHM object
+#' Get Property from NG-CHM
 #'
-#' Get a property value from an NG-CHM object.
+#' This function retrieves a specific property from a NG-CHM (Next-Generation Clustered Heat Map) object.
 #'
+#' @param object An object of class 'ngchmVersion2' representing the NG-CHM from which
+#' the property is to be retrieved.
+#' @param label A single character string specifying the label of the property to be retrieved.
+#'
+#' @return The property associated with the specified label in the 'ngchmVersion2' object.
 #' @exportMethod chmGetProperty
 #' @rdname chmGetProperty-method
-#'
-#' @param object An NG-CHM object
-#' @param label The name of the property to get
 setGeneric("chmGetProperty", function(object, label) standardGeneric("chmGetProperty"))
 
 #' Get shaid for an object

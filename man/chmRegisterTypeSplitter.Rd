@@ -7,13 +7,20 @@
 chmRegisterTypeSplitter(functionName, listtype, itemtype, separator)
 }
 \arguments{
-\item{functionName}{The name given to the Javascript function.}
+\item{functionName}{A single character string specifying the name of the function
+to be registered.}
 
-\item{listtype}{The name of the list type.}
+\item{listtype}{A single character string specifying the type of the list to be split.}
 
-\item{itemtype}{The name of the individual values.}
+\item{itemtype}{A single character string specifying the type of the items in the
+list after splitting.}
 
-\item{separator}{The string that separates items within the list.}
+\item{separator}{A single character string specifying the separator to be used for
+splitting.}
+}
+\value{
+None. This function is used for its side effects of registering a new type
+splitter.
 }
 \description{
 This function defines and registers a Javascript function for converting a list of type values

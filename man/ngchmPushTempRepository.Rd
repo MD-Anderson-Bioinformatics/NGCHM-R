@@ -2,13 +2,19 @@
 % Please edit documentation in R/ngchmshaidy.R
 \name{ngchmPushTempRepository}
 \alias{ngchmPushTempRepository}
-\title{Push a shaidy repository onto the stack of temporary repositories}
+\title{Push Temporary Repository for NG-CHM}
 \usage{
 ngchmPushTempRepository(shaidyDir)
 }
 \arguments{
-\item{shaidyDir}{Basepath of local shaidy repository to use as a temporary repository}
+\item{shaidyDir}{A single character string specifying the directory of the
+temporary repository.}
+}
+\value{
+None. This function is used for its side effects of pushing the temporary
+repository onto the Shaidy stack.
 }
 \description{
-Push a shaidy repository onto the stack of temporary repositories
+This function pushes a temporary repository for NG-CHM (Next-Generation Clustered
+Heat Map) onto the Shaidy stack.
 }

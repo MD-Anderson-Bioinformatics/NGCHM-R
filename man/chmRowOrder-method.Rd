@@ -10,15 +10,18 @@ chmRowOrder(chm) <- value
 \S4method{chmRowOrder}{ngchm,optDendrogram}(chm) <- value
 }
 \arguments{
-\item{chm}{The chm for which to set the row order.}
+\item{chm}{An object of class 'ngchm'.}
 
-\item{value}{An ordering of the row labels.
+\item{value}{An object of class 'optDendrogram' or 'file' specifying the new row order.
 If value is NULL, the labels will be displayed in the same order they are found in the first data layer.
 If value is a character vector, the labels will be displayed in that order.
 If value is a dendrogram, the labels displayed in the order they occur in a depth first traversal of the tree.}
 }
+\value{
+An updated 'ngchm' object with the new row order.
+}
 \description{
-Set the order in which rows in the data will be shown in a Next Generation Clustered Heat Map.
+This function sets the row order for a NG-CHM (Next-Generation Clustered Heat Map) object.
 }
 \seealso{
 "chmColOrder<-"

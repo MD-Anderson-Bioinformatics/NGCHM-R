@@ -4,7 +4,7 @@
 \alias{chmUninstall}
 \alias{chmUninstall,character-method}
 \alias{chmUninstall,ngchm-method}
-\title{Remove an installed NGCHM.}
+\title{Remove an NG-CHM from Server}
 \usage{
 chmUninstall(chm, ...)
 
@@ -13,14 +13,20 @@ chmUninstall(chm, ...)
 \S4method{chmUninstall}{ngchm}(chm, ...)
 }
 \arguments{
-\item{chm}{The NGCHM to remove.}
+\item{chm}{A single character string specifying the NG-CHM's name, or an object of class "ngchm"
+representing the NG-CHM to be uninstalled.}
 
 \item{...}{Additional server (protocol) specific parameters.}
 
-\item{server}{The server on which the NGCHM to remove is installed.}
+\item{server}{An object of class 'ngchmServer' or a character string representing the server from
+which the NG-CHM is to be uninstalled. If not provided, the current server is used.}
+}
+\value{
+No return value. The function is called for its side effect of uninstalling the
+specified NG-CHM from the specified server.
 }
 \description{
-Remove the specified Next Generation Clustered Heat Map (NGCHM) from the specified server.
+This function removes a specific NG-CHM (Next-Generation Clustered Heat Map) from a specified server.
 }
 \seealso{
 \linkS4class{ngchmServer}

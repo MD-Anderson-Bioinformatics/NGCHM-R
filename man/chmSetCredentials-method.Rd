@@ -4,7 +4,7 @@
 \alias{chmSetCredentials}
 \alias{chmSetCredentials,ngchmServer,character-method}
 \alias{chmSetCredentials,character,character-method}
-\title{Set access credentials.}
+\title{Set Access Credentials for NG-CHM Server}
 \usage{
 chmSetCredentials(resource, credentials)
 
@@ -13,10 +13,15 @@ chmSetCredentials(resource, credentials)
 \S4method{chmSetCredentials}{character,character}(resource, credentials)
 }
 \arguments{
-\item{resource}{The resource (e.g. ngchmServer) to which the credentials apply.}
+\item{resource}{An object of class 'ngchmServer' or a character string representing the server for
+which the credentials are to be set.}
 
-\item{credentials}{The credentials.}
+\item{credentials}{A single character string specifying the credentials to be set for the server.}
+}
+\value{
+No return value. The function is called for its side effect of setting the credentials for
+the specified server.
 }
 \description{
-Set access credentials for the specific resource.
+This function sets the credentials for a specific NG-CHM (Next-Generation Clustered Heat Map) server.
 }
