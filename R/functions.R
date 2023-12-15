@@ -2867,12 +2867,17 @@ chmAxis <- function(axis, ...) {
 #'
 #' This function creates a new AxisType for adding to an ngchmAxis.
 #'
-#' @param typename The name of the axis type
-#' @param func A javascript function (optional) for obtaining a value of that type from the axis
+#' @param typename The name of the axis type to be created. This should be a single character string.
+#' @param func The function to be used for getting label values. If not provided, the default 'getLabelValue' function is used. 
+#'             If a character string is provided, it is assumed to be the name of a function and is retrieved using 'chmGetFunction'.
+#'             If a function is provided, it is checked to be of class 'ngchmJS'.
 #'
-#' @return An object of class ngchmAxisType
-#'
+#' @return An object of class 'ngchmAxisType' representing the newly created axis type.
 #' @export
+#'
+#' @examples
+#' axis_type <- chmAxisType('Gene', 'getGeneLabel')
+#' axis_type <- chmAxisType('Sample')
 #'
 #' @seealso [chmAxis()]
 chmAxisType <- function(typename, func) {
@@ -2886,6 +2891,7 @@ chmAxisType <- function(typename, func) {
   }
   new(Class = "ngchmAxisType", where = "", type = typename, func = func)
 }
+
 #' Return the names of the NGCHM servers defined to date in this session.
 #'
 #' @export
