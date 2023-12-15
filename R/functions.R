@@ -2851,7 +2851,10 @@ chmNewDialog <- function(id, title, fn) {
 #' @param axis The name of the axis
 #' @param ... Objects to add to the axis
 #'
-#' @return An object of class ngchmAxis
+#' @return An object of class 'ngchmAxis' representing the newly created axis.
+#' @examples
+#' x_axis <- chmAxis('row')
+#' y_axis <- chmAxis('col')
 #'
 #' @export
 #'

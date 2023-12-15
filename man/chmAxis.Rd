@@ -12,11 +12,16 @@ chmAxis(axis, ...)
 \item{...}{Objects to add to the axis}
 }
 \value{
-An object of class ngchmAxis
+An object of class 'ngchmAxis' representing the newly created axis.
 }
 \description{
 This function creates a new Axis for adding to a Next Generation Clustered Heat Map.  You can specify any
 axis name here, but chmAdd only accepts row, column, and both.
+}
+\examples{
+x_axis <- chmAxis('row')
+y_axis <- chmAxis('col')
+
 }
 \seealso{
 \code{\link[=chmAdd]{chmAdd()}}
