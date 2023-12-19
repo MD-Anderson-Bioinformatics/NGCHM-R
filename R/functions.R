@@ -2160,28 +2160,39 @@ chmGetTypeInfo <- function(typename) {
   typeinfo
 }
 
-#' Pretty print the result returned by chmGetTypeInfo.
+#' Pretty Print NGCHM Type Information
 #'
-#' @param x Type information about an NGCHM type name as return by chmGetTypeInfo.
-#' @param ... Generic function accepts additional parameters
+#' This function takes an object of class 'ngchm.type.info' and returns a formatted string
+#' that provides a detailed description of the NGCHM type.
+#'
+#' @param x An object of class 'ngchm.type.info' as returned by chmGetTypeInfo.
+#' @param ... Additional arguments (not used).
+#'
+#' @return A string that provides a detailed description of the NGCHM type.
+#'
+#' @examples
+#' # Assume 'typeInfo' is an object of class 'ngchm.type.info'
+#' print.ngchm.type.info(typeInfo)
 #'
 #' @export
 #'
 #' @seealso [chmGetTypeInfo()]
 print.ngchm.type.info <- function(x, ...) {
-  cat(sprintf("NGCHM type %s: %s\n", x$name, x$description))
+  output <- c()
+  output <- c(output, sprintf("NGCHM type %s: %s", x$name, x$description))
   if (length(x$axisFunctions) > 0) {
     fns <- paste(vapply(x$axisFunctions, function(af) af@label, ""), collapse = ", ")
-    cat(sprintf("matches axis functions %s.\n", fns))
+    output <- c(output, sprintf("matches axis functions %s.", fns))
   }
   if (length(x$matrixFunctions) > 0) {
     fns <- paste(vapply(x$matrixFunctions, function(af) af@label, ""), collapse = ", ")
-    cat(sprintf("matches matrix functions %s.\n", fns))
+    output <- c(output, sprintf("matches matrix functions %s.", fns))
   }
   if (length(x$typeMappers) > 0) {
     types <- paste(vapply(x$typeMappers, function(af) af@totype, ""), collapse = ", ")
-    cat(sprintf("maps to types %s.\n", types))
+    output <- c(output, sprintf("maps to types %s.", types))
   }
+  return(paste(output, collapse = "\n"))
 }
 
 #' Register a predefined Javascript function for converting values from
