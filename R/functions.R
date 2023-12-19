@@ -2112,7 +2112,7 @@ chmRegisterType <- function(typename, description) {
 #'
 #' @param typename The name of the type.
 #'
-#' @return A list containing basic information about the type.
+#' @return Object of class "ngchm.type.info" containing basic information about the type.
 #'
 #' @export
 #'
