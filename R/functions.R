@@ -3358,7 +3358,6 @@ getExtraParams <- function(props) {
     paramname <- substring(pp@label, attr(match, "match.length") + 1)
     params[[paramname]] <- pp@value
   }
-  cat("Found extra params ", paste(ls(params), collapse = " "), "\n")
   params
 }
 
@@ -3368,7 +3367,6 @@ bindExtraParams <- function(funcs, params, props) {
   funcs <- funcs[which(!hasep)]
   for (fn in epfuncs) {
     extra <- fn@func@extraParams
-    cat("Function ", fn@func@name, " requires extra params ", paste(extra, collapse = " "), "\n")
     if (all(vapply(extra, function(p) exists(p, params), TRUE))) {
       vals <- vapply(extra, function(p) params[[p]], "")
       names(vals) <- extra
