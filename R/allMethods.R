@@ -1086,7 +1086,7 @@ datestamp <- function() {
 }
 
 progressFeedback <- function(progress, mode, what) {
-  cat(sprintf("%s\t%s\t:%s:\t%g\t%s\n", datestamp(), "PROGRESS", mode, progress, what), file = stderr())
+  message(sprintf("%s\t%s\t:%s:\t%g\t%s", datestamp(), "PROGRESS", mode, progress, what))
 }
 
 genSpecFeedback <- function(progress, what) {
@@ -1110,7 +1110,7 @@ addToolBoxes <- function(chm) {
 
   rowtypes <- getAllAxisTypes(chm, "row")
   matches <- vapply(chm@datasets, function(ds) type.matches(ds@row.type, rowtypes$types), TRUE)
-  cat(sprintf("addToolBoxes: found %d R datasets matching row types:\n", sum(matches)), file = stderr())
+  message(sprintf("addToolBoxes: found %d R datasets matching row types:", sum(matches)))
   if (sum(matches) > 0) {
     if (sum(matches) == 1) {
       extra <- ""
@@ -1118,14 +1118,14 @@ addToolBoxes <- function(chm) {
       extra <- sprintf(" (%s)", vapply(chm@datasets[matches], function(ds) ds@name, ""))
     }
     for (ds in chm@datasets[matches]) {
-      cat(sprintf("dataset '%s' row.type '%s'\n", ds@name, t2s(ds@row.type)), file = stderr())
+      message(sprintf("dataset '%s' row.type '%s'", ds@name, t2s(ds@row.type)))
       chm <- chmAddToolboxR(chm, "row", ds@row.type, ds@name, extra[1])
       extra <- tail(extra, -1)
     }
   }
   coltypes <- getAllAxisTypes(chm, "column")
   matches <- vapply(chm@datasets, function(ds) type.matches(ds@row.type, coltypes$types), TRUE)
-  cat(sprintf("addToolBoxes: found %d R datasets matching column types:\n", sum(matches)), file = stderr())
+  message(sprintf("addToolBoxes: found %d R datasets matching column types:", sum(matches)))
   if (sum(matches) > 0) {
     if (sum(matches) == 1) {
       extra <- ""
@@ -1133,13 +1133,13 @@ addToolBoxes <- function(chm) {
       extra <- sprintf(" (%s)", vapply(chm@datasets[matches], function(ds) ds@name, ""))
     }
     for (ds in chm@datasets[matches]) {
-      cat(sprintf("dataset '%s' row.type '%s'\n", ds@name, t2s(ds@row.type)), file = stderr())
+      message(sprintf("dataset '%s' row.type '%s'", ds@name, t2s(ds@row.type)))
       chm <- chmAddToolboxR(chm, "column", ds@row.type, ds@name, extra[1])
       extra <- tail(extra, -1)
     }
   }
   matches <- vapply(chm@datasets, function(ds) type.matches2(ds@row.type, coltypes$types, rowtypes$types), TRUE)
-  cat(sprintf("addToolBoxes: found %d R2 datasets matching row and column types:\n", sum(matches)), file = stderr())
+  message(sprintf("addToolBoxes: found %d R2 datasets matching row and column types:", sum(matches)))
   if (sum(matches) > 0) {
     if (sum(matches) == 1) {
       extra <- ""
@@ -1147,13 +1147,13 @@ addToolBoxes <- function(chm) {
       extra <- sprintf(" (%s)", vapply(chm@datasets[matches], function(ds) ds@name, ""))
     }
     for (ds in chm@datasets[matches]) {
-      cat(sprintf("dataset '%s' row.type '%s'\n", ds@name, t2s(ds@row.type)), file = stderr())
+      message(sprintf("dataset '%s' row.type '%s'", ds@name, t2s(ds@row.type)))
       chm <- chmAddToolboxR2(chm, ds@row.type, ds@name, extra[1])
       extra <- tail(extra, -1)
     }
   }
   matches <- vapply(chm@datasets, function(ds) type.matches(ds@column.type, coltypes$types) && type.matches(ds@row.type, rowtypes$types), TRUE)
-  cat(sprintf("addToolBoxes: found %d RC datasets matching row and column types:\n", sum(matches)), file = stderr())
+  message(sprintf("addToolBoxes: found %d RC datasets matching row and column types:", sum(matches)))
   if (sum(matches) > 0) {
     if (sum(matches) == 1) {
       extra <- ""
@@ -1161,7 +1161,7 @@ addToolBoxes <- function(chm) {
       extra <- sprintf(" (%s)", vapply(chm@datasets[matches], function(ds) ds@name, ""))
     }
     for (ds in chm@datasets[matches]) {
-      cat(sprintf("dataset '%s' row.type '%s' col.type '%s'\n", ds@name, t2s(ds@row.type), t2s(ds@column.type)), file = stderr())
+      message(sprintf("dataset '%s' row.type '%s' col.type '%s'", ds@name, t2s(ds@row.type), t2s(ds@column.type)))
       chm <- chmAddToolboxRC(chm, ds@row.type, ds@column.type, ds@name, extra[1])
       extra <- tail(extra, -1)
     }
@@ -1266,7 +1266,7 @@ ngchmMakeFormat.original <- function(chm,
     shQuote(chm@propFile),
     shQuote(chm@outDir)
   ))
-  cat("chmMake: Java process completed\n", file = stderr())
+  message("chmMake: Java process completed")
 
   postBuildFeedback(0, "writing post build files")
   writeChmPost(chm)

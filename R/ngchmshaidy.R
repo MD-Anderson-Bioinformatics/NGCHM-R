@@ -69,13 +69,13 @@ ngchmShaidyInit <- function() {
       resp <- POST(uri, add_headers(Authorization = repo$getToken()))
       while (resp$status_code == 401 || resp$status_code == 504) {
         if (resp$status_code == 504) {
-          cat("Waiting for render to complete.\n", file = stderr())
+          message("Waiting for render to complete.")
           resp <- POST(uri, add_headers(Authorization = repo$getToken()))
         } else {
           resp <- POST(uri, add_headers(Authorization = repo$getNewToken()))
         }
       }
-      cat("Render", shaid@type, shaid@value, "status:", resp$status_code, "\n", file = stderr())
+      message("Render", shaid@type, shaid@value, "status:", resp$status_code)
     },
     blobPath = function(repo, repoBase) {
       return(function(first, ...) {

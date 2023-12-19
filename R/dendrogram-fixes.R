@@ -65,7 +65,7 @@ nr.str.dendrogram <-
     repeat {
       ## when  indent.str  ends in a blank, i.e. "last" (see below)
       istr <- sub(" $", last.str, indent.str)
-      cat(istr, stem, sep = "")
+      message(istr, stem, sep = "")
 
       at <- attributes(object)
       memb <- at[["members"]]
@@ -77,7 +77,7 @@ nr.str.dendrogram <-
             at <- paste(",", at)
           }
         }
-        cat("[dendrogram w/ ", le, " branches and ", memb, " members at h = ",
+        message("[dendrogram w/ ", le, " branches and ", memb, " members at h = ",
           format(hgt, digits = digits.d), if (give.attr) at,
           "]", if (!is.na(max.level) && nest.lev == max.level) " ..", "\n",
           sep = ""
@@ -93,7 +93,7 @@ nr.str.dendrogram <-
           }
         }
       } else { ## leaf
-        cat(
+        message(
           "leaf",
           if (is.character(at$label)) {
             paste("", at$label, "", sep = '"')
@@ -102,9 +102,9 @@ nr.str.dendrogram <-
           }, ""
         )
         any.at <- hgt != 0
-        if (any.at) cat("(h=", format(hgt, digits = digits.d))
+        if (any.at) message("(h=", format(hgt, digits = digits.d))
         if (memb != 1) { # MM: when can this happen?
-          cat(if (any.at) {
+          message(if (any.at) {
             ", "
           } else {
             any.at <- TRUE
@@ -112,8 +112,7 @@ nr.str.dendrogram <-
           }, "memb= ", memb, sep = "")
         }
         at <- pasteLis(at, c("class", "height", "members", "leaf", "label"))
-        if (any.at || nzchar(at)) cat(if (!any.at) "(", at, ")")
-        cat("\n")
+        if (any.at || nzchar(at)) message(if (!any.at) "(", at, ")")
       }
       # Advance to next node, if any.
       if (is.null(todo)) {
@@ -245,8 +244,8 @@ nr.as.hclust.dendrogram <- function(x, ...) {
 
   if (getOption("as.hclust.dendr", FALSE)) {
     for (k in seq_len(n.h)) {
-      cat(sprintf("ii[k=%2d]=%2d ", k, ii[k]))
-      cat("-> s=merge[[,ii[k]]]=")
+      message(sprintf("ii[k=%2d]=%2d ", k, ii[k]))
+      message("-> s=merge[[,ii[k]]]=")
       str(merge[, ii[k]])
     }
   }

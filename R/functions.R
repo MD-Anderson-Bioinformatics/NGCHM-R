@@ -1991,14 +1991,14 @@ getAllMatrixTypeFunctions <- function(chm, rowtypes, columntypes) {
     function(mf) {
       rowm <- any(vapply(rowtypes, function(at) any(at == mf@rowtype), TRUE))
       colm <- any(vapply(columntypes, function(at) any(at == mf@columntype), TRUE))
-      cat("getAllMatrixTypeFunctions for ", mf@label, ":\n", file = stderr())
-      cat("    row matches: ", rowm, "\n", file = stderr())
-      cat("    col matches: ", colm, "\n", file = stderr())
+      message("getAllMatrixTypeFunctions for ", mf@label, ":")
+      message("    row matches: ", rowm)
+      message("    col matches: ", colm)
       rowm && colm
     },
     TRUE
   )
-  cat("getAllMatrixTypeFunctions: found ", sum(matches), " matches.\n", file = stderr())
+  message("getAllMatrixTypeFunctions: found ", sum(matches), " matches.")
   return(ngchm.env$matrixFunctions[matches])
 }
 
@@ -3441,18 +3441,18 @@ chmAddAutoMenuItems <- function(chm) {
         )
       )
       chm@elementMenu <- append(chm@elementMenu, entry)
-      cat("chmMake: added elementMenu entry ", entry@label, "\n", file = stderr())
+      message("chmMake: added elementMenu entry ", entry@label)
     }
   }
 
   # Add functions for getting type values from selections.
   genSpecFeedback(40, "adding type selector functions")
-  cat("chmMake: matfns contains ", length(matfns), " entries\n", file = stderr())
+  message("chmMake: matfns contains ", length(matfns), " entries")
   fns <- append(matfns, unique(append(rowfns, colfns)))
   if (length(fns) > 0) {
     for (ii in 1:length(fns)) {
       if (length(fns[[ii]]) == 0) {
-        cat("chmMake: axis/mat fn entry is NULL\n", file = stderr())
+        message("chmMake: axis/mat fn entry is NULL")
       } else if (is(fns[[ii]], "ngchmAxisType")) {
         chm <- chmAddMenuItem(chm, "nowhere", "unused", fns[[ii]]@func)
       } else if (is(fns[[ii]], "ngchmAxisFunction")) {
@@ -3460,7 +3460,7 @@ chmAddAutoMenuItems <- function(chm) {
       } else if (is(fns[[ii]], "ngchmMatrixFunction")) {
         chm <- chmAddMenuItem(chm, "nowhere", "unused", fns[[ii]]@func)
       } else if (fns[[ii]]@op != "javascript") {
-        cat("chmMake: axis/mat fn op is not javascript\n", file = stderr())
+        message("chmMake: axis/mat fn op is not javascript")
       } else {
         chm <- chmAddMenuItem(chm, "nowhere", "unused", fns[[ii]]@params$func)
       }
@@ -3471,13 +3471,13 @@ chmAddAutoMenuItems <- function(chm) {
   if (length(fns) > 0) {
     for (ii in 1:length(fns)) {
       if (length(fns[[ii]]) == 0) {
-        cat("chmMake: builders fn entry is NULL\n", file = stderr())
+        message("chmMake: builders fn entry is NULL")
       } else if (is(fns[[ii]], "ngchmAxisType")) {
         chm <- chmAddMenuItem(chm, "nowhere", "unused", fns[[ii]]@func)
       } else if (is(fns[[ii]], "ngchmAxisFunction")) {
         chm <- chmAddMenuItem(chm, "nowhere", "unused", fns[[ii]]@func)
       } else if (fns[[ii]]@op != "javascript") {
-        cat("chmMake: builders fn op is not javascript\n", file = stderr())
+        message("chmMake: builders fn op is not javascript")
       } else {
         chm <- chmAddMenuItem(chm, "nowhere", "unused", fns[[ii]]@params$func)
       }
