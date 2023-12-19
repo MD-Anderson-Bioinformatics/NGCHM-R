@@ -1,5 +1,6 @@
 #' Initialize shaidy subsystem for NGCHMs
 #'
+#' @noRd
 ngchmShaidyInit <- function() {
   checkStatusCode <- function(resp, code) {
     if (resp$status_code != code) {

@@ -273,6 +273,7 @@ chmNew <- function(
 #' Compute cosine (angular) distance matrix
 #'
 #' @param data A numeric matrix
+#' @noRd
 cos.dist1 <- function(data) {
   dmat <- matrix(0.0, nrow = nrow(data), ncol = nrow(data))
   sumrowsqr <- sqrt(apply(data * data, 1, sum))
@@ -323,6 +324,7 @@ chmDefaultColOrder <- function(chm) {
 #' Convert a user specified dendrogram to a shaid
 #'
 #' @param ddg The dendrogram to convert.
+#' @noRd
 chmUserDendrogramToShaid <- function(ddg) {
   shaidyRepo <- ngchm.env$tmpShaidy
   ngchmSaveAsDendrogramBlob(shaidyRepo, ddg)
@@ -331,6 +333,7 @@ chmUserDendrogramToShaid <- function(ddg) {
 #' Convert user specified labels to a shaid
 #'
 #' @param labels A string vector containing axis labels.
+#' @noRd
 chmUserLabelsToShaid <- function(labels) {
   shaidyRepo <- ngchm.env$tmpShaidy
   ngchmSaveLabelsAsBlob(shaidyRepo, labels)
@@ -2712,7 +2715,7 @@ chmRegisterToolboxFunction <- function(tbtype, menulabel, jsfn) {
 #' @param layer The new layer is being added.
 #'
 #' @return NULL
-#'
+#' @noRd
 validateNewLayer <- function(chm, layer) {
   newnames <- dimnames(layer)
   if (length(chm@layers) > 0) {
@@ -3717,6 +3720,7 @@ plot.ngchmVersion2 <- function(x, server = NULL, viewer = NULL, ...) {
 #'
 #' @param mat The matrix to output
 #' @param filename The name of the file to write the tile to
+#' @noRd
 writeTile <- function(mat, filename) {
   vec <- t(mat)
   dim(vec) <- NULL
@@ -3731,6 +3735,7 @@ writeTile <- function(mat, filename) {
 #' @param filename The name of the file to read the tile from
 #' @param nrow Number of rows in the tile
 #' @param ncol Number of columns in the tile
+#' @noRd
 readTile <- function(filename, nrow, ncol) {
   vec <- readBin(filename, "double", nrow * ncol, size = 4, endian = "little")
   return(matrix(vec, nrow = nrow, byrow = TRUE))

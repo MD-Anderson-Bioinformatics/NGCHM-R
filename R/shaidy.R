@@ -28,6 +28,7 @@ shaidyRepoAPI <- function(api) {
 #'
 #' @param api The name of a repository API
 #' @param methods A list of repository methods
+#' @noRd
 shaidyRegisterRepoAPI <- function(api, methods) {
   shaidy.env$repoMethods[[api]] <- methods
 }
@@ -64,7 +65,7 @@ shaidyRegisterRepoAPI <- function(api, methods) {
 #' @import jsonlite
 #' @import httr
 #'
-
+#' @noRd
 shaidyInit <- function() {
   shaidy.env$repoMethods <- list()
   shaidyRegisterRepoAPI("__generic__", list(
