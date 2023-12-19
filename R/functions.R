@@ -2514,7 +2514,7 @@ ngchmGetProtoParam <- function(server, option, default = NULL) {
 #' @seealso [chmRegisterFunction()]
 #' @seealso [grep()]
 #'
-#' @return None. This function is used for its side effects of printing the names and descriptions of the matching functions.
+#' @return A string containing the names and descriptions of the matching functions.
 #'
 #' @examples
 #' chmListFunctions() # List all functions.
@@ -2523,12 +2523,14 @@ chmListFunctions <- function(re = ".*") {
   if (typeof(re) != "character") {
     stop(sprintf("Parameter 're' must have type 'character', not '%s'", typeof(re)))
   }
+  output <- c()
   for (ii in 1:length(ngchm.env$scripts)) {
     fn <- ngchm.env$scripts[[ii]]
     if (length(grep(re, fn@name)) > 0) {
-      cat(sprintf("%s\t%s\n", fn@name, fn@description))
+      output <- c(output, sprintf("%s\t%s", fn@name, fn@description))
     }
   }
+  return(paste(output, collapse = "\n"))
 }
 
 #' Define and register a Javascript function for obtaining a specific metadata value.

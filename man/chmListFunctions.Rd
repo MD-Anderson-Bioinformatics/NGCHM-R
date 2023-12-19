@@ -11,7 +11,7 @@ chmListFunctions(re = ".*")
 Default is ".*", which matches all functions.}
 }
 \value{
-None. This function is used for its side effects of printing the names and descriptions of the matching functions.
+A string containing the names and descriptions of the matching functions.
 }
 \description{
 This function lists the predefined Javascript functions available for use in NGCHM menus.
