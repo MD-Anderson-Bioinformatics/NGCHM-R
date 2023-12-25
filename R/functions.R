@@ -604,24 +604,27 @@ chmNewDataLayer <- function(label, data, colors, summarizationMethod, cuts_color
 #' @export
 #'
 #' @examples
-#' # If the NGCHMDemoData package is installed, use it to create an example usage
-#' if (requireNamespace("NGCHMDemoData", quietly = TRUE)) {
-#'   # Create example NGCHM
-#'   data(TCGA.GBM.Demo, package = "NGCHMDemoData")
-#'   matrix <- TCGA.GBM.ExpressionData[1:50, 1:50]
+#' # Examples using `chmNew()` require git to be installed and available.
+#' \dontrun{
+#'  # If the NGCHMDemoData package is installed, use it to create an example usage
+#'  if (requireNamespace("NGCHMDemoData", quietly = TRUE)) {
+#'     # Create example NGCHM
+#'     data(TCGA.GBM.Demo, package = "NGCHMDemoData")
+#'     matrix <- TCGA.GBM.ExpressionData[1:50, 1:50]
+#'     hm <- chmNew("New Heat Map") + chmNewDataLayer("my layer", matrix)
+#'     layer <- chmLayer(hm, "my layer")
+#'     same_layer <- chmLayer(hm, 1)
+#'   }
+#'   # Small example not requiring NGCHMDemoData
+#'   matrix <- matrix(rnorm(100),
+#'     nrow = 10, ncol = 10,
+#'     dimnames = list(paste0("r", 1:10), paste0("c", 1:10))
+#'   )
 #'   hm <- chmNew("New Heat Map") + chmNewDataLayer("my layer", matrix)
 #'   layer <- chmLayer(hm, "my layer")
 #'   same_layer <- chmLayer(hm, 1)
-#' }
-#' # Small example not requiring NGCHMDemoData
-#' matrix <- matrix(rnorm(100),
-#'   nrow = 10, ncol = 10,
-#'   dimnames = list(paste0("r", 1:10), paste0("c", 1:10))
-#' )
-#' hm <- chmNew("New Heat Map") + chmNewDataLayer("my layer", matrix)
-#' layer <- chmLayer(hm, "my layer")
-#' same_layer <- chmLayer(hm, 1)
-#'
+#'}
+#' 
 #' @seealso [ngchmLayer-class]
 #'
 chmLayer <- function(hm, label) {
@@ -1124,28 +1127,30 @@ ngchmNewBar <- function(label, type, data, colors = NULL, display = "visible", t
 #' @export
 #'
 #' @examples
-#' # If the NGCHMDemoData package is installed, use it to demo usage
-#' if (requireNamespace("NGCHMDemoData", quietly = TRUE)) {
-#'   # Create example NGCHM with covariate bar
-#'   data(TCGA.GBM.Demo, package = "NGCHMDemoData")
-#'   hm <- chmNew("gbmexpr", TCGA.GBM.ExpressionData[1:50, 1:50])
-#'   hm <- chmAddCovariateBar(
-#'     hm, "column",
-#'     chmNewCovariate("TP53 Mutation", TCGA.GBM.TP53MutationData[1:50])
+#' # Examples using `chmNew()` require git to be installed and available.
+#' \dontrun{
+#'   # If the NGCHMDemoData package is installed, use it to demo usage
+#'   if (requireNamespace("NGCHMDemoData", quietly = TRUE)) {
+#'     # Create example NGCHM with covariate bar
+#'     data(TCGA.GBM.Demo, package = "NGCHMDemoData")
+#'     hm <- chmNew("gbmexpr", TCGA.GBM.ExpressionData[1:50, 1:50])
+#'     hm <- chmAddCovariateBar(
+#'       hm, "column",
+#'       chmNewCovariate("TP53 Mutation", TCGA.GBM.TP53MutationData[1:50])
+#'     )
+#'     # Get covariate bar by name
+#'     tp53_covariate_bar <- chmCovariateBar(hm, "TP53 Mutation")
+#'   }
+#'   # Small example not requiring NGCHMDemoData
+#'   matrix <- matrix(rnorm(100),
+#'     nrow = 10, ncol = 10,
+#'     dimnames = list(paste0("r", 1:10), paste0("c", 1:10))
 #'   )
-#'   # Get covariate bar by name
-#'   tp53_covariate_bar <- chmCovariateBar(hm, "TP53 Mutation")
+#'   hm <- chmNew("Demo", matrix)
+#'   covariate <- setNames(rnorm(10), colnames(matrix))
+#'   hm <- chmAddCovariateBar(hm, "column", chmNewCovariate("my covariate", covariate))
+#'   my_covariate_bar <- chmCovariateBar(hm, "my covariate")
 #' }
-#' # Small example not requiring NGCHMDemoData
-#' matrix <- matrix(rnorm(100),
-#'   nrow = 10, ncol = 10,
-#'   dimnames = list(paste0("r", 1:10), paste0("c", 1:10))
-#' )
-#' hm <- chmNew("Demo", matrix)
-#' covariate <- setNames(rnorm(10), colnames(matrix))
-#' hm <- chmAddCovariateBar(hm, "column", chmNewCovariate("my covariate", covariate))
-#' my_covariate_bar <- chmCovariateBar(hm, "my covariate")
-#'
 #' @seealso [ngchmBar-class]
 #' @seealso chmNewCovariateBar
 #' @seealso chmCovariate
@@ -3872,23 +3877,26 @@ writeBinLines <- function(text, con) {
 #' matrix passed to [Rtsne::Rtsne()](https://CRAN.R-project.org/package=Rtsne).
 #'
 #' @examples
-#' # If the NGCHMDemoData package is installed, use it to demo usage
-#' if (requireNamespace("NGCHMDemoData", quietly = TRUE)) {
-#'   data(TCGA.GBM.EXPR, package = "NGCHMDemoData")
-#'   mat <- TCGA.GBM.EXPR[1:10, 1:10]
-#'   rtc <- Rtsne::Rtsne(t(mat), check_duplicates = FALSE, perplexity = 3)
-#'   hm <- chmNew("gbm", mat)
-#'   hm <- chmAddTSNE(hm, "column", rtc, colnames(mat))
+#' # Examples using  `chmNew()` require git to be installed.
+#' \dontrun{
+#'   # If the NGCHMDemoData package is installed, use it to demo usage
+#'   if (requireNamespace("NGCHMDemoData", quietly = TRUE)) {
+#'     data(TCGA.GBM.EXPR, package = "NGCHMDemoData")
+#'     mat <- TCGA.GBM.EXPR[1:10, 1:10]
+#'     rtc <- Rtsne::Rtsne(t(mat), check_duplicates = FALSE, perplexity = 3)
+#'     hm <- chmNew("gbm", mat)
+#'     hm <- chmAddTSNE(hm, "column", rtc, colnames(mat))
+#'   }
+#'   # Small example not requiring NGCHMDemoData
+#'   matrix <- matrix(rnorm(100),
+#'     nrow = 10, ncol = 10,
+#'     dimnames = list(paste0("r", 1:10), paste0("c", 1:10))
+#'   )
+#'   rtc <- Rtsne::Rtsne(t(matrix), check_duplicates = FALSE, perplexity = 3)
+#'   hm <- chmNew("Demo TSNE", matrix)
+#'   hm <- chmAddTSNE(hm, "column", rtc, colnames(matrix))
 #' }
-#' # Small example not requiring NGCHMDemoData
-#' matrix <- matrix(rnorm(100),
-#'   nrow = 10, ncol = 10,
-#'   dimnames = list(paste0("r", 1:10), paste0("c", 1:10))
-#' )
-#' rtc <- Rtsne::Rtsne(t(matrix), check_duplicates = FALSE, perplexity = 3)
-#' hm <- chmNew("Demo TSNE", matrix)
-#' hm <- chmAddTSNE(hm, "column", rtc, colnames(matrix))
-#'
+#' 
 #' @export
 #'
 #' @param hm The NGCHM to add the coordinates to
@@ -3932,22 +3940,24 @@ chmAddTSNE <- function(hm, axis, tsne, pointIds, basename = "TSNE") {
 #' parameter basename (default "PC") and N ranges from 1 to the number of added covariate bars.
 #'
 #' @examples
-#' # If the NGCHMDemoData package is installed, use it to demo usage
-#' if (requireNamespace("NGCHMDemoData", quietly = TRUE)) {
-#'   data(TCGA.GBM.EXPR, package = "NGCHMDemoData")
-#'   prc <- prcomp(TCGA.GBM.EXPR[1:50, 1:50])
-#'   hm <- chmNew("gbm", TCGA.GBM.EXPR[1:50, 1:50])
+#' # Examples using `chmNew()` require git to be installed.
+#' \dontrun{
+#'   # If the NGCHMDemoData package is installed, use it to demo usage
+#'   if (requireNamespace("NGCHMDemoData", quietly = TRUE)) {
+#'    data(TCGA.GBM.EXPR, package = "NGCHMDemoData")
+#'     prc <- prcomp(TCGA.GBM.EXPR[1:50, 1:50])
+#'     hm <- chmNew("gbm", TCGA.GBM.EXPR[1:50, 1:50])
+#'     hm <- chmAddPCA(hm, "column", prc)
+#'   }
+#'   # Small example not requiring NGCHMDemoData
+#'   matrix <- matrix(rnorm(100),
+#'     nrow = 10, ncol = 10,
+#'     dimnames = list(paste0("r", 1:10), paste0("c", 1:10))
+#'   )
+#'   prc <- prcomp(matrix)
+#'   hm <- chmNew("Demo PCA", matrix)
 #'   hm <- chmAddPCA(hm, "column", prc)
 #' }
-#' # Small example not requiring NGCHMDemoData
-#' matrix <- matrix(rnorm(100),
-#'   nrow = 10, ncol = 10,
-#'   dimnames = list(paste0("r", 1:10), paste0("c", 1:10))
-#' )
-#' prc <- prcomp(matrix)
-#' hm <- chmNew("Demo PCA", matrix)
-#' hm <- chmAddPCA(hm, "column", prc)
-#'
 #' @export
 #'
 #' @param hm The NGCHM to add the coordinates to.
@@ -3992,23 +4002,26 @@ chmAddPCA <- function(hm, axis, prc, basename = "PC", ndim = 2) {
 #' added covariate bars.
 #'
 #' @examples
-#' # If the NGCHMDemoData package is installed, use it to demo usage
-#' if (requireNamespace("NGCHMDemoData", quietly = TRUE)) {
-#'   data(TCGA.GBM.EXPR, package = "NGCHMDemoData")
-#'   mat <- TCGA.GBM.EXPR[1:50, 1:50]
-#'   umc <- umap::umap(t(mat))
-#'   hm <- chmNew("gbm", mat)
+#' # Examples using `chmNew()` require git to be installed.
+#' \dontrun{
+#'   # If the NGCHMDemoData package is installed, use it to demo usage
+#'   if (requireNamespace("NGCHMDemoData", quietly = TRUE)) {
+#'     data(TCGA.GBM.EXPR, package = "NGCHMDemoData")
+#'     mat <- TCGA.GBM.EXPR[1:50, 1:50]
+#'     umc <- umap::umap(t(mat))
+#'     hm <- chmNew("gbm", mat)
+#'     hm <- chmAddUMAP(hm, "column", umc)
+#'   }
+#'   # Small example not requiring NGCHMDemoData
+#'   matrix <- matrix(rnorm(100),
+#'     nrow = 10, ncol = 10,
+#'     dimnames = list(paste0("r", 1:10), paste0("c", 1:10))
+#'   )
+#'   umc <- umap::umap(t(matrix), n_neighbors = 8)
+#'   hm <- chmNew("Demo UMAP", matrix)
 #'   hm <- chmAddUMAP(hm, "column", umc)
 #' }
-#' # Small example not requiring NGCHMDemoData
-#' matrix <- matrix(rnorm(100),
-#'   nrow = 10, ncol = 10,
-#'   dimnames = list(paste0("r", 1:10), paste0("c", 1:10))
-#' )
-#' umc <- umap::umap(t(matrix), n_neighbors = 8)
-#' hm <- chmNew("Demo UMAP", matrix)
-#' hm <- chmAddUMAP(hm, "column", umc)
-#'
+#' 
 #' @export
 #'
 #' @param hm The NGCHM to add the coordinates to.
@@ -4055,22 +4068,25 @@ chmAddUMAP <- function(hm, axis, umap, basename = "UMAP") {
 #' matrix passed to [uwot::umap()](https://CRAN.R-project.org/package=uwot).
 #'
 #' @examples
-#' # If the NGCHMDemoData package is installed, use it to demo usage
-#' if (requireNamespace("NGCHMDemoData", quietly = TRUE)) {
-#'   data(TCGA.GBM.EXPR, package = "NGCHMDemoData")
-#'   umc <- uwot::umap(t(TCGA.GBM.EXPR[1:50, 1:50]))
-#'   hm <- chmNew("gbm", TCGA.GBM.EXPR[1:50, 1:50])
-#'   hm <- chmAddUWOT(hm, "column", umc, colnames(TCGA.GBM.EXPR[1:50, 1:50]))
+#' # Examples using `chmNew()` require git to be installed.
+#' \dontrun{
+#'   # If the NGCHMDemoData package is installed, use it to demo usage
+#'   if (requireNamespace("NGCHMDemoData", quietly = TRUE)) {
+#'     data(TCGA.GBM.EXPR, package = "NGCHMDemoData")
+#'     umc <- uwot::umap(t(TCGA.GBM.EXPR[1:50, 1:50]))
+#'     hm <- chmNew("gbm", TCGA.GBM.EXPR[1:50, 1:50])
+#'     hm <- chmAddUWOT(hm, "column", umc, colnames(TCGA.GBM.EXPR[1:50, 1:50]))
+#'   }
+#'   # Small example not requiring NGCHMDemoData
+#'   matrix <- matrix(rnorm(100),
+#'     nrow = 10, ncol = 10,
+#'     dimnames = list(paste0("r", 1:10), paste0("c", 1:10))
+#'   )
+#'   umc <- uwot::umap(t(matrix), n_neighbors = 8)
+#'   hm <- chmNew("Demo UMAP", matrix)
+#'   hm <- chmAddUWOT(hm, "column", umc, colnames(matrix))
 #' }
-#' # Small example not requiring NGCHMDemoData
-#' matrix <- matrix(rnorm(100),
-#'   nrow = 10, ncol = 10,
-#'   dimnames = list(paste0("r", 1:10), paste0("c", 1:10))
-#' )
-#' umc <- uwot::umap(t(matrix), n_neighbors = 8)
-#' hm <- chmNew("Demo UMAP", matrix)
-#' hm <- chmAddUWOT(hm, "column", umc, colnames(matrix))
-#'
+#' 
 #' @export
 #'
 #' @param hm The NGCHM to add the coordinates to.
@@ -4149,26 +4165,28 @@ getDimensions.default <- function(obj, ...) {
 #' the one described in the preceding paragraph.  This package defines methods for classes `prcomp` and `umap`.
 #'
 #' @examples
-#' # Don't run the NGCHMDemoData example to save time
+#' # Examples using `chmNew()` require git to be installed.
 #' \dontrun{
-#' data(TCGA.GBM.EXPR, package = "NGCHMDemoData")
-#' mat <- TCGA.GBM.EXPR[1:10, 1:10]
-#' prc <- prcomp(mat)
-#' hm <- chmNew("Demo reduced dimension coordinates", mat)
-#' hm <- chmAddReducedDim(hm, "column", prc, "PCA", 3, "PC")
-#' umc <- umap::umap(t(mat), n_neighbors = 8)
-#' hm <- chmAddReducedDim(hm, "column", umc, "UMAP")
+#'   if (requireNamespace("NGCHMDemoData", quietly = TRUE)) {
+#'     data(TCGA.GBM.EXPR, package = "NGCHMDemoData")
+#'     mat <- TCGA.GBM.EXPR[1:10, 1:10]
+#'     prc <- prcomp(mat)
+#'     hm <- chmNew("Demo reduced dimension coordinates", mat)
+#'     hm <- chmAddReducedDim(hm, "column", prc, "PCA", 3, "PC")
+#'     umc <- umap::umap(t(mat), n_neighbors = 8)
+#'     hm <- chmAddReducedDim(hm, "column", umc, "UMAP")
+#'   }
+#'   # Small example not requiring NGCHMDemoData
+#'   matrix <- matrix(rnorm(100),
+#'     nrow = 10, ncol = 10,
+#'     dimnames = list(paste0("r", 1:10), paste0("c", 1:10))
+#'   )
+#'   prc <- prcomp(matrix)
+#'   hm <- chmNew("Demo reduced dimension coordinates", matrix)
+#'   hm <- chmAddReducedDim(hm, "column", prc, "PCA", 3, "PC")
+#'   umc <- umap::umap(t(matrix), n_neighbors = 8)
+#'   hm <- chmAddReducedDim(hm, "column", umc, "UMAP")
 #' }
-#' # Small example not requiring NGCHMDemoData
-#' matrix <- matrix(rnorm(100),
-#'   nrow = 10, ncol = 10,
-#'   dimnames = list(paste0("r", 1:10), paste0("c", 1:10))
-#' )
-#' prc <- prcomp(matrix)
-#' hm <- chmNew("Demo reduced dimension coordinates", matrix)
-#' hm <- chmAddReducedDim(hm, "column", prc, "PCA", 3, "PC")
-#' umc <- umap::umap(t(matrix), n_neighbors = 8)
-#' hm <- chmAddReducedDim(hm, "column", umc, "UMAP")
 #'
 #' @export
 #'
