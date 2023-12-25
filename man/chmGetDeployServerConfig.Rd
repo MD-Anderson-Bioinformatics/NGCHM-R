@@ -18,9 +18,3 @@ The configuration of the specified server if it exists, otherwise NULL.
 This function retrieves the configuration of a specified NG-CHM
 (Next-Generation Clustered Heat Map) deployment server.
 }
-\examples{
-# Get the configuration of the server named 'myServer'.
-config <- chmGetDeployServerConfig('myServer')
-# Get the configuration of the server represented by the 'myServer' object.
-config <- chmGetDeployServerConfig(myServer)
-}

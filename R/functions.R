@@ -2170,10 +2170,6 @@ chmGetTypeInfo <- function(typename) {
 #'
 #' @return A string that provides a detailed description of the NGCHM type.
 #'
-#' @examples
-#' # Assume 'typeInfo' is an object of class 'ngchm.type.info'
-#' print.ngchm.type.info(typeInfo)
-#'
 #' @export
 #'
 #' @seealso [chmGetTypeInfo()]
@@ -2292,9 +2288,6 @@ chmRegisterTypeMapper <- function(fromtype, totype, op, ...) {
 #' @return The registered function.
 #'
 #' @export
-#' @examples
-#' # Assume 'myFunction' is an object of class 'ngchmJS'
-#' chmRegisterFunction(myFunction) # Register 'myFunction'.
 #'
 #' @seealso [chmAddMenuItem()]
 #' @seealso [chmNewFunction()]
@@ -2662,6 +2655,7 @@ chmListTypes <- function(re = ".*") {
 #' the toolbox of an NGCHM.  This function is
 #' intended for use by NGCHM system developers.
 #'
+#' @param tbtype A single character string specifying the type of the toolbox function.
 #' @param menulabel A single character string specifying the menu label of the
 #' toolbox function.
 #' @param jsfn The function to be registered. This should be an object of class 'ngchmJS'.
@@ -2941,10 +2935,6 @@ chmAxis <- function(axis, ...) {
 #'
 #' @return An object of class 'ngchmAxisType' representing the newly created axis type.
 #' @export
-#'
-#' @examples
-#' axis_type <- chmAxisType('Gene', 'getGeneLabel')
-#' axis_type <- chmAxisType('Sample')
 #'
 #' @seealso [chmAxis()]
 chmAxisType <- function(typename, func) {
@@ -3517,13 +3507,10 @@ chmWriteCustomJS <- function(chm, filename) {
 #' @param chm The CHM for which the overview is to be retrieved.
 #' @param format The format of overview image desired (defaults to 'png' if idx is not specified).
 #' @param idx The index of the overview image desired (defaults to first image of the specified format).
+#'
 #' @export
+#'
 #' @return The path to the retrieved overview.
-#' @examples
-#' # Get the 'jpg' overview of the CHM represented by the 'myCHM' object.
-#' overview <- chmGetOverview(myCHM, format = 'jpg')
-#' # Get the second 'jpg' overview of the CHM represented by the 'myCHM' object.
-#' overview <- chmGetOverview(myCHM, format = 'jpg', idx = 2)
 chmGetOverview <- function(chm, format = NULL, idx = NULL) {
   chm <- chmFixVersion(chm)
   if (is.null(idx)) {
@@ -3672,10 +3659,6 @@ utempfile <- function(...) {
 #' @export
 #' @return None. This function is used for its side effects of opening a web browser to view the NG-CHM server.
 #'
-#' @examples
-#' chmBrowse() # Browse the first server in the list of available servers using the 'browseURL' function.
-#' chmBrowse(server = 'http://localhost:8080', viewer = browseURL) # Browse the specified server using the 'browseURL' function.
-#'
 #' @seealso [utils::browseURL()]
 chmBrowse <- function(server = NULL, viewer = NULL) {
   if (is.null(server)) server <- getOption("NGCHM.Server", chmListServers()[1])
@@ -3694,12 +3677,6 @@ chmBrowse <- function(server = NULL, viewer = NULL) {
 #' @param viewer The function to be used to open the web browser. If NULL, the function will use the 'browseURL' function.
 #'
 #' @return None. This function is used for its side effects of opening a web browser to view the NG-CHM Manager.
-#'
-#' @examples
-#' # Open the NG-CHM Manager on the first server in the list of available servers using the 'browseURL' function.
-#' chmManager()
-#' # Open the NG-CHM Manager on the specified server using the 'browseURL' function.
-#' chmManager(server = 'http://localhost:8080', viewer = browseURL)
 #'
 #' @export
 chmManager <- function(server = NULL, viewer = NULL) {

@@ -309,10 +309,10 @@ print.shaidyRepo <- function(x, ...) {
 #'
 #' @return None. This function is used for its side effects of initializing the Shaidy
 #' repository.
+#'
 #' @import jsonlite
+#'
 #' @export
-#' @examples
-#' shaidyInitRepository('myShaidyDir', c('blobType1', 'blobType2')) # Initialize a Shaidy repository in 'myShaidyDir' with blob types 'blobType1' and 'blobType2'.
 shaidyInitRepository <- function(shaidyDir, blob.types) {
   stopifnot(!dir.exists(shaidyDir))
   stopifnot(dir.create(shaidyDir, recursive = TRUE))

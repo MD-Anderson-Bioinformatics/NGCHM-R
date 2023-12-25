@@ -18,13 +18,6 @@ None. This function is used for its side effects of opening a web browser to vie
 \description{
 This function opens a web browser to view the NG-CHM (Next-Generation Clustered Heat Map) Manager on the specified server.
 }
-\examples{
-# Open the NG-CHM Manager on the first server in the list of available servers using the 'browseURL' function.
-chmManager()
-# Open the NG-CHM Manager on the specified server using the 'browseURL' function.
-chmManager(server = 'http://localhost:8080', viewer = browseURL)
-
-}
 \seealso{
 \code{\link[utils:browseURL]{utils::browseURL()}}
 }

@@ -7,6 +7,8 @@
 chmRegisterToolboxFunction(tbtype, menulabel, jsfn)
 }
 \arguments{
+\item{tbtype}{A single character string specifying the type of the toolbox function.}
+
 \item{menulabel}{A single character string specifying the menu label of the
 toolbox function.}
 

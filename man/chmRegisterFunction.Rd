@@ -17,11 +17,6 @@ This function registers a Javascript function that can be used when
 building a Next Generation Clustered Heat Map.  This function is
 intended for use by NGCHM system developers.
 }
-\examples{
-# Assume 'myFunction' is an object of class 'ngchmJS'
-chmRegisterFunction(myFunction) # Register 'myFunction'.
-
-}
 \seealso{
 \code{\link[=chmAddMenuItem]{chmAddMenuItem()}}
 

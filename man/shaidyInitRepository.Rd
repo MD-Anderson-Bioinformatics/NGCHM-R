@@ -21,6 +21,3 @@ repository.
 This function initializes a Shaidy repository in a specified directory with
 specified blob types.
 }
-\examples{
-shaidyInitRepository('myShaidyDir', c('blobType1', 'blobType2')) # Initialize a Shaidy repository in 'myShaidyDir' with blob types 'blobType1' and 'blobType2'.
-}

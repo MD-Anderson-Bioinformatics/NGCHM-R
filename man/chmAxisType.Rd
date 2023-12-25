@@ -19,11 +19,6 @@ An object of class 'ngchmAxisType' representing the newly created axis type.
 \description{
 This function creates a new AxisType for adding to an ngchmAxis.
 }
-\examples{
-axis_type <- chmAxisType('Gene', 'getGeneLabel')
-axis_type <- chmAxisType('Sample')
-
-}
 \seealso{
 \code{\link[=chmAxis]{chmAxis()}}
 }

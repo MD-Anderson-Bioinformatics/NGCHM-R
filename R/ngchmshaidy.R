@@ -823,9 +823,6 @@ parsePathSpec <- function(path) {
 #'
 #' @seealso [chmCurrentCollection()]
 #'
-#' @examples
-#' chmCreateCollection('path/to/collection') # Create a new collection at the specified path.
-#' chmCreateCollection('path/to/collection', recursive = TRUE) # Create a new collection at the specified path, creating any necessary parent collections.
 chmCreateCollection <- function(path, recursive = FALSE) {
   stopifnot(!missing(path) && typeof(path) == "character" && length(path) == 1)
   server <- ngchm.env$currentServer

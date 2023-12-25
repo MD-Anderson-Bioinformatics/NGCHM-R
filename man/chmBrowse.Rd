@@ -17,11 +17,6 @@ None. This function is used for its side effects of opening a web browser to vie
 \description{
 Opens the NG-CHM browser page in the viewer.
 }
-\examples{
-chmBrowse() # Browse the first server in the list of available servers using the 'browseURL' function.
-chmBrowse(server = 'http://localhost:8080', viewer = browseURL) # Browse the specified server using the 'browseURL' function.
-
-}
 \seealso{
 \code{\link[utils:browseURL]{utils::browseURL()}}
 }

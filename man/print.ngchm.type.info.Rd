@@ -18,11 +18,6 @@ A string that provides a detailed description of the NGCHM type.
 This function takes an object of class 'ngchm.type.info' and returns a formatted string
 that provides a detailed description of the NGCHM type.
 }
-\examples{
-# Assume 'typeInfo' is an object of class 'ngchm.type.info'
-print.ngchm.type.info(typeInfo)
-
-}
 \seealso{
 \code{\link[=chmGetTypeInfo]{chmGetTypeInfo()}}
 }

@@ -60,12 +60,6 @@ chmSetDeployServerConfig <- function(server, config) {
 #' @export
 #'
 #' @return The configuration of the specified server if it exists, otherwise NULL.
-#'
-#' @examples
-#' # Get the configuration of the server named 'myServer'.
-#' config <- chmGetDeployServerConfig('myServer')
-#' # Get the configuration of the server represented by the 'myServer' object.
-#' config <- chmGetDeployServerConfig(myServer)
 chmGetDeployServerConfig <- function(server) {
   if (is(server, "character")) server <- chmServer(server)
   if (exists(server@deployServer, ngchm.env$deployServerConfigs)) {

@@ -31,10 +31,6 @@ are interpreted relative to the current collection.
 
 The interpretation of each path component is server specific.
 }
-\examples{
-chmCreateCollection('path/to/collection') # Create a new collection at the specified path.
-chmCreateCollection('path/to/collection', recursive = TRUE) # Create a new collection at the specified path, creating any necessary parent collections.
-}
 \seealso{
 \code{\link[=chmCurrentCollection]{chmCurrentCollection()}}
 }
