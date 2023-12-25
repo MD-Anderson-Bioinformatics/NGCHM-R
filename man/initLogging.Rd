@@ -19,9 +19,3 @@ None. This function is used for its side effects of initializing the logging.
 \description{
 This function initializes logging for the application.
 }
-\examples{
-# Initialize logging with log level 'INFO' and write the log to 'myLog.log'.
-initLogging('INFO', 'myLog.log')
-# Initialize logging with log level 'DEBUG' and write the log to the console.
-initLogging('DEBUG')
-}

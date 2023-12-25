@@ -22,12 +22,6 @@ NULL
 #' @importFrom logger layout_glue_generator
 #' @importFrom logger layout_glue
 #' @return None. This function is used for its side effects of initializing the logging.
-#'
-#' @examples
-#' # Initialize logging with log level 'INFO' and write the log to 'myLog.log'.
-#' initLogging('INFO', 'myLog.log')
-#' # Initialize logging with log level 'DEBUG' and write the log to the console.
-#' initLogging('DEBUG')
 initLogging <- function(log_level, log_file = NULL) {
   log_threshold(log_level)
   if (!is.null(log_file)) {
