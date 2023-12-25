@@ -65,7 +65,6 @@ nr.str.dendrogram <-
     repeat {
       ## when  indent.str  ends in a blank, i.e. "last" (see below)
       istr <- sub(" $", last.str, indent.str)
-      message(istr, stem, sep = "")
 
       at <- attributes(object)
       memb <- at[["members"]]
@@ -77,11 +76,6 @@ nr.str.dendrogram <-
             at <- paste(",", at)
           }
         }
-        message("[dendrogram w/ ", le, " branches and ", memb, " members at h = ",
-          format(hgt, digits = digits.d), if (give.attr) at,
-          "]", if (!is.na(max.level) && nest.lev == max.level) " ..", "\n",
-          sep = ""
-        )
         if (is.na(max.level) || nest.lev < max.level) {
           # Push children onto todo list in reverse order.
           # Assumes at least one child.
@@ -93,24 +87,7 @@ nr.str.dendrogram <-
           }
         }
       } else { ## leaf
-        message(
-          "leaf",
-          if (is.character(at$label)) {
-            paste("", at$label, "", sep = '"')
-          } else {
-            format(object, digits = digits.d)
-          }, ""
-        )
         any.at <- hgt != 0
-        if (any.at) message("(h=", format(hgt, digits = digits.d))
-        if (memb != 1) { # MM: when can this happen?
-          message(if (any.at) {
-            ", "
-          } else {
-            any.at <- TRUE
-            "("
-          }, "memb= ", memb, sep = "")
-        }
         at <- pasteLis(at, c("class", "height", "members", "leaf", "label"))
         if (any.at || nzchar(at)) message(if (!any.at) "(", at, ")")
       }
