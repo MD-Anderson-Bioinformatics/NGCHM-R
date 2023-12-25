@@ -329,9 +329,11 @@ loadTextConfig <- function(filename) {
 #' @return The name of the newly created field access function.
 #'
 #' @examples
-#' # Create a new field access function that splits the input string at ',' and returns the first field.
+#' # Create a new field access function that splits the input string at ',' and
+#' # returns the first field.
 #' chmFieldAccessFunction(',', 1)
-#' # Create a new field access function that splits the input string at '-' and returns the second field.
+#' # Create a new field access function that splits the input string at '-' and
+#' # returns the second field.
 #' chmFieldAccessFunction('-', 2)
 #'
 chmFieldAccessFunction <- function(fieldsep, idx) {

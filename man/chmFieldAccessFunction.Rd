@@ -27,9 +27,11 @@ constant within an R session, but may differ between R sessions (or if this
 library is unloaded and reloaded).
 }
 \examples{
-# Create a new field access function that splits the input string at ',' and returns the first field.
+# Create a new field access function that splits the input string at ',' and
+# returns the first field.
 chmFieldAccessFunction(',', 1)
-# Create a new field access function that splits the input string at '-' and returns the second field.
+# Create a new field access function that splits the input string at '-' and
+# returns the second field.
 chmFieldAccessFunction('-', 2)
 
 }
