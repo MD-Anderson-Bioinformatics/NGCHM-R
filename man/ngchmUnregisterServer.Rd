@@ -20,12 +20,6 @@ None. This function is used for its side effects of unregistering the server.
 This function unregisters a server for NG-CHM (Next-Generation Clustered Heat
 Map) by its UUID and optionally by its name.
 }
-\examples{
-# Unregister the server with UUID 'myUUID'.
-ngchmUnregisterServer('myUUID')
-# Unregister the server with UUID 'myUUID' and name 'myName'.
-ngchmUnregisterServer('myUUID', 'myName')
-}
 \seealso{
 \code{\link[=ngchmRegisterServer]{ngchmRegisterServer()}}
 

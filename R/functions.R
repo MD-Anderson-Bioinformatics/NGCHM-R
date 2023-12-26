@@ -100,15 +100,13 @@ ngchmRegisterServer <- function(uuid, server) {
 #' @param name The names(s) of the ngchmServer(s) to unregister.
 #' If not specified, all ngchmServers in the namespace are unregistered.
 #' Defaults to NULL.
+#' 
 #' @return None. This function is used for its side effects of unregistering the server.
+#' 
 #' @seealso [ngchmRegisterServer()]
 #' @seealso [ngchmServer-class]
+#' 
 #' @export
-#' @examples
-#' # Unregister the server with UUID 'myUUID'.
-#' ngchmUnregisterServer('myUUID')
-#' # Unregister the server with UUID 'myUUID' and name 'myName'.
-#' ngchmUnregisterServer('myUUID', 'myName')
 ngchmUnregisterServer <- function(uuid, name = NULL) {
   if (length(name) == 0) {
     matches <- vapply(ngchm.env$servers, function(srv) (srv$uuid == uuid), TRUE)
@@ -150,9 +148,8 @@ chmServer <- function(name) {
 #' Get the library's internal ngchm environment to help debugging.
 #'
 #' @export
+#' 
 #' @return A list representing the current environment for NG-CHM.
-#' @examples
-#' ngchmGetEnv() # Get the current environment for NG-CHM.
 ngchmGetEnv <- function() {
   return(ngchm.env)
 }
