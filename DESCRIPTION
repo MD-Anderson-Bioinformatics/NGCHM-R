@@ -57,3 +57,6 @@ Collate:
     'ngchmshaidy.R'
     'zzz.R'
     'package.R'
+SystemRequirements:
+    Java (>= 8.0)
+    Git
