@@ -681,9 +681,9 @@ setClass("ngchmVersion1",
     version = as.integer(1),
     uuid = "",
     baggage = NULL,
-    inpDir = "",
-    outDir = "",
-    saveDir = ".",
+    inpDir = tempdir(),
+    outDir = tempdir(),
+    saveDir = tempdir(),
     propFile = "chm.properties",
     layers = c(),
     colormaps = NULL,
@@ -722,7 +722,7 @@ setIs("ngchmVersion1", "ngchm")
 #' @slot baggage optCharacter
 #' @slot inpDir character
 #' @slot outDir character
-#' @slot saveDir (default: ".")
+#' @slot saveDir (default: tempdir())
 #' @slot propFile (default: "chm.properties")
 #' @slot layers List of data layers
 #' @slot colormaps Color map
@@ -862,17 +862,17 @@ setMethod(
     if (!missing(inpDir)) {
       .Object@inpDir <- inpDir
     } else {
-      .Object@inpDir <- ""
+      .Object@inpDir <- tempdir()
     }
     if (!missing(outDir)) {
       .Object@outDir <- outDir
     } else {
-      .Object@outDir <- ""
+      .Object@outDir <- tempdir()
     }
     if (!missing(saveDir)) {
       .Object@saveDir <- saveDir
     } else {
-      .Object@saveDir <- "."
+      .Object@saveDir <- tempdir()
     }
     if (!missing(propFile)) {
       .Object@propFile <- propFile

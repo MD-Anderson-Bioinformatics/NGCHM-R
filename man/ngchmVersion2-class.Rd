@@ -24,7 +24,7 @@ Class representing ngchmVersion2 object
 
 \item{\code{outDir}}{character}
 
-\item{\code{saveDir}}{(default: ".")}
+\item{\code{saveDir}}{(default: tempdir())}
 
 \item{\code{propFile}}{(default: "chm.properties")}
 

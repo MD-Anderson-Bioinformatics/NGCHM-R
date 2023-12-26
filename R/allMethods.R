@@ -226,7 +226,7 @@ loadChmFromURL <- function(chmurl) {
   chm <- chmFixVersion(ee$chm)
   chm@inpDir <- utempfile("ngchm.input")
   chm@outDir <- utempfile("ngchm.output")
-  chm@saveDir <- "."
+  chm@saveDir <- tempdir()
   try(ngchmPushSourceRepository(paste(baseurl, "data/", chmname, "/undefined/shaidyRepo.tar", sep = ""), "http"), TRUE)
   chm
 }
@@ -789,7 +789,9 @@ writeChm <- function(chm, saveDir = NULL) {
   if (chm@format == "original") {
     genSpecFeedback(55, "saving user's CHM")
     orig.chm <- chm
-    chm@inpDir <- chm@outDir <- chm@saveDir <- ""
+    chm@inpDir <- tempdir()
+    chm@outDir <- tempdir()
+    chm@saveDir <- tempdir()
     save(chm, file = file.path(saveDir, "chm.Rdata"))
     chm <- orig.chm
     chm@extrafiles <- c(chm@extrafiles, "chm.Rdata")
