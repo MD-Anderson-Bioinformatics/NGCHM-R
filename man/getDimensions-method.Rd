@@ -2,6 +2,7 @@
 % Please edit documentation in R/functions.R
 \name{getDimensions}
 \alias{getDimensions}
+\alias{getDimensions.default}
 \alias{getDimensions.prcomp}
 \alias{getDimensions,prcomp}
 \alias{getDimensions.umap}
@@ -11,6 +12,8 @@
 \title{Generic method to get a dimensions matrix from obj.}
 \usage{
 getDimensions(obj, ...)
+
+\method{getDimensions}{default}(obj, ...)
 
 \method{getDimensions}{prcomp}(obj, ...)
 

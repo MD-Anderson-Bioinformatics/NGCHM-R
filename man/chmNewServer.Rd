@@ -33,7 +33,7 @@ An object of class ngchmServer
 This function creates a new object that represents a NGCHM server.
 }
 \examples{
-cloudServ <- chmNewServer ("dnsname.domain")
+cloudServ <- chmNewServer("dnsname.domain")
 
 }
 \seealso{

@@ -4,17 +4,21 @@
 \alias{chmGetProperty}
 \alias{chmGetProperty,ngchmVersion2,character-method}
 \alias{chmGetProperty,ngchmVersion2-method}
-\title{Get a property value from an NG-CHM object}
+\title{Get Property from NG-CHM}
 \usage{
 chmGetProperty(object, label)
 
 \S4method{chmGetProperty}{ngchmVersion2,character}(object, label)
 }
 \arguments{
-\item{object}{An NG-CHM object}
+\item{object}{An object of class 'ngchmVersion2' representing the NG-CHM from which
+the property is to be retrieved.}
 
-\item{label}{The name of the property to get}
+\item{label}{A single character string specifying the label of the property to be retrieved.}
+}
+\value{
+The property associated with the specified label in the 'ngchmVersion2' object.
 }
 \description{
-Get a property value from an NG-CHM object.
+This function retrieves a specific property from a NG-CHM (Next-Generation Clustered Heat Map) object.
 }

@@ -36,11 +36,15 @@ This function creates a new Javascript function object for adding to
 a Next Generation Clustered Heat Map menu.
 }
 \examples{
-alertFn <- chmNewFunction ("showAlert", "Display the parameter in an alert box",
-                           "function showAlert(label) { alert(label); }", global=TRUE)
-dbLookup <- chmNewFunction ("dbLookup", "Lookup the parameter in a database",
-                            "function showAlert(database, label) { alert(database[label]); }",
-                            c("database"))
+alertFn <- chmNewFunction("showAlert", "Display the parameter in an alert box",
+  "function showAlert(label) { alert(label); }",
+  global = TRUE
+)
+dbLookup <- chmNewFunction(
+  "dbLookup", "Lookup the parameter in a database",
+  "function showAlert(database, label) { alert(database[label]); }",
+  c("database")
+)
 
 }
 \seealso{

@@ -13,11 +13,14 @@ chmGetURL(chm, ...)
 \S4method{chmGetURL}{ngchm}(chm, server = NULL, ...)
 }
 \arguments{
-\item{chm}{The NGCHM for which the URL is required.}
+\item{chm}{A single character string specifying the name of the NG-CHM.}
 
 \item{...}{Ignored.}
 
 \item{server}{The server on which to view the NGCHM}
+}
+\value{
+A character string representing the URL of the specified NG-CHM on the specified server.
 }
 \description{
 Return the URL for accessing the specified Next Generation Clustered Heat Map (NGCHM) on the specified server.

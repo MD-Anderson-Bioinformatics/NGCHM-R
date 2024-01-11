@@ -48,12 +48,14 @@ a high value. The low value is the median of the minima of each row in the matri
 of the row maxima. If the low and high values have different signs, the values will be symmetric about zero.
 }
 \examples{
-noise.colors <- chmNewColorMap (c(0,1,2),
-                                c("green", "black", "red"),
-                                missing.color="yellow")
-bar.colors <- chmNewColorMap (c("small", "big"),
-                              c("#00FFFF", "#FF00FF"),
-                              type="quantile")
+noise.colors <- chmNewColorMap(c(0, 1, 2),
+  c("green", "black", "red"),
+  missing.color = "yellow"
+)
+bar.colors <- chmNewColorMap(c("small", "big"),
+  c("#00FFFF", "#FF00FF"),
+  type = "quantile"
+)
 
 }
 \seealso{

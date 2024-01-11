@@ -2,18 +2,23 @@
 % Please edit documentation in R/functions.R
 \name{ngchmUnregisterServer}
 \alias{ngchmUnregisterServer}
-\title{Unregister ngchmServer(s).}
+\title{Unregister NG-CHM Server}
 \usage{
 ngchmUnregisterServer(uuid, name = NULL)
 }
 \arguments{
-\item{uuid}{A string that identifies the server namespace.}
+\item{uuid}{A single character string specifying the UUID of the server.}
 
-\item{name}{The names(s) of the ngchmServer(s) to unregister.  If not specified, all ngchmServers in the
-namespace are unregistered.}
+\item{name}{The names(s) of the ngchmServer(s) to unregister.
+If not specified, all ngchmServers in the namespace are unregistered.
+Defaults to NULL.}
+}
+\value{
+None. This function is used for its side effects of unregistering the server.
 }
 \description{
-This function unregisters one or more ngchmServer(s).
+This function unregisters a server for NG-CHM (Next-Generation Clustered Heat
+Map) by its UUID and optionally by its name.
 }
 \seealso{
 \code{\link[=ngchmRegisterServer]{ngchmRegisterServer()}}

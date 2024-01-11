@@ -7,10 +7,18 @@
 chmListFunctions(re = ".*")
 }
 \arguments{
-\item{re}{Only functions with names matching re are printed (default ".*")}
+\item{re}{The regular expression to match. This should be a single character string.
+Default is ".*", which matches all functions.}
+}
+\value{
+A string containing the names and descriptions of the matching functions.
 }
 \description{
 This function lists the predefined Javascript functions available for use in NGCHM menus.
+}
+\examples{
+chmListFunctions() # List all functions.
+chmListFunctions('^chm') # List all functions whose names start with 'chm'.
 }
 \seealso{
 \code{\link[=chmAddMenuItem]{chmAddMenuItem()}}

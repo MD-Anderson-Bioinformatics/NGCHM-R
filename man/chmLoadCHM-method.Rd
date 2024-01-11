@@ -16,9 +16,13 @@ chmLoadCHM(serverOrURL, name)
 \S4method{chmLoadCHM}{character,missing}(serverOrURL, name)
 }
 \arguments{
-\item{serverOrURL}{Either the server or the CHM url from which to load the CHM object.}
+\item{serverOrURL}{An object of class 'ngchmServer' representing the server from which the NG-CHM
+is to be loaded.}
 
-\item{name}{Name of the CHM to load if the first parameter is a server id}
+\item{name}{A single character string specifying the name of the NG-CHM to be loaded.}
+}
+\value{
+An object of class 'ngchm' representing the loaded NG-CHM.
 }
 \description{
 Load an R CHM object from an NG-CHM server.  The CHM concerned must have been built

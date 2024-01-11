@@ -7,9 +7,13 @@
 chmSetDeployServerConfig(server, config)
 }
 \arguments{
-\item{server}{The server for which the configuration is being set.  Must have deployServer set.}
+\item{server}{An object of class 'chmServer' or a character string specifying the
+name of the server.}
 
-\item{config}{The configuration to set}
+\item{config}{A list specifying the configuration to be set for the server.}
+}
+\value{
+None. This function is used for its side effects of setting the deployment server configuration.
 }
 \description{
 Specify per-user configuration for a specific deploy Server.

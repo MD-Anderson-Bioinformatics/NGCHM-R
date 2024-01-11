@@ -2,15 +2,23 @@
 % Please edit documentation in R/functions.R
 \name{chmProperties}
 \alias{chmProperties}
-\title{Create a list of NGCHM properties.}
+\title{Create NG-CHM Properties}
 \usage{
 chmProperties(...)
 }
 \arguments{
-\item{...}{A named list of property values.}
+\item{...}{Named arguments representing the properties to be created.
+Each argument should be a single value of type character, double, integer, or logical.}
+}
+\value{
+A list of properties. Each property is represented as a list with two elements: 'label' and 'value'.
 }
 \description{
-Create a list of NGCHM properties.
+This function creates one or more NG-CHM (Next-Generation Clustered Heat Map) properties.
+}
+\examples{
+# Create three properties: 'prop1', 'prop2', and 'prop3'.
+props <- chmProperties(prop1 = "value1", prop2 = 2, prop3 = TRUE)
 }
 \seealso{
 \code{\link[=chmAdd]{chmAdd()}}

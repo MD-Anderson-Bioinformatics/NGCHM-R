@@ -19,8 +19,10 @@ This function creates a new Property object for adding to
 a Next Generation Clustered Heat Map.
 }
 \examples{
-prop <- chmNewProperty ("chm.info.caption",
-                           "This is a nifty new CHM.")
+prop <- chmNewProperty(
+  "chm.info.caption",
+  "This is a nifty new CHM."
+)
 
 }
 \seealso{

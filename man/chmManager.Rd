@@ -2,18 +2,21 @@
 % Please edit documentation in R/functions.R
 \name{chmManager}
 \alias{chmManager}
-\title{Manage the NGCHMs on the specified server in the viewer.}
+\title{Open the NG-CHM Manager}
 \usage{
 chmManager(server = NULL, viewer = NULL)
 }
 \arguments{
-\item{server}{The server to browse. Defaults to option "NGCHM.Server" or the first server.
-The server must be managed.}
+\item{server}{The NG-CHM server to be browsed. If NULL, the function will use the first server
+in the list of available servers.}
 
-\item{viewer}{The viewer to use. Defaults to option "viewer" or browseURL.}
+\item{viewer}{The function to be used to open the web browser. If NULL, the function will use the 'browseURL' function.}
+}
+\value{
+None. This function is used for its side effects of opening a web browser to view the NG-CHM Manager.
 }
 \description{
-Opens the NG-CHM manager page in the viewer.
+This function opens a web browser to view the NG-CHM (Next-Generation Clustered Heat Map) Manager on the specified server.
 }
 \seealso{
 \code{\link[utils:browseURL]{utils::browseURL()}}

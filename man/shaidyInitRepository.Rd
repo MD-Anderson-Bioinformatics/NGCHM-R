@@ -2,15 +2,22 @@
 % Please edit documentation in R/shaidy.R
 \name{shaidyInitRepository}
 \alias{shaidyInitRepository}
-\title{Create and initialize a local shaidy repository.}
+\title{Create and initialize Shaidy Repository}
 \usage{
 shaidyInitRepository(shaidyDir, blob.types)
 }
 \arguments{
-\item{shaidyDir}{Basepath of local shaidy repository to create}
+\item{shaidyDir}{A single character string specifying the directory where the
+Shaidy repository will be initialized.}
 
-\item{blob.types}{A string vector naming the blob types to include in the repository}
+\item{blob.types}{A character vector specifying the blob types for the Shaidy
+repository.}
+}
+\value{
+None. This function is used for its side effects of initializing the Shaidy
+repository.
 }
 \description{
-Create and initialize a local shaidy repository.
+This function initializes a Shaidy repository in a specified directory with
+specified blob types.
 }

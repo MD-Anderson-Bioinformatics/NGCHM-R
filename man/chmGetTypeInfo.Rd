@@ -10,7 +10,7 @@ chmGetTypeInfo(typename)
 \item{typename}{The name of the type.}
 }
 \value{
-A list containing basic information about the type.
+Object of class "ngchm.type.info" containing basic information about the type.
 }
 \description{
 This function gets any registered information about a type name used for determining row and column

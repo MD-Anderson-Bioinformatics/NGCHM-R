@@ -42,12 +42,14 @@ An object of class ngchmBar
 This function creates a new covariate bar suitable for adding to a Next Generation Clustered Heat Map.
 }
 \examples{
-bar.data <- ifelse (rnorm(1000) < 0, "negative", "non-negative")
-names(bar.data) <- sprintf ("Sample\%d", 1:length(bar.data))
-bar.colors <- chmNewColorMap (c("negative", "non-negative"),
-                              c("white", "black"), missing.color='red')
-covar <- chmNewCovariate ("Group", bar.data, bar.colors, "discrete")
-bar <- chmNewCovariateBar (covar)
+bar.data <- ifelse(rnorm(1000) < 0, "negative", "non-negative")
+names(bar.data) <- sprintf("Sample\%d", 1:length(bar.data))
+bar.colors <- chmNewColorMap(c("negative", "non-negative"),
+  c("white", "black"),
+  missing.color = "red"
+)
+covar <- chmNewCovariate("Group", bar.data, bar.colors, "discrete")
+bar <- chmNewCovariateBar(covar)
 
 }
 \seealso{

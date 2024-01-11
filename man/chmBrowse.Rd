@@ -7,9 +7,12 @@
 chmBrowse(server = NULL, viewer = NULL)
 }
 \arguments{
-\item{server}{The server to browse. Defaults to option "NGCHM.Server" or the first server.}
+\item{server}{The NG-CHM server to be browsed. If NULL, the function will use the first server in the list of available servers.}
 
-\item{viewer}{The viewer to use. Defaults to option "viewer" or browseURL.}
+\item{viewer}{The function to be used to open the web browser. If NULL, the function will use the 'browseURL' function.}
+}
+\value{
+None. This function is used for its side effects of opening a web browser to view the NG-CHM server.
 }
 \description{
 Opens the NG-CHM browser page in the viewer.

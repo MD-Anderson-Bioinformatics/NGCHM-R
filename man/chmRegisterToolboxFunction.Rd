@@ -7,11 +7,16 @@
 chmRegisterToolboxFunction(tbtype, menulabel, jsfn)
 }
 \arguments{
-\item{tbtype}{The toolbox type.}
+\item{tbtype}{A single character string specifying the type of the toolbox function.}
 
-\item{menulabel}{The base menu label for the toolbox operation.}
+\item{menulabel}{A single character string specifying the menu label of the
+toolbox function.}
 
-\item{jsfn}{The Javascript function that implements the toolbox operation.}
+\item{jsfn}{The function to be registered. This should be an object of class 'ngchmJS'.}
+}
+\value{
+None. This function is used for its side effects of registering a new
+toolbox function.
 }
 \description{
 This function registers a Javascript function that can included in

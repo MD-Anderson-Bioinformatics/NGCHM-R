@@ -2,13 +2,18 @@
 % Please edit documentation in R/ngchmshaidy.R
 \name{ngchmInitShaidyRepository}
 \alias{ngchmInitShaidyRepository}
-\title{Create a shaidy repository for NG-CHMS}
+\title{Initialize Shaidy Repository for NG-CHM}
 \usage{
 ngchmInitShaidyRepository(shaidyDir)
 }
 \arguments{
-\item{shaidyDir}{Basepath of local shaidy repository to create}
+\item{shaidyDir}{A single character string specifying the directory where the
+Shaidy repository will be initialized.}
+}
+\value{
+None. This function is used for its side effects of initializing the
+Shaidy repository.
 }
 \description{
-Create a shaidy repository for NG-CHMS
+This function initializes a Shaidy repository for NG-CHM (Next-Generation Clustered Heat Map).
 }

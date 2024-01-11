@@ -2,10 +2,17 @@
 % Please edit documentation in R/functions.R
 \name{chmListServers}
 \alias{chmListServers}
-\title{Return the names of the NGCHM servers defined to date in this session.}
+\title{List NG-CHM Servers}
 \usage{
 chmListServers()
 }
+\value{
+A character vector containing the names of all available servers.
+}
 \description{
-Return the names of the NGCHM servers defined to date in this session.
+This function lists all NG-CHM (Next-Generation Clustered Heat Map) servers that are currently available.
+}
+\examples{
+servers <- chmListServers() # Get a list of all available servers.
+
 }

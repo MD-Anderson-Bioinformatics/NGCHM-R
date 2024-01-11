@@ -27,20 +27,24 @@ Coordinates are given names 'BASENAME.coordinate.N', where BASENAME is specified
 parameter basename (default "PC") and N ranges from 1 to the number of added covariate bars.
 }
 \examples{
-# If the NGCHMDemoData package is installed, use it to demo usage
-if (requireNamespace("NGCHMDemoData", quietly = TRUE)) {
-  data(TCGA.GBM.EXPR, package = 'NGCHMDemoData')
-  prc <- prcomp(TCGA.GBM.EXPR[1:50,1:50])
-  hm <- chmNew("gbm", TCGA.GBM.EXPR[1:50,1:50])
+# Examples using `chmNew()` require git to be installed.
+\dontrun{
+  # If the NGCHMDemoData package is installed, use it to demo usage
+  if (requireNamespace("NGCHMDemoData", quietly = TRUE)) {
+   data(TCGA.GBM.EXPR, package = "NGCHMDemoData")
+    prc <- prcomp(TCGA.GBM.EXPR[1:50, 1:50])
+    hm <- chmNew("gbm", TCGA.GBM.EXPR[1:50, 1:50])
+    hm <- chmAddPCA(hm, "column", prc)
+  }
+  # Small example not requiring NGCHMDemoData
+  matrix <- matrix(rnorm(100),
+    nrow = 10, ncol = 10,
+    dimnames = list(paste0("r", 1:10), paste0("c", 1:10))
+  )
+  prc <- prcomp(matrix)
+  hm <- chmNew("Demo PCA", matrix)
   hm <- chmAddPCA(hm, "column", prc)
 }
-# Small example not requiring NGCHMDemoData
-matrix <- matrix(rnorm(100), nrow = 10, ncol = 10,
-    dimnames = list(paste0("r", 1:10), paste0("c", 1:10)))
-prc <- prcomp(matrix)
-hm <- chmNew("Demo PCA", matrix)
-hm <- chmAddPCA(hm, "column", prc)
-
 }
 \seealso{
 \code{\link[=chmAddTSNE]{chmAddTSNE()}}

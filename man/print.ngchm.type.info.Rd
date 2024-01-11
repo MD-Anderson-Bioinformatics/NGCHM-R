@@ -2,17 +2,21 @@
 % Please edit documentation in R/functions.R
 \name{print.ngchm.type.info}
 \alias{print.ngchm.type.info}
-\title{Pretty print the result returned by chmGetTypeInfo.}
+\title{Pretty Print NGCHM Type Information}
 \usage{
 \method{print}{ngchm.type.info}(x, ...)
 }
 \arguments{
-\item{x}{Type information about an NGCHM type name as return by chmGetTypeInfo.}
+\item{x}{An object of class 'ngchm.type.info' as returned by chmGetTypeInfo.}
 
-\item{...}{Generic function accepts additional parameters}
+\item{...}{Additional arguments (not used).}
+}
+\value{
+A string that provides a detailed description of the NGCHM type.
 }
 \description{
-Pretty print the result returned by chmGetTypeInfo.
+This function takes an object of class 'ngchm.type.info' and returns a formatted string
+that provides a detailed description of the NGCHM type.
 }
 \seealso{
 \code{\link[=chmGetTypeInfo]{chmGetTypeInfo()}}

@@ -7,9 +7,14 @@
 chmRegisterType(typename, description)
 }
 \arguments{
-\item{typename}{The name of the type.}
+\item{typename}{A character vector specifying the name(s) of the type(s) to be
+registered.}
 
-\item{description}{A description of the type.}
+\item{description}{A single character string specifying the description of the
+type(s).}
+}
+\value{
+None. This function is used for its side effects of registering a new type.
 }
 \description{
 This function registers a type name used for determining row and column

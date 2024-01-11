@@ -20,29 +20,42 @@ ngchmCreateServerProtocol(
 )
 }
 \arguments{
-\item{protocolName}{The name of this protocol implementation.}
+\item{protocolName}{A single character string specifying the name of the protocol.}
 
-\item{chmFormat}{The chm format required by this protocol. Defaults to original format.}
+\item{chmFormat}{A single character string specifying the format of the heat map.
+Defaults to "original".}
 
-\item{requiredParams}{The protocol's required parameters, if any.}
+\item{requiredParams}{A character vector specifying the required parameters for the
+protocol, if any.}
 
-\item{optionalParams}{The protocol's optional parameters, if any.}
+\item{optionalParams}{A character vector specifying the optional parameters for the
+protocol, if any.}
 
-\item{paramValidator}{A function(list) for validating the parameters specified for a new server.}
+\item{paramValidator}{A function(list) for validating the parameters specified
+for a new server.}
 
-\item{findCollection}{A function(server,collection,path) for finding a collection.}
+\item{findCollection}{A function(server,collection,path) that finds a collection
+on the server.}
 
-\item{createCollection}{A function(server,collection,name) for creating a collection.}
+\item{createCollection}{A function(server,collection,name) that creates a collection
+on the server.}
 
-\item{installMethod}{A function(server,chm) for installing an NG-CHM.}
+\item{installMethod}{A function(server,chm) that installs a heat map on the server.}
 
-\item{uninstallMethod}{A function(server,chmname) for uninstalling an NG-CHM.}
+\item{uninstallMethod}{A function(server,chmname) that uninstalls a heat map
+from the server.}
 
-\item{makePrivate}{A function(server,chmname) for hiding an NG-CHM.}
+\item{makePrivate}{A function(server,chmname) that makes a heat map private
+on the server.}
 
-\item{makePublic}{A function(server,chmname) for showing an NG-CHM.}
+\item{makePublic}{A function(server,chmname) that makes a heat map public on the
+server.}
 
-\item{setCredentials}{A function(server,credentialstring) for setting credentials.}
+\item{setCredentials}{A function(server,credentialstring) that sets the credentials
+for the server.}
+}
+\value{
+An object of class 'ngchmServerProtocol' representing the new server protocol.
 }
 \description{
 This function creates and registers a protocol implementation for manipulating

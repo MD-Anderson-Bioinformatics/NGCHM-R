@@ -24,7 +24,7 @@ A character string (or a vector of strings for an ngchmColormap)
 Get the label/name of an NG-CHM object.
 }
 \examples{
-chmLabel (chmNew('New CHM'))
+chmLabel(chmNew("New CHM"))
 
 }
 \seealso{

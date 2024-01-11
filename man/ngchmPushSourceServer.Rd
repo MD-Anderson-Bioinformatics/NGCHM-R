@@ -7,10 +7,16 @@
 ngchmPushSourceServer(server)
 }
 \arguments{
-\item{server}{An ngchmServer or the name of one.}
+\item{server}{An object of class 'ngchmServer' or a single character string
+specifying the name of the server.}
+}
+\value{
+None. This function is used for its side effects of pushing the source
+server onto the Shaidy stack.
 }
 \description{
-Push a shaidy server onto the stack of source repositories
+This function pushes a source server for NG-CHM (Next-Generation Clustered Heat Map)
+onto the Shaidy stack.
 }
 \seealso{
 \code{\link[=chmLoadShaidyCHM]{chmLoadShaidyCHM()}}

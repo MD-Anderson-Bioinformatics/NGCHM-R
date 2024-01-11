@@ -7,7 +7,10 @@
 chmRegisterFunction(fn)
 }
 \arguments{
-\item{fn}{The Javascript function to register.}
+\item{fn}{The function to be registered. This should be an object of class 'ngchmJS'.}
+}
+\value{
+The registered function.
 }
 \description{
 This function registers a Javascript function that can be used when

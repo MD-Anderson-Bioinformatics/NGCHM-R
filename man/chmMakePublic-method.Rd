@@ -6,7 +6,7 @@
 \alias{chmMakePublic,ngchmServer,ngchm-method}
 \alias{chmMakePublic,character,ngchm-method}
 \alias{chmMakePublic,character,character-method}
-\title{Make an installed NGCHM public.}
+\title{Make NG-CHM Public on Server}
 \usage{
 chmMakePublic(server, chm)
 
@@ -19,12 +19,15 @@ chmMakePublic(server, chm)
 \S4method{chmMakePublic}{character,character}(server, chm)
 }
 \arguments{
-\item{server}{The server on which the NGCHM to make public is installed.}
+\item{server}{An object of class 'ngchmServer' representing the server where the NG-CHM is hosted.}
 
-\item{chm}{The NGCHM to make public.}
+\item{chm}{A single character string specifying the name of the NG-CHM to be made public.}
+}
+\value{
+No return value. The function is called for its side effect of making the specified NG-CHM public on the specified server.
 }
 \description{
-Make public the specified Next Generation Clustered Heat Map (NGCHM) on the specified server.
+This function makes a specific NG-CHM (Next-Generation Clustered Heat Map) public on a specified server.
 }
 \seealso{
 \linkS4class{ngchmServer}

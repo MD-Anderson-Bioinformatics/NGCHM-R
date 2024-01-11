@@ -13,6 +13,9 @@ chmRegisterAxisFunction(type, label, fn)
 
 \item{fn}{The Javascript function to register.}
 }
+\value{
+None. This function is used for its side effects of registering a new axis function.
+}
 \description{
 This function registers a Javascript function that will be automatically
 added to the appropriate axis menu(s) when building a Next Generation

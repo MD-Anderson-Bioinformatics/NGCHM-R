@@ -11,10 +11,13 @@ chmHasProperty(object, label)
 \S4method{chmHasProperty}{ngchmVersion2,character}(object, label)
 }
 \arguments{
-\item{object}{An NG-CHM object}
+\item{object}{An object of class 'ngchmVersion2' representing the NG-CHM to be checked.}
 
-\item{label}{The name of the property to check}
+\item{label}{A single character string or a vector of character strings specifying the label(s) of the property(ies) to be checked.}
+}
+\value{
+A logical value indicating whether the specified property(ies) exist in the 'ngchmVersion2' object. If 'label' is a vector, a logical vector is returned.
 }
 \description{
-Determine if the NG-CHM has the given property.
+This function checks if a specific property exists in a NG-CHM (Next-Generation Clustered Heat Map) object.
 }

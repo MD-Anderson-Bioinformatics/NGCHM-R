@@ -6,6 +6,9 @@
 \usage{
 ngchmGetEnv()
 }
+\value{
+A list representing the current environment for NG-CHM.
+}
 \description{
 Get the library's internal ngchm environment to help debugging.
 }

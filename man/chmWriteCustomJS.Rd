@@ -7,9 +7,13 @@
 chmWriteCustomJS(chm, filename)
 }
 \arguments{
-\item{chm}{An NGCHM}
+\item{chm}{An object of class 'chm' representing the heat map.}
 
-\item{filename}{The file to which the customization code will be written.}
+\item{filename}{A single character string specifying the name of the file
+where the JavaScript will be written.}
+}
+\value{
+None. This function is used for its side effects of writing the JavaScript to a file.
 }
 \description{
 This function outputs the Javascript required to customize an NGCHM.

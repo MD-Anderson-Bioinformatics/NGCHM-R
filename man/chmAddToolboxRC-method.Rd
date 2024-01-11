@@ -4,23 +4,26 @@
 \alias{chmAddToolboxRC}
 \alias{chmAddToolboxRC,ngchm,character,character,character,character-method}
 \alias{chmAddToolboxRC,ngchm,character,character,character-method}
-\title{Add standard toolbox to an element}
+\title{Add Toolbox RC to NG-CHM}
 \usage{
 chmAddToolboxRC(CHM, rowtype, coltype, datasetname, idstr)
 
 \S4method{chmAddToolboxRC}{ngchm,character,character,character,character}(CHM, rowtype, coltype, datasetname, idstr)
 }
 \arguments{
-\item{CHM}{CHM to which the toolbox will be added}
+\item{CHM}{An object of class 'ngchm'.}
 
-\item{rowtype}{the type of the row axis}
+\item{rowtype}{A single character string specifying the type of the row.}
 
-\item{coltype}{the type of the column axis}
+\item{coltype}{A single character string specifying the type of the column.}
 
-\item{datasetname}{the name of the dataset to use}
+\item{datasetname}{A single character string specifying the name of the dataset.}
 
 \item{idstr}{string to append to toolbox menu labels (default '')}
 }
+\value{
+An updated 'ngchm' object with the new toolbox of type RC added.
+}
 \description{
-Add a standard toolbox to an element
+This function adds a toolbox of type RC to a NG-CHM (Next-Generation Clustered Heat Map) object.
 }

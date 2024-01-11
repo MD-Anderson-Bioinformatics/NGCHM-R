@@ -77,10 +77,10 @@ Additional parameters will be added to the new NGCHM (see chmAdd).
 The bare NGCHM needs at least one data layer added to it before it can be compiled.
 }
 \examples{
-mychm <- chmNew ("test_chm")
-mychm <- chmNew("test_chm", rowGapLocations=c(3,5))
-mychm <- chmNew("test_chm", rowGapLocations=chmTreeGaps(4))
-mychm <- chmNew("test_chm", rowGapWidth=3)
+mychm <- chmNew("test_chm")
+mychm <- chmNew("test_chm", rowGapLocations = c(3, 5))
+mychm <- chmNew("test_chm", rowGapLocations = chmTreeGaps(4))
+mychm <- chmNew("test_chm", rowGapWidth = 3)
 
 }
 \seealso{

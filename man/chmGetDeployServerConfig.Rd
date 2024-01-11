@@ -7,8 +7,14 @@
 chmGetDeployServerConfig(server)
 }
 \arguments{
-\item{server}{The server for which the configuration is being set.  Must have deployServer set.}
+\item{server}{The server for which the configuration is to be retrieved.
+This can be either a character string representing the server name or an object
+of class 'ngchmServer'.}
+}
+\value{
+The configuration of the specified server if it exists, otherwise NULL.
 }
 \description{
-Get per-user configuration for a specific deploy Server.
+This function retrieves the configuration of a specified NG-CHM
+(Next-Generation Clustered Heat Map) deployment server.
 }

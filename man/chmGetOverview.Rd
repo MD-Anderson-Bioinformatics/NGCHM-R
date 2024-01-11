@@ -7,11 +7,14 @@
 chmGetOverview(chm, format = NULL, idx = NULL)
 }
 \arguments{
-\item{chm}{An NGCHM.}
+\item{chm}{The CHM for which the overview is to be retrieved.}
 
 \item{format}{The format of overview image desired (defaults to 'png' if idx is not specified).}
 
 \item{idx}{The index of the overview image desired (defaults to first image of the specified format).}
+}
+\value{
+The path to the retrieved overview.
 }
 \description{
 This function returns the file path to the specified overview image of the CHM.  The CHM must be

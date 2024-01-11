@@ -12,6 +12,10 @@ chmGetDataset(object)
 \arguments{
 \item{object}{An NG-CHM object containing an ngchmDataset}
 }
+\value{
+The dataset associated with the specified object.
+}
 \description{
-Get the ngchmDataset object from an NG-CHM object.
+This function retrieves the dataset associated with a specific NG-CHM
+(Next-Generation Clustered Heat Map).
 }
