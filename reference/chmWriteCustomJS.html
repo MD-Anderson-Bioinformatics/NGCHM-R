@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">NGCHMR</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.0.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.0.1</span>
       </span>
     </div>
 
@@ -78,7 +78,7 @@
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>Output Javascript code required to customize an NGCHM.</h1>
-    
+    <small class="dont-index">Source: <a href="https://github.com/MD-Anderson-Bioinformatics/NGCHM-R/blob/HEAD/R/functions.R" class="external-link"><code>R/functions.R</code></a></small>
     <div class="hidden name"><code>chmWriteCustomJS.Rd</code></div>
     </div>
 
@@ -93,13 +93,20 @@
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>chm</dt>
-<dd><p>An NGCHM</p></dd>
+<dd><p>An object of class 'chm' representing the heat map.</p></dd>
 
 
 <dt>filename</dt>
-<dd><p>The file to which the customization code will be written.</p></dd>
+<dd><p>A single character string specifying the name of the file
+where the JavaScript will be written.</p></dd>
 
 </dl></div>
+    <div id="value">
+    <h2>Value</h2>
+    
+
+<p>None. This function is used for its side effects of writing the JavaScript to a file.</p>
+    </div>
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

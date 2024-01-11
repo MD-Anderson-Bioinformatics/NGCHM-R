@@ -20,7 +20,7 @@ If not set it defaults to /etc/ngchm:/usr/local/ngchm:/opt/ngchm:$HOME/.ngchm.">
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">NGCHMR</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.0.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.0.1</span>
       </span>
     </div>
 
@@ -81,7 +81,7 @@ If not set it defaults to /etc/ngchm:/usr/local/ngchm:/opt/ngchm:$HOME/.ngchm.">
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>Initialization of the NGCHM library.</h1>
-    
+    <small class="dont-index">Source: <a href="https://github.com/MD-Anderson-Bioinformatics/NGCHM-R/blob/HEAD/R/zzz.R" class="external-link"><code>R/zzz.R</code></a></small>
     <div class="hidden name"><code>NGCHM-initialization.Rd</code></div>
     </div>
 
@@ -93,6 +93,12 @@ If not set it defaults to /etc/ngchm:/usr/local/ngchm:/opt/ngchm:$HOME/.ngchm.</
     </div>
 
 
+    <div id="value">
+    <h2>Value</h2>
+    
+
+<p>None. This function is used for its side effects of loading configuration files.</p>
+    </div>
     <div id="details">
     <h2>Details</h2>
     <p>For each configuration directory in the configuration path, the NGCHM package
@@ -101,6 +107,27 @@ determined by the R sort function).  Other subdirectories are not scanned
 unless instructed to by an entry in a configuration file.</p>
 <p>Configuration files may be either text files (.txt extension), R scripts (.R extension),
 or javascript files (.js extension).</p>
+<p>Here is an example directory structruce for a server named 'my_server':</p>
+<div class="sourceCode"><pre><code>
+.
+|-- conf.d
+|   \-- 00-servers.txt
+\-- my_server
+    \-- config.txt
+</code></pre></div>
+
+<p>Here are the contents of an example 00-servers.txt file:</p><div class="sourceCode"><pre><code>
+[servers]
+my-server = /usr/local/ngchm/my_server
+</code></pre></div>
+
+<p>Here are the contents of an example config.txt file:</p><div class="sourceCode"><pre><code>
+serverProtocol = shaidy
+accessMethod = api
+basePath = &lt;URL to server. e.g. "https://mydomain.edu/server/api"&gt;
+serverURL = &lt;URL to server. e.g. "https://mydomain.edu/server"&gt;
+</code></pre></div>
+
     </div>
     <div id="text-files">
     <h2>Text files</h2>
@@ -131,10 +158,6 @@ may optionally define any optional parameters.</p>
 <p>Javascript files define context specific menu entries.</p>
     </div>
 
-    <div id="ref-examples">
-    <h2>Examples</h2>
-    
-    </div>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top"><h2 data-toc-skip>Contents</h2>

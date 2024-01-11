@@ -18,7 +18,7 @@ an NGCHM server."><!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">NGCHMR</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.0.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.0.1</span>
       </span>
     </div>
 
@@ -79,7 +79,7 @@ an NGCHM server."><!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>Create and register an NGCHM server protocol implementation.</h1>
-    
+    <small class="dont-index">Source: <a href="https://github.com/MD-Anderson-Bioinformatics/NGCHM-R/blob/HEAD/R/functions.R" class="external-link"><code>R/functions.R</code></a></small>
     <div class="hidden name"><code>ngchmCreateServerProtocol.Rd</code></div>
     </div>
 
@@ -108,53 +108,69 @@ an NGCHM server.</p>
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>protocolName</dt>
-<dd><p>The name of this protocol implementation.</p></dd>
+<dd><p>A single character string specifying the name of the protocol.</p></dd>
 
 
 <dt>chmFormat</dt>
-<dd><p>The chm format required by this protocol. Defaults to original format.</p></dd>
+<dd><p>A single character string specifying the format of the heat map.
+Defaults to "original".</p></dd>
 
 
 <dt>requiredParams</dt>
-<dd><p>The protocol's required parameters, if any.</p></dd>
+<dd><p>A character vector specifying the required parameters for the
+protocol, if any.</p></dd>
 
 
 <dt>optionalParams</dt>
-<dd><p>The protocol's optional parameters, if any.</p></dd>
+<dd><p>A character vector specifying the optional parameters for the
+protocol, if any.</p></dd>
 
 
 <dt>paramValidator</dt>
-<dd><p>A function(list) for validating the parameters specified for a new server.</p></dd>
+<dd><p>A function(list) for validating the parameters specified
+for a new server.</p></dd>
 
 
 <dt>findCollection</dt>
-<dd><p>A function(server,collection,path) for finding a collection.</p></dd>
+<dd><p>A function(server,collection,path) that finds a collection
+on the server.</p></dd>
 
 
 <dt>createCollection</dt>
-<dd><p>A function(server,collection,name) for creating a collection.</p></dd>
+<dd><p>A function(server,collection,name) that creates a collection
+on the server.</p></dd>
 
 
 <dt>installMethod</dt>
-<dd><p>A function(server,chm) for installing an NG-CHM.</p></dd>
+<dd><p>A function(server,chm) that installs a heat map on the server.</p></dd>
 
 
 <dt>uninstallMethod</dt>
-<dd><p>A function(server,chmname) for uninstalling an NG-CHM.</p></dd>
+<dd><p>A function(server,chmname) that uninstalls a heat map
+from the server.</p></dd>
 
 
 <dt>makePrivate</dt>
-<dd><p>A function(server,chmname) for hiding an NG-CHM.</p></dd>
+<dd><p>A function(server,chmname) that makes a heat map private
+on the server.</p></dd>
 
 
 <dt>makePublic</dt>
-<dd><p>A function(server,chmname) for showing an NG-CHM.</p></dd>
+<dd><p>A function(server,chmname) that makes a heat map public on the
+server.</p></dd>
 
 
 <dt>setCredentials</dt>
-<dd><p>A function(server,credentialstring) for setting credentials.</p></dd>
+<dd><p>A function(server,credentialstring) that sets the credentials
+for the server.</p></dd>
 
 </dl></div>
+    <div id="value">
+    <h2>Value</h2>
+    
+
+<p>An object of class 'ngchmServerProtocol' representing the new server protocol.</p>
+    </div>
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

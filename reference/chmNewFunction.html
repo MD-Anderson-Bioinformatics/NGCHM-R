@@ -18,7 +18,7 @@ a Next Generation Clustered Heat Map menu."><!-- mathjax --><script src="https:/
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">NGCHMR</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.0.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.0.1</span>
       </span>
     </div>
 
@@ -79,7 +79,7 @@ a Next Generation Clustered Heat Map menu."><!-- mathjax --><script src="https:/
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>Create a new Javascript function for adding to a NGCHM menu.</h1>
-    
+    <small class="dont-index">Source: <a href="https://github.com/MD-Anderson-Bioinformatics/NGCHM-R/blob/HEAD/R/functions.R" class="external-link"><code>R/functions.R</code></a></small>
     <div class="hidden name"><code>chmNewFunction.Rd</code></div>
     </div>
 
@@ -143,11 +143,15 @@ parameter and must be resolved through currying (binding) before the function is
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">alertFn</span> <span class="op">&lt;-</span> <span class="fu">chmNewFunction</span> <span class="op">(</span><span class="st">"showAlert"</span>, <span class="st">"Display the parameter in an alert box"</span>,</span></span>
-<span class="r-in"><span>                           <span class="st">"function showAlert(label) { alert(label); }"</span>, global<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="va">dbLookup</span> <span class="op">&lt;-</span> <span class="fu">chmNewFunction</span> <span class="op">(</span><span class="st">"dbLookup"</span>, <span class="st">"Lookup the parameter in a database"</span>,</span></span>
-<span class="r-in"><span>                            <span class="st">"function showAlert(database, label) { alert(database[label]); }"</span>,</span></span>
-<span class="r-in"><span>                            <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"database"</span><span class="op">)</span><span class="op">)</span></span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">alertFn</span> <span class="op">&lt;-</span> <span class="fu">chmNewFunction</span><span class="op">(</span><span class="st">"showAlert"</span>, <span class="st">"Display the parameter in an alert box"</span>,</span></span>
+<span class="r-in"><span>  <span class="st">"function showAlert(label) { alert(label); }"</span>,</span></span>
+<span class="r-in"><span>  global <span class="op">=</span> <span class="cn">TRUE</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">dbLookup</span> <span class="op">&lt;-</span> <span class="fu">chmNewFunction</span><span class="op">(</span></span></span>
+<span class="r-in"><span>  <span class="st">"dbLookup"</span>, <span class="st">"Lookup the parameter in a database"</span>,</span></span>
+<span class="r-in"><span>  <span class="st">"function showAlert(database, label) { alert(database[label]); }"</span>,</span></span>
+<span class="r-in"><span>  <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"database"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 </code></pre></div>
     </div>

@@ -18,7 +18,7 @@ and for compiling and installing it on a NGCHM server."><!-- mathjax --><script 
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">NGCHMR</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.0.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.0.1</span>
       </span>
     </div>
 
@@ -79,7 +79,7 @@ and for compiling and installing it on a NGCHM server."><!-- mathjax --><script 
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>Next Generation Clustered Heat Map (NGCHM) Construction Library</h1>
-    
+    <small class="dont-index">Source: <a href="https://github.com/MD-Anderson-Bioinformatics/NGCHM-R/blob/HEAD/R/package.R" class="external-link"><code>R/package.R</code></a></small>
     <div class="hidden name"><code>NGCHM-package.Rd</code></div>
     </div>
 
@@ -119,25 +119,30 @@ See NGCHM-initialization for details.</p>
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># The NGCHMSupportFiles package is required by chmExportToFile and chmExportToPDF</span></span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># Examples using `chmNew()` require git to be installed.</span></span></span>
+<span class="r-in"><span><span class="co"># The NGCHMSupportFiles package is required by chmExportToFile and chmExportToPDF</span></span></span>
 <span class="r-in"><span><span class="co"># The NGCHMDemoData package is used to create a demo NGCHM</span></span></span>
 <span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span></span>
-<span class="r-in"><span>  <span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">NGCHMSupportFiles</span><span class="op">)</span></span></span>
-<span class="r-in"><span>  <span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">TCGA.GBM.EXPR</span>, package <span class="op">=</span> <span class="st">'NGCHMDemoData'</span><span class="op">)</span></span></span>
-<span class="r-in"><span>  <span class="va">chm1</span> <span class="op">&lt;-</span> <span class="fu"><a href="chmNew.html">chmNew</a></span><span class="op">(</span><span class="st">'gbm'</span>, <span class="va">TCGA.GBM.EXPR</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">50</span>,<span class="fl">1</span><span class="op">:</span><span class="fl">50</span><span class="op">]</span>,</span></span>
-<span class="r-in"><span>    rowAxisType <span class="op">=</span> <span class="st">'bio.gene.hugo'</span>,</span></span>
-<span class="r-in"><span>    colAxisType <span class="op">=</span> <span class="st">'bio.tcga.barcode.sample.vial.portion.analyte.aliquot'</span><span class="op">)</span></span></span>
-<span class="r-in"><span>  <span class="fu"><a href="chmExportToFile-method.html">chmExportToFile</a></span><span class="op">(</span><span class="va">chm1</span>, <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempfile</a></span><span class="op">(</span><span class="st">'gbm'</span>, fileext <span class="op">=</span> <span class="st">'.ngchm'</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-in"><span>  <span class="fu"><a href="chmExportToPDF-method.html">chmExportToPDF</a></span><span class="op">(</span><span class="va">chm1</span>, <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempfile</a></span><span class="op">(</span><span class="st">'gbm'</span>, fileext <span class="op">=</span> <span class="st">'.pdf'</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span>  <span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/ns-load.html" class="external-link">requireNamespace</a></span><span class="op">(</span><span class="st">"NGCHMSupportFiles"</span>, quietly <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span></span>
+<span class="r-in"><span>    <span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/ns-load.html" class="external-link">requireNamespace</a></span><span class="op">(</span><span class="st">"NGCHMDemoData"</span>, quietly <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span></span>
+<span class="r-in"><span>      <span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">NGCHMSupportFiles</span><span class="op">)</span></span></span>
+<span class="r-in"><span>      <span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">NGCHMDemoData</span><span class="op">)</span></span></span>
+<span class="r-in"><span>      <span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">TCGA.GBM.EXPR</span>, package <span class="op">=</span> <span class="st">"NGCHMDemoData"</span><span class="op">)</span></span></span>
+<span class="r-in"><span>      <span class="va">chm1</span> <span class="op">&lt;-</span> <span class="fu"><a href="chmNew.html">chmNew</a></span><span class="op">(</span><span class="st">"gbm"</span>, <span class="va">TCGA.GBM.EXPR</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">50</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">50</span><span class="op">]</span>,</span></span>
+<span class="r-in"><span>        rowAxisType <span class="op">=</span> <span class="st">"bio.gene.hugo"</span>,</span></span>
+<span class="r-in"><span>        colAxisType <span class="op">=</span> <span class="st">"bio.tcga.barcode.sample.vial.portion.analyte.aliquot"</span></span></span>
+<span class="r-in"><span>      <span class="op">)</span></span></span>
+<span class="r-in"><span>      <span class="fu"><a href="chmExportToFile-method.html">chmExportToFile</a></span><span class="op">(</span><span class="va">chm1</span>, <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempfile</a></span><span class="op">(</span><span class="st">"gbm"</span>, fileext <span class="op">=</span> <span class="st">".ngchm"</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span>      <span class="fu"><a href="chmExportToPDF-method.html">chmExportToPDF</a></span><span class="op">(</span><span class="va">chm1</span>, <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempfile</a></span><span class="op">(</span><span class="st">"gbm"</span>, fileext <span class="op">=</span> <span class="st">".pdf"</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span>    <span class="op">}</span></span></span>
+<span class="r-in"><span>  <span class="op">}</span></span></span>
+<span class="r-in"><span>  <span class="va">mat</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="fl">100</span><span class="op">)</span>, nrow <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></span></span>
+<span class="r-in"><span>  <span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">rownames</a></span><span class="op">(</span><span class="va">mat</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sprintf.html" class="external-link">sprintf</a></span><span class="op">(</span><span class="st">"ABCA%d"</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">10</span><span class="op">)</span></span></span>
+<span class="r-in"><span>  <span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">colnames</a></span><span class="op">(</span><span class="va">mat</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sprintf.html" class="external-link">sprintf</a></span><span class="op">(</span><span class="st">"Sample%d"</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">10</span><span class="op">)</span></span></span>
+<span class="r-in"><span>  <span class="va">chm</span> <span class="op">&lt;-</span> <span class="fu"><a href="chmNew.html">chmNew</a></span><span class="op">(</span><span class="st">"my-chm"</span>, <span class="va">mat</span><span class="op">)</span></span></span>
+<span class="r-in"><span>  <span class="fu"><a href="chmSetCollection.html">chmSetCollection</a></span><span class="op">(</span><span class="st">"//server/collection"</span><span class="op">)</span></span></span>
+<span class="r-in"><span>  <span class="fu"><a href="chmInstall-method.html">chmInstall</a></span><span class="op">(</span><span class="va">chm</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="op">}</span></span></span>
-<span class="r-in"><span><span class="va">mat</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="fl">100</span><span class="op">)</span>, nrow <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">rownames</a></span><span class="op">(</span><span class="va">mat</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sprintf.html" class="external-link">sprintf</a></span><span class="op">(</span><span class="st">"ABCA%d"</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">10</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">colnames</a></span><span class="op">(</span><span class="va">mat</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sprintf.html" class="external-link">sprintf</a></span><span class="op">(</span><span class="st">"Sample%d"</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">10</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="va">chm</span> <span class="op">&lt;-</span> <span class="fu"><a href="chmNew.html">chmNew</a></span><span class="op">(</span><span class="st">'my-chm'</span>, <span class="va">mat</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="fu"><a href="chmSetCollection.html">chmSetCollection</a></span> <span class="op">(</span><span class="st">'//server/collection'</span><span class="op">)</span></span></span>
-<span class="r-in"><span>  <span class="fu"><a href="chmInstall-method.html">chmInstall</a></span> <span class="op">(</span><span class="va">chm</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in .local(chm, ...):</span> length(dest$server) &gt; 0 is not TRUE</span>
-<span class="r-in"><span></span></span>
 </code></pre></div>
     </div>
   </div>

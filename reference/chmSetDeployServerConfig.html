@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">NGCHMR</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.0.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.0.1</span>
       </span>
     </div>
 
@@ -78,7 +78,7 @@
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>Specify per-user configuration for a specific deploy Server.</h1>
-    
+    <small class="dont-index">Source: <a href="https://github.com/MD-Anderson-Bioinformatics/NGCHM-R/blob/HEAD/R/zzz.R" class="external-link"><code>R/zzz.R</code></a></small>
     <div class="hidden name"><code>chmSetDeployServerConfig.Rd</code></div>
     </div>
 
@@ -93,13 +93,20 @@
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>server</dt>
-<dd><p>The server for which the configuration is being set.  Must have deployServer set.</p></dd>
+<dd><p>An object of class 'chmServer' or a character string specifying the
+name of the server.</p></dd>
 
 
 <dt>config</dt>
-<dd><p>The configuration to set</p></dd>
+<dd><p>A list specifying the configuration to be set for the server.</p></dd>
 
 </dl></div>
+    <div id="value">
+    <h2>Value</h2>
+    
+
+<p>None. This function is used for its side effects of setting the deployment server configuration.</p>
+    </div>
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

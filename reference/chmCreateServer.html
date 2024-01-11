@@ -20,7 +20,7 @@ referenced by name, including retrieval using chmServer."><!-- mathjax --><scrip
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">NGCHMR</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.0.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.0.1</span>
       </span>
     </div>
 
@@ -81,7 +81,7 @@ referenced by name, including retrieval using chmServer."><!-- mathjax --><scrip
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>Create an ngchmServer object from a specification.</h1>
-    
+    <small class="dont-index">Source: <a href="https://github.com/MD-Anderson-Bioinformatics/NGCHM-R/blob/HEAD/R/functions.R" class="external-link"><code>R/functions.R</code></a></small>
     <div class="hidden name"><code>chmCreateServer.Rd</code></div>
     </div>
 
@@ -118,16 +118,32 @@ referenced by name, including retrieval using chmServer.</p>
     </div>
     <div id="details">
     <h2>Details</h2>
-    <p>serverSpec can be any of:</p><ul><li><p>A configuration directory path. The specification will be read from a file 'config.txt' in that directory.</p></li>
-<li><p>An NGCHM server URL (ending in '/chm' or '/Viewer' for instance). A minimal specification will be inferred.
-Known methods for uploading NGCHMs to the server will be autoprobed unless specified manually.</p></li>
-<li><p>A URL referencing a configuration file (must end in '/config.txt'). The specification will be read from the
-specified URL.</p></li>
-</ul><p>serverOptions can include both protocol-specific options and the following generic options:</p><ul><li><p>'serverURL'. The URL for the NGCHM server.</p></li>
-<li><p>'serverProtocol'. The protocol to be used for uploading etc. NGCHMs to the server.</p></li>
-<li><p>'jarFile'. The jarFile used to build NGCHMs.</p></li>
-<li><p>'traceLevel'. The amount of trace to output. Defaults to "PROGRESS".</p></li>
-</ul></div>
+    <p>serverSpec can be any of:</p><dl><dt>A configuration directory path. </dt>
+<dd><p>The specification will be read from a file 'config.txt' in that directory.</p></dd>
+
+<dt>An NGCHM server URL (ending in '/chm' or '/Viewer' for instance). </dt>
+<dd><p>A minimal specification will be inferred.
+Known methods for uploading NGCHMs to the server will be autoprobed unless specified manually.</p></dd>
+
+<dt>A URL referencing a configuration file (must end in '/config.txt'). </dt>
+<dd><p>The specification will be read from the
+specified URL.</p></dd>
+
+
+</dl><p>serverOptions can include both protocol-specific options and the following generic options:</p><dl><dt>'serverURL'. </dt>
+<dd><p>The URL for the NGCHM server.</p></dd>
+
+<dt>'serverProtocol'. </dt>
+<dd><p>The protocol to be used for uploading etc. NGCHMs to the server.</p></dd>
+
+<dt>'jarFile'. </dt>
+<dd><p>The jarFile used to build NGCHMs.</p></dd>
+
+<dt>'traceLevel'. </dt>
+<dd><p>The amount of trace to output. Defaults to "PROGRESS".</p></dd>
+
+
+</dl></div>
     <div id="see-also">
     <h2>See also</h2>
     <div class="dont-index"><p><code><a href="chmServer.html">chmServer()</a></code></p>

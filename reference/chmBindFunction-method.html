@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">NGCHMR</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.0.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.0.1</span>
       </span>
     </div>
 
@@ -78,7 +78,7 @@
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>Bind values to an existing JS function.</h1>
-    
+    <small class="dont-index">Source: <a href="https://github.com/MD-Anderson-Bioinformatics/NGCHM-R/blob/HEAD/R/allGenerics.R" class="external-link"><code>R/allGenerics.R</code></a>, <a href="https://github.com/MD-Anderson-Bioinformatics/NGCHM-R/blob/HEAD/R/allMethods.R" class="external-link"><code>R/allMethods.R</code></a></small>
     <div class="hidden name"><code>chmBindFunction-method.Rd</code></div>
     </div>
 
@@ -99,11 +99,11 @@
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>name</dt>
-<dd><p>The name to give the new JS function.</p></dd>
+<dd><p>A single character string specifying the name of the function.</p></dd>
 
 
 <dt>fn</dt>
-<dd><p>An existing JS function with at least one extra parameter.</p></dd>
+<dd><p>An object of class 'ngchmJS' representing the function to be bound.</p></dd>
 
 
 <dt>bindings</dt>
@@ -112,6 +112,12 @@ binds one parameter, starting from the first unbound parameter, and the name
 of each list element must match the name of the corresponding parameter.</p></dd>
 
 </dl></div>
+    <div id="value">
+    <h2>Value</h2>
+    
+
+<p>A new 'ngchmJS' object representing the bound function.</p>
+    </div>
     <div id="see-also">
     <h2>See also</h2>
     <div class="dont-index"><p><code><a href="chmNewFunction.html">chmNewFunction()</a></code></p></div>

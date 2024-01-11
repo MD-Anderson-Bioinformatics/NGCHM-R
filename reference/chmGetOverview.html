@@ -20,7 +20,7 @@ If idx is not specified, the file path to the first overview of the given format
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">NGCHMR</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.0.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.0.1</span>
       </span>
     </div>
 
@@ -81,7 +81,7 @@ If idx is not specified, the file path to the first overview of the given format
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>Get the file path to the specified overview file.</h1>
-    
+    <small class="dont-index">Source: <a href="https://github.com/MD-Anderson-Bioinformatics/NGCHM-R/blob/HEAD/R/functions.R" class="external-link"><code>R/functions.R</code></a></small>
     <div class="hidden name"><code>chmGetOverview.Rd</code></div>
     </div>
 
@@ -99,7 +99,7 @@ If idx is not specified, the file path to the first overview of the given format
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>chm</dt>
-<dd><p>An NGCHM.</p></dd>
+<dd><p>The CHM for which the overview is to be retrieved.</p></dd>
 
 
 <dt>format</dt>
@@ -110,6 +110,12 @@ If idx is not specified, the file path to the first overview of the given format
 <dd><p>The index of the overview image desired (defaults to first image of the specified format).</p></dd>
 
 </dl></div>
+    <div id="value">
+    <h2>Value</h2>
+    
+
+<p>The path to the retrieved overview.</p>
+    </div>
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

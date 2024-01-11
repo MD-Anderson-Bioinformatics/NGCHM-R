@@ -21,7 +21,7 @@ does not begin with a double slash, the current server will be used."><!-- mathj
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">NGCHMR</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.0.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.0.1</span>
       </span>
     </div>
 
@@ -82,7 +82,7 @@ does not begin with a double slash, the current server will be used."><!-- mathj
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>Set the user's current server and/or collection</h1>
-    
+    <small class="dont-index">Source: <a href="https://github.com/MD-Anderson-Bioinformatics/NGCHM-R/blob/HEAD/R/ngchmshaidy.R" class="external-link"><code>R/ngchmshaidy.R</code></a></small>
     <div class="hidden name"><code>chmSetCollection.Rd</code></div>
     </div>
 
@@ -101,9 +101,17 @@ does not begin with a double slash, the current server will be used.</p>
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>path</dt>
-<dd><p>A path specifying a server and/or collection</p></dd>
+<dd><p>A single character string specifying the path of the collection
+to be set. The path should be in the format '//server/collection'.</p></dd>
 
 </dl></div>
+    <div id="value">
+    <h2>Value</h2>
+    
+
+<p>None. This function is used for its side effects of setting the current
+server and collection.</p>
+    </div>
     <div id="details">
     <h2>Details</h2>
     <p>If the path begins with a slash, the components (following the

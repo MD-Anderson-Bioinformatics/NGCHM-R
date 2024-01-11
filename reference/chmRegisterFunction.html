@@ -19,7 +19,7 @@ intended for use by NGCHM system developers."><!-- mathjax --><script src="https
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">NGCHMR</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.0.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.0.1</span>
       </span>
     </div>
 
@@ -80,7 +80,7 @@ intended for use by NGCHM system developers."><!-- mathjax --><script src="https
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>Register a predefined Javascript function for use in NGCHM menus.</h1>
-    
+    <small class="dont-index">Source: <a href="https://github.com/MD-Anderson-Bioinformatics/NGCHM-R/blob/HEAD/R/functions.R" class="external-link"><code>R/functions.R</code></a></small>
     <div class="hidden name"><code>chmRegisterFunction.Rd</code></div>
     </div>
 
@@ -97,9 +97,15 @@ intended for use by NGCHM system developers.</p>
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>fn</dt>
-<dd><p>The Javascript function to register.</p></dd>
+<dd><p>The function to be registered. This should be an object of class 'ngchmJS'.</p></dd>
 
 </dl></div>
+    <div id="value">
+    <h2>Value</h2>
+    
+
+<p>The registered function.</p>
+    </div>
     <div id="see-also">
     <h2>See also</h2>
     <div class="dont-index"><p><code><a href="chmAddMenuItem-method.html">chmAddMenuItem()</a></code></p>

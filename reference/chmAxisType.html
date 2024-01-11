@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">NGCHMR</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.0.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.0.1</span>
       </span>
     </div>
 
@@ -78,7 +78,7 @@
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>Create a new AxisType for adding to an ngchmAxis.</h1>
-    
+    <small class="dont-index">Source: <a href="https://github.com/MD-Anderson-Bioinformatics/NGCHM-R/blob/HEAD/R/functions.R" class="external-link"><code>R/functions.R</code></a></small>
     <div class="hidden name"><code>chmAxisType.Rd</code></div>
     </div>
 
@@ -93,18 +93,20 @@
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>typename</dt>
-<dd><p>The name of the axis type</p></dd>
+<dd><p>The name of the axis type to be created. This should be a single character string.</p></dd>
 
 
 <dt>func</dt>
-<dd><p>A javascript function (optional) for obtaining a value of that type from the axis</p></dd>
+<dd><p>The function to be used for getting label values. If not provided, the default 'getLabelValue' function is used.
+If a character string is provided, it is assumed to be the name of a function and is retrieved using 'chmGetFunction'.
+If a function is provided, it is checked to be of class 'ngchmJS'.</p></dd>
 
 </dl></div>
     <div id="value">
     <h2>Value</h2>
     
 
-<p>An object of class ngchmAxisType</p>
+<p>An object of class 'ngchmAxisType' representing the newly created axis type.</p>
     </div>
     <div id="see-also">
     <h2>See also</h2>

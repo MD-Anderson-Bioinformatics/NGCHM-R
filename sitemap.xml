@@ -385,16 +385,7 @@
     <loc>https://md-anderson-bioinformatics.github.io/NGCHM-R/reference/chmUrlBase-method.html</loc>
   </url>
   <url>
-    <loc>https://md-anderson-bioinformatics.github.io/NGCHM-R/reference/chmUserDendrogramToShaid.html</loc>
-  </url>
-  <url>
-    <loc>https://md-anderson-bioinformatics.github.io/NGCHM-R/reference/chmUserLabelsToShaid.html</loc>
-  </url>
-  <url>
     <loc>https://md-anderson-bioinformatics.github.io/NGCHM-R/reference/chmWriteCustomJS.html</loc>
-  </url>
-  <url>
-    <loc>https://md-anderson-bioinformatics.github.io/NGCHM-R/reference/cos.dist1.html</loc>
   </url>
   <url>
     <loc>https://md-anderson-bioinformatics.github.io/NGCHM-R/reference/getDimensions-method.html</loc>
@@ -568,9 +559,6 @@
     <loc>https://md-anderson-bioinformatics.github.io/NGCHM-R/reference/ngchmServerProtocol-class.html</loc>
   </url>
   <url>
-    <loc>https://md-anderson-bioinformatics.github.io/NGCHM-R/reference/ngchmShaidyInit.html</loc>
-  </url>
-  <url>
     <loc>https://md-anderson-bioinformatics.github.io/NGCHM-R/reference/ngchmTemplate-class.html</loc>
   </url>
   <url>
@@ -599,9 +587,6 @@
   </url>
   <url>
     <loc>https://md-anderson-bioinformatics.github.io/NGCHM-R/reference/print.shaidyRepo.html</loc>
-  </url>
-  <url>
-    <loc>https://md-anderson-bioinformatics.github.io/NGCHM-R/reference/readTile.html</loc>
   </url>
   <url>
     <loc>https://md-anderson-bioinformatics.github.io/NGCHM-R/reference/shaid-class.html</loc>
@@ -634,9 +619,6 @@
     <loc>https://md-anderson-bioinformatics.github.io/NGCHM-R/reference/shaidyHashProtoBlob.html</loc>
   </url>
   <url>
-    <loc>https://md-anderson-bioinformatics.github.io/NGCHM-R/reference/shaidyInit.html</loc>
-  </url>
-  <url>
     <loc>https://md-anderson-bioinformatics.github.io/NGCHM-R/reference/shaidyInitRepository.html</loc>
   </url>
   <url>
@@ -655,21 +637,12 @@
     <loc>https://md-anderson-bioinformatics.github.io/NGCHM-R/reference/shaidyProvenance.html</loc>
   </url>
   <url>
-    <loc>https://md-anderson-bioinformatics.github.io/NGCHM-R/reference/shaidyRegisterRepoAPI.html</loc>
-  </url>
-  <url>
     <loc>https://md-anderson-bioinformatics.github.io/NGCHM-R/reference/shaidyRepoAPI.html</loc>
   </url>
   <url>
     <loc>https://md-anderson-bioinformatics.github.io/NGCHM-R/reference/treeCuts-class.html</loc>
   </url>
   <url>
-    <loc>https://md-anderson-bioinformatics.github.io/NGCHM-R/reference/validateNewLayer.html</loc>
-  </url>
-  <url>
     <loc>https://md-anderson-bioinformatics.github.io/NGCHM-R/reference/verifyNumeric.html</loc>
-  </url>
-  <url>
-    <loc>https://md-anderson-bioinformatics.github.io/NGCHM-R/reference/writeTile.html</loc>
   </url>
 </urlset>

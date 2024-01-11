@@ -39,7 +39,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">NGCHMR</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.0.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.0.1</span>
       </span>
     </div>
 
@@ -111,7 +111,7 @@
       <h1 data-toc-skip>Clustering and Column/Row Ordering</h1>
             
       
-      
+      <small class="dont-index">Source: <a href="https://github.com/MD-Anderson-Bioinformatics/NGCHM-R/blob/HEAD/vignettes/clustering-and-column-row-ordering.Rmd" class="external-link"><code>vignettes/clustering-and-column-row-ordering.Rmd</code></a></small>
       <div class="hidden name"><code>clustering-and-column-row-ordering.Rmd</code></div>
 
     </div>
@@ -130,7 +130,7 @@ specifying the order of the rows/columns.</p>
 <p>The following command produces a NG-CHM with rows sorted
 alphabetically and columns ordered randomly:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">NGCHM</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://md-anderson-bioinformatics.github.io/NGCHM-R/">NGCHM</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">NGCHMDemoData</span><span class="op">)</span></span>
 <span><span class="va">hm</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/chmNew.html">chmNew</a></span><span class="op">(</span><span class="st">'tcga-brca'</span>, <span class="va">TCGA.BRCA.ExpressionData</span>, rowOrder<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/sort.html" class="external-link">sort</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">rownames</a></span><span class="op">(</span><span class="va">TCGA.BRCA.ExpressionData</span><span class="op">)</span><span class="op">)</span>, colOrder<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">colnames</a></span><span class="op">(</span><span class="va">TCGA.BRCA.ExpressionData</span><span class="op">)</span><span class="op">[</span> <span class="fu"><a href="https://rdrr.io/r/base/sample.html" class="external-link">sample.int</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">colnames</a></span><span class="op">(</span><span class="va">TCGA.BRCA.ExpressionData</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">]</span><span class="op">)</span></span></code></pre></div>
 </div>

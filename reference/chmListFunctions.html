@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">NGCHMR</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.0.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.0.1</span>
       </span>
     </div>
 
@@ -78,7 +78,7 @@
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>List the predefined Javascript functions available for use in NGCHM menus.</h1>
-    
+    <small class="dont-index">Source: <a href="https://github.com/MD-Anderson-Bioinformatics/NGCHM-R/blob/HEAD/R/functions.R" class="external-link"><code>R/functions.R</code></a></small>
     <div class="hidden name"><code>chmListFunctions.Rd</code></div>
     </div>
 
@@ -93,9 +93,16 @@
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>re</dt>
-<dd><p>Only functions with names matching re are printed (default ".*")</p></dd>
+<dd><p>The regular expression to match. This should be a single character string.
+Default is ".*", which matches all functions.</p></dd>
 
 </dl></div>
+    <div id="value">
+    <h2>Value</h2>
+    
+
+<p>A string containing the names and descriptions of the matching functions.</p>
+    </div>
     <div id="see-also">
     <h2>See also</h2>
     <div class="dont-index"><p><code><a href="chmAddMenuItem-method.html">chmAddMenuItem()</a></code></p>
@@ -104,6 +111,14 @@
 <p><code><a href="https://rdrr.io/r/base/grep.html" class="external-link">grep()</a></code></p></div>
     </div>
 
+    <div id="ref-examples">
+    <h2>Examples</h2>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu">chmListFunctions</span><span class="op">(</span><span class="op">)</span> <span class="co"># List all functions.</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "\tSimple reference\ngetLabelValue\tThis returns the label at the specified index as a list of values.  Can be used whenever the label itself is of the correct type.\nchmFA0\tSplits each input string at ,, and returns field 1.\nchmFA1\tSplits each input string at -, and returns field 2."</span>
+<span class="r-in"><span><span class="fu">chmListFunctions</span><span class="op">(</span><span class="st">'^chm'</span><span class="op">)</span> <span class="co"># List all functions whose names start with 'chm'.</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "chmFA0\tSplits each input string at ,, and returns field 1.\nchmFA1\tSplits each input string at -, and returns field 2."</span>
+</code></pre></div>
+    </div>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top"><h2 data-toc-skip>Contents</h2>

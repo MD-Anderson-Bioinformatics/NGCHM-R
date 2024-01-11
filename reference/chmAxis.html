@@ -18,7 +18,7 @@ axis name here, but chmAdd only accepts row, column, and both."><!-- mathjax -->
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">NGCHMR</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.0.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.0.1</span>
       </span>
     </div>
 
@@ -79,7 +79,7 @@ axis name here, but chmAdd only accepts row, column, and both."><!-- mathjax -->
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>Create a new Axis for adding to an NG-CHM.</h1>
-    
+    <small class="dont-index">Source: <a href="https://github.com/MD-Anderson-Bioinformatics/NGCHM-R/blob/HEAD/R/functions.R" class="external-link"><code>R/functions.R</code></a></small>
     <div class="hidden name"><code>chmAxis.Rd</code></div>
     </div>
 
@@ -106,13 +106,20 @@ axis name here, but chmAdd only accepts row, column, and both.</p>
     <h2>Value</h2>
     
 
-<p>An object of class ngchmAxis</p>
+<p>An object of class 'ngchmAxis' representing the newly created axis.</p>
     </div>
     <div id="see-also">
     <h2>See also</h2>
     <div class="dont-index"><p><code><a href="chmAdd-method.html">chmAdd()</a></code></p></div>
     </div>
 
+    <div id="ref-examples">
+    <h2>Examples</h2>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">x_axis</span> <span class="op">&lt;-</span> <span class="fu">chmAxis</span><span class="op">(</span><span class="st">'row'</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">y_axis</span> <span class="op">&lt;-</span> <span class="fu">chmAxis</span><span class="op">(</span><span class="st">'col'</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+</code></pre></div>
+    </div>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top"><h2 data-toc-skip>Contents</h2>
