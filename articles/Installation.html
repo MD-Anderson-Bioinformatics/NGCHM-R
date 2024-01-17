@@ -137,14 +137,11 @@
 <li>Windows: Rtools or Rtools40 (Windows 10)</li>
 </ul>
 </li>
-<li>R package <a href="https://github.com/MD-Anderson-Bioinformatics/tsvio" class="external-link">tsvio</a>
+<li>
+<a href="https://github.com/MD-Anderson-Bioinformatics/NGCHMSupportFiles" class="external-link">NGCHMSupportFiles</a>
+R package
 <ul>
-<li>This package requires a C compiler</li>
-</ul>
-</li>
-<li>R package <a href="https://github.com/MD-Anderson-Bioinformatics/NGCHMSupportFiles" class="external-link">NGCHMSupportFiles</a>
-<ul>
-<li>This package requires Java to use</li>
+<li>This package requires Java &gt;= 11</li>
 <li>This package contains a compiled .jar file and minified JavaScript
 file</li>
 </ul>
@@ -152,14 +149,15 @@ file</li>
 </ul>
 </div>
 <div class="section level2">
-<h2 id="install-from-github">Install from GitHub<a class="anchor" aria-label="anchor" href="#install-from-github"></a>
+<h2 id="r-packages-installation">R Packages Installation<a class="anchor" aria-label="anchor" href="#r-packages-installation"></a>
 </h2>
-<p>The above-mentioned R packages can be installed from CRAN and <a href="https://md-anderson-bioinformatics.r-universe.dev/packages" class="external-link">our
-R-Universe repository</a>:</p>
+<p>The NG-CHM R package can be installed from CRAN:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">'tsvio'</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">'NGCHMSupportFiles'</span>, repos <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'https://md-anderson-bioinformatics.r-universe.dev'</span>, <span class="st">'https://cloud.r-project.org'</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">'NGCHM'</span>, repos <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'https://md-anderson-bioinformatics.r-universe.dev'</span>, <span class="st">'https://cloud.r-project.org'</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">'NGCHM'</span><span class="op">)</span></span></code></pre></div>
+<p>The NGCHMSupportFiles can be installed from <a href="https://md-anderson-bioinformatics.r-universe.dev/packages" class="external-link">our
+R-Universe repository</a>:</p>
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">'NGCHMSupportFiles'</span>, repos <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'https://md-anderson-bioinformatics.r-universe.dev'</span>, <span class="st">'https://cloud.r-project.org'</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="using-the-docker-image">Using the Docker Image<a class="anchor" aria-label="anchor" href="#using-the-docker-image"></a>
