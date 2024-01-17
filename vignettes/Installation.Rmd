@@ -25,23 +25,25 @@ knitr::opts_chunk$set(
   - Mac: Xcode
   - Linux: gcc
   - Windows: Rtools or Rtools40 (Windows 10)
-- R package [tsvio](https://github.com/MD-Anderson-Bioinformatics/tsvio)
-  - This package requires a C compiler
-- R package [NGCHMSupportFiles](https://github.com/MD-Anderson-Bioinformatics/NGCHMSupportFiles)
-  - This package requires Java to use
+- [NGCHMSupportFiles](https://github.com/MD-Anderson-Bioinformatics/NGCHMSupportFiles) R package
+  - This package requires Java >= 11
   - This package contains a compiled .jar file and minified JavaScript file
 
 
-## Install from GitHub
+## R Packages Installation
 
-The above-mentioned R packages can be installed from CRAN and
+The NG-CHM R package can be installed from CRAN:
+
+```{r, results='hide', message=FALSE, warning=FALSE, eval=FALSE}
+install.packages('NGCHM')
+```
+
+The NGCHMSupportFiles can be installed from
 [our R-Universe repository](https://md-anderson-bioinformatics.r-universe.dev/packages):
 
 
 ```{r, results='hide', message=FALSE, warning=FALSE, eval=FALSE}
-install.packages('tsvio')
 install.packages('NGCHMSupportFiles', repos = c('https://md-anderson-bioinformatics.r-universe.dev', 'https://cloud.r-project.org'))
-install.packages('NGCHM', repos = c('https://md-anderson-bioinformatics.r-universe.dev', 'https://cloud.r-project.org'))
 ```
 
 ## Using the Docker Image
