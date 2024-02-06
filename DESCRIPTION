@@ -1,7 +1,7 @@
 Type: Package
 Package: NGCHM
 Title: Next Generation Clustered Heat Maps
-Version: 1.0.1
+Version: 1.1.0
 Authors@R: c(
     person(c("Bradley", "M"), "Broom", , "bmbroom@mdanderson.org", role = "aut",
            comment = c(ORCID = "0000-0002-0915-3164")),
