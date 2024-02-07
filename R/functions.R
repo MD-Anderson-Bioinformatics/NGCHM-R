@@ -179,10 +179,6 @@ ngchmGetEnv <- function() {
 #' @param rowGapWidth Width of row gaps (default: 5 rows)
 #' @param colGapWidth Width of col gaps (default: 5 cols)
 #' @param overview The format(s) of overview image(s) to create (default: None).
-#' @param logLevel The level of logs to output
-#' @param logFile The file to which logs should be output
-#' @importFrom logger log_debug
-#' @importFrom logger log_error
 #'
 #' @return An object of class ngchm
 #'
@@ -217,9 +213,7 @@ chmNew <- function(
     rowGapWidth = 5,
     colGapLocations = NULL,
     colGapWidth = 5,
-    overview = c(),
-    logLevel = "INFO", logFile = NULL) {
-  initLogging(logLevel, logFile)
+    overview = c()) {
   chm <- new(
     Class = "ngchmVersion2",
     name = name,

@@ -15,6 +15,7 @@ NULL
 
 ngchm.env <- new.env(parent = emptyenv())
 .initNGCHM <- function() {
+  initLogging("INFO")
   # Populate library environment.
   ngchm.env$uuid <- paste(sample(c(letters, 0:9, toupper(letters)), 50, replace = TRUE), collapse = "")
   ngchm.env$scripts <- c()
