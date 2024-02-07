@@ -15,6 +15,7 @@ NULL
 #' @importFrom logger log_info
 #' @importFrom logger log_layout
 #' @importFrom logger log_debug
+#' @importFrom logger log_trace
 #' @importFrom logger log_error
 #' @importFrom logger log_appender
 #' @importFrom logger appender_file
