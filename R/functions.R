@@ -46,6 +46,24 @@ initLogging <- function(log_level, log_file = NULL) {
   log_debug("Set log level to ", log_level)
 }
 
+#' Log the call stack if log level is "TRACE".
+#'
+#' This function prints the call stack if the current log level is "TRACE". Otherwise it returns early and does nothing.
+#'
+#' @return No return value.
+#' @noRd
+log_call_stack <- function() {
+  current_log_level <- attr(logger::log_threshold(), "level")
+  if (current_log_level != "TRACE") return()
+  calls <- sys.calls()
+  parent_call <- calls[[length(calls) - 1]]
+  calling_function_name <- as.character(parent_call[[1]])
+  log_trace("Call stack to ", calling_function_name, ":")
+  for (i in rev(seq_along(calls)[-length(calls)])) {
+    log_trace(paste0("\t\t", i, ": ", paste0(deparse(calls[[i]]), collapse = " ")))
+  }
+}
+
 systemCheck <- function(command, ...) {
   # Execute the specified command and halt execution with an error
   # message if it fails.
