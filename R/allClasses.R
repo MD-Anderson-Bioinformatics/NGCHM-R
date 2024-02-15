@@ -938,6 +938,7 @@ setMethod("show", "detailMap", function(object) {
   json <- jsonlite::toJSON(objList, auto_unbox = TRUE, pretty = TRUE)
   print(json)
 })
+setClassUnion("panel", c("detailMap", "summaryMap"))
 #' Class representing a Next Generation Clustered Heat Map (NGCHM) under construction.
 #'
 #' An NG-CHM is produced by creating a heat map object with [chmNew()], possibly modifying or augmenting it
@@ -1041,62 +1042,64 @@ setIs("ngchmVersion1", "ngchm")
 #'
 #' @name ngchmVersion2-class
 #' @rdname ngchmVersion2-class
-#' @slot name The name under which the NGCHM will be saved to the NGCHM server.
-#' @slot version Integer version number (default: 2)
-#' @slot format (default: "original")
-#' @slot uuid character
+#' @slot agglom Agglomeration method to use by default RowOrder. Choices are those from stats::hclust. (default: "ward.D2")
+#' @slot axisTypes optList
 #' @slot baggage optCharacter
-#' @slot inpDir character
-#' @slot outDir character
-#' @slot saveDir (default: tempdir())
-#' @slot propFile (default: "chm.properties")
-#' @slot layers List of data layers
-#' @slot colormaps Color map
-#' @slot rowMenu optList
+#' @slot colAgglom Agglomeration method to use by default ColOrder. Choices are those from stats::hclust. (default: "ward.D2")
+#' @slot colCovariateBars optList
+#' @slot colCutLocations Explicit list of col cut locations. If specified, colTreeCuts is set to NULL.
+#' @slot colCutWidth Width of col cuts (default: 5 columns)
+#' @slot colDist Distance method to use by default ColOrder. (default: "correlation", which is 1 minus the Pearson correlation among the cols.)
+#' @slot colDisplayAbbreviation optCharacter
+#' @slot colDisplayLength optInteger
 #' @slot colMenu optList
+#' @slot colMeta optList
+#' @slot colOrder A vector, dendrogram, or function specifying the CHM column order.
+#' @slot colOrderMethod character (default: "User")
+#' @slot colTopItems optCharacter
+#' @slot colTypeFunctions optList
+#' @slot colormaps Color map
+#' @slot css optList
 #' @slot datasets optList
 #' @slot dialogs optList
-#' @slot tags optCharacter
 #' @slot elementMenu optList
-#' @slot rowTypeFunctions optList
-#' @slot colTypeFunctions optList
 #' @slot elementTypeFunctions optList
-#' @slot axisTypes optList
-#' @slot css optList
 #' @slot extrafiles optCharacter
 #' @slot extrascripts optCharacter
-#' @slot properties optList
-#' @slot overviews optList
-#' @slot javascript optList
-#' @slot rowOrder A vector, dendrogram, or function specifying the CHM row order
-#' @slot rowDist Distance method to use by default RowOrder. (default: "correlation", which is 1 minus the Pearson correlation among the rows.)
-#' @slot rowAgglom Agglomeration method to use by default RowOrder. Choices are those from stats::hclust. (default: "ward.D2")
-#' @slot colOrder A vector, dendrogram, or function specifying the CHM column order.
-#' @slot colDist Distance method to use by default ColOrder. (default: "correlation", which is 1 minus the Pearson correlation among the cols.)
-#' @slot colAgglom Agglomeration method to use by default ColOrder. Choices are those from stats::hclust. (default: "ward.D2")
-#' @slot rowOrderMethod character (default: "User")
-#' @slot colOrderMethod character (default: "User")
-#' @slot rowCutLocations Explicit list of row cut locations. If specified, rowTreeCuts is set to NULL.
-#' @slot rowTreeCuts Number of tree cuts for row. If specified, rowCutLocations is set to NULL.
-#' @slot rowCutWidth Width of row cuts (default: 5 rows)
-#' @slot rowTopItems optCharacter
-#' @slot rowDisplayLength optInteger
-#' @slot rowDisplayAbbreviation optCharacter
-#' @slot colCutLocations Explicit list of col cut locations. If specified, colTreeCuts is set to NULL.
-#' @slot colTreeCuts Number of tree cuts for col. If specified, colCutLocations is set to NULL.
-#' @slot colCutWidth Width of col cuts (defautl: 5 columns)
-#' @slot colTopItems optCharacter
-#' @slot colDisplayLength optInteger
-#' @slot colDisplayAbbreviation optCharacter
-#' @slot rowMeta optList
-#' @slot colMeta optList
-#' @slot rowCovariateBars optList
-#' @slot colCovariateBars optList
-#' @slot relatedLinks optList
-#' @slot relatedGroups optList
-#' @slot templates optList
-#' @slot width default: 500
+#' @slot format (default: "original")
 #' @slot height default: 500
+#' @slot inpDir character
+#' @slot javascript optList
+#' @slot layers List of data layers
+#' @slot name The name under which the NGCHM will be saved to the NGCHM server.
+#' @slot outDir character
+#' @slot overviews optList
+#' @slot panel_layout data for panel_layout section of mapConfig.json
+#' @slot panels individual pane information (e.g. detail map, summary map) for panel_configuration section of mapConfig.json
+#' @slot properties optList
+#' @slot propFile (default: "chm.properties")
+#' @slot relatedGroups optList
+#' @slot relatedLinks optList
+#' @slot rowAgglom Agglomeration method to use by default RowOrder. Choices are those from stats::hclust. (default: "ward.D2")
+#' @slot rowCovariateBars optList
+#' @slot rowCutLocations Explicit list of row cut locations. If specified, rowTreeCuts is set to NULL.
+#' @slot rowCutWidth Width of row cuts (default: 5 rows)
+#' @slot rowDist Distance method to use by default RowOrder. (default: "correlation", which is 1 minus the Pearson correlation among the rows.)
+#' @slot rowDisplayAbbreviation optCharacter
+#' @slot rowDisplayLength optInteger
+#' @slot rowMenu optList
+#' @slot rowMeta optList
+#' @slot rowOrder A vector, dendrogram, or function specifying the CHM row order
+#' @slot rowOrderMethod character (default: "User")
+#' @slot rowTopItems optCharacter
+#' @slot rowTreeCuts Number of tree cuts for row. If specified, rowCutLocations is set to NULL.
+#' @slot rowTypeFunctions optList
+#' @slot saveDir (default: tempdir())
+#' @slot tags optCharacter
+#' @slot templates optList
+#' @slot uuid character
+#' @slot version Integer version number (default: 2)
+#' @slot width default: 500
 setClass(
   Class = "ngchmVersion2",
   slots = list(
@@ -1132,6 +1135,8 @@ setClass(
     name = "character",
     outDir = "character",
     overviews = "optList",
+    panel_layout = "panel_layout",
+    panels = "optList",
     propFile = "character",
     properties = "optList",
     relatedGroups = "optList",
@@ -1167,7 +1172,7 @@ setMethod(
            rowMeta, colMeta, axisTypes, datasets, dialogs, tags, css,
            rowTypeFunctions, colTypeFunctions, elementTypeFunctions, extrafiles,
            extrascripts, properties, overviews, relatedLinks, relatedGroups,
-           templates, width, height) {
+           templates, width, height, panel_layout, panels) {
     if (!missing(name)) {
       if (typeof(name) != "character") {
         stop(sprintf("Parameter 'name' must have type 'character', not '%s'", typeof(name)))
@@ -1432,6 +1437,24 @@ setMethod(
       .Object@height <- castAsInteger(height)
     } else {
       .Object@height <- as.integer(500)
+    }
+    if (!missing(panel_layout)) {
+      if (!is(panel_layout, "panel_layout")) {
+        log_error("panel_layout must be of class 'panel_layout'")
+        stop("panel_layout must be of class 'panel_layout'")
+      }
+      .Object@panel_layout <- panel_layout
+    } else {
+      .Object@panel_layout <- default_panel_layout()
+    }
+    if (!missing(panels)) {
+      if (!is(panels, "list")) {
+        log_error("panels must be a list of, e.g. 'detailMap', 'summaryMap' objects ")
+        stop("panels must be a list of, e.g. 'detailMap', 'summaryMap' objects ")
+      }
+      .Object@panels <- panels
+    } else {
+      .Object@panels <- default_panels()
     }
     return(.Object)
   }

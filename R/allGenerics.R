@@ -185,6 +185,24 @@ setGeneric("chmAddTag", function(chm, tag) standardGeneric("chmAddTag"))
 #' @seealso [chmNewColorMap()]
 #' @seealso [ngchmColormap-class]
 setGeneric("chmAddColormap", function(chm, colormap) standardGeneric("chmAddColormap"))
+#' Add a panel to a NGCHM.
+#'
+#' @param chm The chm to add the panel to.
+#' @param panel The panel to add to the chm.
+#'
+#' @return The extended chm.
+#' @rdname chmAddPanel-method
+#' @exportMethod chmAddPanel
+setGeneric("chmAddPanel", function(chm, panel) standardGeneric("chmAddPanel"))
+#' Add a list of panels to a NGCHM.
+#'
+#' @param chm The chm to add the panel to.
+#' @param panels The list of panels to add to the chm.
+#'
+#' @return The extended chm.
+#' @rdname chmAddPanels-method
+#' @exportMethod chmAddPanels
+setGeneric("chmAddPanels", function(chm, panels) standardGeneric("chmAddPanels"))
 #' Add a group of related links to the NGCHM.
 #'
 #' @param chm The chm to add the related link group to.

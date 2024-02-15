@@ -22,6 +22,8 @@ chmNew(
   rowGapWidth = 5,
   colGapLocations = NULL,
   colGapWidth = 5,
+  panels = default_panels(),
+  panel_layout = default_panel_layout(),
   overview = c()
 )
 }

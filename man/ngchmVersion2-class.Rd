@@ -10,116 +10,120 @@ Class representing ngchmVersion2 object
 \section{Slots}{
 
 \describe{
-\item{\code{name}}{The name under which the NGCHM will be saved to the NGCHM server.}
+\item{\code{agglom}}{Agglomeration method to use by default RowOrder. Choices are those from stats::hclust. (default: "ward.D2")}
 
-\item{\code{version}}{Integer version number (default: 2)}
-
-\item{\code{format}}{(default: "original")}
-
-\item{\code{uuid}}{character}
+\item{\code{axisTypes}}{optList}
 
 \item{\code{baggage}}{optCharacter}
 
-\item{\code{inpDir}}{character}
+\item{\code{colAgglom}}{Agglomeration method to use by default ColOrder. Choices are those from stats::hclust. (default: "ward.D2")}
 
-\item{\code{outDir}}{character}
+\item{\code{colCovariateBars}}{optList}
 
-\item{\code{saveDir}}{(default: tempdir())}
+\item{\code{colCutLocations}}{Explicit list of col cut locations. If specified, colTreeCuts is set to NULL.}
 
-\item{\code{propFile}}{(default: "chm.properties")}
+\item{\code{colCutWidth}}{Width of col cuts (default: 5 columns)}
 
-\item{\code{layers}}{List of data layers}
+\item{\code{colDist}}{Distance method to use by default ColOrder. (default: "correlation", which is 1 minus the Pearson correlation among the cols.)}
+
+\item{\code{colDisplayAbbreviation}}{optCharacter}
+
+\item{\code{colDisplayLength}}{optInteger}
+
+\item{\code{colMenu}}{optList}
+
+\item{\code{colMeta}}{optList}
+
+\item{\code{colOrder}}{A vector, dendrogram, or function specifying the CHM column order.}
+
+\item{\code{colOrderMethod}}{character (default: "User")}
+
+\item{\code{colTopItems}}{optCharacter}
+
+\item{\code{colTypeFunctions}}{optList}
 
 \item{\code{colormaps}}{Color map}
 
-\item{\code{rowMenu}}{optList}
-
-\item{\code{colMenu}}{optList}
+\item{\code{css}}{optList}
 
 \item{\code{datasets}}{optList}
 
 \item{\code{dialogs}}{optList}
 
-\item{\code{tags}}{optCharacter}
-
 \item{\code{elementMenu}}{optList}
 
-\item{\code{rowTypeFunctions}}{optList}
-
-\item{\code{colTypeFunctions}}{optList}
-
 \item{\code{elementTypeFunctions}}{optList}
-
-\item{\code{axisTypes}}{optList}
-
-\item{\code{css}}{optList}
 
 \item{\code{extrafiles}}{optCharacter}
 
 \item{\code{extrascripts}}{optCharacter}
 
-\item{\code{properties}}{optList}
+\item{\code{format}}{(default: "original")}
 
-\item{\code{overviews}}{optList}
+\item{\code{height}}{default: 500}
+
+\item{\code{inpDir}}{character}
 
 \item{\code{javascript}}{optList}
 
-\item{\code{rowOrder}}{A vector, dendrogram, or function specifying the CHM row order}
+\item{\code{layers}}{List of data layers}
 
-\item{\code{rowDist}}{Distance method to use by default RowOrder. (default: "correlation", which is 1 minus the Pearson correlation among the rows.)}
+\item{\code{name}}{The name under which the NGCHM will be saved to the NGCHM server.}
 
-\item{\code{rowAgglom}}{Agglomeration method to use by default RowOrder. Choices are those from stats::hclust. (default: "ward.D2")}
+\item{\code{outDir}}{character}
 
-\item{\code{colOrder}}{A vector, dendrogram, or function specifying the CHM column order.}
+\item{\code{overviews}}{optList}
 
-\item{\code{colDist}}{Distance method to use by default ColOrder. (default: "correlation", which is 1 minus the Pearson correlation among the cols.)}
+\item{\code{panel_layout}}{data for panel_layout section of mapConfig.json}
 
-\item{\code{colAgglom}}{Agglomeration method to use by default ColOrder. Choices are those from stats::hclust. (default: "ward.D2")}
+\item{\code{panels}}{individual pane information (e.g. detail map, summary map) for panel_configuration section of mapConfig.json}
 
-\item{\code{rowOrderMethod}}{character (default: "User")}
+\item{\code{properties}}{optList}
 
-\item{\code{colOrderMethod}}{character (default: "User")}
-
-\item{\code{rowCutLocations}}{Explicit list of row cut locations. If specified, rowTreeCuts is set to NULL.}
-
-\item{\code{rowTreeCuts}}{Number of tree cuts for row. If specified, rowCutLocations is set to NULL.}
-
-\item{\code{rowCutWidth}}{Width of row cuts (default: 5 rows)}
-
-\item{\code{rowTopItems}}{optCharacter}
-
-\item{\code{rowDisplayLength}}{optInteger}
-
-\item{\code{rowDisplayAbbreviation}}{optCharacter}
-
-\item{\code{colCutLocations}}{Explicit list of col cut locations. If specified, colTreeCuts is set to NULL.}
-
-\item{\code{colTreeCuts}}{Number of tree cuts for col. If specified, colCutLocations is set to NULL.}
-
-\item{\code{colCutWidth}}{Width of col cuts (defautl: 5 columns)}
-
-\item{\code{colTopItems}}{optCharacter}
-
-\item{\code{colDisplayLength}}{optInteger}
-
-\item{\code{colDisplayAbbreviation}}{optCharacter}
-
-\item{\code{rowMeta}}{optList}
-
-\item{\code{colMeta}}{optList}
-
-\item{\code{rowCovariateBars}}{optList}
-
-\item{\code{colCovariateBars}}{optList}
-
-\item{\code{relatedLinks}}{optList}
+\item{\code{propFile}}{(default: "chm.properties")}
 
 \item{\code{relatedGroups}}{optList}
 
+\item{\code{relatedLinks}}{optList}
+
+\item{\code{rowAgglom}}{Agglomeration method to use by default RowOrder. Choices are those from stats::hclust. (default: "ward.D2")}
+
+\item{\code{rowCovariateBars}}{optList}
+
+\item{\code{rowCutLocations}}{Explicit list of row cut locations. If specified, rowTreeCuts is set to NULL.}
+
+\item{\code{rowCutWidth}}{Width of row cuts (default: 5 rows)}
+
+\item{\code{rowDist}}{Distance method to use by default RowOrder. (default: "correlation", which is 1 minus the Pearson correlation among the rows.)}
+
+\item{\code{rowDisplayAbbreviation}}{optCharacter}
+
+\item{\code{rowDisplayLength}}{optInteger}
+
+\item{\code{rowMenu}}{optList}
+
+\item{\code{rowMeta}}{optList}
+
+\item{\code{rowOrder}}{A vector, dendrogram, or function specifying the CHM row order}
+
+\item{\code{rowOrderMethod}}{character (default: "User")}
+
+\item{\code{rowTopItems}}{optCharacter}
+
+\item{\code{rowTreeCuts}}{Number of tree cuts for row. If specified, rowCutLocations is set to NULL.}
+
+\item{\code{rowTypeFunctions}}{optList}
+
+\item{\code{saveDir}}{(default: tempdir())}
+
+\item{\code{tags}}{optCharacter}
+
 \item{\code{templates}}{optList}
 
-\item{\code{width}}{default: 500}
+\item{\code{uuid}}{character}
 
-\item{\code{height}}{default: 500}
+\item{\code{version}}{Integer version number (default: 2)}
+
+\item{\code{width}}{default: 500}
 }}
 

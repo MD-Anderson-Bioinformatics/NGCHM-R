@@ -1498,6 +1498,52 @@ setMethod("chmAddColormap",
     chmUU(chm)
   }
 )
+#' Add a panel to a ngchm object
+#'
+#' This method adds a panel to an existing ngchm object.
+#'
+#' @param chm An object of class "ngchm".
+#' @param panel An object of class "panel" to be added to the ngchm object. (e.g. a detailMap or summaryMap)
+#' @return An updated ngchm object with the new panel added.
+#' @rdname chmAddPanel-method
+#' @export
+#' @examples
+#' # create a detail map pane and add it to an existing ngchm object
+#' detailMap <- detailMap(id = "pane1")
+#' chm <- chmAddPanel(chm, detailMap)
+setMethod("chmAddPanel",
+  signature = c(chm = "ngchm", panel = "panel"),
+  definition = function(chm, panel) {
+    chm <- chmFixVersion(chm)
+    chm@panels <- append(chm@panels, panel)
+    chmUU(chm)
+  }
+)
+#' Add Multiple Panels to a ngchm Object
+#'
+#' This method adds multiple panels to an existing ngchm object.
+#'
+#' @param chm An object of class "ngchm".
+#' @param panels A list of panel objects to be added to the ngchm object.
+#' @return An updated ngchm object with the new panels added.
+#' @rdname chmAddPanels-method
+#' @export
+#' @examples
+#' # create a detail map and a summary map and add them to an existing ngchm object
+#' detailMap <- detailMap(id = "pane1")
+#' summaryMap <- summaryMap(id = "pane2")
+#' chm <- chmAddPanels(chm, list(detailMap, summaryMap))
+setMethod("chmAddPanels",
+  signature = c(chm = "ngchm", panels = "list"),
+  definition = function(chm, panels) {
+    for (panel in panels) {
+      chm <- chmAddPanel(chm, panel)
+    }
+    chmUU(chm)
+  }
+)
+
+
 #' @rdname chmAddRelatedGroup-method
 #' @aliases chmAddRelatedGroup,ngchm,character,character,character,character-method
 setMethod("chmAddRelatedGroup",

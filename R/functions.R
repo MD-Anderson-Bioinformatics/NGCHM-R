@@ -231,6 +231,8 @@ chmNew <- function(
     rowGapWidth = 5,
     colGapLocations = NULL,
     colGapWidth = 5,
+    panels = default_panels(),
+    panel_layout = default_panel_layout(),
     overview = c()) {
   chm <- new(
     Class = "ngchmVersion2",
@@ -247,7 +249,9 @@ chmNew <- function(
     rowCutLocations = rowGapLocations,
     rowCutWidth = rowGapWidth,
     colCutLocations = colGapLocations,
-    colCutWidth = colGapWidth
+    colCutWidth = colGapWidth,
+    panels = panels,
+    panel_layout = panel_layout
   )
   chmRowOrder(chm) <- rowOrder
   chmColOrder(chm) <- colOrder
@@ -530,6 +534,8 @@ chmAddList <- function(chm, args) {
       chmProperty(chm, item@label) <- item
     } else if (is(item, "ngchmAxis")) {
       chm <- chmAddAxis(chm, item)
+    } else if (is(item, "detailMap") || is(item, "summaryMap")) {
+      chm <- chmAddPanel(chm, item)
     } else if (is(item, "list")) {
       chm <- chmAddList(chm, item)
     } else {
@@ -4348,4 +4354,54 @@ verifyNumeric <- function(variableToCheck) {
 #' mychm <- chmNew("test_chm", rowGapLocations = chmTreeGaps(5))
 chmTreeGaps <- function(numberOfCuts) {
   return(new(Class = "treeCuts", numberOfCuts = as.integer(numberOfCuts)))
+}
+
+#' Generate Default Panel Layout
+#'
+#' This function generates a default panel layout for a map.
+#' It creates two panes with equal width and height, and places them in a container.
+#' The container is then placed in a panel layout.
+#'
+#' @return A panel layout containing a container, which in turn contains two panes.
+#' @noRd
+#' @keywords internal
+default_panel_layout <- function() {
+  pane1 <- pane(
+    id = "pane1",
+    width = 50,
+    height = "100",
+    collapsed = FALSE,
+    expanded = FALSE
+  )
+  pane2 <- pane(
+    id = "pane2",
+    width = 50,
+    height = "100",
+    collapsed = FALSE,
+    expanded = FALSE
+  )
+  container1 <- container(
+    id = "ngChmContainer1",
+    width = "100",
+    height = "100",
+    vertical = FALSE,
+    children = list(pane1, pane2)
+  )
+  panel_layout <- panel_layout(
+    children = container1
+  )
+}
+
+#' Generate Default Panels
+#'
+#' This function generates a list of default panels for a map.
+#' It creates a detail map and a summary map, and returns them as a list.
+#'
+#' @return A list of two panels: a detail map and a summary map.
+#' @noRd
+#' @keywords internal
+default_panels <- function() {
+  pane1 <- detailMap(id = "pane1")
+  pane2 <- summaryMap(id = "pane2")
+  panels <- list(pane1, pane2)
 }
