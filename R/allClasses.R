@@ -726,6 +726,25 @@ setMethod("show", "panel_layout", function(object) {
   json <- jsonlite::toJSON(objList, auto_unbox = TRUE, pretty = TRUE)
   print(json)
 })
+#' Convert panel_layout object to JSON
+#'
+#' @param x A panel_layout object.
+#' @param ... Additional arguments to be passed to the jsonlite::toJSON function.
+#'
+#' @return A JSON string representing the panel_layout object.
+#'
+#' @export
+setMethod(jsonlite:::asJSON, signature = c("panel_layout"), definition = function(x, ...) {
+  objList <- list(
+    id = "ngChmContainer",
+    width = "",
+    height = "",
+    type = "container",
+    vertical = FALSE,
+    children = list(show(slot(x, "children")))
+  )
+  json <- jsonlite::toJSON(objList, auto_unbox = TRUE, pretty = 6)
+})
 #' Internal class representing a pane in the panel_layout
 #'
 #' This is a helper class for creating the 'panel_layout' part of the 'panel_configuration'
@@ -939,6 +958,38 @@ setMethod("show", "detailMap", function(object) {
   print(json)
 })
 setClassUnion("panel", c("detailMap", "summaryMap"))
+#' Convert panel object to JSON
+#'
+#' This method converts a panel object to JSON format.
+#'
+#' @param x The panel object to be converted to JSON.
+#'
+#' @return A JSON representation of the panel object.
+#' @noRd
+setMethod(jsonlite:::asJSON, signature = c("panel"), definition = function(x, ...) {
+  if (is(x, "detailMap")) {
+    objList <- list(
+      id = slot(x, "id"),
+      currentCol = slot(x, "currentCol"),
+      currentRow = slot(x, "currentRow"),
+      colZoomLevel = slot(x, "colZoomLevel"),
+      dataPerCol = slot(x, "dataPerCol"),
+      dataPerRow = slot(x, "dataPerRow"),
+      mode = slot(x, "mode"),
+      rowZoomLevel = slot(x, "rowZoomLevel"),
+      selectedIsDendrogram = slot(x, "selectedIsDendrogram"),
+      selectedStart = slot(x, "selectedStart"),
+      selectedStop = slot(x, "selectedStop"),
+      version = slot(x, "version")
+    )
+  } else {
+    objList <- list(
+      id = slot(x, "id"),
+      type = "summaryMap"
+    )
+  }
+  jsonlite::toJSON(objList, auto_unbox = TRUE, pretty = 6)
+})
 #' Class representing a Next Generation Clustered Heat Map (NGCHM) under construction.
 #'
 #' An NG-CHM is produced by creating a heat map object with [chmNew()], possibly modifying or augmenting it
