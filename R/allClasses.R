@@ -726,14 +726,6 @@ setMethod("show", "panel_layout", function(object) {
   json <- jsonlite::toJSON(objList, auto_unbox = TRUE, pretty = TRUE)
   print(json)
 })
-#' Convert panel_layout object to JSON
-#'
-#' @param x A panel_layout object.
-#' @param ... Additional arguments to be passed to the jsonlite::toJSON function.
-#'
-#' @return A JSON string representing the panel_layout object.
-#'
-#' @export
 setMethod(jsonlite:::asJSON, signature = c("panel_layout"), definition = function(x, ...) {
   objList <- list(
     id = "ngChmContainer",
@@ -958,14 +950,6 @@ setMethod("show", "detailMap", function(object) {
   print(json)
 })
 setClassUnion("panel", c("detailMap", "summaryMap"))
-#' Convert panel object to JSON
-#'
-#' This method converts a panel object to JSON format.
-#'
-#' @param x The panel object to be converted to JSON.
-#'
-#' @return A JSON representation of the panel object.
-#' @noRd
 setMethod(jsonlite:::asJSON, signature = c("panel"), definition = function(x, ...) {
   if (is(x, "detailMap")) {
     objList <- list(
