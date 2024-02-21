@@ -944,7 +944,8 @@ setMethod("show", "detailMap", function(object) {
     selectedIsDendrogram = slot(object, "selectedIsDendrogram"),
     selectedStart = slot(object, "selectedStart"),
     selectedStop = slot(object, "selectedStop"),
-    version = slot(object, "version")
+    version = slot(object, "version"),
+    type = "detailMap"
   )
   json <- jsonlite::toJSON(objList, auto_unbox = TRUE, pretty = TRUE)
   print(json)
@@ -964,7 +965,8 @@ setMethod(jsonlite:::asJSON, signature = c("panel"), definition = function(x, ..
       selectedIsDendrogram = slot(x, "selectedIsDendrogram"),
       selectedStart = slot(x, "selectedStart"),
       selectedStop = slot(x, "selectedStop"),
-      version = slot(x, "version")
+      version = slot(x, "version"),
+      type = "detailMap"
     )
   } else {
     objList <- list(
