@@ -972,7 +972,9 @@ setMethod(jsonlite:::asJSON, signature = c("panel"), definition = function(x, ..
       type = "summaryMap"
     )
   }
-  jsonlite::toJSON(objList, auto_unbox = TRUE, pretty = 6)
+  object_with_id_as_key <- list()
+  object_with_id_as_key[[slot(x, "id")]] <- objList[-which(names(objList) == "id")]
+  jsonlite::toJSON(object_with_id_as_key, auto_unbox = TRUE, pretty = 6)
 })
 #' Class representing a Next Generation Clustered Heat Map (NGCHM) under construction.
 #'
