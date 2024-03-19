@@ -14,15 +14,15 @@ shaidyAddFileBlob(
 )
 }
 \arguments{
-\item{shaidyRepo}{The shaidy repository}
+\item{shaidyRepo}{A shaidy repository object}
 
-\item{blob.type}{The blob.type of the data file}
+\item{blob.type}{The type of the data file(s) (e.g. 'dataset', 'label', 'chm')}
 
-\item{blob.file}{Name of the file(s) within the blob}
+\item{blob.file}{Name(s) of the file(s) within the blob}
 
 \item{filename}{The filesystem path(s) to the file(s) to insert}
 
-\item{properties}{A list of additional properties to save with the file(s)}
+\item{properties}{A list of optional additional properties to save with the file(s)}
 
 \item{shaid}{Shaid to store the blob as.}
 }
@@ -30,5 +30,7 @@ shaidyAddFileBlob(
 The file's shaid
 }
 \description{
-Add data file(s) and properties to a local shaidy repository
+This function adds a blob (file(s)) of a specified type to a Shaidy repository.
+The file blob is created in a temporary directory in the blob path of the repository.
+If a blob with the same shaid already exists in the repository, the file blob is not added.
 }

@@ -17,7 +17,9 @@ NULL
 #' @importFrom logger log_debug
 #' @importFrom logger log_trace
 #' @importFrom logger log_error
+#' @importFrom logger log_warn
 #' @importFrom logger log_appender
+#' @importFrom logger skip_formatter
 #' @importFrom logger appender_file
 #' @importFrom logger appender_console
 #' @importFrom logger layout_glue_generator
@@ -60,7 +62,8 @@ log_call_stack <- function() {
   calling_function_name <- as.character(parent_call[[1]])
   log_trace("Call stack to ", calling_function_name, ":")
   for (i in rev(seq_along(calls)[-length(calls)])) {
-    log_trace(paste0("\t\t", i, ": ", paste0(deparse(calls[[i]]), collapse = " ")))
+    log_trace(skip_formatter(paste0("\t\t", i, ": ", paste0(deparse(calls[[i]]), collapse = " "))))
+      #log_trace(paste0("\t\t", i, ": ", paste0(deparse(calls[[i]]), collapse = " ")))
   }
 }
 
@@ -3568,6 +3571,15 @@ chmFixDatasetVersion <- function(dataset) {
   dataset
 }
 
+#' Upgrade the version of a CHM object
+#'
+#' This function upgrades the version of a CHM object to version 2 if it's not already.
+#' It also fixes any missing slots in the layers and templates of the CHM object.
+#' It also sets the row and column order methods if they are not set to one of the default methods.
+#'
+#' @param chm A CHM object to upgrade.
+#' @return The upgraded CHM object.
+#' @noRd
 chmFixVersion <- function(chm) {
   if (chm@version < 2) {
     warning("Upgrading chm ", chm@name, " from version ", chm@version, " to version 2")
@@ -3875,6 +3887,8 @@ chmExportToHTML <- function(chm, filename, overwrite = FALSE, shaidyMapGen, shai
   filename
 }
 writeBinLines <- function(text, con) {
+  log_debug("Writing text to file: ", con)
+  #log_trace(skip_formatter(paste0("text to write:\n\t", paste0(as.character(text), collapse = "\n\t"))))
   openit <- is.character(con)
   if (openit) con <- file(con, "wb")
   writeLines(text, con, "\n")

@@ -2,26 +2,29 @@
 % Please edit documentation in R/shaidy.R
 \name{shaidyFinalizeProtoBlob}
 \alias{shaidyFinalizeProtoBlob}
-\title{Finalize a prototype blob}
+\title{Finalize a prototype blob in a Shaidy repository}
 \usage{
 shaidyFinalizeProtoBlob(shaidyRepo, shaid, protoblob)
 }
 \arguments{
-\item{shaidyRepo}{The shaidy repository}
+\item{shaidyRepo}{A Shaidy repository object.}
 
-\item{shaid}{The shaid to assign the protoblob}
+\item{shaid}{A shaid object representing the shaid of the blob.}
 
-\item{protoblob}{The prototype blob to finalize}
+\item{protoblob}{The path to the prototype blob to finalize.}
 }
 \value{
-The shaid (invisibly)
-
-The protoblob must have been created in the specified shaidy repository
-and with the same blob type as the shaid.  When this function returns the
-protoblob will no longer be accessible .  If a blob with the same shaid already
-exists in this repository, the protoblob is quitely removed without affecting
-the existing blob.
+The shaid of the blob (invisibly).
 }
 \description{
-Finalize a prototype blob
+This function finalizes a prototype blob in a Shaidy repository.
+It moves the prototype blob from a temporary location to its final location in the blob path of the repository.
+If a blob with the same shaid already exists in the repository, the prototype blob is deleted.
+}
+\details{
+The protoblob must have been created in the specified shaidy repository
+and with the same blob type as the shaid.  When this function returns the
+protoblob will no longer be accessible.  If a blob with the same shaid already
+exists in this repository, the protoblob is quietly removed without affecting
+the existing blob.
 }

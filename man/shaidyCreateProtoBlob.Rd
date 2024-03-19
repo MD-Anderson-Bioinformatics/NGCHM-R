@@ -9,11 +9,12 @@ shaidyCreateProtoBlob(shaidyRepo, blob.type)
 \arguments{
 \item{shaidyRepo}{The shaidy repository}
 
-\item{blob.type}{The blob.type of the prototype blob}
+\item{blob.type}{The type of the prototype blob (e.g. dataset, label, chm)}
 }
 \value{
 The file path of the prototype blob
 }
 \description{
-Create a prototype blob in a shaidy repository
+Apparently a 'prototype blob' is a directory.
 }
+\keyword{internal}

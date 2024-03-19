@@ -12,6 +12,7 @@ gitHashObject <- function(path) {
   stopifnot(file.exists(path))
   hash <- system2("git", c("hash-object", path), stdout = TRUE)
   stopifnot(is.null(attr(hash, "status")))
+  log_trace("Hash of path '", path, "' is ", hash)
   hash
 }
 
@@ -67,6 +68,7 @@ shaidyRegisterRepoAPI <- function(api, methods) {
 #'
 #' @noRd
 shaidyInit <- function() {
+  log_debug("top of shaidyInit")
   shaidy.env$repoMethods <- list()
   shaidyRegisterRepoAPI("__generic__", list(
     # Load a collection from a shaidy repository
@@ -314,6 +316,7 @@ print.shaidyRepo <- function(x, ...) {
 #'
 #' @export
 shaidyInitRepository <- function(shaidyDir, blob.types) {
+  log_debug("shaidyInitRepository: ", shaidyDir)
   stopifnot(!dir.exists(shaidyDir))
   stopifnot(dir.create(shaidyDir, recursive = TRUE))
   typeTab <- data.frame(Type = blob.types, Path = blob.types)
@@ -363,11 +366,15 @@ shaidyProvenance <- function(...) {
 
 #' Add data file(s) and properties to a local shaidy repository
 #'
-#' @param shaidyRepo The shaidy repository
-#' @param blob.type The blob.type of the data file
-#' @param blob.file Name of the file(s) within the blob
+#' This function adds a blob (file(s)) of a specified type to a Shaidy repository.
+#' The file blob is created in a temporary directory in the blob path of the repository.
+#' If a blob with the same shaid already exists in the repository, the file blob is not added.
+#'
+#' @param shaidyRepo A shaidy repository object
+#' @param blob.type The type of the data file(s) (e.g. 'dataset', 'label', 'chm')
+#' @param blob.file Name(s) of the file(s) within the blob
 #' @param filename The filesystem path(s) to the file(s) to insert
-#' @param properties A list of additional properties to save with the file(s)
+#' @param properties A list of optional additional properties to save with the file(s)
 #' @param shaid Shaid to store the blob as.
 #'
 #' @return The file's shaid
@@ -381,6 +388,10 @@ shaidyAddFileBlob <- function(shaidyRepo, blob.type, blob.file, filename, proper
     (!"properties.json" %in% blob.file) || (length(properties) == 0),
     anyDuplicated(blob.file) == 0
   )
+  log_trace("Adding files of type '", blob.type, "' to shaidy repository")
+  log_trace(skip_formatter(paste0("blob.file(s): ", paste0(blob.file, collapse = ", "))))
+  log_trace(skip_formatter(paste0("filename(s): ", paste0(filename, collapse = ", "))))
+  log_call_stack()
   blobdir <- shaidyCreateProtoBlob(shaidyRepo, blob.type)
   if (length(properties) > 0) {
     props.json <- jsonlite::toJSON(properties)
@@ -395,29 +406,36 @@ shaidyAddFileBlob <- function(shaidyRepo, blob.type, blob.file, filename, proper
 
 #' Create a prototype blob in a shaidy repository
 #'
+#' Apparently a 'prototype blob' is a directory.
+#'
 #' @param shaidyRepo The shaidy repository
-#' @param blob.type The blob.type of the prototype blob
+#' @param blob.type The type of the prototype blob (e.g. dataset, label, chm)
 #'
 #' @return The file path of the prototype blob
+#' @keywords internal
 shaidyCreateProtoBlob <- function(shaidyRepo, blob.type) {
   protoblob <- utempfile("proto", tmpdir = shaidyRepo$blob.path(blob.type))
+  log_trace("Creating directory: ", protoblob, " for blob (directory) type '", blob.type, "'")
   dir.create(protoblob)
   protoblob
 }
 
-#' Finalize a prototype blob
+#' Finalize a prototype blob in a Shaidy repository
 #'
-#' @param shaidyRepo The shaidy repository
-#' @param shaid The shaid to assign the protoblob
-#' @param protoblob The prototype blob to finalize
-#'
-#' @return The shaid (invisibly)
+#' This function finalizes a prototype blob in a Shaidy repository.
+#' It moves the prototype blob from a temporary location to its final location in the blob path of the repository.
+#' If a blob with the same shaid already exists in the repository, the prototype blob is deleted.
 #'
 #' The protoblob must have been created in the specified shaidy repository
 #' and with the same blob type as the shaid.  When this function returns the
-#' protoblob will no longer be accessible .  If a blob with the same shaid already
-#' exists in this repository, the protoblob is quitely removed without affecting
+#' protoblob will no longer be accessible.  If a blob with the same shaid already
+#' exists in this repository, the protoblob is quietly removed without affecting
 #' the existing blob.
+#'
+#' @param shaidyRepo A Shaidy repository object.
+#' @param shaid A shaid object representing the shaid of the blob.
+#' @param protoblob The path to the prototype blob to finalize.
+#' @return The shaid of the blob (invisibly).
 shaidyFinalizeProtoBlob <- function(shaidyRepo, shaid, protoblob) {
   typedir <- shaidyRepo$blob.path(shaid@type)
   stopifnot(
@@ -426,9 +444,12 @@ shaidyFinalizeProtoBlob <- function(shaidyRepo, shaid, protoblob) {
   )
   blobpath <- file.path(typedir, shaid@value)
   if (file.exists(blobpath)) {
+    log_trace("Deleting existing protoblob directory: ", protoblob)
     unlink(protoblob, recursive = TRUE)
   } else {
+    log_trace("Renaming protoblob directory: ", protoblob, " to ", blobpath)
     file.rename(protoblob, blobpath)
+    log_debug("Finalized '", shaid@type, "' in directory: ", blobpath)
   }
   invisible(shaid)
 }

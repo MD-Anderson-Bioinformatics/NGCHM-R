@@ -319,7 +319,22 @@ writeProperties <- function(props, chan, writeSpecial = FALSE) {
   }
 }
 
+#' Write Properties Post
+#'
+#' This function writes properties of a CHM post to a specified output directory.
+#' If a property is labeled as "hidden" and its value is "TRUE", the function writes
+#' the "hidden.tags" to a file. The file format depends on the `format` argument.
+#'
+#' @param outDir The output directory.
+#' @param format The format of the output file. If "original", the function writes a "hidden.txt" file.
+#'               Otherwise, it writes a "hidden.json" file.
+#' @param props A list of properties. Each property is an object with a `label` and a `value`.
+#'
+#' @return None. This function is called for its side effects.
+#' @noRd
 writePropertiesPost <- function(outDir, format, props) {
+  log_debug("Writing props to outDir: ", outDir)
+  log_trace(paste0("props: ", paste(props, collapse = ", ")))
   hidden.tags <- NULL
   for (ii in 1:length(props)) {
     if (props[[ii]]@label == "hidden.tags") {
@@ -338,8 +353,21 @@ writePropertiesPost <- function(outDir, format, props) {
   }
 }
 
+#' Write CHM Post
+#'
+#' This function writes a CHM post to a specified output directory.
+#' If the CHM format is "original", it also initializes a shaidy repository,
+#' copies blobs from the source to the repository, and creates a tar file.
+#'
+#' @param chm An object of the CHM class.
+#' @param outdir The output directory. If not provided, it defaults to the `outDir` slot of the `chm` object.
+#'
+#' @return None. This function is called for its side effects.
+#' @noRd
 writeChmPost <- function(chm, outdir = NULL) {
   if (length(outdir) == 0) outdir <- file.path(chm@outDir, chm@name)
+  log_debug("Writing chm to outdir: ", outdir)
+  log_call_stack()
   if (is.list(chm@properties)) writePropertiesPost(outdir, chm@format, chm@properties)
   if (chm@format == "original") {
     shaids <- shaidyGetComponents(chm)
@@ -780,7 +808,20 @@ getFnsRqrd <- function(tflist, type) {
   }
 }
 
+#' Write CHM
+#'
+#' This function writes a CHM (Clustered Heat Map) to a specified directory.
+#' It logs various properties of the CHM, checks for necessary data layers and color maps,
+#' creates directories as needed, and writes various components of the CHM to files.
+#'
+#' @param chm The CHM object to be written.
+#' @param saveDir The directory where the CHM should be saved. If NULL, the CHM's inpDir is used.
+#'
+#' @return The function does not return a value; it is called for its side effects of writing the CHM.
+#' @noRd
 writeChm <- function(chm, saveDir = NULL) {
+  log_call_stack()
+  print(chm@rowMeta)
   if (length(chm@layers) == 0) {
     stop("The NGCHM has no data layers. You must add at least one.")
   }
@@ -1182,7 +1223,16 @@ addToolBoxes <- function(chm) {
   }
   chm
 }
-
+#' chmMake method for ngchm class
+#'
+#' This method prepares an ngchm object for further processing by ensuring that the row and
+#' column orders are in the correct format.
+#' It computes row and column orders if required, and converts different types of row and column orders to SHAIDs.
+#'
+#' @param chm An object of class "ngchm".
+#' @param ... Additional arguments.
+#'
+#' @return A modified ngchm object with updated row and column orders.
 #' @rdname chmMake-method
 #' @aliases chmMake,ngchm-method
 #'
@@ -1245,6 +1295,7 @@ ngchmMakeFormat.original <- function(chm,
                                      javaTraceLevel = NULL,
                                      javaOptions = NULL,
                                      buildArchive = NULL) {
+  log_trace("Creating original format NGCHM")
   if (length(javaTraceLevel) == 0) javaTraceLevel <- getOption("NGCHM.Java.Trace", "PROGRESS")
   if (length(javaOptions) == 0) javaOptions <- getOption("NGCHM.Java.Options", "-Xmx2G")
   if (length(server) == 0) server <- chmCurrentServer()

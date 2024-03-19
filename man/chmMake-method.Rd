@@ -10,16 +10,21 @@ chmMake(chm, ...)
 \S4method{chmMake}{ngchm}(chm, ...)
 }
 \arguments{
-\item{chm}{The NGCHM to compile.}
+\item{chm}{An object of class "ngchm".}
 
-\item{...}{Additional chmMake options that depend on the format of the NGCHM.  For details
-of the additional parameters of format x see ngchmMakeFormat.x (e.g. ngchmMakeFormat.original).}
+\item{...}{Additional arguments.}
 }
 \value{
 The chm
+
+A modified ngchm object with updated row and column orders.
 }
 \description{
 Deprecated.  Users should no longer call this method directly.
+
+This method prepares an ngchm object for further processing by ensuring that the row and
+column orders are in the correct format.
+It computes row and column orders if required, and converts different types of row and column orders to SHAIDs.
 }
 \details{
 Compiles the specified Next Generation Clustered Heat Map (NGCHM) in preparation for installation.
