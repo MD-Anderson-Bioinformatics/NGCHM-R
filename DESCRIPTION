@@ -58,5 +58,5 @@ Collate:
     'zzz.R'
     'package.R'
 SystemRequirements:
-    Java (>= 8.0)
+    Java (>= 11)
     Git
