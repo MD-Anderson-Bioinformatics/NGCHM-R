@@ -2999,17 +2999,6 @@ getServerVersion <- function(server) {
   as.numeric(ngchmResponseJSON(res)$Build_Number)
 }
 
-testExternalProgram <- function(program) {
-  res <- NULL
-  suppressWarnings(try(
-    {
-      res <- system2(program, NULL, stdout = TRUE, stderr = TRUE)
-    },
-    silent = TRUE
-  ))
-  if (is.null(res)) warning(sprintf("Unable to execute external program '%s'. Some functionality not available.", program))
-  !is.null(res)
-}
 
 testJava <- function(jarfile) {
   res <- NULL

@@ -47,6 +47,7 @@ Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.2.3
 Collate:
+    'internalFunctions.R'
     'allClasses.R'
     'allGenerics.R'
     'allMethods.R'
