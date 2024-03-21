@@ -3738,8 +3738,10 @@ chmExportToFile <- function(chm, filename, overwrite = FALSE, shaidyMapGen, shai
     stop("Missing required java version.")
   }
   if (missing(shaidyMapGenArgs)) shaidyMapGenArgs <- strsplit(Sys.getenv("SHAIDYMAPGENARGS"), ",")[[1]]
-  if (shaidyMapGen == "") stop("shaidyMapGen not specified or set in environment")
-
+  if (shaidyMapGen == "") {
+    checkForNGCHMSupportFiles()
+    stop("Missing required path to ShaidyMapGen.jar file.")
+  }
   chm@format <- "shaidy"
   chm <- chmAddProperty(chm, "chm.info.build.time", format(Sys.time(), "%F %H:%M:%S"))
   chm <- chmMake(chm)
@@ -3772,6 +3774,10 @@ chmExportToFile <- function(chm, filename, overwrite = FALSE, shaidyMapGen, shai
 chmExportToPDF <- function(chm, filename, overwrite = FALSE, shaidyMapGen, shaidyMapGenJava, shaidyMapGenArgs) {
   if (!overwrite && file.exists(filename)) stop("'filename' already exists")
   if (missing(shaidyMapGen)) shaidyMapGen <- Sys.getenv("SHAIDYMAPGEN")
+  if (shaidyMapGen == "") {
+    checkForNGCHMSupportFiles()
+    stop("Missing required path to ShaidyMapGen.jar file.")
+  }
   if (missing(shaidyMapGenJava)) shaidyMapGenJava <- Sys.getenv("SHAIDYMAPGENJAVA")
   if (shaidyMapGenJava == "") shaidyMapGenJava <- "java"
   if (!checkForJavaVersion(shaidyMapGenJava)) {
@@ -3790,7 +3796,6 @@ chmExportToPDF <- function(chm, filename, overwrite = FALSE, shaidyMapGen, shaid
 
   pdfpath <- shaidyRepo$blob.path("viewer", shaid@value, chm@name, paste(chm@name, ".pdf", sep = ""))
   if (!file.exists(pdfpath)) {
-    if (shaidyMapGen == "") stop("shaidyMapGen required but not specified or set in environment")
     status <- system2(shaidyMapGenJava, c(shaidyMapGenArgs, "-jar", shaidyMapGen, shaidyRepo$basepath, shaid@value, shaid@value))
     if (status != 0 || !file.exists(pdfpath)) stop("export to pdf failed")
   }
@@ -3819,18 +3824,21 @@ chmExportToPDF <- function(chm, filename, overwrite = FALSE, shaidyMapGen, shaid
 chmExportToHTML <- function(chm, filename, overwrite = FALSE, shaidyMapGen, shaidyMapGenJava, shaidyMapGenArgs, ngchmWidgetPath) {
   if (!overwrite && file.exists(filename)) stop("'filename' already exists")
   if (missing(shaidyMapGen)) shaidyMapGen <- Sys.getenv("SHAIDYMAPGEN")
+  if (shaidyMapGen == "") {
+    checkForNGCHMSupportFiles()
+    stop("Missing required path to ShaidyMapGen.jar file.")
+  }
   if (missing(shaidyMapGenJava)) shaidyMapGenJava <- Sys.getenv("SHAIDYMAPGENJAVA")
   if (shaidyMapGenJava == "") shaidyMapGenJava <- "java"
   if (!checkForJavaVersion(shaidyMapGenJava)) {
     stop("Missing required java version.")
   }
   if (missing(shaidyMapGenArgs)) shaidyMapGenArgs <- strsplit(Sys.getenv("SHAIDYMAPGENARGS"), ",")[[1]]
-  if (missing(ngchmWidgetPath)) {
-    stopifnot(Sys.getenv("NGCHMWIDGETPATH") != "")
-  } else {
-    Sys.setenv(NGCHMWIDGETPATH = ngchmWidgetPath)
+  if (missing(ngchmWidgetPath)) ngchmWidgetPath <- Sys.getenv("NGCHMWIDGETPATH")
+  if (ngchmWidgetPath == "") {
+    checkForNGCHMSupportFiles()
+    stop("Missing required path to ngchmWidget-min.js file.")
   }
-
 
   if (length(chmProperty(chm, "chm.info.build.time")) == 0) {
     chm@format <- "shaidy"
@@ -3843,7 +3851,6 @@ chmExportToHTML <- function(chm, filename, overwrite = FALSE, shaidyMapGen, shai
 
   htmlpath <- shaidyRepo$blob.path("viewer", shaid@value, chm@name, paste(chm@name, ".html", sep = ""))
   if (!file.exists(htmlpath)) {
-    if (shaidyMapGen == "") stop("shaidyMapGen required but not specified or set in environment")
     status <- system2(shaidyMapGenJava, c(shaidyMapGenArgs, "-jar", shaidyMapGen, shaidyRepo$basepath, shaid@value, shaid@value, "NO_PDF", "-HTML"))
     if (status != 0 || !file.exists(htmlpath)) stop("export to html failed")
   }
