@@ -3734,6 +3734,9 @@ chmExportToFile <- function(chm, filename, overwrite = FALSE, shaidyMapGen, shai
   if (missing(shaidyMapGen)) shaidyMapGen <- Sys.getenv("SHAIDYMAPGEN")
   if (missing(shaidyMapGenJava)) shaidyMapGenJava <- Sys.getenv("SHAIDYMAPGENJAVA")
   if (shaidyMapGenJava == "") shaidyMapGenJava <- "java"
+  if (!checkForJavaVersion(shaidyMapGenJava)) {
+    stop("Missing required java version.")
+  }
   if (missing(shaidyMapGenArgs)) shaidyMapGenArgs <- strsplit(Sys.getenv("SHAIDYMAPGENARGS"), ",")[[1]]
   if (shaidyMapGen == "") stop("shaidyMapGen not specified or set in environment")
 
@@ -3771,6 +3774,9 @@ chmExportToPDF <- function(chm, filename, overwrite = FALSE, shaidyMapGen, shaid
   if (missing(shaidyMapGen)) shaidyMapGen <- Sys.getenv("SHAIDYMAPGEN")
   if (missing(shaidyMapGenJava)) shaidyMapGenJava <- Sys.getenv("SHAIDYMAPGENJAVA")
   if (shaidyMapGenJava == "") shaidyMapGenJava <- "java"
+  if (!checkForJavaVersion(shaidyMapGenJava)) {
+    stop("Missing required java version.")
+  }
   if (missing(shaidyMapGenArgs)) shaidyMapGenArgs <- strsplit(Sys.getenv("SHAIDYMAPGENARGS"), ",")[[1]]
 
   if (length(chmProperty(chm, "chm.info.build.time")) == 0) {
@@ -3815,6 +3821,9 @@ chmExportToHTML <- function(chm, filename, overwrite = FALSE, shaidyMapGen, shai
   if (missing(shaidyMapGen)) shaidyMapGen <- Sys.getenv("SHAIDYMAPGEN")
   if (missing(shaidyMapGenJava)) shaidyMapGenJava <- Sys.getenv("SHAIDYMAPGENJAVA")
   if (shaidyMapGenJava == "") shaidyMapGenJava <- "java"
+  if (!checkForJavaVersion(shaidyMapGenJava)) {
+    stop("Missing required java version.")
+  }
   if (missing(shaidyMapGenArgs)) shaidyMapGenArgs <- strsplit(Sys.getenv("SHAIDYMAPGENARGS"), ",")[[1]]
   if (missing(ngchmWidgetPath)) {
     stopifnot(Sys.getenv("NGCHMWIDGETPATH") != "")

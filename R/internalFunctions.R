@@ -40,14 +40,14 @@ checkForExternalUtilities <- function() {
 #'
 #' @noRd
 #' @keywords internal
-checkForJavaVersion <- function(requiredJavaVersion = 11) {
+checkForJavaVersion <- function(javaExecutable = "java", requiredJavaVersion = 11) {
   requiredJavaVersion <- as.integer(requiredJavaVersion)
   message <- paste0("CRITICAL WARNING: Unable to verify Java installation. ",
                     "Java ", requiredJavaVersion, " is required to create .ngchm and .html files.\n\n",
                     "\tInstall Java ", requiredJavaVersion, " or higher for to create .ngchm and .html files.\n")
   checkResponse <- NULL
   suppressWarnings(try({
-    checkResponse <- system2("java", "--version", stdout = TRUE, stderr = TRUE)
+    checkResponse <- system2(javaExecutable, "--version", stdout = TRUE, stderr = TRUE)
   }, silent = TRUE))
   if (is.null(checkResponse)) { # java not installed
     warning(message)
