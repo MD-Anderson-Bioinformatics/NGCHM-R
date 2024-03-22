@@ -3756,7 +3756,9 @@ chmExportToFile <- function(chm, filename, overwrite = FALSE, shaidyMapGen, shai
 
   shaidyRepo <- ngchm.env$tmpShaidy
   shaid <- shaidyGetShaid(chm)
-  status <- system2(shaidyMapGenJava, c(shaidyMapGenArgs, "-jar", shaidyMapGen, shaidyRepo$basepath, shaid@value, shaid@value, "NO_PDF"))
+  status <- system2(shaidyMapGenJava,
+    c(shaidyMapGenArgs, "-jar", shaidyMapGen, shaidyRepo$basepath, shaid@value, shaid@value, "NO_PDF"),
+    env = c("DISPLAY=''")) # Set DISPLAY to empty string to prevent X11 errors in Rstudio Docker container
   if (status != 0) stop("export to ngchm failed")
   if (!file.copy(shaidyRepo$blob.path("viewer", shaid@value, chm@name, paste(chm@name, "ngchm", sep = ".")), filename, TRUE)) {
     stop("export to ngchm failed")
@@ -3811,7 +3813,9 @@ chmExportToPDF <- function(chm, filename, overwrite = FALSE, shaidyMapGen, shaid
 
   pdfpath <- shaidyRepo$blob.path("viewer", shaid@value, chm@name, paste(chm@name, ".pdf", sep = ""))
   if (!file.exists(pdfpath)) {
-    status <- system2(shaidyMapGenJava, c(shaidyMapGenArgs, "-jar", shaidyMapGen, shaidyRepo$basepath, shaid@value, shaid@value))
+    status <- system2(shaidyMapGenJava,
+      c(shaidyMapGenArgs, "-jar", shaidyMapGen, shaidyRepo$basepath, shaid@value, shaid@value),
+      env = c("DISPLAY=''")) # Set DISPLAY to empty string to prevent X11 errors in Rstudio Docker container
     if (status != 0 || !file.exists(pdfpath)) stop("export to pdf failed")
   }
 
@@ -3873,7 +3877,9 @@ chmExportToHTML <- function(chm, filename, overwrite = FALSE, shaidyMapGen, shai
 
   htmlpath <- shaidyRepo$blob.path("viewer", shaid@value, chm@name, paste(chm@name, ".html", sep = ""))
   if (!file.exists(htmlpath)) {
-    status <- system2(shaidyMapGenJava, c(shaidyMapGenArgs, "-jar", shaidyMapGen, shaidyRepo$basepath, shaid@value, shaid@value, "NO_PDF", "-HTML"))
+    status <- system2(shaidyMapGenJava,
+      c(shaidyMapGenArgs, "-jar", shaidyMapGen, shaidyRepo$basepath, shaid@value, shaid@value, "NO_PDF", "-HTML"),
+      env = c("DISPLAY=''")) # Set DISPLAY to empty string to prevent X11 errors in Rstudio Docker container
     if (status != 0 || !file.exists(htmlpath)) stop("export to html failed")
   }
 
