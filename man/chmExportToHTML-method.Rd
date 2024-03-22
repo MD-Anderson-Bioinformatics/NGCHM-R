@@ -34,4 +34,12 @@ filename
 }
 \description{
 Create a standalone HTML containing the NGCHM in the specified file.
+This function requires \strong{Java 11} and the
+\strong{\href{https://github.com/MD-Anderson-Bioinformatics/NGCHMSupportFiles}{NGCHMSupportFiles}} package.
+}
+\details{
+The NGCHMSupportFiles package can be installed from the R-universe repository: \cr\cr
+\code{install.packages('NGCHMDemoData', } \cr
+\code{repos = c('https://md-anderson-bioinformatics.r-universe.dev',} \cr
+\code{'https://cloud.r-project.org'))}
 }

@@ -8,6 +8,16 @@
 #' ngchmLayer, row and column dendrograms, classification bars, and popup menu entries;
 #' compile and install it on an available ngchmServer.
 #'
+#' Note:
+#'   - `chmNew()` requires **git** to be installed.
+#'   - `chmExportToFile()`, `chmExportToHTML()`, and `chmExportToPDF()` require
+#'      **Java 11** and the **[NGCHMSupportFiles](https://github.com/MD-Anderson-Bioinformatics/NGCHMSupportFiles)**
+#'      package. The NGCHMSupportFiles package
+#'      can be installed with: \cr\cr
+#'      \code{install.packages('NGCHMDemoData', } \cr
+#'      \code{repos = c('https://md-anderson-bioinformatics.r-universe.dev',} \cr
+#'      \code{'https://cloud.r-project.org'))}
+#'
 #' @section Initialization:
 #' When first loaded the NGCHM library reads configuration files in
 #' the directories specified by the NGCHMCONFIGPATH environment variable.  This is
