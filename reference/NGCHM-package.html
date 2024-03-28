@@ -18,7 +18,7 @@ and for compiling and installing it on a NGCHM server."><!-- mathjax --><script 
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">NGCHMR</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.0.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.0.2</span>
       </span>
     </div>
 
@@ -95,7 +95,12 @@ and for compiling and installing it on a NGCHM server.</p>
 least one ngchmLayer; typically extend it further with an additional
 ngchmLayer, row and column dendrograms, classification bars, and popup menu entries;
 compile and install it on an available ngchmServer.</p>
-    </div>
+<p>Note:</p><ul><li><p><code><a href="chmNew.html">chmNew()</a></code> requires <strong>git</strong> to be installed.</p></li>
+<li><p><code><a href="chmExportToFile-method.html">chmExportToFile()</a></code>, <code><a href="chmExportToHTML-method.html">chmExportToHTML()</a></code>, and <code><a href="chmExportToPDF-method.html">chmExportToPDF()</a></code> require
+<strong>Java 11</strong> and the <strong><a href="https://github.com/MD-Anderson-Bioinformatics/NGCHMSupportFiles" class="external-link">NGCHMSupportFiles</a></strong>
+package. The NGCHMSupportFiles package
+can be installed with: <br><br><code>install.packages('NGCHMDemoData', </code> <br><code>repos = c('https://md-anderson-bioinformatics.r-universe.dev',</code> <br><code>'https://cloud.r-project.org'))</code></p></li>
+</ul></div>
     <div id="initialization">
     <h2>Initialization</h2>
     
