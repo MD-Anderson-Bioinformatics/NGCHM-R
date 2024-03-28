@@ -75,6 +75,7 @@ An object of class ngchm
 This function creates a Next Generation Clustered Heat Map (NGCHM) object in memory.
 Additional parameters will be added to the new NGCHM (see chmAdd).
 The bare NGCHM needs at least one data layer added to it before it can be compiled.
+This function requires \strong{git} to be installed.
 }
 \examples{
 mychm <- chmNew("test_chm")

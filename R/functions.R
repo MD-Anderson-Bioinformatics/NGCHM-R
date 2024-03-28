@@ -159,6 +159,7 @@ ngchmGetEnv <- function() {
 #' This function creates a Next Generation Clustered Heat Map (NGCHM) object in memory.
 #' Additional parameters will be added to the new NGCHM (see chmAdd).
 #' The bare NGCHM needs at least one data layer added to it before it can be compiled.
+#' This function requires **git** to be installed.
 #'
 #' @param name The name under which the NGCHM will be saved to the NGCHM server.
 #' @param ... Zero or more initial objects to include in the NGCHM (see chmAdd).
@@ -2999,17 +3000,6 @@ getServerVersion <- function(server) {
   as.numeric(ngchmResponseJSON(res)$Build_Number)
 }
 
-testExternalProgram <- function(program) {
-  res <- NULL
-  suppressWarnings(try(
-    {
-      res <- system2(program, NULL, stdout = TRUE, stderr = TRUE)
-    },
-    silent = TRUE
-  ))
-  if (is.null(res)) warning(sprintf("Unable to execute external program '%s'. Some functionality not available.", program))
-  !is.null(res)
-}
 
 testJava <- function(jarfile) {
   res <- NULL
@@ -3728,6 +3718,13 @@ readTile <- function(filename, nrow, ncol) {
 #' Export a standalone NGCHM to a file.
 #'
 #' Create a standalone viewer for the NGCHM in the specified file.
+#' This function requires **Java 11** and the
+#' **[NGCHMSupportFiles](https://github.com/MD-Anderson-Bioinformatics/NGCHMSupportFiles)** package.
+#'
+#' The NGCHMSupportFiles package can be installed from the R-universe repository: \cr\cr
+#' \code{install.packages('NGCHMDemoData', } \cr
+#' \code{repos = c('https://md-anderson-bioinformatics.r-universe.dev',} \cr
+#' \code{'https://cloud.r-project.org'))}
 #'
 #' @export
 #' @rdname chmExportToFile-method
@@ -3745,16 +3742,23 @@ chmExportToFile <- function(chm, filename, overwrite = FALSE, shaidyMapGen, shai
   if (missing(shaidyMapGen)) shaidyMapGen <- Sys.getenv("SHAIDYMAPGEN")
   if (missing(shaidyMapGenJava)) shaidyMapGenJava <- Sys.getenv("SHAIDYMAPGENJAVA")
   if (shaidyMapGenJava == "") shaidyMapGenJava <- "java"
+  if (!checkForJavaVersion(shaidyMapGenJava)) {
+    stop("Missing required java version.")
+  }
   if (missing(shaidyMapGenArgs)) shaidyMapGenArgs <- strsplit(Sys.getenv("SHAIDYMAPGENARGS"), ",")[[1]]
-  if (shaidyMapGen == "") stop("shaidyMapGen not specified or set in environment")
-
+  if (shaidyMapGen == "") {
+    checkForNGCHMSupportFiles()
+    stop("Missing required path to ShaidyMapGen.jar file.")
+  }
   chm@format <- "shaidy"
   chm <- chmAddProperty(chm, "chm.info.build.time", format(Sys.time(), "%F %H:%M:%S"))
   chm <- chmMake(chm)
 
   shaidyRepo <- ngchm.env$tmpShaidy
   shaid <- shaidyGetShaid(chm)
-  status <- system2(shaidyMapGenJava, c(shaidyMapGenArgs, "-jar", shaidyMapGen, shaidyRepo$basepath, shaid@value, shaid@value, "NO_PDF"))
+  status <- system2(shaidyMapGenJava,
+    c(shaidyMapGenArgs, "-jar", shaidyMapGen, shaidyRepo$basepath, shaid@value, shaid@value, "NO_PDF"),
+    env = c("DISPLAY=''")) # Set DISPLAY to empty string to prevent X11 errors in Rstudio Docker container
   if (status != 0) stop("export to ngchm failed")
   if (!file.copy(shaidyRepo$blob.path("viewer", shaid@value, chm@name, paste(chm@name, "ngchm", sep = ".")), filename, TRUE)) {
     stop("export to ngchm failed")
@@ -3765,6 +3769,13 @@ chmExportToFile <- function(chm, filename, overwrite = FALSE, shaidyMapGen, shai
 #' Export a PDF of the NGCHM to a file.
 #'
 #' Create a PDF of the NGCHM in the specified file.
+#' This function requires **Java 11** and the
+#' **[NGCHMSupportFiles](https://github.com/MD-Anderson-Bioinformatics/NGCHMSupportFiles)** package.
+#'
+#' The NGCHMSupportFiles package can be installed from the R-universe repository: \cr\cr
+#' \code{install.packages('NGCHMDemoData', } \cr
+#' \code{repos = c('https://md-anderson-bioinformatics.r-universe.dev',} \cr
+#' \code{'https://cloud.r-project.org'))}
 #'
 #' @export
 #' @rdname chmExportToPDF-method
@@ -3780,8 +3791,15 @@ chmExportToFile <- function(chm, filename, overwrite = FALSE, shaidyMapGen, shai
 chmExportToPDF <- function(chm, filename, overwrite = FALSE, shaidyMapGen, shaidyMapGenJava, shaidyMapGenArgs) {
   if (!overwrite && file.exists(filename)) stop("'filename' already exists")
   if (missing(shaidyMapGen)) shaidyMapGen <- Sys.getenv("SHAIDYMAPGEN")
+  if (shaidyMapGen == "") {
+    checkForNGCHMSupportFiles()
+    stop("Missing required path to ShaidyMapGen.jar file.")
+  }
   if (missing(shaidyMapGenJava)) shaidyMapGenJava <- Sys.getenv("SHAIDYMAPGENJAVA")
   if (shaidyMapGenJava == "") shaidyMapGenJava <- "java"
+  if (!checkForJavaVersion(shaidyMapGenJava)) {
+    stop("Missing required java version.")
+  }
   if (missing(shaidyMapGenArgs)) shaidyMapGenArgs <- strsplit(Sys.getenv("SHAIDYMAPGENARGS"), ",")[[1]]
 
   if (length(chmProperty(chm, "chm.info.build.time")) == 0) {
@@ -3795,8 +3813,9 @@ chmExportToPDF <- function(chm, filename, overwrite = FALSE, shaidyMapGen, shaid
 
   pdfpath <- shaidyRepo$blob.path("viewer", shaid@value, chm@name, paste(chm@name, ".pdf", sep = ""))
   if (!file.exists(pdfpath)) {
-    if (shaidyMapGen == "") stop("shaidyMapGen required but not specified or set in environment")
-    status <- system2(shaidyMapGenJava, c(shaidyMapGenArgs, "-jar", shaidyMapGen, shaidyRepo$basepath, shaid@value, shaid@value))
+    status <- system2(shaidyMapGenJava,
+      c(shaidyMapGenArgs, "-jar", shaidyMapGen, shaidyRepo$basepath, shaid@value, shaid@value),
+      env = c("DISPLAY=''")) # Set DISPLAY to empty string to prevent X11 errors in Rstudio Docker container
     if (status != 0 || !file.exists(pdfpath)) stop("export to pdf failed")
   }
 
@@ -3808,6 +3827,13 @@ chmExportToPDF <- function(chm, filename, overwrite = FALSE, shaidyMapGen, shaid
 #' Export a standalone HTML containing the NGCHM to a file.
 #'
 #' Create a standalone HTML containing the NGCHM in the specified file.
+#' This function requires **Java 11** and the
+#' **[NGCHMSupportFiles](https://github.com/MD-Anderson-Bioinformatics/NGCHMSupportFiles)** package.
+#'
+#' The NGCHMSupportFiles package can be installed from the R-universe repository: \cr\cr
+#' \code{install.packages('NGCHMDemoData', } \cr
+#' \code{repos = c('https://md-anderson-bioinformatics.r-universe.dev',} \cr
+#' \code{'https://cloud.r-project.org'))}
 #'
 #' @export
 #' @rdname chmExportToHTML-method
@@ -3824,15 +3850,21 @@ chmExportToPDF <- function(chm, filename, overwrite = FALSE, shaidyMapGen, shaid
 chmExportToHTML <- function(chm, filename, overwrite = FALSE, shaidyMapGen, shaidyMapGenJava, shaidyMapGenArgs, ngchmWidgetPath) {
   if (!overwrite && file.exists(filename)) stop("'filename' already exists")
   if (missing(shaidyMapGen)) shaidyMapGen <- Sys.getenv("SHAIDYMAPGEN")
+  if (shaidyMapGen == "") {
+    checkForNGCHMSupportFiles()
+    stop("Missing required path to ShaidyMapGen.jar file.")
+  }
   if (missing(shaidyMapGenJava)) shaidyMapGenJava <- Sys.getenv("SHAIDYMAPGENJAVA")
   if (shaidyMapGenJava == "") shaidyMapGenJava <- "java"
-  if (missing(shaidyMapGenArgs)) shaidyMapGenArgs <- strsplit(Sys.getenv("SHAIDYMAPGENARGS"), ",")[[1]]
-  if (missing(ngchmWidgetPath)) {
-    stopifnot(Sys.getenv("NGCHMWIDGETPATH") != "")
-  } else {
-    Sys.setenv(NGCHMWIDGETPATH = ngchmWidgetPath)
+  if (!checkForJavaVersion(shaidyMapGenJava)) {
+    stop("Missing required java version.")
   }
-
+  if (missing(shaidyMapGenArgs)) shaidyMapGenArgs <- strsplit(Sys.getenv("SHAIDYMAPGENARGS"), ",")[[1]]
+  if (missing(ngchmWidgetPath)) ngchmWidgetPath <- Sys.getenv("NGCHMWIDGETPATH")
+  if (ngchmWidgetPath == "") {
+    checkForNGCHMSupportFiles()
+    stop("Missing required path to ngchmWidget-min.js file.")
+  }
 
   if (length(chmProperty(chm, "chm.info.build.time")) == 0) {
     chm@format <- "shaidy"
@@ -3845,8 +3877,9 @@ chmExportToHTML <- function(chm, filename, overwrite = FALSE, shaidyMapGen, shai
 
   htmlpath <- shaidyRepo$blob.path("viewer", shaid@value, chm@name, paste(chm@name, ".html", sep = ""))
   if (!file.exists(htmlpath)) {
-    if (shaidyMapGen == "") stop("shaidyMapGen required but not specified or set in environment")
-    status <- system2(shaidyMapGenJava, c(shaidyMapGenArgs, "-jar", shaidyMapGen, shaidyRepo$basepath, shaid@value, shaid@value, "NO_PDF", "-HTML"))
+    status <- system2(shaidyMapGenJava,
+      c(shaidyMapGenArgs, "-jar", shaidyMapGen, shaidyRepo$basepath, shaid@value, shaid@value, "NO_PDF", "-HTML"),
+      env = c("DISPLAY=''")) # Set DISPLAY to empty string to prevent X11 errors in Rstudio Docker container
     if (status != 0 || !file.exists(htmlpath)) stop("export to html failed")
   }
 

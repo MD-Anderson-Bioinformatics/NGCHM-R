@@ -490,8 +490,10 @@ loadConfigDir <- function(dirname) {
 .onAttach <- function(libname, pkgname) {
   getConfigDirs()
 
-  # Check if suggested system applications are available.
-  for (program in c("git", "java", "tar", "scp", "ssh")) testExternalProgram(program)
+  checkForExternalUtilities() # Check suggested utilities are installed (e.g. git, ssh, etc. Does not check for java)
+  checkForJavaVersion() # Check required version of java is installed
+  checkForNGCHMSupportFiles()
+  checkForNGCHMDemoData()
 
   chmNewFunction("", "Simple reference", "")
   chmNewFunction(
@@ -509,3 +511,4 @@ loadConfigDir <- function(dirname) {
     loadConfigDir(file.path(cfgdir, "conf.d"))
   }
 }
+

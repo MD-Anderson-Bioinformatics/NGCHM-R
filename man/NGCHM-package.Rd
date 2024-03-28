@@ -14,6 +14,18 @@ Typical usage (see example) is to create a base NGCHM using chmNew; extend it wi
 least one ngchmLayer; typically extend it further with an additional
 ngchmLayer, row and column dendrograms, classification bars, and popup menu entries;
 compile and install it on an available ngchmServer.
+
+Note:
+\itemize{
+\item \code{chmNew()} requires \strong{git} to be installed.
+\item \code{chmExportToFile()}, \code{chmExportToHTML()}, and \code{chmExportToPDF()} require
+\strong{Java 11} and the \strong{\href{https://github.com/MD-Anderson-Bioinformatics/NGCHMSupportFiles}{NGCHMSupportFiles}}
+package. The NGCHMSupportFiles package
+can be installed with: \cr\cr
+\code{install.packages('NGCHMDemoData', } \cr
+\code{repos = c('https://md-anderson-bioinformatics.r-universe.dev',} \cr
+\code{'https://cloud.r-project.org'))}
+}
 }
 \section{Initialization}{
 
