@@ -90,7 +90,7 @@ The NG-CHM can be exported as a stand-alone HTML file with the `chmExportToHTML(
 The first argument is the NG-CHM created above. The second argument is the desired filename.
 
 ```{r, results='hide', message=FALSE, warning=FALSE }
-chmExportToHTML(hm,'tcga-brca.html')
+chmExportToHTML(hm,'tcga-brca.html', overwrite=TRUE)
 ```
 
 The file 'tcga-brca.html' can be shared with collaborators and opened in a standard web browser.
@@ -99,7 +99,7 @@ Alternatively, .ngchm file can be created with the `chmExportToFile()` function.
 
 
 ```{r, eval=FALSE}
-chmExportToFile(hm,'tcga-brca.ngchm')
+chmExportToFile(hm,'tcga-brca.ngchm', overwrite=TRUE)
 ```
 
 The file 'tcga-brca.ngchm' can be opened in the [NG-CHM Viewer](https://www.ngchm.net/Downloads/current/ngChmApp.html).

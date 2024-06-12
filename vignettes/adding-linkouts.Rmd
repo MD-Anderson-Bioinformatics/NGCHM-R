@@ -45,7 +45,7 @@ Here is the resulting NG-CHM:
 
 ```{r, echo=FALSE, results='hide', message=FALSE, warning=FALSE}
 library(NGCHMSupportFiles)
-chmExportToHTML(hm,'tcga-brca-with-linkouts.html')
+chmExportToHTML(hm,'tcga-brca-with-linkouts.html', overwrite=TRUE)
 ```
 
 ```{r, warning=FALSE, message=FALSE, echo=FALSE}

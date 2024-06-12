@@ -46,8 +46,8 @@ This NG-CHM can be exported to either a .ngchm or .html file.
 
 ```{r, results='hide', message=FALSE, warning=FALSE, eval=FALSE}
 library(NGCHMSupportFiles)
-chmExportToFile(hm,'tcga-brca-covariates.ngchm')
-chmExportToHTML(hm,'tcga-brca-covariates.html')
+chmExportToFile(hm,'tcga-brca-covariates.ngchm', overwrite=TRUE)
+chmExportToHTML(hm,'tcga-brca-covariates.html', overwrite=TRUE)
 ```
 
 ## Specify Covariate Bar Color Map
@@ -87,8 +87,8 @@ can be exported to either a .ngchm or .html file.
 
 ```{r, results='hide', message=FALSE, warning=FALSE}
 library(NGCHMSupportFiles)
-chmExportToFile(hm,'tcga-brca-covariates.ngchm')
-chmExportToHTML(hm,'tcga-brca-covariates.html')
+chmExportToFile(hm,'tcga-brca-covariates.ngchm', overwrite=TRUE)
+chmExportToHTML(hm,'tcga-brca-covariates.html', overwrite=TRUE)
 ```
 
 

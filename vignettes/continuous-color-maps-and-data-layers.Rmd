@@ -66,8 +66,8 @@ and export to a .ngchm or .html file:
 
 ```{r, results='hide', message=FALSE, warning=FALSE}
 library(NGCHMSupportFiles)
-chmExportToFile(hm,'tcga-brca-two-layers.ngchm')
-chmExportToHTML(hm,'tcga-brca-two-layers.html')
+chmExportToFile(hm,'tcga-brca-two-layers.ngchm', overwrite=TRUE)
+chmExportToHTML(hm,'tcga-brca-two-layers.html', overwrite=TRUE)
 ```
 
 ## Resulting NG-CHM
