@@ -58,8 +58,6 @@ See NGCHM-initialization for details.
   rownames(mat) <- sprintf("ABCA\%d", 1:10)
   colnames(mat) <- sprintf("Sample\%d", 1:10)
   chm <- chmNew("my-chm", mat)
-  chmSetCollection("//server/collection")
-  chmInstall(chm)
 }
 }
 \seealso{
