@@ -108,12 +108,12 @@ The file 'tcga-brca.ngchm' can be opened in the [NG-CHM Viewer](https://www.ngch
 
 ## Embed into RMarkdown
 
-The .html file can be embedded into RMarkdown via `htmltools::includeHTML()`:
+The .html file can be embedded into RMarkdown via `htmltools::tags$iframe()`:
 
 ```{r}
 library('htmltools')
 filePath = paste(getwd(),'/tcga-brca.html',sep='')
-htmltools::includeHTML(filePath)
+htmltools::tags$iframe(src=filePath, width='100%', height=700)
 ```
 
 

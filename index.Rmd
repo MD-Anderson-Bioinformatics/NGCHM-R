@@ -52,7 +52,7 @@ chmExportToHTML(hm,'tcga-brca-intro.html',overwrite=TRUE)
 ```{r, message=FALSE, warning=FALSE, echo=FALSE }
 library('htmltools')
 filePath = paste(getwd(),'/tcga-brca-intro.html',sep='')
-htmltools::includeHTML(filePath)
+htmltools::tags$iframe(src=filePath, width='100%', height=700)
 ```
 
 
