@@ -7,6 +7,13 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
+<style>
+/* Don't wrap codeblocks */
+pre > code {
+  white-space: pre !important;
+}
+</style>
+
 ```{r, include = FALSE}
 knitr::opts_chunk$set(
   collapse = TRUE,
@@ -16,104 +23,291 @@ knitr::opts_chunk$set(
 
 This vignette demonstrates how to construct a simple NG-CHM, export it to a file, and embed it into RMarkdown.
 
-## Sample NG-CHM Data
-
-This vignette uses an additional package of demo data, [NGCHMDemoData](https://github.com/MD-Anderson-Bioinformatics/NGCHMDemoData), 
-which can be installed from [our R-Universe repository](https://md-anderson-bioinformatics.r-universe.dev/packages):
+The required packages can be installed with:
 
 ```{r, results='hide', message=FALSE, warning=FALSE, eval=FALSE}
-install.packages('NGCHMDemoData', repos = c('https://md-anderson-bioinformatics.r-universe.dev', 'https://cloud.r-project.org'))
+install.packages("NGCHM")
+install.packages("NGCHMDemoData", repos = c("https://md-anderson-bioinformatics.r-universe.dev", "https://cloud.r-project.org"))
+install.packages("NGCHMSupportFiles", repos = c("https://md-anderson-bioinformatics.r-universe.dev", "https://cloud.r-project.org"))
+install.packages("htmltools") # used to embed the NG-CHM into RMarkdown
 ```
 
-and loaded into the current environment:
+## R Code Example
 
-```{r, results='hide', message=FALSE, warning=FALSE }
-library(NGCHMDemoData)
-```
+The following R code demonstrates how to create a NG-CHM from the TCGA breast cancer
+data, export it to a file, and embed it into an Rmarkdown document.
+For use by the NGCHM package, the data must be formatted such that:
 
-The sample data includes a matrix of gene expression data, TCGA.BRCA.Expression, containing 3437 genes (rows) and 200 samples 
-(columns) of breast cancer data from The Cancer Genome Atlas (TCGA). **IMPORTANT: In order to be used as the basis for an NG-CHM, a matrix should have both
-rownames and colnames.** Here the rownames are genes and the colnames are TCGA sample identifiers:
+- The heat map data is a matrix with rownames and colnames
+- The covariate data is a named vector.
+  - For a row/column covariate, at least one name must be in the row/colnames of the heat map matrix data.
 
-**BRCA Expression Data Matrix:**
 
-```{r}
-TCGA.BRCA.ExpressionData[1:4,1:2]
-```
-
-The sample data also includes a vector of TP35 mutation status for the TCGA samples in the matrix. This 
-data will be used to construct a covariate bar in 
-[Covariate Bars and Discrete Color Maps](covariate-bars-and-discrete-color-maps.html). 
-**IMPORTANT: In order to be used as the basis for a covariate bar,
-a vector should have at least one name in common with the colnames of the matrix.**
-
-**TP53 Mutation Data Vector:**
-
-```{r}
-TCGA.BRCA.TP53MutationData[1:2]
-```
-
-## Creating a NG-CHM
-
-Using the data loaded above, the `chmNew()` function can be used to create an NG-CHM:
-
-```{r, results='hide', message=FALSE, warning=FALSE }
+```{r, results='hide', message=FALSE, warning=FALSE, eval=FALSE}
+matrix_data_file <- system.file("extdata", "TCGA.BRCA.Expression.csv", package = "NGCHMDemoData")
+matrix_data <- as.matrix(read.csv(matrix_data_file, header = TRUE, row.names = 1, check.names = FALSE))
+covariate_data_file <- system.file("extdata", "TCGA.BRCA.TP53Mutation.csv", package = "NGCHMDemoData")
+covariate_data <- as.matrix(read.csv(covariate_data_file, row.names = 1))
+covariate_vector <- as.vector(covariate_data) # create vector of mutation data
+names(covariate_vector) <- rownames(covariate_data) # set the names
 library(NGCHM)
-hm <- chmNew('tcga-brca', TCGA.BRCA.ExpressionData)
+hm <- chmNew("TCGA BRCA Expression", matrix_data)
+covariateBar <- chmNewCovariate("TP53 Mutation", covariate_vector)
+hm <- chmAddCovariateBar(hm, "column", covariateBar)
+library(NGCHMSupportFiles) # required for chmExportToHTML and chmExportToFile
+chmExportToHTML(hm, "tcga-brca.html", overwrite = TRUE)
+chmExportToFile(hm, "tcga-brca.ngchm", overwrite = TRUE)
+library("htmltools")
+filePath <- paste(getwd(), "/tcga-brca.html", sep = "")
+htmltools::tags$iframe(src = filePath, width = "100%", height = 700)
 ```
 
-A covariate bar of the TP53 mutation status can be added with:
+## Explanation of R Code Example
+
+### NGCHMDemoData Package
+
+This vignette uses an additional package of demo data, [NGCHMDemoData](https://github.com/MD-Anderson-Bioinformatics/NGCHMDemoData), 
+which can be installed from [our R-Universe repository](https://md-anderson-bioinformatics.r-universe.dev/packages).
+
+The sample data includes a matrix of gene expression data containing 3437 genes (rows) and 200 samples
+(columns) of breast cancer data from The Cancer Genome Atlas (TCGA).
+
+
+<style>
+table.expression-data {
+  font-family: monospace;
+  font-size: 12px;
+  width: 90% !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
+}
+table.expression-data>tbody>tr>td {
+  padding: 5px;
+  text-align: right;
+}
+table.expression-data>thead>tr>th {
+  padding: 5px;
+  text-align: right;
+}
+table.mutation-data {
+  font-family: monospace;
+  font-size: 12px;
+  width: 50% !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
+}
+table.mutation-data>tbody>tr>td {
+  padding: 5px;
+  text-align: center;
+}
+caption {
+  text-align: center;
+  font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+</style>
+
+
+<table class="expression-data">
+  <caption>TCGA.BRCA.Expression.csv snippet</caption>
+  <thead>
+    <tr class="header">
+       <th>    </th>
+       <th>TCGA-AO-A0JJ-01A</th>
+       <th>TCGA-E9-A1R4-01A</th>
+       <th>TCGA-E9-A6HE-01A</th>
+       <th>TCGA-E2-A1L9-01A</th>
+       <th>...</th>
+    </tr>
+  </thead>
+<tbody>
+  <tr>
+    <td>TSPAN6</td>
+    <td>11.838</td>
+    <td>9.483</td>
+    <td>11.157</td>
+    <td>11.536</td>
+    <td> ... </td>
+  </tr>
+  <tr>
+    <td>CFH</td>
+    <td>12.033</td>
+    <td>10.835</td>
+    <td>10.824</td>
+    <td>12.878</td>
+    <td> ... </td>
+  </tr>
+  <tr>
+    <td>ENPP4</td>
+    <td>11.372</td>
+    <td>10.749</td>
+    <td>9.721</td>
+    <td>11.008</td>
+    <td> ... </td>
+  </tr>
+  <tr>
+    <td>SEMA3F</td>
+    <td>12.722</td>
+    <td>12.393</td>
+    <td>13.338</td>
+    <td>12.451</td>
+    <td> ... </td>
+  </tr>
+  <tr>
+    <td>...</td>
+    <td>...</td>
+    <td>...</td>
+    <td>...</td>
+    <td>...</td>
+    <td>...</td>
+  </tr>
+</tbody>
+</table>
+
+
+**IMPORTANT: In order to be used as the basis for an NG-CHM, a matrix should have both
+rownames and colnames.**
+
+The sample data also includes a vector of TP35 mutation status for the TCGA samples in the matrix. This
+data will be used to construct a covariate bar.
+
+<table class="mutation-data">
+  <caption>TCGA.BRCA.TP53Mutation.csv snippet</caption>
+  <thead>
+    <tr class="header">
+       <th></th>
+       <th>MutationState</th>
+    </tr>
+  </thead>
+<tbody>
+  <tr>
+    <td>TCGA-AO-A0JJ-01A</td>
+    <td>WT</td>
+  </tr>
+  <tr>
+    <td>TCGA-E9-A1R4-01A</td>
+    <td>WT</td>
+  </tr>
+  <tr>
+    <td>TCGA-E9-A6HE-01A</td>
+    <td>WT</td>
+  </tr>
+  <tr>
+    <td>TCGA-E2-A1L9-01A</td>
+    <td>WT</td>
+  </tr>
+  <tr>
+    <td>TCGA-E9-A245-01A</td>
+    <td>WT</td>
+  </tr>
+  <tr>
+    <td>TCGA-AO-A0JG-01A</td>
+    <td>WT</td>
+  </tr>
+  <tr>
+    <td>TCGA-C8-A1HE-01A</td>
+    <td>WT</td>
+  </tr>
+  <tr>
+    <td>TCGA-C8-A12W-01A</td>
+    <td>MUT</td>
+  </tr>
+  <tr>
+    <td>...</td>
+    <td>...</td>
+  </tr>
+</tbody>
+</table>
+
+**IMPORTANT: In order to be used as the basis for a row/column covariate bar,
+the data should be formatted as a named vector with at least one name in common with the
+col/rownames of the matrix.**
+
+The NGCHMDemoData package includes these datasets as .csv file. The expression data should be
+formatted as a matrix with row and column names.
+The covariate data should be formatted as a named vector. Because this covariate data is a column
+covariate, the names of the vector match the colnames of the matrix.
+
+```{r, message=FALSE, warning=FALSE}
+library(NGCHMDemoData)
+# Read in the expression data, and convert to a matrix
+matrix_data_file <- system.file("extdata", "TCGA.BRCA.Expression.csv", package = "NGCHMDemoData")
+matrix_data <- as.matrix(read.csv(matrix_data_file, header = TRUE, row.names = 1, check.names = FALSE))
+# Read in the mutation data, and format as a named vector
+covariate_data_file <- system.file("extdata", "TCGA.BRCA.TP53Mutation.csv", package = "NGCHMDemoData")
+covariate_data <- as.matrix(read.csv(covariate_data_file, row.names = 1))
+covariate_vector <- as.vector(covariate_data) # create vector of mutation data
+names(covariate_vector) <- rownames(covariate_data) # set the names
+```
+
+
+### Creating a NG-CHM
+
+The `chmNew()` function creates the NG-CHM object.
+The first argument is the name of the NG-CHM, and the second argument is the matrix data.
 
 ```{r, results='hide', message=FALSE, warning=FALSE}
-covariateBar <- chmNewCovariate('TP53 Mutation',TCGA.BRCA.TP53MutationData)
-hm <- chmAddCovariateBar(hm, 'column', covariateBar)
+library(NGCHM)
+hm <- chmNew("TCGA BRCA Expression", matrix_data)
+```
+
+A covariate bar can be created with `chmNewCovariate()`. The first argument is the name of the covariate,
+and the second argument is the named vector of covariate data. The `chmAddCovariateBar()` function adds the
+covariate bar to the NG-CHM. The first argument is the NG-CHM, the second argument is the type of covariate bar
+('column' or 'row'), and the third argument is the covariate bar object.
+
+```{r, results='hide', message=FALSE, warning=FALSE}
+covariateBar <- chmNewCovariate("TP53 Mutation", covariate_vector)
+hm <- chmAddCovariateBar(hm, "column", covariateBar)
 ```
 
 
-## Export to File
+### Export to File
 
 The NG-CHM can be exported to two different file types:
 
-1. A stand-alone HTML file that can be emailed to collaborators, opened in a standard browser, or embedded  
+1. An HTML file that can be emailed to collaborators, opened in a web browser, or embedded
    in an RMarkdown file.
-2. A '.ngchm' file that can be opened in the [NGCHM Viewer](https://www.ngchm.net/Downloads/current/ngChmApp.html).
+2. A '.ngchm' file that can be opened in the [NGCHM Viewer]https://www.ngchm.net/Downloads/ngChmApp.html).
 
-Both methods use files from the [NGCHMSupportFiles](https://github.com/MD-Anderson-Bioinformatics/NGCHMSupportFiles) package 
-referenced in the [Installation page](Installation.html). When loaded, NGCHMSupportFiles 
-sets environment variables pointing to these additional files.
+Both methods use files from the [NGCHMSupportFiles](https://github.com/MD-Anderson-Bioinformatics/NGCHMSupportFiles)
+package. When loaded, NGCHMSupportFiles sets environment variables pointing to these additional files.
 
 ```{r}
 library(NGCHMSupportFiles)
 ```
 
-The NG-CHM can be exported as a stand-alone HTML file with the `chmExportToHTML()` function.
+#### 1. Export to HTML
+
+The NG-CHM can be exported as an HTML file with the `chmExportToHTML()` function.
 The first argument is the NG-CHM created above. The second argument is the desired filename.
+Here we also use `overwrite=TRUE` to overwrite the file if it already exists.
 
 ```{r, results='hide', message=FALSE, warning=FALSE }
-chmExportToHTML(hm,'tcga-brca.html', overwrite=TRUE)
+chmExportToHTML(hm, "tcga-brca.html", overwrite = TRUE)
 ```
 
-The file 'tcga-brca.html' can be shared with collaborators and opened in a standard web browser.
+The file 'tcga-brca.html' can be shared with collaborators and opened in a web browser.
+
+#### 2. Export to .ngchm File
 
 Alternatively, .ngchm file can be created with the `chmExportToFile()` function.
 
 
 ```{r, eval=FALSE}
-chmExportToFile(hm,'tcga-brca.ngchm', overwrite=TRUE)
+chmExportToFile(hm, "tcga-brca.ngchm", overwrite = TRUE)
 ```
 
-The file 'tcga-brca.ngchm' can be opened in the [NG-CHM Viewer](https://www.ngchm.net/Downloads/current/ngChmApp.html).
+The file 'tcga-brca.ngchm' can be opened in the [NG-CHM Viewer](https://www.ngchm.net/Downloads/ngChmApp.html).
 **IMPORTANT: The filename must end with '.ngchm' to open in the NG-CHM Viewer**. 
 
 
-## Embed into RMarkdown
+### Embed into RMarkdown
 
-The .html file can be embedded into RMarkdown via `htmltools::tags$iframe()`:
+The .html file can be embedded into RMarkdown as an iframe using `htmltools::tags`.
 
 ```{r}
-library('htmltools')
-filePath = paste(getwd(),'/tcga-brca.html',sep='')
-htmltools::tags$iframe(src=filePath, width='100%', height=700)
+library("htmltools")
+filePath <- paste(getwd(), "/tcga-brca.html", sep = "")
+htmltools::tags$iframe(src = filePath, width = "100%", height = 700)
 ```
-
 
