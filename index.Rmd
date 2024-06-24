@@ -27,7 +27,7 @@ Other NG-CHM resources include:
 - [NG-CHM GUI Builder](https://build.ngchm.net/NGCHM-web-builder/Select_Matrix.html?v=2.22.0) for creating NG-CHMs without programming
 
 
-To learn how to create a NG-CHM using this R package, click [Start Here!](articles/create-a-ng-chm.html).
+To learn how to create a NG-CHM using this R package, click [Getting Started](articles/create-a-ng-chm.html).
 
 ### NG-CHM of Breast Cancer (BRCA) Data from The Cancer Genome Atlas (TCGA)
 

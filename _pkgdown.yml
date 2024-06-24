@@ -43,11 +43,11 @@ navbar:
    left:
      - text: "Installation"
        href: articles/Installation.html
-     - text: "Start Here!"
+     - text: "Getting Started"
        href: articles/create-a-ng-chm.html
      - text: "Vignettes"
        menu:
-         - text: 'Create a NG-CHM (Start Here!)'
+         - text: 'Create a NG-CHM (Getting Started)'
            href: articles/create-a-ng-chm.html
          - text: 'Covariate Bars and Discrete Color Maps'
            href: articles/covariate-bars-and-discrete-color-maps.html
