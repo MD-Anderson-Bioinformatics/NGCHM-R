@@ -66,7 +66,13 @@ navbar:
        href: index.html
      - icon: fa-github
        href: https://github.com/MD-Anderson-Bioinformatics/NGCHM-R/
-
-
-  
-  
+home:
+  sidebar:
+    structure: [links, citation, authors]
+  links:
+    - text: "NG-CHM Home Page"
+      href: "https://bioinformatics.mdanderson.org/public-software/ngchm/"
+    - text: "YouTube Channel"
+      href: "https://www.youtube.com/@nextgenerationclusteredhea9890"
+    - text: "NG-CHM GUI Builder"
+      href: "https://build.ngchm.net/NGCHM-web-builder/Select_Matrix.html?v=2.22.0"
