@@ -3,6 +3,15 @@ url: https://md-anderson-bioinformatics.github.io/NGCHM-R/
 template:
   params:
     bootswatch: journal
+  includes:
+    after_body: "<script>
+                   /* open external links in new tab */
+                   (function() {
+                     for (const link of document.getElementsByTagName('a')) {
+                       if (link.classList.contains('external-link')) link.target = '_blank';
+                     }
+                   })();
+                </script>"
 toc:
   depth: 2
 reference:
@@ -59,8 +68,18 @@ navbar:
            href: articles/adding-linkouts.html
      - text: 'Function Reference'
        href: reference/index.html
-     - text: 'YouTube'
-       href: articles/YouTube.html
+     - text: 'Video Tutorials'
+       menu:
+         - text: "Playlist: NG-CHMs in R/R-Studio"
+           href: https://www.youtube.com/playlist?list=PLIBaINv-Qmd0v2qD4AMbGf85Xd-T_yzEh
+         - text: "How to created a NG-CHM in R-Studio"
+           href: https://www.youtube.com/watch?v=O42w5P3A1_8&list=PLIBaINv-Qmd0v2qD4AMbGf85Xd-T_yzEh
+         - text: "How to use any ordering method with NG-CHMs"
+           href: https://www.youtube.com/watch?v=847breSor1I&list=PLIBaINv-Qmd0v2qD4AMbGf85Xd-T_yzEh
+         - text: "How to create a single-cell NG-CHM in R"
+           href: https://www.youtube.com/watch?v=K8PuHDQYk-g&list=PLIBaINv-Qmd0v2qD4AMbGf85Xd-T_yzEh
+         - text: "Run NG-CHM RStudio container in Windows 10 Docker Desktop"
+           href: https://www.youtube.com/watch?v=iu0ptg9SBqM&list=PLIBaINv-Qmd0v2qD4AMbGf85Xd-T_yzEh
    right:
      - icon: fa-home
        href: index.html
