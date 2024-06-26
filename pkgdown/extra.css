@@ -1,0 +1,80 @@
+/* Extra CSS to
+
+  - Use MD Anderson color palette
+  - prevent code blocks from wrapping
+
+*/
+
+:root { /* MDA color palette except where noted */
+  --blue: #407EC9;
+  --darker-blue: #326cb3; /* a few shades darker than MDA blue */
+  --purple: #614B79;
+  --yellow: #F1B434;
+  --green: #789D4A;
+  --gray: #63666A;
+  --darker-gray:  #3e3f42; /* a few shades darker than MDA gray */
+}
+
+pre>code { /* prevent code blocks from wrapping */
+  white-space: pre !important;
+}
+
+body {
+  color: var(--darker-gray) !important;
+  font-family: "Lato", "Helvetica Neue", Helvetica, Arial, sans-serif !important;
+}
+
+h1,h2,h3,h4,h5,h6 {
+  font-family: 'News Cycle', 'Arial Narrow Bold', sans-serif !important;
+}
+
+.navbar {
+  background-color: var(--blue) !important;
+}
+
+.navbar-inverse, .navbar-toggle, .navbar-collapse {
+  border-color: var(--blue) !important;
+}
+
+.navbar-toggle:hover, .navbar-brand:hover {
+  background-color: var(--darker-blue) !important;
+}
+
+.navbar-link {
+  color: white !important;
+}
+.navbar-link:hover {
+  background-color: var(--darker-blue) !important;
+}
+
+#navbar>ul>li>a {
+  color: white !important;
+  background-color: var(--blue) !important;
+}
+
+#navbar>ul>li>a:hover {
+  background-color: var(--darker-blue) !important;
+}
+
+#navbar>ul>li>ul>li>a:hover {
+  background-color: var(--blue) !important;
+  color: white !important;
+}
+
+#navbar>ul>li.active>a {
+  background-color: var(--darker-blue) !important;
+}
+
+.dropdown-menu>.active>a {
+  background-color: var(--blue) !important;
+  color: white !important;
+}
+
+a {
+  color: var(--blue) !important;
+}
+
+.btn-primary {
+  background-color: var(--blue) !important;
+  border-color: var(--blue) !important;
+}
