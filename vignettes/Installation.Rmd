@@ -25,7 +25,7 @@ knitr::opts_chunk$set(
   - Mac: Xcode
   - Linux: gcc
   - Windows: Rtools or Rtools40 (Windows 10)
-- [NGCHMSupportFiles](https://github.com/MD-Anderson-Bioinformatics/NGCHMSupportFiles) R package
+- [NGCHMSupportFiles](https://md-anderson-bioinformatics.r-universe.dev/NGCHMSupportFiles) R package
   - This package requires Java >= 11
   - This package contains a compiled .jar file and minified JavaScript file
 
@@ -35,7 +35,7 @@ knitr::opts_chunk$set(
 The NG-CHM R package can be installed from CRAN:
 
 ```{r, results='hide', message=FALSE, warning=FALSE, eval=FALSE}
-install.packages('NGCHM')
+install.packages("NGCHM")
 ```
 
 The NGCHMSupportFiles can be installed from
@@ -43,16 +43,17 @@ The NGCHMSupportFiles can be installed from
 
 
 ```{r, results='hide', message=FALSE, warning=FALSE, eval=FALSE}
-install.packages('NGCHMSupportFiles', repos = c('https://md-anderson-bioinformatics.r-universe.dev', 'https://cloud.r-project.org'))
+install.packages("NGCHMSupportFiles", repos = c("https://md-anderson-bioinformatics.r-universe.dev"))
 ```
 
-## Using the Docker Image
+## Docker Image
 
-There is also a Docker image, [ngchm/rstudio-ngchm](https://hub.docker.com/r/ngchm/rstudio-ngchm), 
-containing RStudio, the NGCHM-R package, and all needed dependencies 
-available on Docker Hub.
+A Docker image containing RStudio, the NGCHM-R package, and all needed dependencies is available on Docker Hub:
+[ngchm/rstudio-ngchm](https://hub.docker.com/r/ngchm/rstudio-ngchm).
 
-The YouTube Video, [How to Create Next-Generation Clustered Heat Map in R Studio](https://www.youtube.com/watch?v=O42w5P3A1_8)
-details usage of the Docker image. Further installation and usage information is available 
-in this the [RStudio NGCHM GitHub](https://github.com/MD-Anderson-Bioinformatics/rstudio-ngchm) project.
+Detailed usage information for the docker image is available
+in this the [RStudio NGCHM GitHub](https://github.com/MD-Anderson-Bioinformatics/rstudio-ngchm) project,
+and the YouTube Video,
+[How to Create Next-Generation Clustered Heat Maps in R Studio](https://www.youtube.com/watch?v=O42w5P3A1_8).
+
 

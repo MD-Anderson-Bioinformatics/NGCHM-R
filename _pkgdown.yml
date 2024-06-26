@@ -15,7 +15,7 @@ template:
 toc:
   depth: 2
 reference:
-  - title: "Creating and Saving a NG-CHM"
+  - title: "Creating and Saving an NG-CHM"
     desc: "Creating an NG-CHM and saving to file"
     contents:
       - '`chmNew`'
@@ -53,17 +53,17 @@ navbar:
      - text: "Installation"
        href: articles/Installation.html
      - text: "Getting Started"
-       href: articles/create-a-ng-chm.html
+       href: articles/create-an-ng-chm.html
      - text: "Vignettes"
        menu:
-         - text: 'Create a NG-CHM (Getting Started)'
-           href: articles/create-a-ng-chm.html
-         - text: 'Covariate Bars and Discrete Color Maps'
-           href: articles/covariate-bars-and-discrete-color-maps.html
-         - text: 'Continuous Color Maps and Data Layers'
-           href: articles/continuous-color-maps-and-data-layers.html
-         - text: 'Clustering and Column/Row Ordering'
-           href: articles/clustering-and-column-row-ordering.html
+         - text: 'Create an NG-CHM (Getting Started)'
+           href: articles/create-an-ng-chm.html
+         - text: 'Color Maps'
+           href: articles/color-maps.html
+         - text: 'Data Layers'
+           href: articles/data-layers.html
+         - text: 'Ordering and Clustering'
+           href: articles/ordering-and-clustering.html
          - text: 'Adding Linkouts'
            href: articles/adding-linkouts.html
      - text: 'Function Reference'
@@ -72,7 +72,7 @@ navbar:
        menu:
          - text: "Playlist: NG-CHMs in R/R-Studio"
            href: https://www.youtube.com/playlist?list=PLIBaINv-Qmd0v2qD4AMbGf85Xd-T_yzEh
-         - text: "How to created a NG-CHM in R-Studio"
+         - text: "How to create NG-CHMs in R-Studio"
            href: https://www.youtube.com/watch?v=O42w5P3A1_8&list=PLIBaINv-Qmd0v2qD4AMbGf85Xd-T_yzEh
          - text: "How to use any ordering method with NG-CHMs"
            href: https://www.youtube.com/watch?v=847breSor1I&list=PLIBaINv-Qmd0v2qD4AMbGf85Xd-T_yzEh

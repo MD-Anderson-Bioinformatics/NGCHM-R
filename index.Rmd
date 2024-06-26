@@ -17,10 +17,12 @@ knitr::opts_chunk$set(
 <!-- badges: start -->
 <!-- badges: end -->
 
-NGCHM is an R package for creating Next-Generation Clustered Heat Maps (NG-CHMs).
-NG-CHMs allow for a dynamic exploration of heat map data in a web browser.
+# NGCHM R package
 
-To learn how to create a NG-CHM using this R package, click [Getting Started](articles/create-a-ng-chm.html).
+NGCHM is an R package for creating Next-Generation Clustered Heat Maps (NG-CHMs).
+NG-CHMs allow for dynamic exploration of heat map data in a web browser.
+
+To learn how to create an NG-CHM using this R package, click [Getting Started](articles/create-an-ng-chm.html).
 
 For more information on NG-CHMs, please see the
 [NG-CHM Home Page](https://bioinformatics.mdanderson.org/public-software/ngchm/).
