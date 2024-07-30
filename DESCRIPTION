@@ -7,7 +7,7 @@ Authors@R: c(
            comment = c(ORCID = "0000-0002-0915-3164")),
     person(c("Mary", "A"), "Rohrdanz", , "marohrdanz@mdanderson.org", role = c("ctb", "cre")),
     person("Chris", "Wakefield", , "cwakefield@mdanderson.org", role = "ctb"),
-    person("James", "Melott", , "jmmelott@mdanderson.org", role = "ctb"),
+    person(c("James", "M"), "Melott", , "jmmelott@mdanderson.org", role = "ctb"),
     person("MD Anderson Cancer Center", role = "cph")
   )
 Description: Next-Generation Clustered Heat Maps (NG-CHMs) allow for
