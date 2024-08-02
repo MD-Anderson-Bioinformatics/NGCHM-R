@@ -104,12 +104,3 @@ a {
   border-color: var(--blue) !important;
 }
 
-.form-control {
-  border-color: var(--cool-grey) !important;
-  background-color: var(--cool-gray) !important;
-}
-
-.form-control:focus {
-  border-color: var(--darker-blue) !important;
-  box-shadow: 0 0 0 .25rem var(--darker-blue) !important;
-}

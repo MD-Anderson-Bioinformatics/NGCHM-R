@@ -2,6 +2,7 @@ title: NGCHMR
 url: https://md-anderson-bioinformatics.github.io/NGCHM-R/
 template:
   bootstrap: 5
+  light-switch: true
   includes:
     after_body: "<script>
                    /* open external links in new tab */
@@ -76,12 +77,6 @@ navbar:
            href: https://www.youtube.com/watch?v=K8PuHDQYk-g&list=PLIBaINv-Qmd0v2qD4AMbGf85Xd-T_yzEh
          - text: "Run NG-CHM RStudio container in Windows 10 Docker Desktop"
            href: https://www.youtube.com/watch?v=iu0ptg9SBqM&list=PLIBaINv-Qmd0v2qD4AMbGf85Xd-T_yzEh
-   right:
-     - search: true
-     - icon: fa-home
-       href: index.html
-     - icon: fa-github
-       href: https://github.com/MD-Anderson-Bioinformatics/NGCHM-R/
 home:
   sidebar:
     structure: [links, citation, license, authors]
