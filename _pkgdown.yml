@@ -40,8 +40,8 @@ reference:
     desc: 'For automatically adding linkouts'
     contents:
       - '`chmAddAxisType`'
-  - title: 'Alphabetical List'
-    desc: 'Alphabetical List of Functions'
+  - title: 'All Functions'
+    desc: 'List of all functions'
     contents:
        - starts_with("")
 navbar:
