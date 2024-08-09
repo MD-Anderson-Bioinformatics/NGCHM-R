@@ -2,6 +2,9 @@
 
   - Use MD Anderson color palette
   - prevent code blocks from wrapping
+  - CSS from https://github.com/MD-Anderson-Bioinformatics/NG-CHM/blob/main/NGCHM/WebContent/css/NGCHM.css
+    to style some buttons in the descriptive text to match that
+    of the NG-CHM viewer.
 
 */
 
@@ -102,5 +105,12 @@ a {
 .btn-primary {
   background-color: var(--blue) !important;
   border-color: var(--blue) !important;
+}
+
+/* Styles from the NG-CHM viewer */
+button.fromViewer {
+  background-color: #efefef;
+  border-radius: 0.4rem;
+  border: 1px solid black;
 }
 

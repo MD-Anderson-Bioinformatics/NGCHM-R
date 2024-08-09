@@ -21,8 +21,8 @@ This vignette demonstrates how to:
 - [Format Data for NG-CHMs](#format-data-for-ng-chms)
 - [Create an NG-CHM](#create-an-ng-chm)
 - [Add a covariate bar](#add-a-covariate-bar)
-- [Export an NG-CHM to a file](#export-an-ng-chm-to-a-file)
-- [Embed an NG-CHM into Rmarkdown](#embed-an-ng-chm-into-rmarkdown)
+- [Export to HTML, .ngchm, or PDF](#export-to html-ngchm-or-pdf)
+- [Embed into Rmarkdown](#embed-into-rmarkdown)
 
 The code block is presented first in [R Code Example](#r-code-example),
 followed by the sections detailing each step. The fully interactive NG-CHM is in
@@ -271,7 +271,7 @@ hm <- chmAddCovariateBar(hm, "column", covariateBar)
 
 [Back to top](#)
 
-## Export an NG-CHM to a file
+## Export to HTML, .ngchm, or PDF
 
 The NG-CHM can be exported to two different file types:
 
@@ -289,7 +289,7 @@ library(NGCHMSupportFiles)
 
 ### 1. HTML File
 
-The function `chmExportToNGCHM()` exports the NG-CHM to an HTML file.
+The function `chmExportToHTML()` exports the NG-CHM to an HTML file.
 The first argument is the NG-CHM created above. The second argument is the desired filename.
 The optional argument `overwrite = TRUE` overwrites the file if it already exists.
 
@@ -311,9 +311,44 @@ chmExportToFile(hm, "tcga-brca.ngchm", overwrite = TRUE)
 The file 'tcga-brca.ngchm' can be opened in the NG-CHM Viewer.
 **IMPORTANT: The filename must end with '.ngchm' in order to open in the NG-CHM Viewer**.
 
+### 3. PDF File
+
+To create a publication-quality PDF, there are several options:
+
+<!-- svg symbol symbol taken from NG-CHM viewer:
+     https://github.com/MD-Anderson-Bioinformatics/NG-CHM/blob/main/NGCHM/WebContent/icons.svg?short_path=fffa0d9
+-->
+
+<svg style="display:none;">
+  <symbol id="icon-menu-button-fill" xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="bi bi-menu-button-fill" viewBox="0 0 16 16">
+    <path d="M1.5 0A1.5 1.5 0 0 0 0 1.5v2A1.5 1.5 0 0 0 1.5 5h8A1.5 1.5 0 0 0 11 3.5v-2A1.5 1.5 0 0 0 9.5 0h-8zm5.927 2.427A.25.25 0 0 1 7.604 2h.792a.25.25 0 0 1 .177.427l-.396.396a.25.25 0 0 1-.354 0l-.396-.396zM0 8a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V8zm1 3v2a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2H1zm14-1V8a1 1 0 0 0-1-1H2a1 1 0 0 0-1 1v2h14zM2 8.5a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 0 1h-9a.5.5 0 0 1-.5-.5zm0 4a.5.5 0 0 1 .5-.5h6a.5.5 0 0 1 0 1h-6a.5.5 0 0 1-.5-.5z"/>
+  </symbol>
+</svg>
+
+1. Create an HTML file [as described above](#html-file). Open the file in a web browser
+   and create the view you want to save as a PDF (e.g. the detail map zoomed to the desired location,
+   any desired rows/columns selected, covariate bars displayed, etc.). Then click the
+<button class="fromViewer">
+  <svg style="width:1em;height:1em;vertical-align:middle;" viewBox="0 0 16 16">
+    <use xlink:href="#icon-menu-button-fill"></use>
+  </svg>
+</button>
+button (top right corner) and select "Save Heat Map as PDF".
+
+2. Create a .ngchm file [as described above](#ngchm-file).
+   Open the .ngchm file in the [NG-CHM Viewer](https://tcga.ngchm.net/NGCHM/chm.html)
+   and create the view you want to save as a PDF (e.g. the detail map zoomed to the desired location,
+   any desired rows/columns selected, covariate bars displayed, etc.). Then click the
+<button class="fromViewer">
+  <svg style="width:1em;height:1em;vertical-align:middle;" viewBox="0 0 16 16">
+    <use xlink:href="#icon-menu-button-fill"></use>
+  </svg>
+</button>
+button (top right corner) and select "Save Heat Map as PDF".
+
 [Back to top](#)
 
-## Embed an NG-CHM into RMarkdown
+## Embed into RMarkdown
 
 The HTML file can be embedded into RMarkdown as an iframe using `htmltools::tags`.
 
