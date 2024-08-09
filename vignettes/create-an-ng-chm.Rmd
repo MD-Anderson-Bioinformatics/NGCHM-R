@@ -291,7 +291,7 @@ library(NGCHMSupportFiles)
 
 The function `chmExportToNGCHM()` exports the NG-CHM to an HTML file.
 The first argument is the NG-CHM created above. The second argument is the desired filename.
-The optiohal argument `overwrite = TRUE` overwrites the file if it already exists.
+The optional argument `overwrite = TRUE` overwrites the file if it already exists.
 
 ```{r, eval=FALSE}
 chmExportToHTML(hm, "tcga-brca.html", overwrite = TRUE)
