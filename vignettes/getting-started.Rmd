@@ -24,11 +24,11 @@ This vignette demonstrates how to:
 - [Export to HTML, .ngchm, or PDF](#export-to html-ngchm-or-pdf)
 - [Embed into Rmarkdown](#embed-into-rmarkdown)
 
-The code block is presented first in [R Code Example](#r-code-example),
+Complete code block examples are presented first in [R Code Examples](#r-code-examples),
 followed by the sections detailing each step. The fully interactive NG-CHM is in
 the last section, [Resulting NG-CHM](#resulting-ng-chm).
 
-The required packages can be installed with:
+Packages used in these examples can be installed with:
 
 ```{r, eval=FALSE}
 install.packages("NGCHMDemoData", repos = c("https://md-anderson-bioinformatics.r-universe.dev"))
@@ -37,7 +37,37 @@ install.packages("NGCHM")
 install.packages("htmltools") # used to embed the NG-CHM into RMarkdown
 ```
 
-## R Code Example
+## R Code Examples
+
+Below are two code examples. The first uses the
+[NGCHMDemoData](https://md-anderson-bioinformatics.r-universe.dev/NGCHMDemoData) to create an NG-CHM and export
+it to HTML and .ngchm files. The second performs the same task with
+generic code containing placeholders for user-specific data files, covariate column names, and other variables.
+
+<details><summary>Click to expand/collapse **code example using NGCHMDemoData**</summary>
+
+```{r, eval=FALSE}
+library(NGCHMDemoData)
+library(NGCHMSupportFiles)
+library(NGCHM)
+library("htmltools")
+matrix_data_file <- system.file("extdata", "TCGA.BRCA.Expression.csv", package = "NGCHMDemoData")
+matrix_data <- as.matrix(read.csv(matrix_data_file, header = TRUE, row.names = 1, check.names = FALSE))
+covariate_data_file <- system.file("extdata", "TCGA.BRCA.TP53Mutation.csv", package = "NGCHMDemoData")
+covariate_data <- read.csv(covariate_data_file, row.names = 1) # read.csv returns a data.frame
+covariate_vector <- covariate_data[["MutationState"]] # create vector
+names(covariate_vector) <- rownames(covariate_data) # set the names
+hm <- chmNew("TCGA BRCA Expression", matrix_data)
+covariateBar <- chmNewCovariate("TP53 Mutation", covariate_vector)
+hm <- chmAddCovariateBar(hm, "column", covariateBar)
+chmExportToHTML(hm, "tcga-brca.html", overwrite = TRUE)
+chmExportToFile(hm, "tcga-brca.ngchm", overwrite = TRUE)
+```
+[Back to top](#)
+
+</details>
+
+<details><summary>Click to expand/collapse **generic code example** for .csv input files</summary>
 
 ```{r, eval=FALSE}
 library(NGCHMDemoData)
@@ -50,17 +80,23 @@ matrix_data <- as.matrix(read.csv(matrix_data_file, header = TRUE, row.names = 1
 # in the command below, replace "<path to your covariate data file>" with the path to your covariate data file
 covariate_data_file <- "<path to your covariate data file>"
 covariate_data <- read.csv(covariate_data_file, row.names = 1) # read.csv returns a data.frame
-covariate_vector <- covariate_data$MutationState # create vector
+# in the command below, replace "<covariate column name>" with the name of the column in your covariate data file
+covariate_vector <- covariate_data[["<covariate column name>"]] # create vector
 names(covariate_vector) <- rownames(covariate_data) # set the names
-hm <- chmNew("TCGA BRCA Expression", matrix_data)
-covariateBar <- chmNewCovariate("TP53 Mutation", covariate_vector)
+# in the command below, replace "<name of your NG-CHM>" with the desired name of your NG-CHM
+hm <- chmNew("<name of your NG-CHM>", matrix_data)
+# in the command below, replace "<name of your covariate>" with the desired name of your covariate
+covariateBar <- chmNewCovariate("<name of your covariate>", covariate_vector)
 hm <- chmAddCovariateBar(hm, "column", covariateBar)
-chmExportToHTML(hm, "tcga-brca.html", overwrite = TRUE)
-chmExportToFile(hm, "tcga-brca.ngchm", overwrite = TRUE)
-htmltools::tags$iframe(src = "tcga-brca.html", width = "100%", height = 700)
+# in the command below, replace "<name of your HTML file>" with the desired name of your HTML file
+chmExportToHTML(hm, "<name of your HTML file>", overwrite = TRUE)
+# in the command below, replace "<name of your .ngchm file>" with the desired name of your .ngchm file
+# IMPORTANT: The filename must end with '.ngchm' in order to open in the NG-CHM Viewer
+chmExportToFile(hm, "<name of your .ngchm file>", overwrite = TRUE)
 ```
-
 [Back to top](#)
+
+</details>
 
 ## Format Data for NG-CHMs
 
@@ -239,7 +275,8 @@ matrix_data <- as.matrix(read.csv(matrix_data_file, header = TRUE, row.names = 1
 # Read in the NGCHMDemoData mutation data, and format as a named vector
 covariate_data_file <- system.file("extdata", "TCGA.BRCA.TP53Mutation.csv", package = "NGCHMDemoData")
 covariate_data <- read.csv(covariate_data_file, row.names = 1) # read.csv returns a data.frame
-covariate_vector <- covariate_data$MutationState # create vector
+covariate_column_name <- "MutationState"
+covariate_vector <- covariate_data[[covariate_column_name]] # create vector
 names(covariate_vector) <- rownames(covariate_data) # set the names
 ```
 
@@ -372,7 +409,8 @@ matrix_data_file <- system.file("extdata", "TCGA.BRCA.Expression.csv", package =
 matrix_data <- as.matrix(read.csv(matrix_data_file, header = TRUE, row.names = 1, check.names = FALSE))
 covariate_data_file <- system.file("extdata", "TCGA.BRCA.TP53Mutation.csv", package = "NGCHMDemoData")
 covariate_data <- read.csv(covariate_data_file, row.names = 1) # read.csv returns a data.frame
-covariate_vector <- covariate_data$MutationState # create vector
+covariate_column_name <- "MutationState"
+covariate_vector <- covariate_data[[covariate_column_name]] # create vector
 names(covariate_vector) <- rownames(covariate_data) # set the names
 hm <- chmNew("TCGA BRCA Expression", matrix_data)
 covariateBar <- chmNewCovariate("TP53 Mutation", covariate_vector)

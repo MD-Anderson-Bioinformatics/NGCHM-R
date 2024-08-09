@@ -33,7 +33,7 @@ colors for those breakpoints. The colors can be specified by name for standard c
 
 ```{r, eval=FALSE}
 colorMap <- chmNewColorMap(c(6.4, 10, 14), c("steelblue", "antiquewhite", "firebrick"))
-# or with equivalent hexidecimal codes:
+# or with equivalent hexadecimal codes:
 colorMap <- chmNewColorMap(c(6.4, 10, 14), c("#4682B4", "#FAEBD7", "#B22222"))
 ```
 
@@ -51,11 +51,11 @@ hm <- chmNew("TCGA BRCA Expression", dataLayer)
 
 The same `chmNewColorMap()` function also creates discrete color maps.
 The first argument is a list of the unique values in the data,
-and the second argument is a list of colors. Standard color names or hexidecimal codes can be used.
+and the second argument is a list of colors. Standard color names or hexadecimal codes can be used.
 
 ```{r, eval=FALSE}
 mutationColorMap <- chmNewColorMap(c("WT", "MUT"), c("lightsteelblue3", "khaki3"))
-## or with equivalent hexidecimal codes:
+## or with equivalent hexadecimal codes:
 mutationColorMap <- chmNewColorMap(c("WT", "MUT"), c("#A2B5CD", "#CDC673"))
 ```
 

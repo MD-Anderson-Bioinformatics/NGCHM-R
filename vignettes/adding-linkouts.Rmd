@@ -21,7 +21,7 @@ links to NCBI Databases, GeneCards, etc. This vignette demonstrates how to add l
 
 These examples build on the setup from [Getting Started](getting-started.html).
 
-## Set Axix Type for Linkouts
+## Set Axis Type for Linkouts
 
 To add linkouts, specify the axis type with `chmAddAxisType()`. For the demo data in this example,
 row labels correspond to genes, and are specified as HUGO gene symbols.
@@ -61,7 +61,7 @@ The available axis types are:
 ## Resulting NG-CHM
 
 Below is the resulting NG-CHM. To access the linkouts, click on the row or column labels to select them,
-then right click on the selection. This will open the lable menu, displaying the linkout options.
+then right click on the selection. This will open the label menu, displaying the linkout options.
 
 ```{r, echo=FALSE, warnings=FALSE, message=FALSE}
 library(NGCHMDemoData)

@@ -32,7 +32,7 @@ For example, the following code block creates an NG-CHM with rows sorted alphabe
 
 ```{r, eval=FALSE}
 rowOrder <- sort(rownames(matrix_data))
-colOrder <- colnames(matirx_data)[sample.int(length(colnames(matrix_data)))]
+colOrder <- colnames(matrix_data)[sample.int(length(colnames(matrix_data)))]
 hm <- chmNew("tcga-brca", matrix_data, rowOrder = rowOrder, colOrder = colOrder)
 ```
 
@@ -71,7 +71,7 @@ hm <- chmNew("tcga-brca", matrix_data, rowOrder = rowClust, colOrder = colClust)
 ```
 
 Similarly, an hclust object can be transformed into a dendrogram and used for the row and/or column
-ordering. The example below uses the clustering results from above as dedrograms:
+ordering. The example below uses the clustering results from above as dendrograms:
 
 ```{r, eval=FALSE}
 rowDendrogram <- as.dendrogram(stats::hclust(dist(matrix_data)))
