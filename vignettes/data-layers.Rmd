@@ -88,10 +88,12 @@ htmltools::tags$iframe(src = "datalayers.html", width = "100%", height = 700)
 </svg>
 
 The resulting NG-CHM has the two data layers available. To toggle between layers, click the
-<svg style="width:16px;height:16px;vertical-align:middle;" viewBox="0 0 20 20">
+<button class="fromViewer">
+  <svg style="width:16px;height:16px;vertical-align:middle;" viewBox="0 0 16 16">
     <use xlink:href="#icon-layers"></use>
-</svg> icon (the first of the 4 buttons on the upper right side).
-
+  </svg>
+</button>
+icon (the first of the 4 buttons on the upper right side).
 
 ```{r, echo=FALSE, message=FALSE, warning=FALSE}
 library(NGCHMDemoData)
