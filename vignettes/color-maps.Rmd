@@ -16,13 +16,13 @@ knitr::opts_chunk$set(
 )
 ```
 
-In [Create an NG-CHM (Getting Started)](create-an-ng-chm.html), the NGCHM R package generated colors
+In [Getting Started](getting-started.html), the NGCHM R package generated colors
 automatically because no colors were specified.
 This vignette demonstrates how to explicitly choose colors for the matrix and covariate data by using
 color maps.
 The full code block and fully interactive NG-CHM are shown in [Resulting NG-CHM](#resulting-ng-chm).
 
-These examples build on the setup from [Create an NG-CHM (Getting Started)](create-an-ng-chm.html).
+These examples build on the setup from [Getting Started](getting-started.html).
 
 ## Matrix Data Color Map
 

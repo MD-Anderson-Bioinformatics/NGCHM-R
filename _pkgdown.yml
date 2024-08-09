@@ -50,11 +50,11 @@ navbar:
      - text: "Installation"
        href: articles/Installation.html
      - text: "Getting Started"
-       href: articles/create-an-ng-chm.html
+       href: articles/getting-started.html
      - text: "Vignettes"
        menu:
-         - text: 'Create an NG-CHM (Getting Started)'
-           href: articles/create-an-ng-chm.html
+         - text: 'Getting Started'
+           href: articles/getting-started.html
          - text: 'Color Maps'
            href: articles/color-maps.html
          - text: 'Data Layers'

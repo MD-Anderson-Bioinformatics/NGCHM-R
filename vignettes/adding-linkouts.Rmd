@@ -19,7 +19,7 @@ knitr::opts_chunk$set(
 Linkouts allow for a deeper exploration of the NG-CHM data by providing direct
 links to NCBI Databases, GeneCards, etc. This vignette demonstrates how to add linkouts to an NG-CHM.
 
-These examples build on the setup from [Create an NG-CHM (Getting Started)](create-an-ng-chm.html).
+These examples build on the setup from [Getting Started](getting-started.html).
 
 ## Set Axix Type for Linkouts
 

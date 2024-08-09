@@ -20,7 +20,7 @@ The YouTube video
 [How to Use Any Label Order or Clustering Method with NG-CHMs](https://www.youtube.com/watch?v=847breSor1I&list=PLIBaINv-Qmd0v2qD4AMbGf85Xd-T_yzEh),
 also covers these topics.
 
-These examples build on the setup from [Create an NG-CHM (Getting Started)](create-an-ng-chm.html).
+These examples build on the setup from [Getting Started](getting-started.html).
 
 ## Specifying Row / Column Order
 

@@ -21,7 +21,7 @@ In addition to specifying color maps (see [Color Maps](color-maps.html)), data l
 for displaying multiple data sets in the same NG-CHM. This vignette
 describes how to create an NG-CHM with multiple data layers.
 
-These examples build on the setup from [Create an NG-CHM (Getting Started)](create-an-ng-chm.html).
+These examples build on the setup from [Getting Started](getting-started.html)
 
 ## Data Layers
 
