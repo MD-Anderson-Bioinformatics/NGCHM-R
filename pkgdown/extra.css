@@ -112,5 +112,6 @@ button.fromViewer {
   background-color: #efefef;
   border-radius: 0.4rem;
   border: 1px solid black;
+  cursor: default;
 }
 
