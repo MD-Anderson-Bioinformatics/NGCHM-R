@@ -74,23 +74,23 @@ library(NGCHMDemoData)
 library(NGCHMSupportFiles)
 library(NGCHM)
 library("htmltools")
-# In the command below, replace "<path to your matrix data file>" with the path to your matrix data file
+# In the command below, replace "<path to your matrix data file>" with the path to your matrix data file.
 matrix_data_file <- "<path to your matrix data file>"
 matrix_data <- as.matrix(read.csv(matrix_data_file, header = TRUE, row.names = 1, check.names = FALSE))
-# in the command below, replace "<path to your covariate data file>" with the path to your covariate data file
+# In the command below, replace "<path to your covariate data file>" with the path to your covariate data file.
 covariate_data_file <- "<path to your covariate data file>"
 covariate_data <- read.csv(covariate_data_file, row.names = 1) # read.csv returns a data.frame
-# in the command below, replace "<covariate column name>" with the name of the column in your covariate data file
+# In the command below, replace "<covariate column name>" with the name of the column in your covariate data file.
 covariate_vector <- covariate_data[["<covariate column name>"]] # create vector
 names(covariate_vector) <- rownames(covariate_data) # set the names
-# in the command below, replace "<name of your NG-CHM>" with the desired name of your NG-CHM
+# In the command below, replace "<name of your NG-CHM>" with the desired name of your NG-CHM.
 hm <- chmNew("<name of your NG-CHM>", matrix_data)
-# in the command below, replace "<name of your covariate>" with the desired name of your covariate
+# In the command below, replace "<name of your covariate>" with the desired name of your covariate.
 covariateBar <- chmNewCovariate("<name of your covariate>", covariate_vector)
 hm <- chmAddCovariateBar(hm, "column", covariateBar)
-# in the command below, replace "<name of your HTML file>" with the desired name of your HTML file
+# In the command below, replace "<name of your HTML file>" with the desired name of your HTML file.
 chmExportToHTML(hm, "<name of your HTML file>", overwrite = TRUE)
-# in the command below, replace "<name of your .ngchm file>" with the desired name of your .ngchm file
+# In the command below, replace "<name of your .ngchm file>" with the desired name of your .ngchm file.
 # IMPORTANT: The filename must end with '.ngchm' in order to open in the NG-CHM Viewer
 chmExportToFile(hm, "<name of your .ngchm file>", overwrite = TRUE)
 ```
