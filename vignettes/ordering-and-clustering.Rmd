@@ -2,7 +2,7 @@
 title: "Ordering and Clustering"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Clustering and Column/Row Ordering}
+  %\VignetteIndexEntry{Ordering and Clustering}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
