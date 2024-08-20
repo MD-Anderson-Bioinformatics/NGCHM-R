@@ -27,8 +27,9 @@ These examples build on the setup from [Getting Started](getting-started.html).
 ## Matrix Data Color Map
 
 The function `chmNewColorMap()` creates a new color map. For a continuous color map, the first argument
-is a list of breakpoints. For the TCGA BRCA Expression demo data, reasonable breakpoints are
-6.4, 10, and 14. The second argument is a corresponding list of
+is a list of breakpoints. Breakpoints must be unique numbers in ascending numerical order.
+For the TCGA BRCA Expression demo data, reasonable breakpoints are 6.4, 10, and 14.
+The second argument is a corresponding list of
 colors for those breakpoints. The colors can be specified by name for standard colors, or by hexadecimal code.
 
 ```{r, eval=FALSE}
