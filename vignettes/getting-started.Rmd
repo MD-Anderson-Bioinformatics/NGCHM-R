@@ -34,7 +34,6 @@ Packages used in these examples can be installed with:
 install.packages("NGCHMDemoData", repos = c("https://md-anderson-bioinformatics.r-universe.dev"))
 install.packages("NGCHMSupportFiles", repos = c("https://md-anderson-bioinformatics.r-universe.dev"))
 install.packages("NGCHM")
-install.packages("htmltools") # used to embed the NG-CHM into RMarkdown
 ```
 
 ## R Code Examples
@@ -50,7 +49,6 @@ generic code containing placeholders for user-specific data files, covariate col
 library(NGCHMDemoData)
 library(NGCHMSupportFiles)
 library(NGCHM)
-library("htmltools")
 matrix_data_file <- system.file("extdata", "TCGA.BRCA.Expression.csv", package = "NGCHMDemoData")
 matrix_data <- as.matrix(read.csv(matrix_data_file, header = TRUE, row.names = 1, check.names = FALSE))
 covariate_data_file <- system.file("extdata", "TCGA.BRCA.TP53Mutation.csv", package = "NGCHMDemoData")
@@ -70,10 +68,8 @@ chmExportToFile(hm, "tcga-brca.ngchm", overwrite = TRUE)
 <details><summary>Click to expand/collapse **generic code example** for .csv input files</summary>
 
 ```{r, eval=FALSE}
-library(NGCHMDemoData)
 library(NGCHMSupportFiles)
 library(NGCHM)
-library("htmltools")
 # In the command below, replace "<path to your matrix data file>" with the path to your matrix data file.
 matrix_data_file <- "<path to your matrix data file>"
 matrix_data <- as.matrix(read.csv(matrix_data_file, header = TRUE, row.names = 1, check.names = FALSE))
