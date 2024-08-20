@@ -21,7 +21,7 @@ This vignette demonstrates how to:
 - [Format Data for NG-CHMs](#format-data-for-ng-chms)
 - [Create an NG-CHM](#create-an-ng-chm)
 - [Add a covariate bar](#add-a-covariate-bar)
-- [Export to HTML, .ngchm, or PDF](#export-to html-ngchm-or-pdf)
+- [Export to HTML, .ngchm, or PDF](#export-to-html--ngchm-or-pdf)
 - [Embed into Rmarkdown](#embed-into-rmarkdown)
 
 Complete code block examples are presented first in [R Code Examples](#r-code-examples),
