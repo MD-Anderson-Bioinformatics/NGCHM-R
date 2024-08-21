@@ -50,9 +50,9 @@ library(NGCHMDemoData)
 library(NGCHMSupportFiles)
 library(NGCHM)
 matrix_data_file <- system.file("extdata", "TCGA.BRCA.Expression.csv", package = "NGCHMDemoData")
-matrix_data <- as.matrix(read.csv(matrix_data_file, header = TRUE, row.names = 1, check.names = FALSE))
+matrix_data <- as.matrix(read.csv(matrix_data_file, header = TRUE, row.names = 1, check.names = FALSE, stringsAsFactors = FALSE))
 covariate_data_file <- system.file("extdata", "TCGA.BRCA.TP53Mutation.csv", package = "NGCHMDemoData")
-covariate_data <- read.csv(covariate_data_file, row.names = 1) # read.csv returns a data.frame
+covariate_data <- read.csv(covariate_data_file, row.names = 1, check.names = FALSE, stringsAsFactors = FALSE) # read.csv returns a data.frame
 covariate_vector <- covariate_data[["MutationState"]] # create vector
 names(covariate_vector) <- rownames(covariate_data) # set the names
 hm <- chmNew("TCGA BRCA Expression", matrix_data)
@@ -72,10 +72,10 @@ library(NGCHMSupportFiles)
 library(NGCHM)
 # In the command below, replace "<path to your matrix data file>" with the path to your matrix data file.
 matrix_data_file <- "<path to your matrix data file>"
-matrix_data <- as.matrix(read.csv(matrix_data_file, header = TRUE, row.names = 1, check.names = FALSE))
+matrix_data <- as.matrix(read.csv(matrix_data_file, header = TRUE, row.names = 1, check.names = FALSE, stringsAsFactors = FALSE))
 # In the command below, replace "<path to your covariate data file>" with the path to your covariate data file.
 covariate_data_file <- "<path to your covariate data file>"
-covariate_data <- read.csv(covariate_data_file, row.names = 1) # read.csv returns a data.frame
+covariate_data <- read.csv(covariate_data_file, row.names = 1, stringsAsFactors = FALSE) # read.csv returns a data.frame
 # In the command below, replace "<covariate column name>" with the name of the column in your covariate data file.
 covariate_vector <- covariate_data[["<covariate column name>"]] # create vector
 names(covariate_vector) <- rownames(covariate_data) # set the names
@@ -267,10 +267,10 @@ and formatted as a named vector.
 library(NGCHMDemoData)
 # Read in the NGCHMDemoData expression data, and format as a matrix
 matrix_data_file <- system.file("extdata", "TCGA.BRCA.Expression.csv", package = "NGCHMDemoData")
-matrix_data <- as.matrix(read.csv(matrix_data_file, header = TRUE, row.names = 1, check.names = FALSE))
+matrix_data <- as.matrix(read.csv(matrix_data_file, header = TRUE, row.names = 1, check.names = FALSE, stringsAsFactors = FALSE))
 # Read in the NGCHMDemoData mutation data, and format as a named vector
 covariate_data_file <- system.file("extdata", "TCGA.BRCA.TP53Mutation.csv", package = "NGCHMDemoData")
-covariate_data <- read.csv(covariate_data_file, row.names = 1) # read.csv returns a data.frame
+covariate_data <- read.csv(covariate_data_file, row.names = 1, check.names = FALSE, stringsAsFactors = FALSE) # read.csv returns a data.frame
 covariate_vector <- covariate_data[["MutationState"]] # create vector
 names(covariate_vector) <- rownames(covariate_data) # set the names
 ```
@@ -401,9 +401,9 @@ library(NGCHMSupportFiles)
 library(NGCHM)
 library("htmltools")
 matrix_data_file <- system.file("extdata", "TCGA.BRCA.Expression.csv", package = "NGCHMDemoData")
-matrix_data <- as.matrix(read.csv(matrix_data_file, header = TRUE, row.names = 1, check.names = FALSE))
+matrix_data <- as.matrix(read.csv(matrix_data_file, header = TRUE, row.names = 1, check.names = FALSE, stringsAsFactors = FALSE))
 covariate_data_file <- system.file("extdata", "TCGA.BRCA.TP53Mutation.csv", package = "NGCHMDemoData")
-covariate_data <- read.csv(covariate_data_file, row.names = 1) # read.csv returns a data.frame
+covariate_data <- read.csv(covariate_data_file, row.names = 1, check.names = FALSE, stringsAsFactors = FALSE) # read.csv returns a data.frame
 covariate_vector <- covariate_data[["MutationState"]] # create vector
 names(covariate_vector) <- rownames(covariate_data) # set the names
 hm <- chmNew("TCGA BRCA Expression", matrix_data)

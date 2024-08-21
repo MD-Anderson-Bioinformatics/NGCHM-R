@@ -77,9 +77,9 @@ library(NGCHMDemoData)
 library(NGCHMSupportFiles)
 library(NGCHM)
 matrix_data_file <- system.file("extdata", "TCGA.BRCA.Expression.csv", package = "NGCHMDemoData")
-matrix_data <- as.matrix(read.csv(matrix_data_file, header = TRUE, row.names = 1, check.names = FALSE))
+matrix_data <- as.matrix(read.csv(matrix_data_file, header = TRUE, row.names = 1, check.names = FALSE, stringsAsFactors = FALSE))
 covariate_data_file <- system.file("extdata", "TCGA.BRCA.TP53Mutation.csv", package = "NGCHMDemoData")
-covariate_data <- as.matrix(read.csv(covariate_data_file, row.names = 1))
+covariate_data <- as.matrix(read.csv(covariate_data_file, row.names = 1, check.names = FALSE, stringsAsFactors = FALSE))
 covariate_vector <- as.vector(covariate_data) # create vector of mutation data
 names(covariate_vector) <- rownames(covariate_data) # set the names
 colorMap <- chmNewColorMap(c(6.4, 10, 14), c("steelblue", "antiquewhite", "firebrick"))
@@ -98,9 +98,9 @@ library(NGCHMDemoData)
 library(NGCHMSupportFiles)
 library(NGCHM)
 matrix_data_file <- system.file("extdata", "TCGA.BRCA.Expression.csv", package = "NGCHMDemoData")
-matrix_data <- as.matrix(read.csv(matrix_data_file, header = TRUE, row.names = 1, check.names = FALSE))
+matrix_data <- as.matrix(read.csv(matrix_data_file, header = TRUE, row.names = 1, check.names = FALSE, stringsAsFactors = FALSE))
 covariate_data_file <- system.file("extdata", "TCGA.BRCA.TP53Mutation.csv", package = "NGCHMDemoData")
-covariate_data <- as.matrix(read.csv(covariate_data_file, row.names = 1))
+covariate_data <- as.matrix(read.csv(covariate_data_file, row.names = 1, check.names = FALSE, stringsAsFactors = FALSE))
 covariate_vector <- as.vector(covariate_data) # create vector of mutation data
 names(covariate_vector) <- rownames(covariate_data) # set the names
 colorMap <- chmNewColorMap(c(6.4, 10, 14), c("steelblue", "antiquewhite", "firebrick"))
