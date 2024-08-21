@@ -18,7 +18,7 @@ knitr::opts_chunk$set(
 
 - R >= 3.5
 - Java >= 11
-- git, tar, scp, ssh
+- git
   - Mac/Linux: typically installed by default
   - Windows: Cygwin or Windows Subsystem for Linux (Windows 10)
 - C compiler
@@ -28,6 +28,8 @@ knitr::opts_chunk$set(
 - [NGCHMSupportFiles](https://md-anderson-bioinformatics.r-universe.dev/NGCHMSupportFiles) R package
   - This package requires Java >= 11
   - This package contains a compiled .jar file and minified JavaScript file
+- Requirements for using remote NG-CHM server (*most users do not need these*)
+  - tar, ssh, scp
 
 
 ## R Packages Installation
