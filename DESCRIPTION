@@ -20,7 +20,7 @@ License: GPL-3
 URL: https://md-anderson-bioinformatics.github.io/NGCHM-R/,
     https://github.com/MD-Anderson-Bioinformatics/NGCHM-R
 Depends:
-    R (>= 3.4.0)
+    R (>= 3.5.0)
 Imports:
     digest,
     grDevices,
