@@ -12,6 +12,13 @@ template:
                      }
                    })();
                 </script>"
+    before_body: "<script>
+                    function openIframeInNewTab(cssSelector) {
+                      let iframe = document.querySelector(cssSelector);
+                      let url = iframe.src;
+                      window.open(url, '_blank');
+                    }
+                  </script>"
 reference:
   - title: "Creating and Saving an NG-CHM"
     contents:
@@ -92,6 +99,8 @@ navbar:
            href: articles/ordering-and-clustering.html
          - text: 'Adding Linkouts'
            href: articles/adding-linkouts.html
+         - text: 'UMAP'
+           href: articles/umap.html
      - text: 'Function Reference'
        href: reference/index.html
      - text: 'Video Tutorials'
