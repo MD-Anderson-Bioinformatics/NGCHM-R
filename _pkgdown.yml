@@ -14,34 +14,58 @@ template:
                 </script>"
 reference:
   - title: "Creating and Saving an NG-CHM"
-    desc: "Creating an NG-CHM and saving to file"
     contents:
-      - '`chmNew`'
-      - '`chmExportToHTML`'
-      - '`chmExportToFile`'
+      - chmNew
+      - chmExportToHTML
+      - chmExportToFile
   - title: "Covariate Bars"
-    desc: "Creating and adding covariate bars"
     contents:
-      - '`chmAddCovariate`'
-      - '`chmAddCovariateBar`'
-      - '`chmCovariate`'
-      - '`chmCovariateBar`'
-      - '`chmNewCovariate`'
-      - '`chmNewCovariateBar`'
-  - title: "Color Maps and Data Layers"
-    desc: "Creating color maps and data layers"
+      - chmNewCovariate
+      - chmAddCovariateBar
+      - chmAddCovariate
+      - chmNewCovariateBar
+      - chmCovariate
+      - chmCovariateBar
+  - title: "Colors and Color Maps"
     contents:
-      - '`chmAddLayer`'
-      - '`chmColorMap`'
-      - '`chmLayer`'
-      - '`chmNewColorMap`'
-      - '`chmNewDataLayer`'
+      - chmNewColorMap
+      - chmAddColormap
+      - chmColorMap<-
+      - chmColorMap
+      - chmColors
+      - chmColors<-
+  - title: "Data Layers"
+    contents:
+      - chmNewDataLayer
+      - chmAddLayer
+      - chmLayer
   - title: 'Specifying Axis Type'
     desc: 'For automatically adding linkouts'
     contents:
-      - '`chmAddAxisType`'
+      - chmAddAxisType
+  - title: 'Add Scatter Plot Coordinates'
+    contents:
+      - chmAddPCA
+      - chmAddUMAP
+      - chmAddUWOT
+      - chmAddTSNE
+      - chmAddReducedDim
+  - title: 'Row and Column Ordering and Dendrograms'
+    contents:
+      - chmColOrder<-
+      - chmRowOrder<-
+  - title: 'Map Properties'
+    contents:
+      - chmHasProperty
+      - chmGetProperty
+      - chmNewProperty
+      - chmAddProperty
+      - chmProperty
+      - chmProperty<-
+  - title: 'Adding Gaps'
+    contents:
+      - chmTreeGaps
   - title: 'All Functions'
-    desc: 'List of all functions'
     contents:
        - starts_with("")
 navbar:
