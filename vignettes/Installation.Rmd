@@ -14,6 +14,28 @@ knitr::opts_chunk$set(
 )
 ```
 
+## R Packages Installation
+
+The NG-CHM R package can be installed from CRAN:
+
+```{r, results='hide', message=FALSE, warning=FALSE, eval=FALSE}
+install.packages("NGCHM")
+```
+
+The required NGCHMSupportFiles can be installed from
+[our R-Universe repository](https://md-anderson-bioinformatics.r-universe.dev/packages):
+
+
+```{r, results='hide', message=FALSE, warning=FALSE, eval=FALSE}
+install.packages("NGCHMSupportFiles", repos = c("https://md-anderson-bioinformatics.r-universe.dev"))
+```
+
+The optional NGCHMDemoData (used in the vignette examples) can similarly be installed:
+
+```{r, results='hide', message=FALSE, warning=FALSE, eval=FALSE}
+install.packages("NGCHMDemoData", repos = c("https://md-anderson-bioinformatics.r-universe.dev"))
+```
+
 ## System Requirements
 
 - R >= 3.5
@@ -28,25 +50,9 @@ knitr::opts_chunk$set(
 - [NGCHMSupportFiles](https://md-anderson-bioinformatics.r-universe.dev/NGCHMSupportFiles) R package
   - This package requires Java >= 11
   - This package contains a compiled .jar file and minified JavaScript file
-- Requirements for using remote NG-CHM server (*most users do not need these*)
-  - tar, ssh, scp
+- *Optional:* The following are only required if using a remote NG-CHM server:
+  - tar, ssh, scp *(most users will not need these)*
 
-
-## R Packages Installation
-
-The NG-CHM R package can be installed from CRAN:
-
-```{r, results='hide', message=FALSE, warning=FALSE, eval=FALSE}
-install.packages("NGCHM")
-```
-
-The NGCHMSupportFiles can be installed from
-[our R-Universe repository](https://md-anderson-bioinformatics.r-universe.dev/packages):
-
-
-```{r, results='hide', message=FALSE, warning=FALSE, eval=FALSE}
-install.packages("NGCHMSupportFiles", repos = c("https://md-anderson-bioinformatics.r-universe.dev"))
-```
 
 ## Docker Image
 
