@@ -291,10 +291,10 @@ hm <- chmNew("TCGA BRCA Expression", matrix_data)
 
 ## Add a Covariate Bar
 
-The function `chmNewCovariate()` create a covariate bar. The first argument is the name of the covariate,
+The function `chmNewCovariate()` creates a covariate object. The first argument is the name of the covariate,
 and the second argument is the named vector of covariate data. The `chmAddCovariateBar()` function adds the
-covariate bar to the NG-CHM. The first argument is the NG-CHM, the second argument is the type of covariate bar
-('column' or 'row'), and the third argument is the covariate bar object.
+covariate to the NG-CHM. The first argument is the NG-CHM, the second argument is the desired map axis for
+the covariate bar ('column' or 'row'), and the third argument is the covariate object.
 
 ```{r, eval=FALSE}
 covariateBar <- chmNewCovariate("TP53 Mutation", covariate_vector)
