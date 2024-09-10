@@ -4053,7 +4053,7 @@ chmAddPCA <- function(hm, axis, prc, basename = "PC", ndim = 2) {
 #'
 #' @param hm The NGCHM to add the coordinates to.
 #' @param axis The NGCHM axis ("row" or "column") to add the coordinates to.
-#' @param umap TSNE coordinates (output of [umap::umap()](https://CRAN.R-project.org/package=umap)) for the specified NGCHM axis.
+#' @param umap UMAP coordinates (output of [umap::umap()](https://CRAN.R-project.org/package=umap)) for the specified NGCHM axis.
 #' @param basename The prefix to use for the coordinate names.
 #'
 #' @return The NGCHM with added coordinates.
