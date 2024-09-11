@@ -11,7 +11,7 @@ chmAddUMAP(hm, axis, umap, basename = "UMAP")
 
 \item{axis}{The NGCHM axis ("row" or "column") to add the coordinates to.}
 
-\item{umap}{TSNE coordinates (output of \href{https://CRAN.R-project.org/package=umap}{umap::umap()}) for the specified NGCHM axis.}
+\item{umap}{UMAP coordinates (output of \href{https://CRAN.R-project.org/package=umap}{umap::umap()}) for the specified NGCHM axis.}
 
 \item{basename}{The prefix to use for the coordinate names.}
 }

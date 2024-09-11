@@ -1,72 +1,114 @@
 title: NGCHMR
 url: https://md-anderson-bioinformatics.github.io/NGCHM-R/
 template:
-  params:
-    bootswatch: journal
-toc:
-  depth: 2
+  bootstrap: 5
+  light-switch: true
+  includes:
+    after_body: "<script>
+                   /* open external links in new tab */
+                   (function() {
+                     for (const link of document.getElementsByTagName('a')) {
+                       if (link.classList.contains('external-link')) link.target = '_blank';
+                     }
+                   })();
+                </script>"
 reference:
-  - title: "Creating and Saving a NG-CHM"
-    desc: "Creating an NG-CHM and saving to file"
+  - title: "Creating and Saving an NG-CHM"
     contents:
-      - '`chmNew`'
-      - '`chmExportToHTML`'
-      - '`chmExportToFile`'
+      - chmNew
+      - chmExportToHTML
+      - chmExportToFile
   - title: "Covariate Bars"
-    desc: "Creating and adding covariate bars"
     contents:
-      - '`chmAddCovariate`'
-      - '`chmAddCovariateBar`'
-      - '`chmCovariate`'
-      - '`chmCovariateBar`'
-      - '`chmNewCovariate`'
-      - '`chmNewCovariateBar`'
-  - title: "Color Maps and Data Layers"
-    desc: "Creating color maps and data layers"
+      - chmNewCovariate
+      - chmAddCovariateBar
+      - chmAddCovariate
+      - chmNewCovariateBar
+      - chmCovariate
+      - chmCovariateBar
+  - title: "Colors and Color Maps"
     contents:
-      - '`chmAddLayer`'
-      - '`chmColorMap`'
-      - '`chmLayer`'
-      - '`chmNewColorMap`'
-      - '`chmNewDataLayer`'
+      - chmNewColorMap
+      - chmAddColormap
+      - chmColorMap<-
+      - chmColorMap
+      - chmColors
+      - chmColors<-
+      - chmAdd
+  - title: "Data Layers"
+    contents:
+      - chmNewDataLayer
+      - chmAddLayer
+      - chmLayer
+      - chmAdd
   - title: 'Specifying Axis Type'
     desc: 'For automatically adding linkouts'
     contents:
-      - '`chmAddAxisType`'
-  - title: 'Alphabetical List'
-    desc: 'Alphabetical List of Functions'
+      - chmAddAxisType
+  - title: 'Add Scatter Plot Coordinates'
+    contents:
+      - chmAddPCA
+      - chmAddUMAP
+      - chmAddUWOT
+      - chmAddTSNE
+      - chmAddReducedDim
+  - title: 'Row and Column Ordering and Dendrograms'
+    contents:
+      - chmColOrder<-
+      - chmRowOrder<-
+  - title: 'Map Properties'
+    contents:
+      - chmHasProperty
+      - chmGetProperty
+      - chmNewProperty
+      - chmAddProperty
+      - chmProperty
+      - chmProperty<-
+      - chmAdd
+  - title: 'Adding Gaps'
+    contents:
+      - chmTreeGaps
+  # Pkgdown requires all non-internal functions be listed. But we don't want the full list to appear on this page.
+  # By setting the title to "internal", we hide this list from the user
+  - title: internal
     contents:
        - starts_with("")
 navbar:
    title: "NGCHMR"
-   type: inverse
    left:
      - text: "Installation"
        href: articles/Installation.html
-     - text: "Start Here!"
-       href: articles/create-a-ng-chm.html
+     - text: "Getting Started"
+       href: articles/getting-started.html
      - text: "Vignettes"
        menu:
-         - text: 'Create a NG-CHM (Start Here!)'
-           href: articles/create-a-ng-chm.html
-         - text: 'Covariate Bars and Discrete Color Maps'
-           href: articles/covariate-bars-and-discrete-color-maps.html
-         - text: 'Continuous Color Maps and Data Layers'
-           href: articles/continuous-color-maps-and-data-layers.html
-         - text: 'Clustering and Column/Row Ordering'
-           href: articles/clustering-and-column-row-ordering.html
+         - text: 'Getting Started'
+           href: articles/getting-started.html
+         - text: 'Color Maps'
+           href: articles/color-maps.html
+         - text: 'Data Layers'
+           href: articles/data-layers.html
+         - text: 'Ordering and Clustering'
+           href: articles/ordering-and-clustering.html
          - text: 'Adding Linkouts'
            href: articles/adding-linkouts.html
      - text: 'Function Reference'
        href: reference/index.html
-     - text: 'YouTube'
-       href: articles/YouTube.html
-   right:
-     - icon: fa-home
-       href: index.html
-     - icon: fa-github
-       href: https://github.com/MD-Anderson-Bioinformatics/NGCHM-R/
-
-
-  
-  
+     - text: 'Video Tutorials'
+       menu:
+         - text: "Playlist: NG-CHMs in R/R-Studio"
+           href: https://www.youtube.com/playlist?list=PLIBaINv-Qmd0v2qD4AMbGf85Xd-T_yzEh
+         - text: "How to create NG-CHMs in R-Studio"
+           href: https://www.youtube.com/watch?v=O42w5P3A1_8&list=PLIBaINv-Qmd0v2qD4AMbGf85Xd-T_yzEh
+         - text: "How to use any ordering method with NG-CHMs"
+           href: https://www.youtube.com/watch?v=847breSor1I&list=PLIBaINv-Qmd0v2qD4AMbGf85Xd-T_yzEh
+         - text: "How to create a single-cell NG-CHM in R"
+           href: https://www.youtube.com/watch?v=K8PuHDQYk-g&list=PLIBaINv-Qmd0v2qD4AMbGf85Xd-T_yzEh
+         - text: "Run NG-CHM RStudio container in Windows 10 Docker Desktop"
+           href: https://www.youtube.com/watch?v=iu0ptg9SBqM&list=PLIBaINv-Qmd0v2qD4AMbGf85Xd-T_yzEh
+home:
+  sidebar:
+    structure: [links, citation, license, authors]
+authors:
+  sidebar:
+    roles: ["cre", "aut", "ctb"]

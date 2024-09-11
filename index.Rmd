@@ -14,45 +14,16 @@ knitr::opts_chunk$set(
 )
 ```
 
-# NGCHM R package
-
 <!-- badges: start -->
 <!-- badges: end -->
 
-NGCHM is an R package for creating [Next-Generation Clustered Heat Maps](https://bioinformatics.mdanderson.org/public-software/ngchm/).
-Next-Generation Clustered Heat Maps (NG-CHMs) allow for a dynamic exploration of heat map data in a web browser. 
+# NGCHM R package
 
-Our [YouTube Video](https://www.youtube.com/watch?v=DuObpGNpDhw) presents a brief overview of NGCHM usage and functionality.
+NGCHM is an R package for creating Next-Generation Clustered Heat Maps (NG-CHMs).
+NG-CHMs allow for dynamic exploration of heat map data in a web browser.
 
-Click [Start Here!](articles/create-a-ng-chm.html) in the main menu to learn how to create an NG-CHM like the one below.
+To learn how to create an NG-CHM using this R package, click [Getting Started](articles/getting-started.html).
 
-
-### NG-CHM of Breast Cancer (BRCA) Data from The Cancer Genome Atlas (TCGA)
-
-```{r, message=FALSE, warning=FALSE, echo=FALSE }
-library(NGCHMDemoData)
-library(NGCHMSupportFiles)
-library(NGCHM)
-unadjustedColorMap <- chmNewColorMap(c(6.4,10,14), c('mediumblue','snow','firebrick'))
-rowCenteredColorMap <- chmNewColorMap(c(-2,0,2), c('#9933ff','#f0f0f0','#228B22'))
-unadjustedLayer <- chmNewDataLayer('Unadjusted', TCGA.BRCA.ExpressionData, unadjustedColorMap)
-rowCenteredData <- t(scale(t(TCGA.BRCA.ExpressionData)))
-rowCenteredLayer <- chmNewDataLayer('Row-Centered', rowCenteredData, rowCenteredColorMap)
-hm <- chmNew('TCGA BRCA Expression', unadjustedLayer, rowCenteredLayer)
-covariateBar <- chmNewCovariate('TP53 Mutation',TCGA.BRCA.TP53MutationData)
-hm <- chmAddCovariateBar(hm, 'column', covariateBar)
-hm <- chmAddAxisType(hm, 'row', 'bio.gene.hugo')
-hm <- chmAddAxisType(hm, 'column', 'bio.tcga.barcode.sample.vial.portion.analyte.aliquot')
-```
-
-```{r, message=FALSE, warning=FALSE, echo=FALSE, results='hide' }
-chmExportToHTML(hm,'tcga-brca-intro.html',overwrite=TRUE)
-```
-
-```{r, message=FALSE, warning=FALSE, echo=FALSE }
-library('htmltools')
-filePath = paste(getwd(),'/tcga-brca-intro.html',sep='')
-htmltools::includeHTML(filePath)
-```
-
+For more information on NG-CHMs, please see the
+[NG-CHM Home Page](https://bioinformatics.mdanderson.org/public-software/ngchm/).
 

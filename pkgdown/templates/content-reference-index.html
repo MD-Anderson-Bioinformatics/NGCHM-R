@@ -1,0 +1,36 @@
+<!-- this template was taken from
+     https://github.com/r-lib/pkgdown/blob/main/inst/BS5/templates/content-reference-index.html
+     for the purpose of changing the page title from "Package Index" to "Function Reference".
+
+     Extra info: H1 tag in for the reference/index.html is hard-coded in the pkgdown package,
+     so the only way to change it is to use a custom template.
+-->
+<div class="row">
+  <main id="main" class="col-md-9">
+    <div class="page-header">
+      {{#logo}}<img src="{{logo.src}}" class="logo" alt="" >{{/logo}}
+      <h1>Function Reference</h1>
+    </div>
+
+    {{#rows}}<div {{#slug}}id="{{.}}"{{/slug}} class="section level2">
+      {{#title}}<h2>{{{.}}}</h2>{{/title}}
+      {{#subtitle}}<h3>{{{.}}}</h3>{{/subtitle}}
+      {{#desc}}<div class="section-desc">{{{desc}}}</div>{{/desc}}
+
+      {{#topics}}<dl>
+        <dt>
+          {{#has_icons}}{{#icon}}<a class="icon" href="{{path}}"><img src="icons/{{{.}}}" alt=""/></a>{{/icon}}{{/has_icons}}
+          {{#aliases}}<code><a href="{{path}}">{{{.}}}</a></code> {{/aliases}}
+          {{#lifecycle}}<span class="badge lifecycle lifecycle-{{.}}">{{.}}</span>{{/lifecycle}}
+        </dt>
+        <dd>{{{title}}}</dd>
+      </dl>{{/topics}}
+    </div>{{/rows}}
+  </main>
+
+  <aside class="col-md-3">
+    <nav id="toc" aria-label="{{#translate}}{{toc}}{{/translate}}">
+      <h2>{{#translate}}{{on_this_page}}{{/translate}}</h2>
+    </nav>
+  </aside>
+</div>
