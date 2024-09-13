@@ -3837,8 +3837,8 @@ chmExportToPDF <- function(chm, filename, overwrite = FALSE, shaidyMapGen, shaid
 #' @export
 #' @rdname chmExportToHTML-method
 #'
-#' @param chm The NGCHM to generate the PDF for
-#' @param filename The file in which to save the PDF
+#' @param chm The NGCHM to generate the HTML for
+#' @param filename The file in which to save the HTML
 #' @param overwrite Overwrite file iff true (default false)
 #' @param shaidyMapGen Path to shaidyMapGen jar file (default to value of environment variable SHAIDYMAPGEN)
 #' @param shaidyMapGenJava Path to java executable with which to run shaidyMapGen (default to value of environment variable SHAIDYMAPGENJAVA or java)
