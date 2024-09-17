@@ -109,6 +109,13 @@ a {
 
 /* Styles from the NG-CHM viewer */
 button.fromViewer {
+  display: inline-flex;
+  display: inline flex;
+  justify-content: center;
+  align-items: center;
+  width: 24px;
+  height: 24px;
+  padding: 0;
   background-color: #efefef;
   border-radius: 0.4rem;
   border: 1px solid black;
@@ -116,3 +123,48 @@ button.fromViewer {
   color: black;
 }
 
+svg.fromViewer {
+  width: 16px;
+  height: 16px;
+}
+
+.ngchm-frame {
+  border: 1px solid black;
+  border-radius: 0.4rem;
+}
+
+/* trying to get a reasonable match to fonts used in NG-CHM viewer panel and gear menues */
+.ngchm-panel-menu {
+  font-family: "Times New Roman", Times, serif;
+}
+
+.ngchm-panel-menu-headings {
+  font-variant-caps: small-caps;
+  background-color: #ccccff;
+  font-family: "Times New Roman", Times, serif;
+  padding: 1px 4px 1px 4px; /* tweaked slightly from NG-CHM viewer CSS values */
+  color: black;
+}
+
+.ngchm-gear-menu-button {
+  font-family: "Times New Roman", Times, serif;
+  padding: 0.25em 0.5em;
+  background: linear-gradient(0deg, #2a447f, #447afd);
+  color: white;
+  border-radius: 1em;
+  font-weight: bold;
+  font-size: 0.8rem;
+  cursor: default;
+  white-space: nowrap;
+}
+
+button.viewer-close-icon {
+  color: red;
+  background: #efefef;
+  border-radius: 0.4rem;
+  border: 1px solid red;
+  line-height: 0.3rem;
+  padding: 0.2rem;
+  white-space: nowrap;
+  cursor: default;
+}
