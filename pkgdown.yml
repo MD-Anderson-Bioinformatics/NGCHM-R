@@ -8,7 +8,8 @@ articles:
   getting-started: getting-started.html
   Installation: Installation.html
   ordering-and-clustering: ordering-and-clustering.html
-last_built: 2024-09-11T20:05Z
+  umap: umap.html
+last_built: 2024-09-17T21:43Z
 urls:
   reference: https://md-anderson-bioinformatics.github.io/NGCHM-R/reference
   article: https://md-anderson-bioinformatics.github.io/NGCHM-R/articles
