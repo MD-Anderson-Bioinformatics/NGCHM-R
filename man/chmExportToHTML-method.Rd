@@ -15,9 +15,9 @@ chmExportToHTML(
 )
 }
 \arguments{
-\item{chm}{The NGCHM to generate the PDF for}
+\item{chm}{The NGCHM to generate the HTML for}
 
-\item{filename}{The file in which to save the PDF}
+\item{filename}{The file in which to save the HTML}
 
 \item{overwrite}{Overwrite file iff true (default false)}
 

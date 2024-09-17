@@ -581,6 +581,7 @@ chmNewDataLayer <- function(label, data, colors, summarizationMethod, cuts_color
   if (length(cuts_color) != 1) {
     stop(sprintf("Parameter 'cuts_color' must have a single value, not %d", length(cuts_color)))
   }
+  grDevices::col2rgb(cuts_color) # Check that cuts_color is a valid color
   summarizationMethod <- match.arg(summarizationMethod, c("average", "sample", "mode"))
   data <- ngchmSaveAsDatasetBlob(ngchm.env$tmpShaidy, "tsv", data)
   if (length(colors) == 0) {
@@ -3836,8 +3837,8 @@ chmExportToPDF <- function(chm, filename, overwrite = FALSE, shaidyMapGen, shaid
 #' @export
 #' @rdname chmExportToHTML-method
 #'
-#' @param chm The NGCHM to generate the PDF for
-#' @param filename The file in which to save the PDF
+#' @param chm The NGCHM to generate the HTML for
+#' @param filename The file in which to save the HTML
 #' @param overwrite Overwrite file iff true (default false)
 #' @param shaidyMapGen Path to shaidyMapGen jar file (default to value of environment variable SHAIDYMAPGEN)
 #' @param shaidyMapGenJava Path to java executable with which to run shaidyMapGen (default to value of environment variable SHAIDYMAPGENJAVA or java)
