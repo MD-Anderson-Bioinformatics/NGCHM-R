@@ -4006,18 +4006,28 @@ chmAddPCA <- function(hm, axis, prc, basename = "PC", ndim = 2) {
   stopifnot(axis == "row" || axis == "column")
   stopifnot(mode(basename) == "character" && length(basename) == 1)
   stopifnot(mode(ndim) == "numeric" && length(basename) == 1)
+  if (length(class(prc)) != 1 || class(prc) != "prcomp") {
+    stop("Input argument 'prc' must be a prcomp object.")
+  }
+  if (is.null(prc$x)) {
+    stop("No principal component coordinates (prc$x) found in the prcomp object.")
+  }
+  if (ndim > dim(prc$x)[2]) {
+   stop(paste0("Requested more dimensions than are available in the prcomp object. ",
+              "Requested ", ndim, " dimensions, but only ", dim(prc$x)[2], " are available."))
+  }
 
-  pointIds <- rownames(prc$rotation)
-  for (idx in 1:min(ncol(prc$rotation), ndim)) {
-    coordname <- sprintf("%s.coordinate.%d", basename, idx)
-    vals <- prc$rotation[, idx]
-    names(vals) <- pointIds
-    minv <- min(vals, na.rm = TRUE)
-    maxv <- max(vals, na.rm = TRUE)
-    midv <- if (minv * maxv < 0) 0.0 else (minv + maxv) / 2.0
-    cmap <- chmNewColorMap(c(minv, midv, maxv), colors = c("#00007f", "#d0d0d0", "#7f0000"))
-    cv <- chmNewCovariate(coordname, vals, cmap)
-    hm <- chmAddCovariateBar(hm, axis, cv, display = "hidden")
+  for (idx in 1:ndim) {
+    covariate_values = prc$x[, idx]
+    # make color map with 3 breakpoints
+    minv <- min(covariate_values) # low breakpoint
+    maxv <- max(covariate_values) # upper breakpoint
+    midbp <- if (minv * maxv < 0) 0.0 else (minv + maxv) / 2.0 # if pos and neg values, use 0 as middle breakpoint
+    color_map <- chmNewColorMap(c(minv, midbp, maxv), c("#00007f", "#d0d0d0", "#7f0000"))
+    # add covariate bar to heatmap
+    covariate_name <- sprintf("%s.coordinate.%d", basename, idx)
+    covariate <- chmNewCovariate(covariate_name, covariate_values, color_map)
+    hm <- chmAddCovariateBar(hm, axis, covariate, display = "hidden")
   }
   return(hm)
 }
