@@ -4001,13 +4001,23 @@ chmAddTSNE <- function(hm, axis, tsne, pointIds, basename = "TSNE") {
 #' @seealso [chmAddReducedDim()]
 
 chmAddPCA <- function(hm, axis, prc, basename = "PC", ndim = 2) {
-  stopifnot(is(hm, "ngchmVersion2"))
-  stopifnot(mode(axis) == "character" && length(axis) == 1)
-  stopifnot(axis == "row" || axis == "column")
-  stopifnot(mode(basename) == "character" && length(basename) == 1)
-  stopifnot(mode(ndim) == "numeric" && length(basename) == 1)
+  if (class(hm) != "ngchmVersion2") {
+    stop("First argument (hm) must be an ngchmVersion2 object.")
+  }
+  if (mode(axis) != "character" || length(axis) != 1) {
+    stop("Second argument (axis) must be a single string.")
+  }
+  if (axis != "column" && axis != "row") {
+    stop("Second argument (axis) must be either 'row' or 'column'.")
+  }
+  if (mode(basename) != "character" || length(basename) != 1) {
+    stop("Fourth argument (basename) must be a single string.")
+  }
+  if (mode(ndim) != "numeric" || length(ndim) != 1) {
+    stop("Fifth argument (ndim) must be a single numeric value.")
+  }
   if (length(class(prc)) != 1 || class(prc) != "prcomp") {
-    stop("Input argument 'prc' must be a prcomp object.")
+    stop("Third argument (prc) must be a prcomp object.")
   }
   if (is.null(prc$x)) {
     stop("No principal component coordinates (prc$x) found in the prcomp object.")
