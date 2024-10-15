@@ -4005,7 +4005,7 @@ chmAddPCA <- function(hm, axis, prc, basename = "PC", ndim = 2) {
     stop("First argument (hm) must be an ngchmVersion2 object.")
   }
   if (mode(axis) != "character" || length(axis) != 1) {
-    stop("Second argument (axis) must be a single string.")
+    stop("Second argument (axis) must be a single string: either 'row' or 'column'.")
   }
   if (axis != "column" && axis != "row") {
     stop("Second argument (axis) must be either 'row' or 'column'.")
