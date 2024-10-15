@@ -4001,7 +4001,7 @@ chmAddTSNE <- function(hm, axis, tsne, pointIds, basename = "TSNE") {
 #' @seealso [chmAddReducedDim()]
 
 chmAddPCA <- function(hm, axis, prc, basename = "PC", ndim = 2) {
-  if (class(hm) != "ngchmVersion2") {
+  if (!is(hm, "ngchmVersion2")) {
     stop("First argument (hm) must be an ngchmVersion2 object.")
   }
   if (mode(axis) != "character" || length(axis) != 1) {
