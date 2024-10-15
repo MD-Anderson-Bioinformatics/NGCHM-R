@@ -4001,23 +4001,39 @@ chmAddTSNE <- function(hm, axis, tsne, pointIds, basename = "TSNE") {
 #' @seealso [chmAddReducedDim()]
 
 chmAddPCA <- function(hm, axis, prc, basename = "PC", ndim = 2) {
-  stopifnot(is(hm, "ngchmVersion2"))
-  stopifnot(mode(axis) == "character" && length(axis) == 1)
-  stopifnot(axis == "row" || axis == "column")
-  stopifnot(mode(basename) == "character" && length(basename) == 1)
-  stopifnot(mode(ndim) == "numeric" && length(basename) == 1)
+  if (!is(hm, "ngchmVersion2")) {
+    stop("First argument (hm) must be an ngchmVersion2 object.")
+  }
+  if (mode(axis) != "character" || length(axis) != 1) {
+    stop("Second argument (axis) must be a single string: either 'row' or 'column'.")
+  }
+  if (axis != "column" && axis != "row") {
+    stop("Second argument (axis) must be either 'row' or 'column'.")
+  }
+  if (mode(basename) != "character" || length(basename) != 1) {
+    stop("Fourth argument (basename) must be a single string.")
+  }
+  if (mode(ndim) != "numeric" || length(ndim) != 1) {
+    stop("Fifth argument (ndim) must be a single numeric value.")
+  }
+  if (length(class(prc)) != 1 || class(prc) != "prcomp") {
+    stop("Third argument (prc) must be a prcomp object.")
+  }
+  if (is.null(prc$x)) {
+    stop("No principal component coordinates (prc$x) found in the prcomp object.")
+  }
 
-  pointIds <- rownames(prc$rotation)
-  for (idx in 1:min(ncol(prc$rotation), ndim)) {
-    coordname <- sprintf("%s.coordinate.%d", basename, idx)
-    vals <- prc$rotation[, idx]
-    names(vals) <- pointIds
-    minv <- min(vals, na.rm = TRUE)
-    maxv <- max(vals, na.rm = TRUE)
-    midv <- if (minv * maxv < 0) 0.0 else (minv + maxv) / 2.0
-    cmap <- chmNewColorMap(c(minv, midv, maxv), colors = c("#00007f", "#d0d0d0", "#7f0000"))
-    cv <- chmNewCovariate(coordname, vals, cmap)
-    hm <- chmAddCovariateBar(hm, axis, cv, display = "hidden")
+  for (idx in 1:min(ndim, dim(prc$x)[2])) {
+    covariate_values = prc$x[, idx]
+    # make color map with 3 breakpoints
+    minv <- min(covariate_values) # low breakpoint
+    maxv <- max(covariate_values) # upper breakpoint
+    midbp <- if (minv * maxv < 0) 0.0 else (minv + maxv) / 2.0 # if pos and neg values, use 0 as middle breakpoint
+    color_map <- chmNewColorMap(c(minv, midbp, maxv), c("#00007f", "#d0d0d0", "#7f0000"))
+    # add covariate bar to heatmap
+    covariate_name <- sprintf("%s.coordinate.%d", basename, idx)
+    covariate <- chmNewCovariate(covariate_name, covariate_values, color_map)
+    hm <- chmAddCovariateBar(hm, axis, covariate, display = "hidden")
   }
   return(hm)
 }
