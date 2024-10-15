@@ -4022,12 +4022,8 @@ chmAddPCA <- function(hm, axis, prc, basename = "PC", ndim = 2) {
   if (is.null(prc$x)) {
     stop("No principal component coordinates (prc$x) found in the prcomp object.")
   }
-  if (ndim > dim(prc$x)[2]) {
-   stop(paste0("Requested more dimensions than are available in the prcomp object. ",
-              "Requested ", ndim, " dimensions, but only ", dim(prc$x)[2], " are available."))
-  }
 
-  for (idx in 1:ndim) {
+  for (idx in 1:min(ndim, dim(prc$x)[2])) {
     covariate_values = prc$x[, idx]
     # make color map with 3 breakpoints
     minv <- min(covariate_values) # low breakpoint
