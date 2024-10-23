@@ -581,7 +581,7 @@ chmNewDataLayer <- function(label, data, colors, summarizationMethod, cuts_color
   if (length(cuts_color) != 1) {
     stop(sprintf("Parameter 'cuts_color' must have a single value, not %d", length(cuts_color)))
   }
-  grDevices::col2rgb(cuts_color) # Check that cuts_color is a valid color
+  cuts_color <- validateColor(cuts_color)
   summarizationMethod <- match.arg(summarizationMethod, c("average", "sample", "mode"))
   data <- ngchmSaveAsDatasetBlob(ngchm.env$tmpShaidy, "tsv", data)
   if (length(colors) == 0) {
@@ -1357,7 +1357,7 @@ chmNewColorMap <- function(values, colors = NULL, names = NULL, shapes = NULL, z
   if (!is.null(zs) && length(zs) != NC) {
     stop(sprintf("chmNewColorMap: number of zindices (%d) does not equal number of colors (%d). It should.", length(zs), NC))
   }
-  grDevices::col2rgb(missing.color) # error check
+  missing.color <- validateColor(missing.color)
 
   # Construct ValueMap
   pts <- chmAddValueProperty(NULL, value = values, color = colors, name = names, shape = shapes, z = zs)
@@ -1376,7 +1376,7 @@ chmAddValueProperty <- function(vps, value, color, name = NULL, shape = NULL, z 
   if (any(z < 0)) {
     stop("z must be non-negative")
   }
-  grDevices::col2rgb(color) # error check
+  color <- validateColor(color)
   for (ii in 1:length(value)) {
     vps <- append(vps, new(Class = "ngchmValueProp", value = value[ii], color = color[ii], name = name[ii], shape = shape[ii], z = z[ii]))
   }
