@@ -306,6 +306,9 @@ chmDefaultColOrder <- function(chm) {
     } else {
       dd <- dist(t(mat), method = chm@colDist)
     }
+    if (any(is.na(dd)) || any(is.nan(dd)) || any(is.infinite(dd))) {
+      stop("Unable to cluster columns: The distance matrix contains NA, NaN, or Inf values.")
+    }
     ddg <- stats::as.dendrogram(stats::hclust(dd, method = chm@colAgglom))
     res <- list(ngchmSaveAsDendrogramBlob(shaidyRepo, ddg))
     shaidyRepo$provenanceDB$insert(provid, res[[1]])
@@ -359,6 +362,9 @@ chmDefaultRowOrder <- function(chm) {
       dd <- cos.dist1(mat)
     } else {
       dd <- dist(mat, method = chm@rowDist)
+    }
+    if (any(is.na(dd)) || any(is.nan(dd)) || any(is.infinite(dd))) {
+      stop("Unable to cluster rows: The distance matrix contains NA, NaN, or Inf values.")
     }
     ddg <- stats::as.dendrogram(stats::hclust(dd, method = chm@rowAgglom))
     res <- list(ngchmSaveAsDendrogramBlob(shaidyRepo, ddg))
