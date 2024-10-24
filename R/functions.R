@@ -306,6 +306,15 @@ chmDefaultColOrder <- function(chm) {
     } else {
       dd <- dist(t(mat), method = chm@colDist)
     }
+    if (any(is.na(dd)) || any(is.nan(dd)) || any(is.infinite(dd))) {
+      dd_matrix <- as.matrix(dd)
+      naNames <- rownames(dd_matrix)[apply(dd_matrix, 1, function(x) {any(is.na(x)) || any(is.nan(x)) || any(is.infinite(x))})]
+      errorMsg <- paste("Unable to cluster columns. Distance matrix has", length(naNames), "rows/cols with NA/NaN/Inf values.")
+      if (length(naNames) < 20) {
+        errorMsg <- paste(errorMsg, paste("\n  Distance matrix rows/cols with NA/NaN/Inf values:", paste(head(naNames), collapse = ", ")))
+      }
+      stop(errorMsg)
+    }
     ddg <- stats::as.dendrogram(stats::hclust(dd, method = chm@colAgglom))
     res <- list(ngchmSaveAsDendrogramBlob(shaidyRepo, ddg))
     shaidyRepo$provenanceDB$insert(provid, res[[1]])
@@ -359,6 +368,15 @@ chmDefaultRowOrder <- function(chm) {
       dd <- cos.dist1(mat)
     } else {
       dd <- dist(mat, method = chm@rowDist)
+    }
+    if (any(is.na(dd)) || any(is.nan(dd)) || any(is.infinite(dd))) {
+      dd_matrix <- as.matrix(dd)
+      naNames <- rownames(dd_matrix)[apply(dd_matrix, 1, function(x) {any(is.na(x)) || any(is.nan(x)) || any(is.infinite(x))})]
+      errorMsg <- paste("Unable to cluster rows. Distance matrix has", length(naNames), "rows/cols with NA/NaN/Inf values.")
+      if (length(naNames) < 20) {
+        errorMsg <- paste(errorMsg, paste("\n  Distance matrix rows/cols with NA/NaN/Inf values:", paste(head(naNames), collapse = ", ")))
+      }
+      stop(errorMsg)
     }
     ddg <- stats::as.dendrogram(stats::hclust(dd, method = chm@rowAgglom))
     res <- list(ngchmSaveAsDendrogramBlob(shaidyRepo, ddg))
