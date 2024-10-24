@@ -126,3 +126,36 @@ checkForNGCHMDemoData <- function() {
   }
   return(FALSE)
 }
+
+##' Validate and Process Colors
+#'
+#' This function checks if the provided colors are valid color names or hexadecimal color codes.
+#' If a color is a valid 8-digit hexadecimal color code with an alpha channel, the alpha channel
+#' is removed, and a warning is issued. (Alpha channel is not supported by ShaidyMapGen.jar)
+#'
+#' @param color A character vector of color names or hexadecimal color codes.
+#' @return A character vector of valid color names or 6-digit hexadecimal color codes.
+#' @noRd
+#' @keywords internal
+#' @examples
+#' validateColor(("yellow")
+#' validateColor(("not-a-color")
+#' validateColor(c("red", "#FF5733", "#FF573300", "#fff"))
+validateColor <- function(color) {
+  for (i in 1:length(color)) {
+    # check if color is a valid color name or hexadecimal color
+    tryCatch(
+      grDevices::col2rgb(color[i]),
+      error = function(e) {
+        stop(paste0("Color '", color[i], "' must be a valid color name or hexadecimal color."))
+      }
+    )
+    # If color is a valid hex color with alpha channel, remove alpha channel
+    if (!is.null(color[i]) && grepl("^#[0-9A-Fa-f]{8}$", color[i])) {
+      warning(paste0("Alpha channel is not supported and will be removed from '", color[i], "'."))
+      color[i] <- substr(color[i], 1, 7)
+      next
+    }
+  }
+  return(color)
+}
