@@ -4034,7 +4034,7 @@ chmAddPCA <- function(hm, axis, prc, basename = "PC", ndim = 2) {
   if (mode(ndim) != "numeric" || length(ndim) != 1) {
     stop("Fifth argument (ndim) must be a single numeric value.")
   }
-  if (length(class(prc)) != 1 || class(prc) != "prcomp") {
+  if (!is(prc, "prcomp")) {
     stop("Third argument (prc) must be a prcomp object.")
   }
   if (is.null(prc$x)) {
