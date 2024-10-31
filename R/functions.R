@@ -3765,9 +3765,12 @@ chmExportToFile <- function(chm, filename, overwrite = FALSE, shaidyMapGen, shai
     stop("Missing required java version.")
   }
   if (missing(shaidyMapGenArgs)) shaidyMapGenArgs <- strsplit(Sys.getenv("SHAIDYMAPGENARGS"), ",")[[1]]
-  if (shaidyMapGen == "") {
+  if (shaidyMapGen == "") { # make last-ditch effort to set SHAIDYMAPGEN by loading NGCHMSupportFiles
     checkForNGCHMSupportFiles()
-    stop("Missing required path to ShaidyMapGen.jar file.")
+    shaidyMapGen <- Sys.getenv("SHAIDYMAPGEN")
+    if (shaidyMapGen == "") {
+      stop("Missing required path to ShaidyMapGen.jar file. Please install NGCHMSupportFiles and try again.")
+    }
   }
   chm@format <- "shaidy"
   chm <- chmAddProperty(chm, "chm.info.build.time", format(Sys.time(), "%F %H:%M:%S"))
@@ -3809,9 +3812,12 @@ chmExportToFile <- function(chm, filename, overwrite = FALSE, shaidyMapGen, shai
 chmExportToPDF <- function(chm, filename, overwrite = FALSE, shaidyMapGen, shaidyMapGenJava, shaidyMapGenArgs) {
   if (!overwrite && file.exists(filename)) stop("'filename' already exists")
   if (missing(shaidyMapGen)) shaidyMapGen <- Sys.getenv("SHAIDYMAPGEN")
-  if (shaidyMapGen == "") {
+  if (shaidyMapGen == "") { # make last-ditch effort to set SHAIDYMAPGEN by loading NGCHMSupportFiles
     checkForNGCHMSupportFiles()
-    stop("Missing required path to ShaidyMapGen.jar file.")
+    shaidyMapGen <- Sys.getenv("SHAIDYMAPGEN")
+    if (shaidyMapGen == "") {
+      stop("Missing required path to ShaidyMapGen.jar file. Please install NGCHMSupportFiles and try again.")
+    }
   }
   if (missing(shaidyMapGenJava)) shaidyMapGenJava <- Sys.getenv("SHAIDYMAPGENJAVA")
   if (shaidyMapGenJava == "") shaidyMapGenJava <- "java"
@@ -3867,9 +3873,12 @@ chmExportToPDF <- function(chm, filename, overwrite = FALSE, shaidyMapGen, shaid
 chmExportToHTML <- function(chm, filename, overwrite = FALSE, shaidyMapGen, shaidyMapGenJava, shaidyMapGenArgs, ngchmWidgetPath) {
   if (!overwrite && file.exists(filename)) stop("'filename' already exists")
   if (missing(shaidyMapGen)) shaidyMapGen <- Sys.getenv("SHAIDYMAPGEN")
-  if (shaidyMapGen == "") {
+  if (shaidyMapGen == "") { # make last-ditch effort to set SHAIDYMAPGEN by loading NGCHMSupportFiles
     checkForNGCHMSupportFiles()
-    stop("Missing required path to ShaidyMapGen.jar file.")
+    shaidyMapGen <- Sys.getenv("SHAIDYMAPGEN")
+    if (shaidyMapGen == "") {
+      stop("Missing required path to ShaidyMapGen.jar file. Please install NGCHMSupportFiles and try again.")
+    }
   }
   if (missing(shaidyMapGenJava)) shaidyMapGenJava <- Sys.getenv("SHAIDYMAPGENJAVA")
   if (shaidyMapGenJava == "") shaidyMapGenJava <- "java"
@@ -3878,9 +3887,12 @@ chmExportToHTML <- function(chm, filename, overwrite = FALSE, shaidyMapGen, shai
   }
   if (missing(shaidyMapGenArgs)) shaidyMapGenArgs <- strsplit(Sys.getenv("SHAIDYMAPGENARGS"), ",")[[1]]
   if (missing(ngchmWidgetPath)) ngchmWidgetPath <- Sys.getenv("NGCHMWIDGETPATH")
-  if (ngchmWidgetPath == "") {
+  if (ngchmWidgetPath == "") { # make last-ditch effort to set NGCHMWIDGETPATH by loading NGCHMSupportFiles
     checkForNGCHMSupportFiles()
-    stop("Missing required path to ngchmWidget-min.js file.")
+    ngchmWidgetPath <- Sys.getenv("NGCHMWIDGETPATH")
+    if (ngchmWidgetPath == "") {
+      stop("Missing required path to ngchmWidget-min.js file. Please install NGCHMSupportFiles and try again.")
+    }
   }
 
   if (length(chmProperty(chm, "chm.info.build.time")) == 0) {
