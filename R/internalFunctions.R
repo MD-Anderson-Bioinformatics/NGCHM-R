@@ -24,7 +24,7 @@ checkForExternalUtilities <- function() {
       checkResponse <- system2(name, "--version", stdout = TRUE, stderr = TRUE)
     }, silent = TRUE))
     if (is.null(checkResponse)) {
-      message(suggestedUtilities[[name]])
+      packageStartupMessage(suggestedUtilities[[name]])
     }
   }
 }
@@ -50,7 +50,7 @@ checkForJavaVersion <- function(javaExecutable = "java", requiredJavaVersion = 1
     checkResponse <- system2(javaExecutable, "--version", stdout = TRUE, stderr = TRUE)
   }, silent = TRUE))
   if (is.null(checkResponse)) { # java not installed
-    message(message)
+    packageStartupMessage(message)
     return(FALSE)
   }
   haveVersion <- FALSE
@@ -62,7 +62,7 @@ checkForJavaVersion <- function(javaExecutable = "java", requiredJavaVersion = 1
     }
   }, silent = TRUE))
   if (!haveVersion) { # java installed, but version is less than required (or version number could not be extracted)
-    message(message)
+    packageStartupMessage(message)
     return(FALSE)
   }
   return(TRUE) # java installed and version is at least required version
