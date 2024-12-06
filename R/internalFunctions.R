@@ -68,15 +68,16 @@ checkForJavaVersion <- function(javaExecutable = "java", requiredJavaVersion = 1
   return(TRUE) # java installed and version is at least required version
 }
 
-#' Check for NGCHMSupportFiles package
+#' Check if NGCHMSupportFiles environment variables are set
 #'
-#' Note: NGCHMSupportFiles R package contains ShaidyMapGen.jar and ngchmWidget-min.js. The only
-#' thing the NGCHMSupportFiles package does it define environment variables SHAIDYMAPGEN and NGCHMWIDGETPATH
-#' which are the path to those files.
+#' NGCHMSupportFiles R package contains ShaidyMapGen.jar and ngchmWidget-min.js. Only purpose of NGCHMSupportFiles
+#' is to:
 #'
-#' If the environment variables SHAIDYMAPGEN and NGCHMWIDGETPATH are set, we assume the user has what they need.
-#' If the environment variables are not set, and NGCHMSupportFiles is installed, we load it.
-#' Otherwise we print a message with instructions to install NGCHMSupportFiles and return FALSE.
+#' \itemize{
+#'   \item provide the files ShaidyMapGen.jar and ngchmWidget-min.js
+#'   \item Define environment variable SHAIDYMAPGEN with the path to ShaidyMapGen.jar
+#'   \item Define environment variable NGCHMWIDGETPATH with the path to ngchmWidget-min.js
+#' }
 #'
 #' @param None.
 #'
@@ -84,12 +85,28 @@ checkForJavaVersion <- function(javaExecutable = "java", requiredJavaVersion = 1
 #'
 #' @noRd
 #' @keywords internal
-checkForNGCHMSupportFiles <- function() {
+checkForNGCHMSupportFilesENVs <- function() {
   SHAIDYMAPGEN <- Sys.getenv("SHAIDYMAPGEN")
   NGCHMWIDGETPATH <- Sys.getenv("NGCHMWIDGETPATH")
   if (nzchar(SHAIDYMAPGEN) > 0 && nzchar(NGCHMWIDGETPATH) > 0) { # SHAIDYMAPGEN and NGCHMWIDGETPATH are set
     return(TRUE)
   }
+  return(FALSE)
+}
+
+#' Load NGCHMSupportFiles package
+#'
+#' Loads NGCHMSupportFiles package if it is installed.
+#' If NGCHMSupportFiles is not installed, prints a message with instructions to install NGCHMSupportFiles.
+#'
+#' @param None.
+#'
+#' @return Boolean. TRUE if NGCHMSupportFiles is loaded, FALSE otherwise.
+#'
+#' @noRd
+#' @keywords internal
+#' @seealso [checkForNGCHMSupportFilesENVs()]
+loadNGCHMSupportFiles <- function() {
   if (length(suppressWarnings(find.package("NGCHMSupportFiles", quiet = TRUE))) > 0) { # NGCHMSupportFiles is installed
     requireNamespace("NGCHMSupportFiles", quietly = TRUE)
     packageStartupMessage("Loaded NGCHMSupportFiles package. NGCHMSupportFiles is used to create .ngchm, .html, and .pdf files.")
@@ -101,11 +118,7 @@ checkForNGCHMSupportFiles <- function() {
   return(FALSE)
 }
 
-#' Check for NGCHMDemoData package
-#'
 #' Checks if NGCHMDemoData is loaded.
-#' If NGCHMDemoData is installed but not loaded, loads it.
-#' If NGCHMDemoData is not installed, prints a message with instructions to install NGCHMDemoData.
 #'
 #' @param None.
 #'
@@ -117,6 +130,22 @@ checkForNGCHMDemoData <- function() {
   if ("NGCHMDemoData" %in% loadedNamespaces()) { # NGCHMDemoData is loaded
     return(TRUE)
   }
+  return(FALSE)
+}
+
+#' Load NGCHMDemoData package
+#'
+#' Loads NGCHMDemoData package if it is installed.
+#' If NGCHMDemoData is not installed, prints a message with instructions to install NGCHMDemoData.
+#'
+#' @param None.
+#'
+#' @return Boolean. TRUE if NGCHMDemoData is loaded, FALSE otherwise.
+#'
+#' @noRd
+#' @keywords internal
+#' @seealso [checkForNGCHMDemoData()]
+loadNGCHMDemoData <- function() {
   if (length(suppressWarnings(find.package("NGCHMDemoData", quiet = TRUE))) > 0) { # NGCHMDemoData is installed
     requireNamespace("NGCHMDemoData", quietly = TRUE)
     packageStartupMessage("Loaded NGCHMDemoData package.")

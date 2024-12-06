@@ -3766,7 +3766,7 @@ chmExportToFile <- function(chm, filename, overwrite = FALSE, shaidyMapGen, shai
   }
   if (missing(shaidyMapGenArgs)) shaidyMapGenArgs <- strsplit(Sys.getenv("SHAIDYMAPGENARGS"), ",")[[1]]
   if (shaidyMapGen == "") { # make last-ditch effort to set SHAIDYMAPGEN by loading NGCHMSupportFiles
-    checkForNGCHMSupportFiles()
+    if (!checkForNGCHMSupportFilesENVs()) loadNGCHMSupportFiles()
     shaidyMapGen <- Sys.getenv("SHAIDYMAPGEN")
     if (shaidyMapGen == "") {
       stop("Missing required path to ShaidyMapGen.jar file. Please install NGCHMSupportFiles and try again.")
@@ -3813,7 +3813,7 @@ chmExportToPDF <- function(chm, filename, overwrite = FALSE, shaidyMapGen, shaid
   if (!overwrite && file.exists(filename)) stop("'filename' already exists")
   if (missing(shaidyMapGen)) shaidyMapGen <- Sys.getenv("SHAIDYMAPGEN")
   if (shaidyMapGen == "") { # make last-ditch effort to set SHAIDYMAPGEN by loading NGCHMSupportFiles
-    checkForNGCHMSupportFiles()
+    if (!checkForNGCHMSupportFilesENVs()) loadNGCHMSupportFiles()
     shaidyMapGen <- Sys.getenv("SHAIDYMAPGEN")
     if (shaidyMapGen == "") {
       stop("Missing required path to ShaidyMapGen.jar file. Please install NGCHMSupportFiles and try again.")
@@ -3874,7 +3874,7 @@ chmExportToHTML <- function(chm, filename, overwrite = FALSE, shaidyMapGen, shai
   if (!overwrite && file.exists(filename)) stop("'filename' already exists")
   if (missing(shaidyMapGen)) shaidyMapGen <- Sys.getenv("SHAIDYMAPGEN")
   if (shaidyMapGen == "") { # make last-ditch effort to set SHAIDYMAPGEN by loading NGCHMSupportFiles
-    checkForNGCHMSupportFiles()
+    if (!checkForNGCHMSupportFilesENVs()) loadNGCHMSupportFiles()
     shaidyMapGen <- Sys.getenv("SHAIDYMAPGEN")
     if (shaidyMapGen == "") {
       stop("Missing required path to ShaidyMapGen.jar file. Please install NGCHMSupportFiles and try again.")
@@ -3888,7 +3888,7 @@ chmExportToHTML <- function(chm, filename, overwrite = FALSE, shaidyMapGen, shai
   if (missing(shaidyMapGenArgs)) shaidyMapGenArgs <- strsplit(Sys.getenv("SHAIDYMAPGENARGS"), ",")[[1]]
   if (missing(ngchmWidgetPath)) ngchmWidgetPath <- Sys.getenv("NGCHMWIDGETPATH")
   if (ngchmWidgetPath == "") { # make last-ditch effort to set NGCHMWIDGETPATH by loading NGCHMSupportFiles
-    checkForNGCHMSupportFiles()
+    if (!checkForNGCHMSupportFilesENVs()) loadNGCHMSupportFiles()
     ngchmWidgetPath <- Sys.getenv("NGCHMWIDGETPATH")
     if (ngchmWidgetPath == "") {
       stop("Missing required path to ngchmWidget-min.js file. Please install NGCHMSupportFiles and try again.")
