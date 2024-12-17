@@ -306,6 +306,15 @@ chmDefaultColOrder <- function(chm) {
     } else {
       dd <- dist(t(mat), method = chm@colDist)
     }
+    if (any(is.na(dd)) || any(is.nan(dd)) || any(is.infinite(dd))) {
+      dd_matrix <- as.matrix(dd)
+      naNames <- rownames(dd_matrix)[apply(dd_matrix, 1, function(x) {any(is.na(x)) || any(is.nan(x)) || any(is.infinite(x))})]
+      errorMsg <- paste("Unable to cluster columns. Distance matrix has", length(naNames), "rows/cols with NA/NaN/Inf values.")
+      if (length(naNames) < 20) {
+        errorMsg <- paste(errorMsg, paste("\n  Distance matrix rows/cols with NA/NaN/Inf values:", paste(head(naNames), collapse = ", ")))
+      }
+      stop(errorMsg)
+    }
     ddg <- stats::as.dendrogram(stats::hclust(dd, method = chm@colAgglom))
     res <- list(ngchmSaveAsDendrogramBlob(shaidyRepo, ddg))
     shaidyRepo$provenanceDB$insert(provid, res[[1]])
@@ -359,6 +368,15 @@ chmDefaultRowOrder <- function(chm) {
       dd <- cos.dist1(mat)
     } else {
       dd <- dist(mat, method = chm@rowDist)
+    }
+    if (any(is.na(dd)) || any(is.nan(dd)) || any(is.infinite(dd))) {
+      dd_matrix <- as.matrix(dd)
+      naNames <- rownames(dd_matrix)[apply(dd_matrix, 1, function(x) {any(is.na(x)) || any(is.nan(x)) || any(is.infinite(x))})]
+      errorMsg <- paste("Unable to cluster rows. Distance matrix has", length(naNames), "rows/cols with NA/NaN/Inf values.")
+      if (length(naNames) < 20) {
+        errorMsg <- paste(errorMsg, paste("\n  Distance matrix rows/cols with NA/NaN/Inf values:", paste(head(naNames), collapse = ", ")))
+      }
+      stop(errorMsg)
     }
     ddg <- stats::as.dendrogram(stats::hclust(dd, method = chm@rowAgglom))
     res <- list(ngchmSaveAsDendrogramBlob(shaidyRepo, ddg))
@@ -581,7 +599,7 @@ chmNewDataLayer <- function(label, data, colors, summarizationMethod, cuts_color
   if (length(cuts_color) != 1) {
     stop(sprintf("Parameter 'cuts_color' must have a single value, not %d", length(cuts_color)))
   }
-  grDevices::col2rgb(cuts_color) # Check that cuts_color is a valid color
+  cuts_color <- validateColor(cuts_color)
   summarizationMethod <- match.arg(summarizationMethod, c("average", "sample", "mode"))
   data <- ngchmSaveAsDatasetBlob(ngchm.env$tmpShaidy, "tsv", data)
   if (length(colors) == 0) {
@@ -1357,7 +1375,7 @@ chmNewColorMap <- function(values, colors = NULL, names = NULL, shapes = NULL, z
   if (!is.null(zs) && length(zs) != NC) {
     stop(sprintf("chmNewColorMap: number of zindices (%d) does not equal number of colors (%d). It should.", length(zs), NC))
   }
-  grDevices::col2rgb(missing.color) # error check
+  missing.color <- validateColor(missing.color)
 
   # Construct ValueMap
   pts <- chmAddValueProperty(NULL, value = values, color = colors, name = names, shape = shapes, z = zs)
@@ -1376,7 +1394,7 @@ chmAddValueProperty <- function(vps, value, color, name = NULL, shape = NULL, z 
   if (any(z < 0)) {
     stop("z must be non-negative")
   }
-  grDevices::col2rgb(color) # error check
+  color <- validateColor(color)
   for (ii in 1:length(value)) {
     vps <- append(vps, new(Class = "ngchmValueProp", value = value[ii], color = color[ii], name = name[ii], shape = shape[ii], z = z[ii]))
   }
@@ -3747,9 +3765,12 @@ chmExportToFile <- function(chm, filename, overwrite = FALSE, shaidyMapGen, shai
     stop("Missing required java version.")
   }
   if (missing(shaidyMapGenArgs)) shaidyMapGenArgs <- strsplit(Sys.getenv("SHAIDYMAPGENARGS"), ",")[[1]]
-  if (shaidyMapGen == "") {
-    checkForNGCHMSupportFiles()
-    stop("Missing required path to ShaidyMapGen.jar file.")
+  if (shaidyMapGen == "") { # make last-ditch effort to set SHAIDYMAPGEN by loading NGCHMSupportFiles
+    if (!checkForNGCHMSupportFilesENVs()) loadNGCHMSupportFiles()
+    shaidyMapGen <- Sys.getenv("SHAIDYMAPGEN")
+    if (shaidyMapGen == "") {
+      stop("Missing required path to ShaidyMapGen.jar file. Please install NGCHMSupportFiles and try again.")
+    }
   }
   chm@format <- "shaidy"
   chm <- chmAddProperty(chm, "chm.info.build.time", format(Sys.time(), "%F %H:%M:%S"))
@@ -3791,9 +3812,12 @@ chmExportToFile <- function(chm, filename, overwrite = FALSE, shaidyMapGen, shai
 chmExportToPDF <- function(chm, filename, overwrite = FALSE, shaidyMapGen, shaidyMapGenJava, shaidyMapGenArgs) {
   if (!overwrite && file.exists(filename)) stop("'filename' already exists")
   if (missing(shaidyMapGen)) shaidyMapGen <- Sys.getenv("SHAIDYMAPGEN")
-  if (shaidyMapGen == "") {
-    checkForNGCHMSupportFiles()
-    stop("Missing required path to ShaidyMapGen.jar file.")
+  if (shaidyMapGen == "") { # make last-ditch effort to set SHAIDYMAPGEN by loading NGCHMSupportFiles
+    if (!checkForNGCHMSupportFilesENVs()) loadNGCHMSupportFiles()
+    shaidyMapGen <- Sys.getenv("SHAIDYMAPGEN")
+    if (shaidyMapGen == "") {
+      stop("Missing required path to ShaidyMapGen.jar file. Please install NGCHMSupportFiles and try again.")
+    }
   }
   if (missing(shaidyMapGenJava)) shaidyMapGenJava <- Sys.getenv("SHAIDYMAPGENJAVA")
   if (shaidyMapGenJava == "") shaidyMapGenJava <- "java"
@@ -3849,9 +3873,12 @@ chmExportToPDF <- function(chm, filename, overwrite = FALSE, shaidyMapGen, shaid
 chmExportToHTML <- function(chm, filename, overwrite = FALSE, shaidyMapGen, shaidyMapGenJava, shaidyMapGenArgs, ngchmWidgetPath) {
   if (!overwrite && file.exists(filename)) stop("'filename' already exists")
   if (missing(shaidyMapGen)) shaidyMapGen <- Sys.getenv("SHAIDYMAPGEN")
-  if (shaidyMapGen == "") {
-    checkForNGCHMSupportFiles()
-    stop("Missing required path to ShaidyMapGen.jar file.")
+  if (shaidyMapGen == "") { # make last-ditch effort to set SHAIDYMAPGEN by loading NGCHMSupportFiles
+    if (!checkForNGCHMSupportFilesENVs()) loadNGCHMSupportFiles()
+    shaidyMapGen <- Sys.getenv("SHAIDYMAPGEN")
+    if (shaidyMapGen == "") {
+      stop("Missing required path to ShaidyMapGen.jar file. Please install NGCHMSupportFiles and try again.")
+    }
   }
   if (missing(shaidyMapGenJava)) shaidyMapGenJava <- Sys.getenv("SHAIDYMAPGENJAVA")
   if (shaidyMapGenJava == "") shaidyMapGenJava <- "java"
@@ -3860,9 +3887,12 @@ chmExportToHTML <- function(chm, filename, overwrite = FALSE, shaidyMapGen, shai
   }
   if (missing(shaidyMapGenArgs)) shaidyMapGenArgs <- strsplit(Sys.getenv("SHAIDYMAPGENARGS"), ",")[[1]]
   if (missing(ngchmWidgetPath)) ngchmWidgetPath <- Sys.getenv("NGCHMWIDGETPATH")
-  if (ngchmWidgetPath == "") {
-    checkForNGCHMSupportFiles()
-    stop("Missing required path to ngchmWidget-min.js file.")
+  if (ngchmWidgetPath == "") { # make last-ditch effort to set NGCHMWIDGETPATH by loading NGCHMSupportFiles
+    if (!checkForNGCHMSupportFilesENVs()) loadNGCHMSupportFiles()
+    ngchmWidgetPath <- Sys.getenv("NGCHMWIDGETPATH")
+    if (ngchmWidgetPath == "") {
+      stop("Missing required path to ngchmWidget-min.js file. Please install NGCHMSupportFiles and try again.")
+    }
   }
 
   if (length(chmProperty(chm, "chm.info.build.time")) == 0) {
@@ -4016,7 +4046,7 @@ chmAddPCA <- function(hm, axis, prc, basename = "PC", ndim = 2) {
   if (mode(ndim) != "numeric" || length(ndim) != 1) {
     stop("Fifth argument (ndim) must be a single numeric value.")
   }
-  if (length(class(prc)) != 1 || class(prc) != "prcomp") {
+  if (!is(prc, "prcomp")) {
     stop("Third argument (prc) must be a prcomp object.")
   }
   if (is.null(prc$x)) {

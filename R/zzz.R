@@ -492,8 +492,8 @@ loadConfigDir <- function(dirname) {
 
   checkForExternalUtilities() # Check suggested utilities are installed (e.g. git, ssh, etc. Does not check for java)
   checkForJavaVersion() # Check required version of java is installed
-  checkForNGCHMSupportFiles()
-  checkForNGCHMDemoData()
+  if (!checkForNGCHMSupportFilesENVs()) loadNGCHMSupportFiles()
+  if (!checkForNGCHMDemoData()) loadNGCHMDemoData()
 
   chmNewFunction("", "Simple reference", "")
   chmNewFunction(

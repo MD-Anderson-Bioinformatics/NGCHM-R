@@ -2,11 +2,14 @@
 #
 (function() {
 
-    if (Sys.info()[['sysname']] != "Windows")  {
-        thisHost <- c("localhost", system("/bin/hostname -f", intern=TRUE));
+    hostname <- NULL;
+    if (Sys.info()[['sysname']] == "Windows")  {
+      hostname <- paste(Sys.getenv('COMPUTERNAME'),Sys.getenv('USERDNSDOMAIN'),sep='.');
     } else {
-        thisHost <- c("localhost", paste(Sys.getenv('COMPUTERNAME'),Sys.getenv('USERDNSDOMAIN'),sep='.'));
+      try(hostname <- system("/bin/hostname -f", intern=TRUE, ignore.stderr=TRUE), silent=TRUE);
     }
+    if (is.null(hostname)) packageStartupMessage("Unable to determine hostname in server protocol. Server capabilities may not work.");
+    thisHost <- c("localhost", hostname);
 
     chmDeployDir <- function(server) ngchmGetProtoParam (server, 'deployDir');
 

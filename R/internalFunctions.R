@@ -12,7 +12,7 @@
 #' @keywords internal
 checkForExternalUtilities <- function() {
   suggestedUtilities <- list(
-    "git" = paste0("CRITICAL WARNING: Unable to verify 'git' installation. Git is required to create NG-CHMs. ",
+    "git" = paste0("IMPORTANT: Unable to verify 'git' installation. Git is required to create NG-CHMs. ",
                    "Install git in order to create NG-CHMs."),
     "scp" = "Missing suggested external program 'scp'. Some server functionality unavailable.",
     "ssh" = "Missing suggested external program 'ssh'. Some server functionality unavailable.",
@@ -24,7 +24,7 @@ checkForExternalUtilities <- function() {
       checkResponse <- system2(name, "--version", stdout = TRUE, stderr = TRUE)
     }, silent = TRUE))
     if (is.null(checkResponse)) {
-      warning(suggestedUtilities[[name]])
+      packageStartupMessage(suggestedUtilities[[name]])
     }
   }
 }
@@ -42,7 +42,7 @@ checkForExternalUtilities <- function() {
 #' @keywords internal
 checkForJavaVersion <- function(javaExecutable = "java", requiredJavaVersion = 11) {
   requiredJavaVersion <- as.integer(requiredJavaVersion)
-  message <- paste0("CRITICAL WARNING: Unable to verify Java installation. ",
+  message <- paste0("IMPORTANT: Unable to verify Java installation. ",
                     "Java ", requiredJavaVersion, " is required to create .ngchm and .html files.\n\n",
                     "\tInstall Java ", requiredJavaVersion, " or higher for to create .ngchm and .html files.\n")
   checkResponse <- NULL
@@ -50,7 +50,7 @@ checkForJavaVersion <- function(javaExecutable = "java", requiredJavaVersion = 1
     checkResponse <- system2(javaExecutable, "--version", stdout = TRUE, stderr = TRUE)
   }, silent = TRUE))
   if (is.null(checkResponse)) { # java not installed
-    warning(message)
+    packageStartupMessage(message)
     return(FALSE)
   }
   haveVersion <- FALSE
@@ -62,17 +62,22 @@ checkForJavaVersion <- function(javaExecutable = "java", requiredJavaVersion = 1
     }
   }, silent = TRUE))
   if (!haveVersion) { # java installed, but version is less than required (or version number could not be extracted)
-    warning(message)
+    packageStartupMessage(message)
     return(FALSE)
   }
   return(TRUE) # java installed and version is at least required version
 }
 
-#' Check for NGCHMSupportFiles package
+#' Check if NGCHMSupportFiles environment variables are set
 #'
-#' If the environment variables SHAIDYMAPGEN and NGCHMWIDGETPATH are set, we assume the user has what they need.
-#' If the environment variables are not set, we check if the NGCHMSupportFiles package is installed and provide
-#' user feedback.
+#' NGCHMSupportFiles R package contains ShaidyMapGen.jar and ngchmWidget-min.js. Only purpose of NGCHMSupportFiles
+#' is to:
+#'
+#' \itemize{
+#'   \item provide the files ShaidyMapGen.jar and ngchmWidget-min.js
+#'   \item Define environment variable SHAIDYMAPGEN with the path to ShaidyMapGen.jar
+#'   \item Define environment variable NGCHMWIDGETPATH with the path to ngchmWidget-min.js
+#' }
 #'
 #' @param None.
 #'
@@ -80,29 +85,40 @@ checkForJavaVersion <- function(javaExecutable = "java", requiredJavaVersion = 1
 #'
 #' @noRd
 #' @keywords internal
-checkForNGCHMSupportFiles <- function() {
+checkForNGCHMSupportFilesENVs <- function() {
   SHAIDYMAPGEN <- Sys.getenv("SHAIDYMAPGEN")
   NGCHMWIDGETPATH <- Sys.getenv("NGCHMWIDGETPATH")
   if (nzchar(SHAIDYMAPGEN) > 0 && nzchar(NGCHMWIDGETPATH) > 0) { # SHAIDYMAPGEN and NGCHMWIDGETPATH are set
     return(TRUE)
   }
-  mary <- suppressWarnings(find.package("NGCHMSupportFiles", quiet = TRUE))
-  if (length(suppressWarnings(find.package("NGCHMSupportFiles", quiet = TRUE))) > 0) { # NGCHMSupportFiles is installed
-    warning(paste0("WARNING: NGCHMSupportFiles package is installed but not loaded. ",
-                   "This package is required to create .ngchm and .html files. ",
-                   "Please load the package with command:\n\n",
-                   "\tlibrary(NGCHMSupportFiles)\n"))
-  } else {
-    warning(paste0("CRITICAL WARNING: Package NGCHMSupportFiles is not installed. ",
-                   "This package is required to create .ngchm and .html files. ",
-                   "Please install and load NGCHMSupportFiles with commands: \n\n",
-                   "\tinstall.packages('NGCHMSupportFiles', repos = c('https://md-anderson-bioinformatics.r-universe.dev', 'https://cloud.r-project.org'))\n\n",
-                   "\tlibrary(NGCHMSupportFiles)\n"))
-  }
   return(FALSE)
 }
 
-#' Check for NGCHMDemoData package
+#' Load NGCHMSupportFiles package
+#'
+#' Loads NGCHMSupportFiles package if it is installed.
+#' If NGCHMSupportFiles is not installed, prints a message with instructions to install NGCHMSupportFiles.
+#'
+#' @param None.
+#'
+#' @return Boolean. TRUE if NGCHMSupportFiles is loaded, FALSE otherwise.
+#'
+#' @noRd
+#' @keywords internal
+#' @seealso [checkForNGCHMSupportFilesENVs()]
+loadNGCHMSupportFiles <- function() {
+  if (length(suppressWarnings(find.package("NGCHMSupportFiles", quiet = TRUE))) > 0) { # NGCHMSupportFiles is installed
+    requireNamespace("NGCHMSupportFiles", quietly = TRUE)
+    packageStartupMessage("Loaded NGCHMSupportFiles package. NGCHMSupportFiles is used to create .ngchm, .html, and .pdf files.")
+    return(TRUE)
+  }
+  packageStartupMessage(paste0("IMPORTANT: Package NGCHMSupportFiles is not installed. ",
+                 "This package is required to create .ngchm, .html, and .pdf files. Installation: \n\n",
+                 "  install.packages('NGCHMSupportFiles', repos = 'https://md-anderson-bioinformatics.r-universe.dev')\n"))
+  return(FALSE)
+}
+
+#' Checks if NGCHMDemoData is loaded.
 #'
 #' @param None.
 #'
@@ -111,18 +127,66 @@ checkForNGCHMSupportFiles <- function() {
 #' @noRd
 #' @keywords internal
 checkForNGCHMDemoData <- function() {
-  if ("package:NGCHMDemoData" %in% search()) { # NGCHMDemoData is loaded
+  if ("NGCHMDemoData" %in% loadedNamespaces()) { # NGCHMDemoData is loaded
     return(TRUE)
-  }
-  if (length(suppressWarnings(find.package("NGCHMDemoData", quiet = TRUE))) > 0) { # NGCHMDemoData is installed
-    warning(paste0("WARNING: NGCHMDemoData package is installed but not loaded. ",
-                   "To run examples and website vignettes, please load the package with command:\n\n",
-                   "\tlibrary(NGCHMDemoData)\n"))
-  } else {
-    warning(paste0("NOTE: Package NGCHMDemoData is not installed. ",
-                   "This package is used by the examples and website vignettes. Please install and load NGCHMDemoData with command: \n\n",
-                   "\tinstall.packages('NGCHMDemoData', repos = c('https://md-anderson-bioinformatics.r-universe.dev', 'https://cloud.r-project.org'))\n\n",
-                   "\tlibrary(NGCHMDemoData)\n"))
   }
   return(FALSE)
 }
+
+#' Load NGCHMDemoData package
+#'
+#' Loads NGCHMDemoData package if it is installed.
+#' If NGCHMDemoData is not installed, prints a message with instructions to install NGCHMDemoData.
+#'
+#' @param None.
+#'
+#' @return Boolean. TRUE if NGCHMDemoData is loaded, FALSE otherwise.
+#'
+#' @noRd
+#' @keywords internal
+#' @seealso [checkForNGCHMDemoData()]
+loadNGCHMDemoData <- function() {
+  if (length(suppressWarnings(find.package("NGCHMDemoData", quiet = TRUE))) > 0) { # NGCHMDemoData is installed
+    requireNamespace("NGCHMDemoData", quietly = TRUE)
+    packageStartupMessage("Loaded NGCHMDemoData package.")
+    return(TRUE)
+  }
+  packageStartupMessage(paste0("NOTE: Package NGCHMDemoData is not installed. ",
+                 "This package is used by the examples and website vignettes. Installation: \n\n",
+                 "  install.packages('NGCHMDemoData', repos = 'https://md-anderson-bioinformatics.r-universe.dev')\n"))
+  return(FALSE)
+}
+
+##' Validate and Process Colors
+#'
+#' This function checks if the provided colors are valid color names or hexadecimal color codes.
+#' If a color is a valid 8-digit hexadecimal color code with an alpha channel, the alpha channel
+#' is removed, and a warning is issued. (Alpha channel is not supported by ShaidyMapGen.jar)
+#'
+#' @param color A character vector of color names or hexadecimal color codes.
+#' @return A character vector of valid color names or 6-digit hexadecimal color codes.
+#' @noRd
+#' @keywords internal
+#' @examples
+#' validateColor(("yellow")
+#' validateColor(("not-a-color")
+#' validateColor(c("red", "#FF5733", "#FF573300", "#fff"))
+validateColor <- function(color) {
+  for (i in 1:length(color)) {
+    # check if color is a valid color name or hexadecimal color
+    tryCatch(
+      grDevices::col2rgb(color[i]),
+      error = function(e) {
+        stop(paste0("Color '", color[i], "' must be a valid color name or hexadecimal color."))
+      }
+    )
+    # If color is a valid hex color with alpha channel, remove alpha channel
+    if (!is.null(color[i]) && grepl("^#[0-9A-Fa-f]{8}$", color[i])) {
+      warning(paste0("Alpha channel is not supported and will be removed from '", color[i], "'."))
+      color[i] <- substr(color[i], 1, 7)
+      next
+    }
+  }
+  return(color)
+}
+
