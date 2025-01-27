@@ -30,7 +30,7 @@ A similar analysis can be performed for use with the
 [3D Scatter Plot Plugin](https://github.com/MD-Anderson-Bioinformatics/ScatterPlotPlugin3D).
 
 
-## Uniform Mainfold Approximation and Projection (UMAP)
+## Uniform Manifold Approximation and Projection (UMAP)
 
 The code block below reads in the
 [NGCHMDemoData](https://md-anderson-bioinformatics.r-universe.dev/NGCHMDemoData),
