@@ -287,7 +287,20 @@ hasSpecialProperties <- function(chm) {
   any(vapply(chm@properties, function(p) substr(p@label, 1, 1) == "!", TRUE))
 }
 
-writeProperties <- function(inpDir, format, props, chan, writeSpecial = FALSE) {
+#' Write Properties to a Channel
+#'
+#' This function writes properties to a specified channel. It can write either special properties
+#' (those with labels starting with "!") or regular properties.
+#'
+#' @param props A list of properties, where each property is an object with `@label` and `@value` slots.
+#' @param chan A connection object or file path where the properties will be written.
+#' @param writeSpecial A logical value indicating whether to write special properties (default is `FALSE`).
+#'        If `FALSE`, only props with @label not starting with "!" are written, excluding "hidden" and "hidden.tags".
+#'        If `TRUE`, only props with @label starting with "!" are written.
+#'
+#' @return None. This function is called for its side effects.
+#' @noRd
+writeProperties <- function(props, chan, writeSpecial = FALSE) {
   if (writeSpecial) {
     for (ii in 1:length(props)) {
       l <- props[[ii]]@label
@@ -847,13 +860,13 @@ writeChm <- function(chm, saveDir = NULL) {
 
   if (is.list(chm@properties)) {
     if (chm@format == "original") {
-      writeProperties(saveDir, chm@format, chm@properties, props)
+      writeProperties(chm@properties, props)
     }
     if (chm@format == "original" && hasSpecialProperties(chm)) {
       fname <- if (chm@format == "original") "extra.properties" else "extra-properties.json"
       chm@extrafiles <- c(chm@extrafiles, fname)
       extraprops <- file(file.path(saveDir, fname), "wb")
-      writeProperties(saveDir, chm@format, chm@properties, extraprops, TRUE)
+      writeProperties(chm@properties, extraprops, TRUE)
       close(extraprops)
     }
   }
