@@ -612,6 +612,450 @@ setMethod("show",
     cat(sprintf("ngchmAxis %s (%d objects)\n", object@axis, length(object@objects)))
   }
 )
+
+
+#' Internal class representing a container in the panel_layout
+#'
+#' This is a helper class for creating the 'panel_layout' part of the 'panel_configuration'
+#' part of the mapConfig.json file. This class represents a 'container' entry in the 'panel_layout' JSON.
+#' @noRd
+setClass("container",
+  slots = list(
+    children = "optList",
+    height = "numeric", # expressed as a percentage
+    id = "character",
+    vertical = "logical",
+    width = "numeric"  # expressed as a percentage
+  )
+)
+#' Create a new 'container' object
+#'
+#' This function creates a new 'container' object with the specified properties.
+#' The 'width' and 'height' are expressed as percentages and must be between 0 and 100.
+#' The 'id' must be specified when creating a 'container' object.
+#'
+#' Only the variable items of the container are slots of this class. The constant ones
+#' (e.g. 'type: container') are output in the corresponding show method.
+#'
+#' @param children A list of child objects. Default is an empty list.
+#' @param height The height of the container, expressed as a percentage. Default is 100.
+#' @param id The ID of the container. This must be specified.
+#' @param vertical A logical value indicating whether the container is vertical. Default is FALSE.
+#' @param width The width of the container, expressed as a percentage. Default is 100.
+#'
+#' @return A new 'container' object.
+#' @noRd
+container <- function(children = list(), height = 100, id = NA, vertical = FALSE, width = 100) {
+  if (is.na(id)) {
+    log_error("'id' must be specified when creating a 'container' object.")
+    stop("'id' must be specified when creating a 'container' object.")
+  }
+  width <- as.numeric(width)
+  if (width < 0 || width > 100) {
+    log_error("'width' is expressed as a percentage, and must be between 0 and 100.")
+    stop("'width' is expressed as a percentage, and must be between 0 and 100.")
+  }
+  height <- as.numeric(height)
+  if (height < 0 || height > 100) {
+    log_error("'height' is expressed as a percentage, and must be between 0 and 100.")
+    stop("'height' is expressed as a percentage, and must be between 0 and 100.")
+  }
+  new("container", id = id, width = width, height = height, vertical = vertical, children = children)
+}
+#' Show method for container class.
+#'
+#' This is intended for use by the 'show' method for the 'panel_layout' class.
+#'
+#' IMPORTANT NOTE: this construction does NOT handle anything other than the default
+#' panel layout. In particular, it does not handle the case where the container
+#' has children that are themselves containers. TODO: FIX THIS.
+#'
+#' @param object The container object
+#' @return A list representation of the object, suitable for conversion to JSON
+#' @noRd
+setMethod("show", "container", function(object) {
+  objList <- list(
+    id = slot(object, "id"),
+    width = paste0(slot(object, "width"), "%"),
+    height = paste0(slot(object, "height"), "%"),
+    type = "container",
+    vertical = slot(object, "vertical"),
+    children = lapply(slot(object, "children"), function(x) show(x))
+  )
+})
+#' Internal class representing a panel_layout in the panel_configuration
+#'
+#' This class represents the 'panel_layout' child of 'panel_configuration' in the mapConfig.json file.
+#'
+#' @noRd
+setClass("panel_layout",
+  slots = list(
+    children = "container"
+  )
+)
+#' Create a new 'panel_layout' object
+#'
+#' This function creates a new 'panel_layout' object with the specified children.
+#'
+#' IMPORTANT NOTE: this construction does NOT handle anything other than the default panel layout.
+#' TODO: FIX THIS.
+#'
+#' @param children A container object (e.g. the container with id = "ngChmContainer1")
+#' @noRd
+panel_layout <- function(children) {
+  if (!is(children, "container")) {
+    log_error("The 'children' parameter must be a 'container' object.")
+    stop("The 'children' parameter must be a 'container' object.")
+  }
+  new("panel_layout", children = children)
+}
+#' Show method for panel_layout
+#'
+#' The primary use of this function is to display the panel_layout format in the mapConfig.json file.
+#'
+#' @param object An object of class "panel_layout".
+#' @return None
+#' @noRd
+setMethod("show", "panel_layout", function(object) {
+  objList <- list(
+    id = "ngChmContainer",
+    width = "",
+    height = "",
+    type = "container",
+    vertical = FALSE,
+    children = list(show(slot(object, "children")))
+  )
+  json <- jsonlite::toJSON(objList, auto_unbox = TRUE, pretty = TRUE)
+  print(json)
+})
+setMethod(jsonlite:::asJSON, signature = c("panel_layout"), definition = function(x, ...) {
+  objList <- list(
+    id = "ngChmContainer",
+    width = "",
+    height = "",
+    type = "container",
+    vertical = FALSE,
+    children = list(show(slot(x, "children")))
+  )
+  json <- jsonlite::toJSON(objList, auto_unbox = TRUE, pretty = 6)
+})
+#' Internal class representing a pane in the panel_layout
+#'
+#' This is a helper class for creating the 'panel_layout' part of the 'panel_configuration'
+#' part of the mapConfig.json file. This class represents a 'pane' entry in the 'panel_layout' JSON.
+#'
+#' Only the variable items of the pane are slots of this class. The constant ones
+#' (e.g. 'type: pane') are output in the corresponding show method.
+#'
+#' @param collapsed A logical value indicating whether the pane is collapsed.
+#' @param expanded A logical value indicating whether the pane is expanded.
+#' @param height A numeric value representing the height of the pane, expressed as a percentage.
+#' @param id A character value representing the ID of the pane.
+#' @param width A numeric value representing the width of the pane, expressed as a percentage.
+#' @return None
+#' @noRd
+setClass("pane",
+  slots = list(
+    collapsed = "logical",
+    expanded = "logical",
+    height = "numeric",  # expressed as a percentage
+    id = "character",
+    width = "numeric" # expressed as a percentage
+  )
+)
+#' Create a pane object
+#'
+#' This function creates a pane object with the specified parameters.
+#'
+#' @param id The unique identifier for the pane.
+#' @param width The width of the pane expressed as a percentage. Must be between 0-100. Default is 100.
+#' @param height The height of the pane expressed as a percentage. Must be between 0-100. Default is 100.
+#' @param collapsed Logical indicating whether the pane is collapsed. Default is FALSE.
+#' @param expanded Logical indicating whether the pane is expanded. Default is FALSE.
+#' @return A pane object with the specified parameters.
+#' @noRd
+pane <- function(id = NA, width = 100, height = 100, collapsed = FALSE, expanded = FALSE) {
+  if (is.na(id)) {
+    log_error("'id' must be specified when creating a 'pane' object.")
+    stop("'id' must be specified when creating a 'pane' object.")
+  }
+  width <- as.numeric(width)
+  if (width < 0 || width > 100) {
+    log_error("'width' is expressed as a percentage, and must be between 0 and 100.")
+    stop("'width' is expressed as a percentage, and must be between 0 and 100.")
+  }
+  height <- as.numeric(height)
+  if (height < 0 || height > 100) {
+    log_error("'height' is expressed as a percentage, and must be between 0 and 100.")
+    stop("'height' is expressed as a percentage, and must be between 0 and 100.")
+  }
+  new("pane", id = id, width = width, height = height, collapsed = collapsed, expanded = expanded)
+}
+#' Show method for pane class
+#'
+#' This is intended for use by the 'show' method for the 'panel_layout' class.
+#' @param object The pane object
+#' @return A list representation of the object, suitable for conversion to JSON
+#' @noRd
+setMethod("show", "pane", function(object) {
+  objList <- list(
+    id = slot(object, "id"),
+    width = paste0(slot(object, "width"), "%"),
+    height = paste0(slot(object, "height"), "%"),
+    type = "pane",
+    collapsed = slot(object, "collapsed"),
+    expanded = slot(object, "expanded")
+  )
+})
+
+#' Internal class representing a plugin in the panel_configuration
+#'
+#' This is a helper class for creating the 'panel_configuration' part of the mapConfig.json file.
+#' This class represents a 'pluginPane' entry.
+#' @noRd
+setClass("pluginPane",
+  slots = list(
+    id = "character",
+    pluginName = "character"
+  )
+)
+#' Constructor for pluginPane class
+#' @noRd
+pluginPane <- function(id = NA, pluginName = NA) {
+  if (is.na(id)) {
+    log_error("'id' must be specified when creating a 'pluginPane' object.")
+    stop("'id' must be specified when creating a 'pluginPane' object.")
+  }
+  if (is.na(pluginName)) {
+    log_error("'pluginName' must be specified when creating a 'pluginPane' object.")
+    stop("'pluginName' must be specified when creating a 'pluginPane' object.")
+  }
+  new("pluginPane", id = id, pluginName = pluginName)
+}
+#' Show method for pluginPane class
+#'
+#' NOTE: This output format is NOT that of mapConfig.json. This is the output that will be
+#' used in chm.json (the java code that creates the mapConfig.json file).
+#' @noRd
+setMethod("show", "pluginPane", function(object) {
+  objList <- list(
+    id = slot(object, "id"),
+    type = "plugin"
+  )
+  json <- jsonlite::toJSON(objList, auto_unbox = TRUE, pretty = TRUE)
+  print(json)
+})
+
+#' Internal class representing a summary map in the panel_configuration
+#'
+#' This is a helper class for creating the 'panel_configuration' part of the mapConfig.json file.
+#' This class represents a 'summaryMap' entry.
+#' @noRd
+setClass("summaryMap",
+  slots = list(
+    id = "character"
+  )
+)
+#' Constructor for summaryMap class
+#' @noRd
+summaryMap <- function(id = NA) {
+  if (is.na(id)) {
+    log_error("'id' must be specified when creating a 'summaryMap' object.")
+    stop("'id' must be specified when creating a 'summaryMap' object.")
+  }
+  new("summaryMap", id = id)
+}
+#' Show method for summaryMap class
+#'
+#' NOTE: This output format is NOT that of mapConfig.json. This is the output that will be
+#' used in chm.json (the java code that creates the mapConfig.json file).
+#' @noRd
+setMethod("show", "summaryMap", function(object) {
+  objList <- list(
+    id = slot(object, "id"),
+    type = "summaryMap"
+  )
+  json <- jsonlite::toJSON(objList, auto_unbox = TRUE, pretty = TRUE)
+  print(json)
+})
+#' Internal class representing a detail map in the panel_configuration
+#'
+#' This is a helper class for creating the 'panel_configuration' part of the mapConfig.json file.
+#' This class represents a 'detailMap' entry.
+#' @noRd
+setClass("detailMap",
+  slots = list(
+    currentCol = "integer",
+    currentRow = "integer",
+    colZoomLevel = "numeric",
+    dataBoxHeight = "integer", # must be one of the DET.zoomBoxSizes in NG-CHM Viewer code
+    dataBoxWidth = "integer", # must be one of the DET.zoomBoxSizes in NG-CHM Viewer code
+    dataPerCol = "integer", # number of rows displayed in detail map
+    dataPerRow = "integer", # number of columns displayed in detail map
+    id = "character",
+    mode = "character",  # 'NORMAL', 'RIBBONH', 'RIBBONV'
+    rowZoomLevel = "numeric",
+    selectedIsDendrogram = "logical",
+    selectedStart = "integer",
+    selectedStop = "integer",
+    version = "character", # 'P' for primary, 'S' for others
+    versionNumber = "integer" # The detail map number (NGCHM Viewer supports multiple detail panes)
+  )
+)
+#' Constructor for detailMap class
+#' @noRd
+detailMap <- function(id = NA, currentCol = 1, currentRow = 1, colZoomLevel = 1, dataBoxHeight = 42, dataBoxWidth = 42,
+                      dataPerCol = 12, dataPerRow = 12,
+                      mode = "NORMAL", rowZoomLevel = 1, selectedIsDendrogram = FALSE, selectedStart = 0,
+                      selectedStop = 0, version = "P", versionNumber = 1) {
+  # Convert parameters that should be integer to integer and issue a warning if they were not integers
+  # (this useful, for example, because '1' is 'numeric' by default, and we don't want to have
+  # to remember to convert it to 'integer' when calling this function.)
+  integer_params <- c("currentCol", "currentRow", "dataBoxHeight", "dataBoxWidth",
+                      "dataPerCol", "dataPerRow", "selectedStart", "selectedStop", "versionNumber")
+  for (integer_param in integer_params) {
+    original_value <- get(integer_param)
+    integer_value <- as.integer(original_value)
+    if (original_value != integer_value) {
+      warning(paste0("'", integer_param, "' was not an integer. It has been converted to ", integer_value, "."))
+      log_warn(paste0("'", integer_param, "' was not an integer. It has been converted to ", integer_value, "."))
+    }
+    assign(integer_param, integer_value)
+  }
+  if (currentCol < 1) {
+    log_error("'currentCol' must be an integer > 1.")
+    stop("'currentCol' must be an integer > 1.")
+  }
+  if (currentRow < 1) {
+    log_error("'currentRow' must be an integer > 1.")
+    stop("'currentRow' must be an integer > 1.")
+  }
+  if (colZoomLevel < 0 || colZoomLevel > 1) {
+    log_error("'colZoomLevel' must be between 0 and 1.")
+    stop("'colZoomLevel' must be between 0 and 1.")
+  }
+  # Box sizes must be same as DET.zoomBoxSizes in NG-CHM Viewer code, sigh.
+  # https://github.com/MD-Anderson-Bioinformatics/NG-CHM/blob/main/NGCHM/WebContent/javascript/DetailHeatMapDisplay.js#L26
+  boxSizes <- c(1, 2, 3, 4, 6, 7, 8, 9, 12, 14, 18, 21, 24, 28, 36, 42, 56, 63, 72, 84, 126, 168, 252)
+  if (!(dataBoxHeight %in% boxSizes)) {
+    errorMsg <- paste0("'dataBoxHeight' must be one of ", paste(boxSizes, collapse = ", "), ".")
+    log_error(errorMsg)
+    stop(errorMsg)
+  }
+  if (!(dataBoxWidth %in% boxSizes)) {
+    errorMsg <- paste0("'dataBoxWidth' must be one of ", paste(boxSizes, collapse = ", "), ".")
+    log_error(errorMsg)
+    stop(errorMsg)
+  }
+  if (dataPerCol < 2) {
+    log_error("'dataPerCol' must be an integer > 1.")
+    stop("'dataPerCol' must be an integer > 1.")
+  }
+  if (dataPerRow < 2) {
+    log_error("'dataPerRow' must be an integer > 1.")
+    stop("'dataPerRow' must be an integer > 1.")
+  }
+  if (is.na(id)) {
+    log_error("'id' must be specified when creating a 'detailMap' object.")
+    stop("'id' must be specified when creating a 'detailMap' object.")
+  }
+  if (!mode %in% c("NORMAL", "RIBBONH", "RIBBONV")) {
+    log_error("'mode' must be one of 'NORMAL', 'RIBBONH', or 'RIBBONV'.")
+    stop("'mode' must be one of 'NORMAL', 'RIBBONH', or 'RIBBONV'.")
+  }
+  if (rowZoomLevel < 0 || rowZoomLevel > 1) {
+    log_error("'rowZoomLevel' must be between 0 and 1.")
+    stop("'rowZoomLevel' must be between 0 and 1.")
+  }
+  if (selectedStart < 0) {
+    log_error("'selectedStart' must be a non-negative integer.")
+    stop("'selectedStart' must be a non-negative integer.")
+  }
+  if (selectedStop < 0) {
+    log_error("'selectedStop' must be a non-negative integer.")
+    stop("'selectedStop' must be a non-negative integer.")
+  }
+  if (!version %in% c("P", "S")) {
+    log_error("'mode' must be one of 'P' or 'S'.")
+    stop("'mode' must be one of 'P' or 'S'.")
+  }
+  new("detailMap", currentCol = currentCol, currentRow = currentRow, colZoomLevel = colZoomLevel,
+      dataBoxHeight = dataBoxHeight, dataBoxWidth = dataBoxWidth,
+      dataPerCol = dataPerCol, dataPerRow = dataPerRow, id = id, mode = mode, rowZoomLevel = rowZoomLevel,
+      selectedIsDendrogram = selectedIsDendrogram, selectedStart = selectedStart, selectedStop = selectedStop,
+      version = version, versionNumber = versionNumber)
+}
+#' Show method for detailMap class
+#'
+#' NOTE: this output format is NOT that of mapConfig.json. This is the output that will be
+#' used in chm.json. (the java code creates the mapConfig.json file.)
+#' @noRd
+setMethod("show", "detailMap", function(object) {
+  objList <- list(
+    id = slot(object, "id"),
+    currentCol = slot(object, "currentCol"),
+    currentRow = slot(object, "currentRow"),
+    colZoomLevel = slot(object, "colZoomLevel"),
+    dataBoxHeight = slot(object, "dataBoxHeight"),
+    dataBoxWidth = slot(object, "dataBoxWidth"),
+    dataPerCol = slot(object, "dataPerCol"),
+    dataPerRow = slot(object, "dataPerRow"),
+    mode = slot(object, "mode"),
+    rowZoomLevel = slot(object, "rowZoomLevel"),
+    selectedIsDendrogram = slot(object, "selectedIsDendrogram"),
+    selectedStart = slot(object, "selectedStart"),
+    selectedStop = slot(object, "selectedStop"),
+    version = slot(object, "version"),
+    versionNumber = slot(object, "versionNumber"),
+    type = "detailMap"
+  )
+  json <- jsonlite::toJSON(objList, auto_unbox = TRUE, pretty = 6)
+  print(json)
+})
+setClassUnion("panel", c("detailMap", "summaryMap", "pluginPane"))
+
+setMethod(jsonlite:::asJSON, signature = c("panel"), definition = function(x, ...) {
+  if (is(x, "detailMap")) {
+    objList <- list(
+      id = slot(x, "id"),
+      currentCol = slot(x, "currentCol"),
+      currentRow = slot(x, "currentRow"),
+      colZoomLevel = slot(x, "colZoomLevel"),
+      dataBoxHeight = slot(x, "dataBoxHeight"),
+      dataBoxWidth = slot(x, "dataBoxWidth"),
+      dataPerCol = slot(x, "dataPerCol"),
+      dataPerRow = slot(x, "dataPerRow"),
+      dataViewHeight = 504, # 504 is the value of DET.SIZE_NORMAL_MODE in the NG-CHM Viewer Code
+      dataViewWidth = 504,  # 504 is the value of DET.SIZE_NORMAL_MODE in the NG-CHM Viewer Code
+      mode = slot(x, "mode"),
+      rowZoomLevel = slot(x, "rowZoomLevel"),
+      selectedIsDendrogram = slot(x, "selectedIsDendrogram"),
+      selectedStart = slot(x, "selectedStart"),
+      selectedStop = slot(x, "selectedStop"),
+      version = slot(x, "version"),
+      versionNumber = slot(x, "versionNumber"),
+      type = "detailMap"
+    )
+  } else if (is(x, "summaryMap")) {
+    objList <- list(
+      id = slot(x, "id"),
+      type = "summaryMap"
+    )
+  } else if (is(x, "pluginPane")) {
+    objList <- list(
+      id = slot(x, "id"),
+      pluginName = slot(x, "pluginName"),
+      type = "plugin"  # type required by NGCHM viewer code
+    )
+  } else {
+    stop("Unknown panel type")
+  }
+  jsonlite::toJSON(objList, auto_unbox = TRUE, pretty = 6)
+  object_with_id_as_key <- list()
+  object_with_id_as_key[[slot(x, "id")]] <- objList[-which(names(objList) == "id")]
+  jsonlite::toJSON(object_with_id_as_key, auto_unbox = TRUE, pretty = 6)
+})
+
 #' Class representing a Next Generation Clustered Heat Map (NGCHM) under construction.
 #'
 #' An NG-CHM is produced by creating a heat map object with [chmNew()], possibly modifying or augmenting it
@@ -816,7 +1260,9 @@ setClass(
     relatedGroups = "optList",
     templates = "optList",
     width = "integer",
-    height = "integer"
+    height = "integer",
+    panel_layout = "panel_layout",
+    panels = "optList"
   ),
 )
 setMethod(
@@ -828,7 +1274,7 @@ setMethod(
            rowMeta, colMeta, axisTypes, datasets, dialogs, tags, css,
            rowTypeFunctions, colTypeFunctions, elementTypeFunctions, extrafiles,
            extrascripts, properties, overviews, relatedLinks, relatedGroups,
-           templates, width, height) {
+           templates, width, height, panel_layout, panels) {
     if (!missing(name)) {
       if (typeof(name) != "character") {
         stop(sprintf("Parameter 'name' must have type 'character', not '%s'", typeof(name)))
@@ -1093,6 +1539,24 @@ setMethod(
       .Object@height <- castAsInteger(height)
     } else {
       .Object@height <- as.integer(500)
+    }
+    if (!missing(panel_layout)) {
+      if (!is(panel_layout, "panel_layout")) {
+        log_error("panel_layout must be of class 'panel_layout'")
+        stop("panel_layout must be of class 'panel_layout'")
+      }
+      .Object@panel_layout <- panel_layout
+    } else {
+      .Object@panel_layout <- default_panel_layout()
+    }
+    if (!missing(panels)) {
+      if (!is(panels, "list")) {
+        log_error("panels must be a list of, e.g. 'detailMap', 'summaryMap' objects ")
+        stop("panels must be a list of, e.g. 'detailMap', 'summaryMap' objects ")
+      }
+      .Object@panels <- panels
+    } else {
+      .Object@panels <- default_panels()
     }
     return(.Object)
   }
