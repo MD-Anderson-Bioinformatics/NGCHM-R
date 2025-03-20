@@ -287,19 +287,6 @@ hasSpecialProperties <- function(chm) {
   any(vapply(chm@properties, function(p) substr(p@label, 1, 1) == "!", TRUE))
 }
 
-#' Write Properties to a Channel
-#'
-#' This function writes properties to a specified channel. It can write either special properties
-#' (those with labels starting with "!") or regular properties.
-#'
-#' @param props A list of properties, where each property is an object with `@label` and `@value` slots.
-#' @param chan A connection object or file path where the properties will be written.
-#' @param writeSpecial A logical value indicating whether to write special properties (default is `FALSE`).
-#'        If `FALSE`, only props with @label not starting with "!" are written, excluding "hidden" and "hidden.tags".
-#'        If `TRUE`, only props with @label starting with "!" are written.
-#'
-#' @return None. This function is called for its side effects.
-#' @noRd
 writeProperties <- function(props, chan, writeSpecial = FALSE) {
   if (writeSpecial) {
     for (ii in 1:length(props)) {

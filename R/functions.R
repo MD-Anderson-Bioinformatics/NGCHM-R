@@ -178,6 +178,7 @@ ngchmGetEnv <- function() {
 #' @param colGapLocations Locations for col gaps. Specify as a list of integers or [chmTreeGaps()] function.
 #' @param rowGapWidth Width of row gaps (default: 5 rows)
 #' @param colGapWidth Width of col gaps (default: 5 cols)
+#' @param panel_configuration The configuration of the panels in the NGCHM (default: default_panel_configuration()).
 #' @param overview The format(s) of overview image(s) to create (default: None).
 #'
 #' @return An object of class ngchm
@@ -213,8 +214,7 @@ chmNew <- function(
     rowGapWidth = 5,
     colGapLocations = NULL,
     colGapWidth = 5,
-    panels = default_panels(),
-    panel_layout = default_panel_layout(),
+    panel_configuration = default_panel_configuration(),
     overview = c()) {
   chm <- new(
     Class = "ngchmVersion2",
@@ -232,8 +232,7 @@ chmNew <- function(
     rowCutWidth = rowGapWidth,
     colCutLocations = colGapLocations,
     colCutWidth = colGapWidth,
-    panels = panels,
-    panel_layout = panel_layout
+    panel_configuration = panel_configuration
   )
   chmRowOrder(chm) <- rowOrder
   chmColOrder(chm) <- colOrder
@@ -4370,6 +4369,7 @@ castAsInteger <- function(variableToCast) {
 #' If variable value is far from integer, print error message and stop.
 #'
 #' @param listToCast List to cast as integer
+#' @param errorMsg Error message if cast fails
 #' @return list with members cast to integers
 castListAsInteger <- function(listToCast, errorMsg = NULL) {
   roundTolerance <- 0.01
@@ -4415,141 +4415,5 @@ verifyNumeric <- function(variableToCheck) {
 #' mychm <- chmNew("test_chm", rowGapLocations = chmTreeGaps(5))
 chmTreeGaps <- function(numberOfCuts) {
   return(new(Class = "treeCuts", numberOfCuts = as.integer(numberOfCuts)))
-}
-
-#' Generate Default Panel Layout
-#'
-#' This function generates a default panel layout for a map.
-#' It creates two panes with equal width and height, and places them in a container.
-#' The container is then placed in a panel layout.
-#'
-#' @return A panel layout containing a container, which in turn contains two panes.
-#' @noRd
-#' @keywords internal
-default_panel_layout <- function() {
-  pane1 <- pane(
-    id = "pane1",
-    width = 50,
-    height = 100,
-    collapsed = FALSE,
-    expanded = FALSE
-  )
-  pane2 <- pane(
-    id = "pane2",
-    width = 50,
-    height = 100,
-    collapsed = FALSE,
-    expanded = FALSE
-  )
-  container1 <- container(
-    id = "ngChmContainer1",
-    width = 100,
-    height = 100,
-    vertical = FALSE,
-    children = list(pane1, pane2)
-  )
-  panel_layout <- panel_layout(
-    children = container1
-  )
-}
-
-#' Generate default Three-Panel Layout
-#'
-#' This function generates a layout with three panels for a map. The geometry is:
-#'
-#' \preformatted{
-#'          | pane2
-#'    pane1 | ------
-#'          | pane3
-#'    }
-#'
-#' @return A panel layout containing a container with three panes: two detail panes and one summary pane.
-#'
-#' @examples
-#' # Example usage:
-#' layout <- three_panel_layout()
-#' print(layout)
-#'
-#' @export
-three_panel_layout <- function() {
-  pane1 <- pane(
-    id = "pane1",
-    width = 50,
-    height = 100,
-    collapsed = FALSE,
-    expanded = FALSE
-  )
-  pane2 <- pane(
-    id = "pane2",
-    width = 100,
-    height = 50,
-    collapsed = FALSE,
-    expanded = FALSE
-  )
-  pane3 <- pane(
-    id = "pane3",
-    width = 100,
-    height = 50,
-    collapsed = FALSE,
-    expanded = FALSE
-  )
-  container2 <- container(
-    id = "ngChmContainer2",
-    width = 100,
-    height = 100,
-    vertical = TRUE,
-    children = list(pane2, pane3)
-  )
-  container1 <- container(
-    id = "ngChmContainer1",
-    width = 100,
-    height = 100,
-    vertical = FALSE,
-    children = list(pane1, container2)
-  )
-  panel_layout <- panel_layout(
-    children = container1
-  )
-}
-#' Generate Default Panels
-#'
-#' This function generates a list of default panels for a map.
-#' It creates a detail map and a summary map, and returns them as a list.
-#'
-#' @return A list of two panels: a detail map and a summary map.
-#' @noRd
-#' @keywords internal
-default_panels <- function() {
-  pane1 <- detailMap(id = "pane1")
-  pane2 <- summaryMap(id = "pane2")
-  panels <- list(pane1, pane2)
-}
-
-#' Generate Three Panels: Detail (pane1), Summary (pane2), and Plugin (pane3)
-#'
-#' This function generates a list of three panels for a map.
-#' It creates one detail map, one summary map, and one plugin pane,
-#' and returns them as a list: pane1 (detail), pane2 (summary), and pane3 (plugin).
-#'
-#' @param pluginName The name of the plugin to be used in the plugin pane.
-#' @return A list of three panels: one detail map, one summary map, and one plugin pane.
-#'
-#' @examples
-#' # Example usage:
-#' panels <- three_panels(pluginName = "myPlugin")
-#' print(panels)
-#'
-#' @export
-three_panels <- function(pluginName) {
-  if (missing(pluginName)) {
-    stop("Error creating 3 panels: pluginName must be specified")
-  }
-  if (!is.character(pluginName) || length(pluginName) != 1) {
-    stop("Error creating 3 panels: pluginName must be a single character string")
-  }
-  pane1 <- detailMap(id = "pane1")
-  pane2 <- summaryMap(id = "pane2")
-  pane3 <- pluginPane(id = "pane3", pluginName = pluginName)
-  panels <- list(pane1, pane2, pane3)
 }
 
