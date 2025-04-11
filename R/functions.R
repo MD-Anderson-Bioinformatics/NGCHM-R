@@ -4371,12 +4371,17 @@ castAsInteger <- function(variableToCast) {
 #'
 #' @param listToCast List to cast as integer
 #' @return list with members cast to integers
-castListAsInteger <- function(listToCast) {
+castListAsInteger <- function(listToCast, errorMsg = NULL) {
   roundTolerance <- 0.01
   lapply(listToCast, function(elem) {
     if ((abs(round(elem) - elem)) > roundTolerance) {
-      log_error("Entries of '", deparse(substitute(listToCast)), "' must be integer")
-      stop("Entries of '", deparse(substitute(listToCast)), "' must be integer")
+      if (is.null(errorMsg)) {
+        log_error("Entries of '", deparse(substitute(listToCast)), "' must be integer")
+        stop("Entries of '", deparse(substitute(listToCast)), "' must be integer")
+      } else {
+        log_error(errorMsg)
+        stop(errorMsg)
+      }
     }
   })
   return(as.integer(round(listToCast)))
