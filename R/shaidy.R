@@ -293,7 +293,7 @@ shaidyLoadRepository <- function(accessMethod, shaidyDir) {
 #'
 #' @export
 print.shaidyRepo <- function(x, ...) {
-  message("Shaidy repository at", x$basepath)
+  message("Shaidy repository at ", x$basepath)
   invisible(x)
 }
 

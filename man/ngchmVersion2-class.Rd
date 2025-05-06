@@ -121,5 +121,7 @@ Class representing ngchmVersion2 object
 \item{\code{width}}{default: 500}
 
 \item{\code{height}}{default: 500}
+
+\item{\code{panel_configuration}}{panel_configuration}
 }}
 

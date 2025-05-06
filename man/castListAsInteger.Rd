@@ -4,10 +4,12 @@
 \alias{castListAsInteger}
 \title{Helper function to cast list as integer}
 \usage{
-castListAsInteger(listToCast)
+castListAsInteger(listToCast, errorMsg = NULL)
 }
 \arguments{
 \item{listToCast}{List to cast as integer}
+
+\item{errorMsg}{Error message if cast fails}
 }
 \value{
 list with members cast to integers

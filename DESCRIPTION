@@ -1,7 +1,7 @@
 Type: Package
 Package: NGCHM
 Title: Next Generation Clustered Heat Maps
-Version: 1.0.4
+Version: 1.1.0
 Authors@R: c(
     person(c("Bradley", "M"), "Broom", , "bmbroom@mdanderson.org", role = "aut",
            comment = c(ORCID = "0000-0002-0915-3164")),
@@ -45,19 +45,21 @@ Enhances:
 Additional_repositories: https://md-anderson-bioinformatics.r-universe.dev
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.2.3
+RoxygenNote: 7.3.2
 Collate:
-    'internalFunctions.R'
+    'panelClasses.R'
     'allClasses.R'
     'allGenerics.R'
     'allMethods.R'
-    'functions.R'
     'chmFromJSON.R'
     'dendrogram-fixes.R'
-    'shaidy.R'
+    'functions.R'
+    'internalFunctions.R'
     'ngchmshaidy.R'
-    'zzz.R'
     'package.R'
+    'panelFunctions.R'
+    'shaidy.R'
+    'zzz.R'
 SystemRequirements:
     Java (>= 11)
     Git

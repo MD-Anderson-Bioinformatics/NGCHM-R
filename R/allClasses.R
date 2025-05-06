@@ -612,6 +612,7 @@ setMethod("show",
     cat(sprintf("ngchmAxis %s (%d objects)\n", object@axis, length(object@objects)))
   }
 )
+
 #' Class representing a Next Generation Clustered Heat Map (NGCHM) under construction.
 #'
 #' An NG-CHM is produced by creating a heat map object with [chmNew()], possibly modifying or augmenting it
@@ -715,6 +716,7 @@ setIs("ngchmVersion1", "ngchm")
 #'
 #' @name ngchmVersion2-class
 #' @rdname ngchmVersion2-class
+#' @include panelClasses.R
 #' @slot name The name under which the NGCHM will be saved to the NGCHM server.
 #' @slot version Integer version number (default: 2)
 #' @slot format (default: "original")
@@ -771,6 +773,7 @@ setIs("ngchmVersion1", "ngchm")
 #' @slot templates optList
 #' @slot width default: 500
 #' @slot height default: 500
+#' @slot panel_configuration panel_configuration
 setClass(
   Class = "ngchmVersion2",
   slots = list(
@@ -816,7 +819,8 @@ setClass(
     relatedGroups = "optList",
     templates = "optList",
     width = "integer",
-    height = "integer"
+    height = "integer",
+    panel_configuration = "panel_configuration"
   ),
 )
 setMethod(
@@ -828,7 +832,7 @@ setMethod(
            rowMeta, colMeta, axisTypes, datasets, dialogs, tags, css,
            rowTypeFunctions, colTypeFunctions, elementTypeFunctions, extrafiles,
            extrascripts, properties, overviews, relatedLinks, relatedGroups,
-           templates, width, height) {
+           templates, width, height, panel_configuration) {
     if (!missing(name)) {
       if (typeof(name) != "character") {
         stop(sprintf("Parameter 'name' must have type 'character', not '%s'", typeof(name)))
@@ -1094,6 +1098,11 @@ setMethod(
     } else {
       .Object@height <- as.integer(500)
     }
+    if (!missing(panel_configuration)) {
+      .Object@panel_configuration <- panel_configuration
+    } else {
+      .Object@panel_configuration <- default_panel_configuration()
+    }
     return(.Object)
   }
 )
@@ -1213,6 +1222,7 @@ setMethod(jsonlite:::asJSON, signature = c("ngchmVersion2"), definition = functi
   if (any(empty | exclude)) l <- l[-which(empty | exclude)]
   toJSON(l, pretty = TRUE)
 })
+
 #' Class representing a deployment method for a Next Generation Clustered Heat Map (NGCHM) server.
 #'
 #' @exportClass ngchmServerProtocol

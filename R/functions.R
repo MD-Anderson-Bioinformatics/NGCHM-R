@@ -178,11 +178,8 @@ ngchmGetEnv <- function() {
 #' @param colGapLocations Locations for col gaps. Specify as a list of integers or [chmTreeGaps()] function.
 #' @param rowGapWidth Width of row gaps (default: 5 rows)
 #' @param colGapWidth Width of col gaps (default: 5 cols)
+#' @param panel_configuration The configuration of the panels in the NGCHM (default: default_panel_configuration()).
 #' @param overview The format(s) of overview image(s) to create (default: None).
-#' @param logLevel The level of logs to output
-#' @param logFile The file to which logs should be output
-#' @importFrom logger log_debug
-#' @importFrom logger log_error
 #'
 #' @return An object of class ngchm
 #'
@@ -217,9 +214,8 @@ chmNew <- function(
     rowGapWidth = 5,
     colGapLocations = NULL,
     colGapWidth = 5,
-    overview = c(),
-    logLevel = "INFO", logFile = NULL) {
-  initLogging(logLevel, logFile)
+    panel_configuration = default_panel_configuration(),
+    overview = c()) {
   chm <- new(
     Class = "ngchmVersion2",
     name = name,
@@ -235,7 +231,8 @@ chmNew <- function(
     rowCutLocations = rowGapLocations,
     rowCutWidth = rowGapWidth,
     colCutLocations = colGapLocations,
-    colCutWidth = colGapWidth
+    colCutWidth = colGapWidth,
+    panel_configuration = panel_configuration
   )
   chmRowOrder(chm) <- rowOrder
   chmColOrder(chm) <- colOrder
@@ -4372,13 +4369,19 @@ castAsInteger <- function(variableToCast) {
 #' If variable value is far from integer, print error message and stop.
 #'
 #' @param listToCast List to cast as integer
+#' @param errorMsg Error message if cast fails
 #' @return list with members cast to integers
-castListAsInteger <- function(listToCast) {
+castListAsInteger <- function(listToCast, errorMsg = NULL) {
   roundTolerance <- 0.01
   lapply(listToCast, function(elem) {
     if ((abs(round(elem) - elem)) > roundTolerance) {
-      log_error("Entries of '", deparse(substitute(listToCast)), "' must be integer")
-      stop("Entries of '", deparse(substitute(listToCast)), "' must be integer")
+      if (is.null(errorMsg)) {
+        log_error("Entries of '", deparse(substitute(listToCast)), "' must be integer")
+        stop("Entries of '", deparse(substitute(listToCast)), "' must be integer")
+      } else {
+        log_error(errorMsg)
+        stop(errorMsg)
+      }
     }
   })
   return(as.integer(round(listToCast)))
@@ -4413,3 +4416,4 @@ verifyNumeric <- function(variableToCheck) {
 chmTreeGaps <- function(numberOfCuts) {
   return(new(Class = "treeCuts", numberOfCuts = as.integer(numberOfCuts)))
 }
+

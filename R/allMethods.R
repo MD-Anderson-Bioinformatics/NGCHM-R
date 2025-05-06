@@ -287,7 +287,7 @@ hasSpecialProperties <- function(chm) {
   any(vapply(chm@properties, function(p) substr(p@label, 1, 1) == "!", TRUE))
 }
 
-writeProperties <- function(inpDir, format, props, chan, writeSpecial = FALSE) {
+writeProperties <- function(props, chan, writeSpecial = FALSE) {
   if (writeSpecial) {
     for (ii in 1:length(props)) {
       l <- props[[ii]]@label
@@ -847,13 +847,13 @@ writeChm <- function(chm, saveDir = NULL) {
 
   if (is.list(chm@properties)) {
     if (chm@format == "original") {
-      writeProperties(saveDir, chm@format, chm@properties, props)
+      writeProperties(chm@properties, props)
     }
     if (chm@format == "original" && hasSpecialProperties(chm)) {
       fname <- if (chm@format == "original") "extra.properties" else "extra-properties.json"
       chm@extrafiles <- c(chm@extrafiles, fname)
       extraprops <- file(file.path(saveDir, fname), "wb")
-      writeProperties(saveDir, chm@format, chm@properties, extraprops, TRUE)
+      writeProperties(chm@properties, extraprops, TRUE)
       close(extraprops)
     }
   }

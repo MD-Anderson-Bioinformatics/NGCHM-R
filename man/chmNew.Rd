@@ -22,9 +22,8 @@ chmNew(
   rowGapWidth = 5,
   colGapLocations = NULL,
   colGapWidth = 5,
-  overview = c(),
-  logLevel = "INFO",
-  logFile = NULL
+  panel_configuration = default_panel_configuration(),
+  overview = c()
 )
 }
 \arguments{
@@ -62,11 +61,9 @@ chmNew(
 
 \item{colGapWidth}{Width of col gaps (default: 5 cols)}
 
+\item{panel_configuration}{The configuration of the panels in the NGCHM (default: default_panel_configuration()).}
+
 \item{overview}{The format(s) of overview image(s) to create (default: None).}
-
-\item{logLevel}{The level of logs to output}
-
-\item{logFile}{The file to which logs should be output}
 }
 \value{
 An object of class ngchm
