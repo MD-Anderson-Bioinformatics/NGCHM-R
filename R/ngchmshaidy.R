@@ -75,7 +75,7 @@ ngchmShaidyInit <- function() {
           resp <- POST(uri, add_headers(Authorization = repo$getNewToken()))
         }
       }
-      message("Render", shaid@type, shaid@value, "status:", resp$status_code)
+      message(paste("Render", shaid@type, shaid@value, "status:", resp$status_code, collapse=" "))
     },
     blobPath = function(repo, repoBase) {
       return(function(first, ...) {
