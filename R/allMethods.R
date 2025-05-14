@@ -2054,3 +2054,17 @@ setMethod("chmGetProperty",
     chmProperty(object, label)
   }
 )
+
+#' @rdname chmSetDisplayLength-method
+#' @aliases chmSetDisplayLength
+setMethod("chmSetDisplayLength", "ngchmVersion2", function(object, value, rowOrCol) {
+  value <- verifyValue(value, validValues = .pkg_env$allowed_display_lengths)
+  if (rowOrCol == "row") {
+    object@rowDisplayLength <- castAsInteger(value)
+  } else if (rowOrCol == "col" || rowOrCol == "column") {
+    object@colDisplayLength <- castAsInteger(value)
+  } else {
+    stop(sprintf("chmSetDisplayLength: unsupported value for rowOrCol. Should be 'row' or 'col'.", rowOrCol))
+  }
+  object
+})

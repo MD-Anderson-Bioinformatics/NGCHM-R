@@ -397,7 +397,11 @@ chmStringopFunction <- function(stringop) {
   ngchm.env$parseFns[[key]]@name
 }
 
+.pkg_env <- new.env(parent = emptyenv())
 .onLoad <- function(libname, pkgname) {
+  # The NG-CHM viewer (as of v 2.26.0) only has these values as dropdown options in:
+  #   Main Gear -> Heat Map Display Properties -> Rows & Cols -> Maximum Label Length
+  .pkg_env$allowed_display_lengths <- c(10, 15, 20, 25, 30, 35, 40)
   .initNGCHM()
 }
 

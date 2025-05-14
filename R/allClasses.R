@@ -958,9 +958,16 @@ setMethod(
       .Object@rowTopItems <- NULL
     }
     if (!missing(rowDisplayLength)) {
-      .Object@rowDisplayLength <- rowDisplayLength
+      rowDisplayLength <- verifyValue(
+                            rowDisplayLength,
+                            validValues = .pkg_env$allowed_display_lengths,
+                            warning_message = paste0(
+                              "Rounded rowDisplayLength to nearest of allowed values: ",
+                              paste(.pkg_env$allowed_display_lengths, collapse = ", "))
+                          )
+      .Object@rowDisplayLength <- castAsInteger(rowDisplayLength)
     } else {
-      .Object@rowDisplayLength <- NULL
+      .Object@rowDisplayLength <- castAsInteger(20)
     }
     if (!missing(rowDisplayAbbreviation)) {
       .Object@rowDisplayAbbreviation <- rowDisplayAbbreviation
@@ -992,9 +999,16 @@ setMethod(
       .Object@colTopItems <- NULL
     }
     if (!missing(colDisplayLength)) {
-      .Object@colDisplayLength <- colDisplayLength
+      colDisplayLength <- verifyValue(
+                            colDisplayLength,
+                            validValues = .pkg_env$allowed_display_lengths,
+                            warning_message = paste0(
+                              "Rounded colDisplayLength to nearest of allowed values: ",
+                              paste(.pkg_env$allowed_display_lengths, collapse = ", "))
+                          )
+      .Object@colDisplayLength <- castAsInteger(colDisplayLength)
     } else {
-      .Object@colDisplayLength <- NULL
+      .Object@colDisplayLength <- castAsInteger(20)
     }
     if (!missing(colDisplayAbbreviation)) {
       .Object@colDisplayAbbreviation <- colDisplayAbbreviation

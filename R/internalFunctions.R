@@ -190,3 +190,34 @@ validateColor <- function(color) {
   return(color)
 }
 
+
+#' Verify value is one of given list
+#'
+#' This function checks if the provided value is one of the specified valid values.
+#' If the value is not one of these, it rounds it to the nearest valid value.
+#'
+#' @param value A numeric value to be checked.
+#' @param validValues A numeric vector of valid values. Required
+#'        (which are the dropdown values for "Maximum Label Length" in the viewer's "Heat Map Display Properties"
+#'        "Rows & Cols" tab).
+#' @param warning_message A character string to be used in the warning message if the value is not valid.
+#'        Default is "Rounded to nearest valid value".
+#' @return A numeric value that is one of the specified values validValues.
+#'
+#' @noRd
+#' @keywords internal
+#' @examples
+#' verifyValue(15.5, validValues = c(10.1, 15.1, 20.1, 25.1)) # returns 15
+#' verifyValue(22, validValues = c(10, 20, 30)) # returns 20
+verifyValue <- function(value, validValues = NULL, warning_message = "Rounded to nearest valid value") {
+  if (is.null(validValues)) {
+   stop("Missing argument 'validValues' to function verifyValue")
+  }
+  if (value %in% validValues) {
+    return(value)
+  }
+  closestValue <- validValues[which.min(abs(validValues - value))]
+  warning(warning_message)
+  return(closestValue)
+}
+
