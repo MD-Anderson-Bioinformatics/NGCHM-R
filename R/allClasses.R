@@ -958,9 +958,11 @@ setMethod(
       .Object@rowTopItems <- NULL
     }
     if (!missing(rowDisplayLength)) {
-      .Object@rowDisplayLength <- rowDisplayLength
+      # NG-CHM viewer dropdown only supports values: 10, 15, 20, 25, 30, 35, 40
+      rowDisplayLength <- verifyValue(rowDisplayLength)
+      .Object@rowDisplayLength <- castAsInteger(rowDisplayLength)
     } else {
-      .Object@rowDisplayLength <- NULL
+      .Object@rowDisplayLength <- castAsInteger(20)
     }
     if (!missing(rowDisplayAbbreviation)) {
       .Object@rowDisplayAbbreviation <- rowDisplayAbbreviation
@@ -992,9 +994,11 @@ setMethod(
       .Object@colTopItems <- NULL
     }
     if (!missing(colDisplayLength)) {
-      .Object@colDisplayLength <- colDisplayLength
+      # NG-CHM viewer dropdown only supports values: 10, 15, 20, 25, 30, 35, 40
+      colDisplayLength <- verifyValue(colDisplayLength)
+      .Object@colDisplayLength <- castAsInteger(colDisplayLength)
     } else {
-      .Object@colDisplayLength <- NULL
+      .Object@colDisplayLength <- castAsInteger(20)
     }
     if (!missing(colDisplayAbbreviation)) {
       .Object@colDisplayAbbreviation <- colDisplayAbbreviation

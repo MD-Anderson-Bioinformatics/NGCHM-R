@@ -215,7 +215,7 @@ chmNew <- function(
     colGapLocations = NULL,
     colGapWidth = 5,
     panel_configuration = default_panel_configuration(),
-    overview = c()) {
+    overview = c(), rowDisplayLength = 20, colDisplayLength = 20) {
   chm <- new(
     Class = "ngchmVersion2",
     name = name,
@@ -232,7 +232,9 @@ chmNew <- function(
     rowCutWidth = rowGapWidth,
     colCutLocations = colGapLocations,
     colCutWidth = colGapWidth,
-    panel_configuration = panel_configuration
+    panel_configuration = panel_configuration,
+    rowDisplayLength = rowDisplayLength,
+    colDisplayLength = colDisplayLength
   )
   chmRowOrder(chm) <- rowOrder
   chmColOrder(chm) <- colOrder

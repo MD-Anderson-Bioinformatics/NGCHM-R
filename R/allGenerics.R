@@ -629,6 +629,8 @@ setGeneric("chmHasProperty", function(object, label) standardGeneric("chmHasProp
 #' @rdname chmGetProperty-method
 setGeneric("chmGetProperty", function(object, label) standardGeneric("chmGetProperty"))
 
+setGeneric("chmSetDisplayLength", function(object, value, rowOrCol) standardGeneric("chmSetDisplayLength"))
+
 #' Get shaid for an object
 #'
 #' @exportMethod shaidyGetShaid

@@ -2054,3 +2054,15 @@ setMethod("chmGetProperty",
     chmProperty(object, label)
   }
 )
+
+setMethod("chmSetDisplayLength", "ngchmVersion2", function(object, value, rowOrCol) {
+  value <- verifyValue(value)
+  if (rowOrCol == "row") {
+    object@rowDisplayLength <- castAsInteger(value)
+  } else if (rowOrCol == "col") {
+    object@colDisplayLength <- castAsInteger(value)
+  } else {
+    stop(sprintf("setDisplayLength: unknown rowOrCol '%s'. Should be 'row' or 'col'.", rowOrCol))
+  }
+  object
+})
