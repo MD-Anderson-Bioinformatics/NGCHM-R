@@ -207,7 +207,7 @@ validateColor <- function(color) {
 #' @noRd
 #' @keywords internal
 #' @examples
-#' verifyValue(15.5, validValues = c(10.1, 15.1, 20.1, 25.1)) # returns 15
+#' verifyValue(15.5, validValues = c(10.1, 15.1, 20.1, 25.1)) # returns 15.1
 #' verifyValue(22, validValues = c(10, 20, 30)) # returns 20
 verifyValue <- function(value, validValues = NULL, warning_message = "Rounded to nearest valid value") {
   if (is.null(validValues)) {
