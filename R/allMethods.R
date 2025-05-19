@@ -2064,7 +2064,7 @@ setMethod("chmSetDisplayLength", "ngchmVersion2", function(object, value, rowOrC
   } else if (rowOrCol == "col" || rowOrCol == "column") {
     object@colDisplayLength <- castAsInteger(value)
   } else {
-    stop(sprintf("chmSetDisplayLength: unsupported value for rowOrCol. Should be 'row' or 'col'.", rowOrCol))
+    stop("chmSetDisplayLength: unsupported value for rowOrCol. Should be 'row' or 'col'.")
   }
   object
 })
