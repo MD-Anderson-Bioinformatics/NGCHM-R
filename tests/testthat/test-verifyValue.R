@@ -7,7 +7,7 @@ test_that("Testing verifyValue function", {
                                      validValues = valid_values,
                                      warning_message = warning_message),
                      regexp = warning_message)
-  expect_equal(verified_value, 20.9) #<-- 22 is rounded to 20
+  expect_equal(verified_value, 20.9) #<-- 22 is rounded to 20.9
 
   verified_value <- expect_error(verifyValue(test_value), regexp = "Missing argument 'validValues'")
 })
