@@ -2059,6 +2059,7 @@ setMethod("chmGetProperty",
 #' @aliases chmSetDisplayLength
 setMethod("chmSetDisplayLength", "ngchmVersion2", function(chm, displayLength, rowOrCol) {
   displayLength <- enforceRange(displayLength, 1, 99, warning_message = "displayLength must be between 1 and 99. Clipping to that range.")
+  rowOrCol <- tolower(rowOrCol)
   if (rowOrCol == "row") {
     chm@rowDisplayLength <- castAsInteger(displayLength)
   } else if (rowOrCol == "col" || rowOrCol == "column") {
