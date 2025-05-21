@@ -958,13 +958,6 @@ setMethod(
       .Object@rowTopItems <- NULL
     }
     if (!missing(rowDisplayLength)) {
-      rowDisplayLength <- verifyValue(
-                            rowDisplayLength,
-                            validValues = .pkg_env$allowed_display_lengths,
-                            warning_message = paste0(
-                              "Rounded rowDisplayLength to nearest of allowed values: ",
-                              paste(.pkg_env$allowed_display_lengths, collapse = ", "))
-                          )
       .Object@rowDisplayLength <- castAsInteger(rowDisplayLength)
     } else {
       .Object@rowDisplayLength <- castAsInteger(20)
@@ -999,13 +992,6 @@ setMethod(
       .Object@colTopItems <- NULL
     }
     if (!missing(colDisplayLength)) {
-      colDisplayLength <- verifyValue(
-                            colDisplayLength,
-                            validValues = .pkg_env$allowed_display_lengths,
-                            warning_message = paste0(
-                              "Rounded colDisplayLength to nearest of allowed values: ",
-                              paste(.pkg_env$allowed_display_lengths, collapse = ", "))
-                          )
       .Object@colDisplayLength <- castAsInteger(colDisplayLength)
     } else {
       .Object@colDisplayLength <- castAsInteger(20)

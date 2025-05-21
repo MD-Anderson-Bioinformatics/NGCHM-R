@@ -5,14 +5,14 @@
 \alias{chmSetDisplayLength,ngchmVersion2-method}
 \title{Set number of characters to display for row or column labels}
 \usage{
-chmSetDisplayLength(object, value, rowOrCol)
+chmSetDisplayLength(chm, displayLength, rowOrCol)
 
-\S4method{chmSetDisplayLength}{ngchmVersion2}(object, value, rowOrCol)
+\S4method{chmSetDisplayLength}{ngchmVersion2}(chm, displayLength, rowOrCol)
 }
 \arguments{
-\item{object}{An ngchmVersion2 object to modify}
+\item{chm}{An ngchmVersion2 object to modify}
 
-\item{value}{Numeric value to set as display length}
+\item{displayLength}{Numeric value to set as display length}
 
 \item{rowOrCol}{Character string indicating which labels to modify: "row" or "col" ("column" also accepted)}
 }
@@ -21,13 +21,12 @@ Modified ngchmVersion2 object with updated display length
 }
 \description{
 Sets the maximum number of characters to display for row or column labels in the NG-CHM viewer.
-Allowed values are: 10, 15, 20, 25, 30, 35, 40.
 }
 \examples{
-# Set row labels to display up to 20 characters
+# Create a new NG-CHM object
 chm <- chmNew("New Heat Map")
+# Set row labels to display up to 20 characters
 chm <- chmSetDisplayLength(chm, 20, "row")
-
 # Set column labels to display up to 15 characters
 chm <- chmSetDisplayLength(chm, 15, "col")
 
