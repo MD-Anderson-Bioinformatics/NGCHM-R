@@ -22,3 +22,14 @@ test_that("Error thrown if non-integer value is passed or row/col not correct", 
   expect_error(chmSetDisplayLength(chm, 10))
   expect_error(chmSetDisplayLength(chm))
 })
+
+test_that("Warning and conversion if value not in range 1-99", {
+  chm <- chmNew("test")
+  chm <- expect_warning(chmSetDisplayLength(chm, 100, "row"))
+  chm <- expect_warning(chmSetDisplayLength(chm, 0, "col"))
+  expect_equal(chm@rowDisplayLength, 99)
+  expect_equal(chm@colDisplayLength, 1)
+  chm <- expect_warning(chmNew("test", rowDisplayLength = 100, colDisplayLength = 0))
+  expect_equal(chm@rowDisplayLength, 99)
+  expect_equal(chm@colDisplayLength, 1)
+})

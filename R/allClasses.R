@@ -958,6 +958,8 @@ setMethod(
       .Object@rowTopItems <- NULL
     }
     if (!missing(rowDisplayLength)) {
+      rowDisplayLength <- enforceRange(rowDisplayLength, 1, 99,
+                       warning_message = "rowDisplayLength must be between 1 and 99. Clipping to that range.")
       .Object@rowDisplayLength <- castAsInteger(rowDisplayLength)
     } else {
       .Object@rowDisplayLength <- castAsInteger(20)
@@ -992,6 +994,8 @@ setMethod(
       .Object@colTopItems <- NULL
     }
     if (!missing(colDisplayLength)) {
+      colDisplayLength <- enforceRange(colDisplayLength, 1, 99,
+                       warning_message = "colDisplayLength must be between 1 and 99. Clipping to that range.")
       .Object@colDisplayLength <- castAsInteger(colDisplayLength)
     } else {
       .Object@colDisplayLength <- castAsInteger(20)

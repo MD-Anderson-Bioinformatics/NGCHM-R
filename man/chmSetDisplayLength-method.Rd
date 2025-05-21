@@ -12,7 +12,7 @@ chmSetDisplayLength(chm, displayLength, rowOrCol)
 \arguments{
 \item{chm}{An ngchmVersion2 object to modify}
 
-\item{displayLength}{Numeric value to set as display length}
+\item{displayLength}{Numeric value to set as display length (allowed range: 1 to 99, inclusive)}
 
 \item{rowOrCol}{Character string indicating which labels to modify: "row" or "col" ("column" also accepted)}
 }

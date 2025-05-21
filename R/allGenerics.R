@@ -635,7 +635,7 @@ setGeneric("chmGetProperty", function(object, label) standardGeneric("chmGetProp
 #' Sets the maximum number of characters to display for row or column labels in the NG-CHM viewer.
 #'
 #' @param chm An ngchmVersion2 object to modify
-#' @param displayLength Numeric value to set as display length
+#' @param displayLength Numeric value to set as display length (allowed range: 1 to 99, inclusive)
 #' @param rowOrCol Character string indicating which labels to modify: "row" or "col" ("column" also accepted)
 #'
 #' @return Modified ngchmVersion2 object with updated display length
