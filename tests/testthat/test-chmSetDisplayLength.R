@@ -12,6 +12,8 @@ test_that("Change row/col label display length in ngchm", {
   chm <- chmSetDisplayLength(chm, 24, "col")
   expect_equal(chm@rowDisplayLength, 17)
   expect_equal(chm@colDisplayLength, 24)
+  chm <- chmSetDisplayLength(chm, 30, "column")
+  expect_equal(chm@colDisplayLength, 30)
 })
 
 test_that("Error thrown if non-integer value is passed or row/col not correct", {
