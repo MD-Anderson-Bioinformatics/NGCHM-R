@@ -157,7 +157,7 @@ loadNGCHMDemoData <- function() {
   return(FALSE)
 }
 
-##' Validate and Process Colors
+#' Validate and Process Colors
 #'
 #' This function checks if the provided colors are valid color names or hexadecimal color codes.
 #' If a color is a valid 8-digit hexadecimal color code with an alpha channel, the alpha channel
@@ -190,3 +190,34 @@ validateColor <- function(color) {
   return(color)
 }
 
+#' Enforce Range
+#'
+#' This function checks if a numeric value is within a specified range. If the value is outside the range,
+#' it is clamped to the nearest boundary of the range. A warning message is issued if the value is clamped.
+#'
+#' @param x A numeric value to be checked.
+#' @param min The minimum value of the range.
+#' @param max The maximum value of the range.
+#' @param warning_message A custom warning message to be displayed if the value is clamped.
+#' @return The clamped value if it was outside the range, otherwise the original value.
+#' @noRd
+#' @keywords internal
+enforceRange <- function(x, min, max, warning_message = "Value out of range. Clipping to range.") {
+  if (!is.numeric(x) || length(x) != 1) {
+    stop("x must be a single numeric value.")
+  }
+  if (!is.numeric(min) || length(min) != 1) {
+    stop("min must be a single numeric value.")
+  }
+  if (!is.numeric(max) || length(max) != 1) {
+    stop("max must be a single numeric value.")
+  }
+  if (x < min) {
+    warning(warning_message)
+    x <- min
+  } else if (x > max) {
+    warning(warning_message)
+    x <- max
+  }
+  return(x)
+}

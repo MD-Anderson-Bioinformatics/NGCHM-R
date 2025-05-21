@@ -180,6 +180,8 @@ ngchmGetEnv <- function() {
 #' @param colGapWidth Width of col gaps (default: 5 cols)
 #' @param panel_configuration The configuration of the panels in the NGCHM (default: default_panel_configuration()).
 #' @param overview The format(s) of overview image(s) to create (default: None).
+#' @param rowDisplayLength The number of characters to display in NGCHM row labels (default: 20).
+#' @param colDisplayLength The number of characters to display in NGCHM column labels (default: 20).
 #'
 #' @return An object of class ngchm
 #'
@@ -215,7 +217,7 @@ chmNew <- function(
     colGapLocations = NULL,
     colGapWidth = 5,
     panel_configuration = default_panel_configuration(),
-    overview = c()) {
+    overview = c(), rowDisplayLength = 20, colDisplayLength = 20) {
   chm <- new(
     Class = "ngchmVersion2",
     name = name,
@@ -232,7 +234,9 @@ chmNew <- function(
     rowCutWidth = rowGapWidth,
     colCutLocations = colGapLocations,
     colCutWidth = colGapWidth,
-    panel_configuration = panel_configuration
+    panel_configuration = panel_configuration,
+    rowDisplayLength = rowDisplayLength,
+    colDisplayLength = colDisplayLength
   )
   chmRowOrder(chm) <- rowOrder
   chmColOrder(chm) <- colOrder

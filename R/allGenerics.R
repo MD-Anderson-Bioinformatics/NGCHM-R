@@ -629,6 +629,29 @@ setGeneric("chmHasProperty", function(object, label) standardGeneric("chmHasProp
 #' @rdname chmGetProperty-method
 setGeneric("chmGetProperty", function(object, label) standardGeneric("chmGetProperty"))
 
+#' Set number of characters to display for row or column labels
+#'
+#' @description
+#' Sets the maximum number of characters to display for row or column labels in the NG-CHM viewer.
+#'
+#' @param chm An ngchmVersion2 object to modify
+#' @param displayLength Numeric value to set as display length (allowed range: 1 to 99, inclusive)
+#' @param rowOrCol Character string indicating which labels to modify: "row" or "col" ("column" also accepted)
+#'
+#' @return Modified ngchmVersion2 object with updated display length
+#'
+#' @examples
+#' # Create a new NG-CHM object
+#' chm <- chmNew("New Heat Map")
+#' # Set row labels to display up to 20 characters
+#' chm <- chmSetDisplayLength(chm, 20, "row")
+#' # Set column labels to display up to 15 characters
+#' chm <- chmSetDisplayLength(chm, 15, "col")
+#'
+#' @rdname chmSetDisplayLength-method
+#' @exportMethod chmSetDisplayLength
+setGeneric("chmSetDisplayLength", function(chm, displayLength, rowOrCol) standardGeneric("chmSetDisplayLength"))
+
 #' Get shaid for an object
 #'
 #' @exportMethod shaidyGetShaid

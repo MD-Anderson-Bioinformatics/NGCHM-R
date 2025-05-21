@@ -23,7 +23,9 @@ chmNew(
   colGapLocations = NULL,
   colGapWidth = 5,
   panel_configuration = default_panel_configuration(),
-  overview = c()
+  overview = c(),
+  rowDisplayLength = 20,
+  colDisplayLength = 20
 )
 }
 \arguments{
@@ -64,6 +66,10 @@ chmNew(
 \item{panel_configuration}{The configuration of the panels in the NGCHM (default: default_panel_configuration()).}
 
 \item{overview}{The format(s) of overview image(s) to create (default: None).}
+
+\item{rowDisplayLength}{The number of characters to display in NGCHM row labels (default: 20).}
+
+\item{colDisplayLength}{The number of characters to display in NGCHM column labels (default: 20).}
 }
 \value{
 An object of class ngchm
