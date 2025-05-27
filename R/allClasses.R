@@ -958,9 +958,11 @@ setMethod(
       .Object@rowTopItems <- NULL
     }
     if (!missing(rowDisplayLength)) {
-      .Object@rowDisplayLength <- rowDisplayLength
+      rowDisplayLength <- enforceRange(rowDisplayLength, 1, 99,
+                       warning_message = "rowDisplayLength must be between 1 and 99. Clipping to that range.")
+      .Object@rowDisplayLength <- castAsInteger(rowDisplayLength)
     } else {
-      .Object@rowDisplayLength <- NULL
+      .Object@rowDisplayLength <- castAsInteger(20)
     }
     if (!missing(rowDisplayAbbreviation)) {
       .Object@rowDisplayAbbreviation <- rowDisplayAbbreviation
@@ -992,9 +994,11 @@ setMethod(
       .Object@colTopItems <- NULL
     }
     if (!missing(colDisplayLength)) {
-      .Object@colDisplayLength <- colDisplayLength
+      colDisplayLength <- enforceRange(colDisplayLength, 1, 99,
+                       warning_message = "colDisplayLength must be between 1 and 99. Clipping to that range.")
+      .Object@colDisplayLength <- castAsInteger(colDisplayLength)
     } else {
-      .Object@colDisplayLength <- NULL
+      .Object@colDisplayLength <- castAsInteger(20)
     }
     if (!missing(colDisplayAbbreviation)) {
       .Object@colDisplayAbbreviation <- colDisplayAbbreviation

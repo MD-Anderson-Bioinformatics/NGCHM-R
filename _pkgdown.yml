@@ -72,6 +72,7 @@ reference:
       - chmProperty
       - chmProperty<-
       - chmAdd
+      - chmSetDisplayLength
   - title: 'Adding Gaps'
     contents:
       - chmTreeGaps
