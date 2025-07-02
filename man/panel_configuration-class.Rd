@@ -15,52 +15,11 @@ slot is converted to these individual pane configurations.
 \section{Slots}{
 
 \describe{
-\item{\code{panes_list}}{A list containing pane objects and sizes information. \cr\cr
-For example, this panes_list format: \cr\cr
-\preformatted{
-         list(pane(id="pane1"),
-              pane(id="pane2"),
-              sizes = c(50, 50))
-       }
-will produce a layout like this:
-\preformatted{
-                   |
-             pane1 | pane2
-                   |
-       }
-This panes_list format:
-\preformatted{
-         list(pane(id="pane1"),
-              list(pane(id="pane2"),
-                   pane(id="pane3"),
-                   sizes = c(50, 50)),
-         sizes = c(100))
-       }
-will produce a layout like this:
-\preformatted{
-                        |  pane2
-                 pane1  | -------
-                        |  pane3
-       }}
+\item{\code{panes_list}}{A list containing pane objects and sizes information.}
 
-\item{\code{pane_types}}{A named list mapping pane IDs to their configurations.
-Each element must be a detailMap, summaryMap, or pluginPane object.
-For example, the default two-pane layout is a detailMap and a summaryMap:
-\preformatted{
-         pane_types = list(
-                pane1 = detailMap(id = "pane1"),
-                pane2 = summaryMap(id = "pane2")
-         )
-       }
-For example, a three-pane layout with a detail map, a summary map, and a plugin pane:
-\preformatted{
-         pane_types = list(
-                pane1 = detailMap(id = "pane1"),
-                pane2 = summaryMap(id = "pane2"),
-                pane3 = pluginPane(id = "pane3",
-                   pluginName = "2D ScatterPlot: UMAP (column)")
-         )
-       }}
+\item{\code{pane_types}}{A named list mapping pane IDs to their configurations.}
+
+\item{\code{selections}}{A list of lists of row and column labels.}
 }}
 
 \seealso{

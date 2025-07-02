@@ -2,30 +2,88 @@
 % Please edit documentation in R/panelClasses.R
 \name{panel_configuration}
 \alias{panel_configuration}
-\title{Create a panel configuration}
+\title{Constructor for panel_configuration}
 \usage{
-panel_configuration(panes_list, pane_types)
+panel_configuration(
+  panes_list,
+  pane_types,
+  selections = list(row = list(), col = list())
+)
 }
 \arguments{
-\item{panes_list}{A list containing pane objects and sizes information.
-See \code{\link{panel_configuration-class}} for format details.}
+\item{panes_list}{A list containing pane objects and sizes information, where sizes is expressed as a percentage.
+For example, this panes_list format: \cr\cr
+\preformatted{
+         list(pane(id="pane1"),
+              pane(id="pane2"),
+              sizes = c(40, 60))
+       }
+will produce a layout like the one below, where \code{pane1} accounts for 40\% of the horizontal space
+and \code{pane2} accounts for 60\% of the horizontal space:
+\preformatted{
+                      |
+                pane1 | pane2
+                      |
+          }
+This panes_list format:
+\preformatted{
+            list(pane(id="pane1"),
+                 list(pane(id="pane2"),
+                      pane(id="pane3"),
+                      sizes = c(30, 70)), # for pane2, pane3
+            sizes = c(50, 50))  # for pane1 & container of pane2, pane3
+          }
+will produce a layout like the one below, where \code{pane2} accounts for 30\% of
+the vertical space and \code{pane3} accounts for 70\% of the vertical space:
+\preformatted{
+                        |  pane2
+                 pane1  | -------
+                        |  pane3
+       }}
 
 \item{pane_types}{A named list mapping pane IDs to their configurations.
-Each element must be a detailMap, summaryMap, or pluginPane object.}
+Each element must be a detailMap, summaryMap, or pluginPane object.
+Each element must be a detailMap, summaryMap, or pluginPane object.
+For example, the default two-pane layout is a detailMap and a summaryMap:
+\preformatted{
+            pane_types = list(
+                   pane1 = detailMap(id = "pane1"),
+                   pane2 = summaryMap(id = "pane2")
+            )
+          }
+For example, a three-pane layout with a detail map, a summary map, and a plugin pane:
+\preformatted{
+            pane_types = list(
+                   pane1 = detailMap(id = "pane1"),
+                   pane2 = summaryMap(id = "pane2"),
+                   pane3 = pluginPane(id = "pane3",
+                      pluginName = "2D ScatterPlot: UMAP (column)")
+            )
+          }}
+
+\item{selections}{A list of lists of row and column labels.
+For example, to select rows "r1" and "r4" and columns "c2" and "c5":
+\preformatted{
+            selections = list(row = c("r1", "r4"), col = c("c2", "c5"))
+          }}
 }
 \value{
 A new \code{panel_configuration} object
 }
 \description{
 Creates a new panel configuration object that combines pane layout information
-with individual pane configurations.
+with individual pane specifications.
 }
 \examples{
+matrix <- matrix(rnorm(100),
+  nrow = 10, ncol = 10,
+  dimnames = list(paste0("r", 1:10), paste0("c", 1:10))
+)
 # Create a three-pane layout with a detail map, a summary map, and a plugin pane:
 pane1 <- pane(id = "pane1")
 pane2 <- pane(id = "pane2")
 pane3 <- pane(id = "pane3")
-panes_list <- list(pane1, list(pane2, pane3, sizes = c(30, 70)), sizes = c(100))
+panes_list <- list(pane1, list(pane2, pane3, sizes = c(30, 70)), sizes = c(50, 50))
 
 # Create pane configuration for each pane
 pane_types <- list(
@@ -34,8 +92,13 @@ pane_types <- list(
   pane3 = pluginPane(id = "pane3", pluginName = "2D ScatterPlot: UMAP (column)")
 )
 
+# Select the 1st and 4th rows and 2nd and 5th columns:
+selections <- list(row = c("r1", "r4"), col = c("c2", "c5"))
+
 # Create panel configuration
-config <- panel_configuration(panes_list, pane_types)
+config <- panel_configuration(panes_list, pane_types, selections = selections)
+# Create a new NG-CHM heatmap with this panel configuration
+hm <- chmNew("three-panel-ngchm", matrix, panel_configuration = config)
 
 }
 \seealso{
@@ -44,5 +107,6 @@ config <- panel_configuration(panes_list, pane_types)
 \item \link{pane} for creating pane objects
 \item \link{detailMap} for detail map configuration
 \item \link{summaryMap} for summary map configuration
+\item \link{pluginPane} for plugin pane configuration
 }
 }

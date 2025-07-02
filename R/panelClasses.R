@@ -6,10 +6,10 @@
 #                     The 'ngChmContainer1' represenst tree-structure of the panel layout.
 #   - keys for each of the panes, (e.g. `pane1`, `pane2`, etc.) which contain the actual panes
 #   - `flickInfo`, containing the flick state info. This is optional and not implemented here.
-#   - `selections`, containing selected items. This is optional and not implemented here.
+#   - `selections`, containing selected items.
 #
-# The classes in this file relate to the `panel_layout` key and the keys for the individual
-# panes (`pane1`, `pane2`, etc.)
+# The classes in this file relate to the `panel_layout` key, keys for the individual
+# panes (`pane1`, `pane2`, etc.), and the `selections` key.
 
 #' Panel Configuration Class for NG-CHM
 #'
@@ -20,6 +20,7 @@
 #'
 #' @slot panes_list A list containing pane objects and sizes information.
 #' @slot pane_types A named list mapping pane IDs to their configurations.
+#' @slot selections A list of lists of row and column labels.
 #'
 #' @seealso
 #' * [detailMap] for detail map configuration
@@ -30,7 +31,8 @@
 setClass("panel_configuration",
   slots = list(
     panes_list = "list",
-    pane_types = "list"
+    pane_types = "list",
+    selections = "list"
   )
 )
 
@@ -87,10 +89,19 @@ setClass("panel_configuration",
 #'                       pluginName = "2D ScatterPlot: UMAP (column)")
 #'             )
 #'           }
+#' @param selections A list of lists of row and column labels.
+#'        For example, to select rows "r1" and "r4" and columns "c2" and "c5":
+#'           \preformatted{
+#'             selections = list(row = c("r1", "r4"), col = c("c2", "c5"))
+#'           }
 #'
 #' @return A new \code{panel_configuration} object
 #'
 #' @examples
+#' matrix <- matrix(rnorm(100),
+#'   nrow = 10, ncol = 10,
+#'   dimnames = list(paste0("r", 1:10), paste0("c", 1:10))
+#' )
 #' # Create a three-pane layout with a detail map, a summary map, and a plugin pane:
 #' pane1 <- pane(id = "pane1")
 #' pane2 <- pane(id = "pane2")
@@ -104,14 +115,12 @@ setClass("panel_configuration",
 #'   pane3 = pluginPane(id = "pane3", pluginName = "2D ScatterPlot: UMAP (column)")
 #' )
 #'
-#' # Create panel configuration
-#' config <- panel_configuration(panes_list, pane_types)
+#' # Select the 1st and 4th rows and 2nd and 5th columns:
+#' selections <- list(row = c("r1", "r4"), col = c("c2", "c5"))
 #'
-#' # Create ngchm with the panel configuration
-#' matrix <- matrix(rnorm(100),
-#'   nrow = 10, ncol = 10,
-#'   dimnames = list(paste0("r", 1:10), paste0("c", 1:10))
-#' )
+#' # Create panel configuration
+#' config <- panel_configuration(panes_list, pane_types, selections = selections)
+#' # Create a new NG-CHM heatmap with this panel configuration
 #' hm <- chmNew("three-panel-ngchm", matrix, panel_configuration = config)
 #'
 #' @seealso
@@ -122,13 +131,14 @@ setClass("panel_configuration",
 #' * [pluginPane] for plugin pane configuration
 #'
 #' @export
-panel_configuration <- function(panes_list, pane_types) {
+panel_configuration <- function(panes_list, pane_types, selections = list(row = list(), col = list())) {
   pane_ids <- as.character(sort(get_all_pane_ids(panes_list)))
   types_ids <- as.character(sort(names(pane_types)))
   if (!identical(pane_ids, types_ids)) {
     stop("The ids from panes_list and pane_types must match.")
   }
-  new("panel_configuration", panes_list = panes_list, pane_types = pane_types)
+  selections <- selections
+  new("panel_configuration", panes_list = panes_list, pane_types = pane_types, selections = selections)
 }
 
 #' Container Class for Panel Layout
@@ -279,6 +289,7 @@ setMethod(jsonlite:::asJSON, "panel_configuration", function(x, ...) {
       jsonlite::toJSON(slot(x, "pane_types")[[pane_id]], ...)
     )
   }
+  panel_configuration_value$selections <- slot(x, "selections")
   jsonlite::toJSON(panel_configuration_value, auto_unbox = TRUE, pretty = TRUE)
 })
 
