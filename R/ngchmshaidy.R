@@ -638,6 +638,60 @@ ngchmSaveLabelsAsBlob <- function(shaidyRepo, labels) {
   res
 }
 
+#' Get Dendrogram Order from File
+#'
+#' Reads the dendrogram order information from a TSV file stored in a shaidy repository.
+#' This function retrieves both the labels and their corresponding order indices from
+#' the "dendrogram-order.tsv" file associated with a dendrogram shaid.
+#'
+#' @param shaid A shaid object of type "dendrogram" containing the identifier
+#'   for the dendrogram blob in the repository
+#'
+#' @return A data.frame with two columns:
+#'           1. Id: Character vector containing the dendrogram labels
+#'           2. Order: Numeric vector containing the order indices for each label
+#'         Returns NULL if an error occurs during file reading.
+#'
+#' @keyword internal
+#' @noRd
+getDendrogramOrderFromFile <- function(shaid) {
+  tryCatch({
+    srcRepo <- ngchmFindRepo(shaid)
+    labelsWithOrder <- read.delim(srcRepo$blob.path(shaid@type, shaid@value, "dendrogram-order.tsv"), header = TRUE, colClasses = c("character", "numeric"))
+    return(labelsWithOrder)
+  }, error = function(e) {
+    warning("Error getting labels with order from file: ", e$message)
+    return(NULL)
+  })
+}
+
+#' Get Labels from File
+#'
+#' Reads axis labels from a text file stored in a shaidy repository.
+#' This function retrieves labels from the "labels.txt" file associated
+#' with a label shaid.
+#'
+#' @param shaid A shaid object containing the identifier for the label blob
+#'   in the repository
+#'
+#' @return A character vector containing the labels read from the file,
+#'   with one label per element. Returns NULL if an error occurs during
+#'   file reading.
+#'
+#' @keywords internal
+#' @noRd
+getLabelsFromFile <- function(shaid) {
+  tryCatch({
+    srcRepo <- ngchmFindRepo(shaid)
+    labelsWithOrder <- readLines(srcRepo$blob.path(shaid@type, shaid@value, "labels.txt"))
+    return(labelsWithOrder)
+  }, error = function(e) {
+    warning("Error getting labels with order from file: ", e$message)
+    return(NULL)
+  })
+}
+
+
 #' Get the axis labels of a shaidy dataset or dendrogram
 #'
 #' @param shaid The shaid of the dataset or dendrogram to get the labels of
