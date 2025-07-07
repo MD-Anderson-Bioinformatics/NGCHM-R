@@ -43,7 +43,6 @@ the vertical space and \code{pane3} accounts for 70\% of the vertical space:
 
 \item{pane_types}{A named list mapping pane IDs to their configurations.
 Each element must be a detailMap, summaryMap, or pluginPane object.
-Each element must be a detailMap, summaryMap, or pluginPane object.
 For example, the default two-pane layout is a detailMap and a summaryMap:
 \preformatted{
             pane_types = list(
