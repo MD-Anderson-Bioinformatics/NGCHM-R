@@ -32,7 +32,7 @@ default_panel_configuration <- function() {
       pane1 = detailMap(id = "pane1"),
       pane2 = summaryMap(id = "pane2")
     ),
-    list(row = list(), column = list())
+    list(row = list(), col = list())
   )
 }
 
