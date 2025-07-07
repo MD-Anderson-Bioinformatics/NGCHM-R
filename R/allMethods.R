@@ -1251,7 +1251,7 @@ convertPanelSelectionsFromLabelToIndex <- function(chm) {
           indexVal
         })
       } else {
-        log_error(sprintf("Selections not impelemted for %s", orderType))
+        log_error(sprintf("Selections not implemented for %s", orderType))
       }
       chm@panel_configuration@selections[[axis]] <- selectionIndexes
     }, error = function(e) {
