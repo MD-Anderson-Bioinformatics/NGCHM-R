@@ -1205,9 +1205,65 @@ setMethod("chmMake",
     } else if (is(chm@colOrder, "character")) {
       chm@colOrder <- chmUserLabelsToShaid(chm@colOrder)
     }
+    chm <- convertPanelSelectionsFromLabelToIndex(chm)
     chm
   }
 )
+
+#' Convert Panel Selections from Labels to Indices
+#'
+#' Converts panel selections from label-based to index-based format for both row and column axes.
+#' This internal function is called during the heatmap compilation process to prepare selections
+#' for the NG-CHM viewer, which expects numeric indices rather than label strings.
+#'
+#' @param chm An NG-CHM object containing panel configuration with selections
+#'
+#' @return The modified NG-CHM object with selections converted from labels to indices
+#'
+#' @section Error Handling:
+#' If conversion fails for an axis, the function logs an error, issues a warning,
+#' and sets an empty selection list for that axis to prevent downstream failures.
+#'
+#' @keywords internal
+#' @noRd
+convertPanelSelectionsFromLabelToIndex <- function(chm) {
+  for (axis in c("row", "col")) {
+    tryCatch({
+      orderType <- slot(chm, paste0(axis, "Order"))@type # one of `dendrogram`, or `label`
+      selectionIndexes <- list() # Initialize empty list for selection indexes
+      selectionLabels <- chm@panel_configuration@selections[[axis]]
+      if (orderType == "label") {
+        labels_vector <- getLabelsFromFile(slot(chm, paste0(axis, "Order")))
+        selectionIndexes <- lapply(chm@panel_configuration@selections[[axis]], function(selection_label) {
+          indexVal <- match(selection_label, labels_vector)
+          if (is.na(indexVal)) {
+            warning(sprintf("%s selection '%s' not found in %s labels", axis, selection_label, axis))
+          }
+          indexVal
+        })
+      } else if (orderType == "dendrogram") {
+        labels_df <- getDendrogramOrderFromFile(slot(chm, paste0(axis, "Order")))
+        selectionIndexes <- lapply(chm@panel_configuration@selections[[axis]], function(selection_label) {
+          indexVal <- labels_df[labels_df$Id == selection_label, "Order"]
+          if (length(indexVal) == 0) {
+            warning(sprintf("%s selection '%s' not found in %s labels", axis, selection_label, axis))
+          }
+          indexVal
+        })
+      } else {
+        log_error(sprintf("Selections not implemented for %s", orderType))
+      }
+      chm@panel_configuration@selections[[axis]] <- selectionIndexes
+    }, error = function(e) {
+      log_error(e$message)
+      warning(sprintf("Unable to set panel selections for %s", axis))
+      chm@panel_configuration@selections[[axis]] <- list()
+    })
+  }
+  chm
+}
+
+
 #' Make an original format NGCHM.
 #'
 #' @param chm The original format CHM to compile.

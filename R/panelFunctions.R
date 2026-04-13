@@ -19,7 +19,8 @@
 #' [detailMap] for detail map configuration.
 #' [summaryMap] for summary map configuration.
 #'
-#' @export
+#' @keywords internal
+#' @noRd
 default_panel_configuration <- function() {
   panel_configuration(
     list(
@@ -30,7 +31,8 @@ default_panel_configuration <- function() {
     list(
       pane1 = detailMap(id = "pane1"),
       pane2 = summaryMap(id = "pane2")
-    )
+    ),
+    list(row = list(), col = list())
   )
 }
 
