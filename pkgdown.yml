@@ -1,5 +1,5 @@
-pandoc: 3.1.11
-pkgdown: 2.1.1
+pandoc: 3.8.3
+pkgdown: 2.2.0
 pkgdown_sha: ~
 articles:
   adding-linkouts: adding-linkouts.html
@@ -9,7 +9,7 @@ articles:
   Installation: Installation.html
   ordering-and-clustering: ordering-and-clustering.html
   umap: umap.html
-last_built: 2025-02-26T21:52Z
+last_built: 2026-05-04T15:03Z
 urls:
   reference: https://md-anderson-bioinformatics.github.io/NGCHM-R/reference
   article: https://md-anderson-bioinformatics.github.io/NGCHM-R/articles

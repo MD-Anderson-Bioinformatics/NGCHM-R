@@ -1,0 +1,73 @@
+# Initialization of the NGCHM library.
+
+When first loaded the NGCHM library reads configuration files in the
+configuration path specified by the NGCHMCONFIGPATH environment
+variable. The configuration path is a colon (:) separated list of
+directory names. If not set it defaults to
+/etc/ngchm:/usr/local/ngchm:/opt/ngchm:\$HOME/.ngchm.
+
+## Value
+
+None. This function is used for its side effects of loading
+configuration files.
+
+## Details
+
+For each configuration directory in the configuration path, the NGCHM
+package reads the contents of the configuration files in the conf.d
+subdirectory in order (as determined by the R sort function). Other
+subdirectories are not scanned unless instructed to by an entry in a
+configuration file.
+
+Configuration files may be either text files (.txt extension), R scripts
+(.R extension), or javascript files (.js extension).
+
+Here is an example directory structruce for a server named 'my_server':
+
+
+    .
+    |-- conf.d
+    |   \-- 00-servers.txt
+    \-- my_server
+        \-- config.txt
+
+Here are the contents of an example 00-servers.txt file:
+
+
+    [servers]
+    my-server = /usr/local/ngchm/my_server
+
+Here are the contents of an example config.txt file:
+
+
+    serverProtocol = shaidy
+    accessMethod = api
+    basePath = <URL to server. e.g. "https://mydomain.edu/server/api">
+    serverURL = <URL to server. e.g. "https://mydomain.edu/server">
+
+## Text files
+
+A text configuration file consists of one or more sections. Each section
+begins with a single line containing the section type enclosed in square
+brackets. Subsequent lines in the section are either blank or contain a
+definition of the form "name separator value". The default separator is
+the equals sign (=).
+
+The 'servers' section defines available servers. The name field defines
+the name by which the server is known to the library. The value field
+specifies a directory containing a specification of the server's
+properties. The server specification directory must contain a config.txt
+that contains lines of the form "name separator value". The config.txt
+file must define the value of 'serverProtocol' to be the name of a
+ngchmServerProtocol. It must also define the values of any mandatory
+parameters required by ngchmServerProtocol, and may optionally define
+any optional parameters.
+
+## R scripts
+
+R scripts are sourced. They can be used to define local NGCHM related
+functions.
+
+## Javascript scripts
+
+Javascript files define context specific menu entries.

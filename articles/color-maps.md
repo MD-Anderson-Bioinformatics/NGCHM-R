@@ -1,0 +1,99 @@
+# Color Maps
+
+In [Getting
+Started](https://md-anderson-bioinformatics.github.io/NGCHM-R/articles/getting-started.md),
+the NGCHM R package generated colors automatically because no colors
+were specified. This vignette demonstrates how to explicitly choose
+colors for the matrix and covariate data by using color maps. The full
+code block and fully interactive NG-CHM are shown in [Resulting
+NG-CHM](#resulting-ng-chm).
+
+These examples build on the setup from [Getting
+Started](https://md-anderson-bioinformatics.github.io/NGCHM-R/articles/getting-started.md).
+
+## Matrix Data Color Map
+
+The function
+[`chmNewColorMap()`](https://md-anderson-bioinformatics.github.io/NGCHM-R/reference/chmNewColorMap.md)
+creates a new color map. For a continuous color map, the first argument
+is a list of breakpoints. Breakpoints must be unique numbers in
+ascending numerical order. For the TCGA BRCA Expression demo data,
+reasonable breakpoints are 6.4, 10, and 14. The second argument is a
+corresponding list of colors for those breakpoints. The colors can be
+specified by name for standard colors, or by hexadecimal code.
+
+``` r
+
+colorMap <- chmNewColorMap(c(6.4, 10, 14), c("steelblue", "antiquewhite", "firebrick"))
+# or with equivalent hexadecimal codes:
+colorMap <- chmNewColorMap(c(6.4, 10, 14), c("#4682B4", "#FAEBD7", "#B22222"))
+```
+
+In order to use this color map for matrix data in an NG-CHM, a data
+layer is created with
+[`chmNewDataLayer()`](https://md-anderson-bioinformatics.github.io/NGCHM-R/reference/chmNewDataLayer.md),
+and then used in
+[`chmNew()`](https://md-anderson-bioinformatics.github.io/NGCHM-R/reference/chmNew.md)
+as shown below:
+
+``` r
+
+dataLayer <- chmNewDataLayer("TCGA BRCA Expression", matrix_data, colorMap)
+hm <- chmNew("TCGA BRCA Expression", dataLayer)
+```
+
+[Back to top](#)
+
+## Covariate Bar Color Map
+
+The same
+[`chmNewColorMap()`](https://md-anderson-bioinformatics.github.io/NGCHM-R/reference/chmNewColorMap.md)
+function also creates discrete color maps. The first argument is a list
+of the unique values in the data, and the second argument is a list of
+colors. Standard color names or hexadecimal codes can be used.
+
+``` r
+
+mutationColorMap <- chmNewColorMap(c("WT", "MUT"), c("lightsteelblue3", "khaki3"))
+## or with equivalent hexadecimal codes:
+mutationColorMap <- chmNewColorMap(c("WT", "MUT"), c("#A2B5CD", "#CDC673"))
+```
+
+In the
+[`chmNewCovariate()`](https://md-anderson-bioinformatics.github.io/NGCHM-R/reference/chmNewCovariate.md)
+function, an optional third argument is a color map:
+
+``` r
+
+covariateBar <- chmNewCovariate("TP53 Mutation (other colors)", covariate_vector, mutationColorMap)
+```
+
+[Back to top](#)
+
+## Resulting NG-CHM
+
+Here is the complete code block for this example, followed by the
+resulting NG-CHM:
+
+``` r
+
+library(NGCHMDemoData)
+library(NGCHMSupportFiles)
+library(NGCHM)
+matrix_data_file <- system.file("extdata", "TCGA.BRCA.Expression.csv", package = "NGCHMDemoData")
+matrix_data <- as.matrix(read.csv(matrix_data_file, header = TRUE, row.names = 1, check.names = FALSE, stringsAsFactors = FALSE))
+covariate_data_file <- system.file("extdata", "TCGA.BRCA.TP53Mutation.csv", package = "NGCHMDemoData")
+covariate_data <- as.matrix(read.csv(covariate_data_file, row.names = 1, check.names = FALSE, stringsAsFactors = FALSE))
+covariate_vector <- as.vector(covariate_data) # create vector of mutation data
+names(covariate_vector) <- rownames(covariate_data) # set the names
+colorMap <- chmNewColorMap(c(6.4, 10, 14), c("steelblue", "antiquewhite", "firebrick"))
+dataLayer <- chmNewDataLayer("TCGA BRCA Expression", matrix_data, colorMap)
+hm <- chmNew("TCGA BRCA Expression Heatmap", dataLayer)
+mutationColorMap <- chmNewColorMap(c("WT", "MUT"), c("lightsteelblue3", "khaki3"))
+covariateBar <- chmNewCovariate("TP53 Mutation", covariate_vector, mutationColorMap)
+hm <- chmAddCovariateBar(hm, "column", covariateBar)
+chmExportToHTML(hm, "colormap.html", overwrite = TRUE)
+htmltools::tags$iframe(src = "colormap.html", width = "100%", height = 700)
+```
+
+[Back to top](#)
